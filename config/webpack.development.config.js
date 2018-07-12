@@ -1,6 +1,7 @@
 const commonPaths = require('./common-paths');
 
 const config = {
+  mode: 'development',
   devtool: 'inline-source-map',
   devServer: {
     contentBase: commonPaths.outputPath,

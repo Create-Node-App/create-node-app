@@ -3,12 +3,10 @@ const webpack = require('webpack');
 
 const config = {
   devtool: 'source-map',
+  mode: 'production',
   plugins: [
     new UglifyJsWebpackPlugin({
       sourceMap: true
-    }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
     })
   ]
 };
