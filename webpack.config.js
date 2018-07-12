@@ -9,7 +9,7 @@ module.exports = (env) => {
       .map(addon => require(`./config/addons/webpack.${addon}.js`));
   };
 
-  const envConfig = require(`./config/webpack.${env.env}.config`);
+  const envConfig = require(`./config/webpack.${env.env || 'prod'}.config`);
 
   return webpackMerge(commonConfig, envConfig, ...determineAddons(env.addons));
 };
