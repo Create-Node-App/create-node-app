@@ -37,8 +37,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 The following software is required to be installed on your system:
 
--   Node 8.x
--   Npm 3.x
+-   Node 9.x
+-   Yarn 1.7
 
 Type the following commands in the terminal to verify your node and yarn versions
 
