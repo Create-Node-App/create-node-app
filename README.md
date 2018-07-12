@@ -90,7 +90,7 @@ Follow the following steps to get development environment running.
 | :--------------------------: | :---------------------------: |
 | yarn build:dev:bundleanalyze | yarn build:prod:bundleanalyze |
 
-After running the above command, a browser window will open displaying an interactive graph resembling the following image:
+After running the above command, a browser window will open displaying an interactive graph.
 
 #### Build Application With BundleBuddy Plugin Included
 
@@ -134,7 +134,7 @@ $ yarn serve:dev
 $ yarn serve:dev:dashboard
 ```
 
-The above command will display a dashboard view in your console resembling the following image:
+The above command will display a dashboard view in your console.
 
 #### Run Prod Server
 
