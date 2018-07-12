@@ -7,8 +7,8 @@ import Cookies from 'js-cookie';
 import { createCookieMiddleware } from 'redux-cookie';
 import thunk from 'redux-thunk';
 
-import reducers from './reducers';
-import DevTools from './components/DevTools';
+import reducers from 'playground/reducers';
+import DevTools from 'playground/components/DevTools';
 
 const packages = [];
 const enhancers = [];
