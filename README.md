@@ -42,7 +42,7 @@ The following software is required to be installed on your system:
 
 Type the following commands in the terminal to verify your node and yarn versions
 
-```bash
+```sh
 $ node -v
 $ yarn -v
 ```
@@ -51,21 +51,21 @@ $ yarn -v
 
 Follow the following steps to get development environment running.
 
--   Clone _'playground.js'_ repository from GitHub
+-   Clone the repository from GitHub
 
-    ```bash
-    git clone https://github.com/ulises-jeremias/playground.js.git
+    ```sh
+    $ git clone https://github.com/ulises-jeremias/playground.js.git
     ```
 
      _OR USING SSH_
 
-    ```bash
-    git clone git@github.com:ulises-jeremias/playground.js.git
+    ```sh
+    $ git clone git@github.com:ulises-jeremias/playground.js.git
     ```
 
 -   Install node modules
 
-    ```bash
+    ```sh
     $ cd playground.js
     $ yarn
     ```
@@ -74,19 +74,19 @@ Follow the following steps to get development environment running.
 
 #### Build Application
 
-|       dev      |       prod      |
+|   development  |    production   |
 | :------------: | :-------------: |
 | yarn build:dev | yarn build:prod |
 
 #### Build Application And Watch For Changes
 
-|          dev         |          prod         |
+|      development     |       production      |
 | :------------------: | :-------------------: |
 | yarn build:dev:watch | yarn build:prod:watch |
 
 #### Build Application With BundleAnalayzer Plugin Included
 
-|              dev             |              prod             |
+|          development         |           production          |
 | :--------------------------: | :---------------------------: |
 | yarn build:dev:bundleanalyze | yarn build:prod:bundleanalyze |
 
@@ -94,7 +94,7 @@ After running the above command, a browser window will open displaying an intera
 
 #### Build Application With BundleBuddy Plugin Included
 
-|             dev            |             prod            |
+|         development        |          production         |
 | :------------------------: | :-------------------------: |
 | yarn build:dev:bundlebuddy | yarn build:prod:bundlebuddy |
 
@@ -102,14 +102,14 @@ After running the above command, a browser window will open displaying an intera
 
 #### Lint Project Using ESLint
 
-```bash
-yarn lint
+```sh
+$ yarn lint
 ```
 
 #### Lint Project Using ESLint, and autofix
 
-```bash
-yarn lint:fix
+```sh
+$ yarn lint:fix
 ```
 
 ### Run
@@ -118,20 +118,20 @@ yarn lint:fix
 
 This will run the _'serve:dev'_ yarn task
 
-```bash
-yarn start
+```sh
+$ yarn start
 ```
 
 #### Run Dev Server
 
-```bash
-yarn serve:dev
+```sh
+$ yarn serve:dev
 ```
 
 #### Run Dev Server With Dashboard
 
-```bash
-yarn serve:dev:dashboard
+```sh
+$ yarn serve:dev:dashboard
 ```
 
 The above command will display a dashboard view in your console resembling the following image:
@@ -140,6 +140,6 @@ The above command will display a dashboard view in your console resembling the f
 
 This command will build application using production settings and start the application using _live-server_
 
-```bash
-yarn serve:prod
+```sh
+$ yarn serve:prod
 ```
