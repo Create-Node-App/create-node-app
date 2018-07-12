@@ -56,14 +56,16 @@ const config = {
       playground: '../src',
     }
   },
-  plugins: [
-    new webpack.ProgressPlugin(),
-    new ExtractTextWebpackPlugin('styles.css'),
-    new webpack.optimize.CommonsChunkPlugin({
+  optimization: {
+    splitChunks: {
       filename: 'common.js',
       minChunks: 3,
       name: 'common'
-    }),
+    }
+  },
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new ExtractTextWebpackPlugin('styles.css'),
     new CleanWebPackPlugin(['public'], { root: commonPaths.root }),
     new HtmlWebPackPlugin({
       template: commonPaths.template,
