@@ -9,7 +9,7 @@
     "build:dev:bundleanalyze": "yarn build:dev --env.addons=bundleanalyze",
     "build:dev:bundlebuddy": "yarn build:dev --env.addons=bundlebuddy",
     "serve:dev": "webpack-dev-server --mode development --hot",
-    "serve:dev:dashboard": "webpack-dashboard webpack-dev-server --hot --mode development --env.addons=dashboard",
+    "serve:dev:dashboard": "webpack-dashboard webpack-dev-server --mode development --hot --env.addons=dashboard",
     "build:prod": "yarn build -p",
     "build:prod:watch": "yarn build:prod --watch",
     "build:prod:bundleanalyze": "yarn build:prod --env.addons=bundleanalyze",
@@ -73,6 +73,8 @@
     "redux-form": "^7.4.2",
     "redux-logger": "^3.0.6",
     "redux-promise-middleware": "^5.0.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "semantic-ui-css": "^2.3.3",
+    "semantic-ui-react": "^0.82.0"
   }
 }
