@@ -1,16 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { StaticRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
+import 'semantic-ui-css/semantic.min.css';
+
 import store from 'playground/store';
+import AppRouter from 'playground/routes';
 
-import { AppRouter } from 'playground/router';
-
-export const App = () => (
+export const App = (props, context) => (
   <Provider store={store}>
-    <div className="container">
+    <StaticRouter context={context}>
       <AppRouter />
-    </div>
+    </StaticRouter>
   </Provider>
 );
 
