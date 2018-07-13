@@ -14,7 +14,7 @@
     "build:prod:watch": "yarn build:prod --watch",
     "build:prod:bundleanalyze": "yarn build:prod --env.addons=bundleanalyze",
     "build:prod:bundlebuddy": "yarn build:prod --env.addons=bundlebuddy",
-    "serve:prod": "yarn build:prod && live-server ./public",
+    "serve:prod": "yarn build:prod && live-server ./dist",
     "lint": "eslint .; exit 0",
     "lint:fix": "eslint . --fix; exit 0",
     "start": "yarn serve:dev",

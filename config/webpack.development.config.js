@@ -7,7 +7,7 @@ const config = {
     contentBase: commonPaths.outputPath,
     compress: true,
     historyApiFallback: true,
-    hot: false,
+    hot: true,
     port: 9000
   }
 };
