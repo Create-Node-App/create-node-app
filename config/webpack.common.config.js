@@ -15,7 +15,7 @@ const config = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         loader: 'eslint-loader',
         options: {
           failOnWarning: true,
@@ -24,7 +24,7 @@ const config = {
         exclude: /node_modules/
       },
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         exclude: /node_modules/
       },
@@ -41,12 +41,10 @@ const config = {
             }
           ]
         })
-        //exclude: /node_modules/
       },
       {
-        test: /\.svg|.png|.jpg$/,
+        test: /\.(eot|png|jpg|svg|[ot]tf|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'url-loader',
-        exclude: /node_modules/
       }
     ]
   },
