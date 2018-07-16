@@ -6,7 +6,7 @@ import {
   HomePage
 } from 'playground/containers';
 
-const AppRouter = () => (
+const AppRoutes = () => (
   <BrowserRouter>
     <AppContainer>
       <Switch>
@@ -17,4 +17,4 @@ const AppRouter = () => (
   </BrowserRouter>
 );
 
-export default AppRouter;
+export default AppRoutes;

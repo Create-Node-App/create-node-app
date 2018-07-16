@@ -6,12 +6,12 @@ import { Provider } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 
 import store from 'playground/store';
-import AppRouter from 'playground/routes';
+import AppRoutes from 'playground/routes/app-routes';
 
 export const App = (props, context) => (
   <Provider store={store}>
     <StaticRouter context={context}>
-      <AppRouter />
+      <AppRoutes />
     </StaticRouter>
   </Provider>
 );

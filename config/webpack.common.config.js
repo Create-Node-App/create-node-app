@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 const CleanWebPackPlugin = require('clean-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
@@ -51,7 +52,7 @@ const config = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      playground: '../src',
+      playground: path.resolve(__dirname, '../', 'src'),
     }
   },
   optimization: {
