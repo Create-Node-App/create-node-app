@@ -14,16 +14,16 @@ const config = {
   },
   module: {
     rules: [
-      {
+      /*{
         enforce: 'pre',
         test: /\.(js|jsx)$/,
         loader: 'eslint-loader',
         options: {
-          failOnWarning: true,
+          failOnWarning: false,
           failOnerror: true
         },
         exclude: /node_modules/
-      },
+      },*/
       {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',

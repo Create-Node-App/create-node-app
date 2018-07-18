@@ -8,7 +8,7 @@ import 'semantic-ui-css/semantic.min.css';
 import store from 'playground/store';
 import AppRoutes from 'playground/routes/app-routes';
 
-export const App = (props, context) => (
+const App = (props, context) => (
   <Provider store={store}>
     <StaticRouter context={context}>
       <AppRoutes />
