@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { DevTools } from 'playground/components';
+import DevTools from 'playground/components/DevTools';
 
 function mapStateToProps(state) {
   return state;

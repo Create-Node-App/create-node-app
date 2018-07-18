@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 
 import store from 'playground/store';
-import AppRoutes from 'playground/routes/app-routes';
+import AppRoutes from 'playground/routes/app';
 
 const App = (props, context) => (
   <Provider store={store}>

@@ -14,16 +14,16 @@ const config = {
   },
   module: {
     rules: [
-      /*{
+      {
         enforce: 'pre',
         test: /\.(js|jsx)$/,
         loader: 'eslint-loader',
         options: {
-          failOnWarning: false,
+          failOnWarning: true,
           failOnerror: true
         },
         exclude: /node_modules/
-      },*/
+      },
       {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
@@ -52,7 +52,7 @@ const config = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      playground: path.resolve(__dirname, '../', 'src'),
+      playground: path.join(__dirname, '../', 'src'),
     }
   },
   optimization: {

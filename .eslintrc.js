@@ -12,7 +12,7 @@ module.exports = {
   "settings": {
     "import/resolver": {
       "webpack": {
-        "config": path.resolve(__dirname, './config/webpack.common.config.js')
+        "config": path.join(__dirname, 'config', 'webpack.common.config.js')
       }
     }
   },

@@ -1,10 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
-import {
-  AppContainer,
-  HomePage
-} from 'playground/containers';
+import AppContainer from 'playground/containers/App';
+import HomePage from 'playground/containers/Home';
 
 const AppRoutes = () => (
   <BrowserRouter>
