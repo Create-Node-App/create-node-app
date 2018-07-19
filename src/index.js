@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { StaticRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
-import 'semantic-ui-css/semantic.min.css';
+import 'semantic-ui-less/semantic.less';
 
 import store from 'playground/store';
 import AppRoutes from 'playground/routes/app';

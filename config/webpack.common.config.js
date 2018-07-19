@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
-const CleanWebPackPlugin = require('clean-webpack-plugin');
-const HtmlWebPackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 
 const commonPaths = require('./common-paths');
@@ -30,22 +30,30 @@ const config = {
         exclude: /node_modules/
       },
       {
-        test: /\.s?css$/,
+        test: /\.less$/,
         use: ExtractTextWebpackPlugin.extract({
           fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader'
-            },
-            {
-              loader: 'sass-loader'
-            }
-          ]
-        })
+          use: ['css-loader', 'less-loader']
+        }),
+      },
+      // this rule handles images
+      {
+        test: /\.jpe?g$|\.gif$|\.ico$|\.png$|\.svg$/,
+        use: 'file-loader?name=[name].[ext]?[hash]'
+      },
+
+      // the following 3 rules handle font extraction
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
       },
       {
-        test: /\.(eot|png|jpg|svg|[ot]tf|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader',
+        test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'file-loader'
+      },
+      {
+      test: /\.otf(\?.*)?$/,
+      use: 'file-loader?name=/fonts/[name].[ext]&mimetype=application/font-otf'
       }
     ]
   },
@@ -53,13 +61,23 @@ const config = {
     extensions: ['.js', '.jsx'],
     alias: {
       playground: commonPaths.sourcePath,
-    }
+      '../../theme.config$': path.resolve(__dirname, '../src/semantic/theme.config'),
+      heading: path.resolve(__dirname, '../src/semantic/heading.less'),
+    },
+    modules: [
+      'src',
+      'node_modules'
+    ]
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    new ExtractTextWebpackPlugin('styles.css'),
-    new CleanWebPackPlugin(['dist'], { root: commonPaths.root }),
-    new HtmlWebPackPlugin({
+    new ExtractTextWebpackPlugin({
+      filename: '[name].css',
+    }),
+    new CleanWebpackPlugin(['dist'], {
+      root: commonPaths.root
+    }),
+    new HtmlWebpackPlugin({
       template: commonPaths.template,
       favicon: commonPaths.favicon,
       inject: true
