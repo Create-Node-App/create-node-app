@@ -12,9 +12,9 @@ export default createDevTools(
     changePositionKey="ctrl-alt-w"
     changeMonitorKey='ctrl-alt-m'
   >
-    <ChartMonitor />
     <LogMonitor />
     <FilterableLogMonitor />
+    <ChartMonitor />
     <SliderMonitor />
   </DockMonitor>
 );
