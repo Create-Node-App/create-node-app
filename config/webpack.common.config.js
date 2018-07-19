@@ -7,7 +7,7 @@ const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const commonPaths = require('./common-paths');
 
 const config = {
-  entry: './src/index.js',
+  entry: commonPaths.entryPath,
   output: {
     filename: 'bundle.js',
     path: commonPaths.outputPath
@@ -19,7 +19,7 @@ const config = {
         test: /\.(js|jsx)$/,
         loader: 'eslint-loader',
         options: {
-          failOnWarning: true,
+          failOnWarning: false,
           failOnerror: true
         },
         exclude: /node_modules/
@@ -52,14 +52,7 @@ const config = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      playground: path.join(__dirname, '../', 'src'),
-    }
-  },
-  optimization: {
-    splitChunks: {
-      filename: 'common.js',
-      minChunks: 3,
-      name: 'common'
+      playground: commonPaths.sourcePath,
     }
   },
   plugins: [
