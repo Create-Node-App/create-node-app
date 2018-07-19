@@ -39,7 +39,7 @@ const config = {
       // this rule handles images
       {
         test: /\.jpe?g$|\.gif$|\.ico$|\.png$|\.svg$/,
-        use: 'file-loader?name=images/[name].[ext]?[hash]'
+        use: 'file-loader?name=[name].[ext]?[hash]'
       },
 
       // the following 3 rules handle font extraction
@@ -71,7 +71,9 @@ const config = {
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    new ExtractTextWebpackPlugin('css/styles.css'),
+    new ExtractTextWebpackPlugin({
+      filename: '[name].[hash].css',
+    }),
     new CleanWebpackPlugin(['dist'], {
       root: commonPaths.root
     }),
