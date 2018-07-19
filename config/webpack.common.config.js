@@ -9,7 +9,7 @@ const commonPaths = require('./common-paths');
 const config = {
   entry: commonPaths.entryPath,
   output: {
-    filename: 'bundle.js',
+    filename: 'js/bundle.js',
     path: commonPaths.outputPath
   },
   module: {
@@ -39,7 +39,7 @@ const config = {
       // this rule handles images
       {
         test: /\.jpe?g$|\.gif$|\.ico$|\.png$|\.svg$/,
-        use: 'file-loader?name=[name].[ext]?[hash]'
+        use: 'file-loader?name=images/[name].[ext]?[hash]'
       },
 
       // the following 3 rules handle font extraction
@@ -71,9 +71,7 @@ const config = {
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    new ExtractTextWebpackPlugin({
-      filename: '[name].css',
-    }),
+    new ExtractTextWebpackPlugin('css/styles.css'),
     new CleanWebpackPlugin(['dist'], {
       root: commonPaths.root
     }),
