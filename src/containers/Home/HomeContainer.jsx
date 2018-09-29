@@ -1,5 +1,5 @@
-import React from 'react';
-import { Header } from 'semantic-ui-react';
+import React from 'react'
+import { Header } from 'semantic-ui-react'
 
 const HomeContainer = () => (
   <Header
@@ -8,6 +8,6 @@ const HomeContainer = () => (
     content='Hello World!'
     subheader='Just a test'
   />
-);
+)
 
-export default HomeContainer;
+export default HomeContainer

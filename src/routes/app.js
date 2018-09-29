@@ -1,18 +1,18 @@
-import React from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import React from 'react'
+import { Switch } from 'react-router-dom'
 
-import AppContainer from 'playground/containers/App';
-import HomePage from 'playground/containers/Home';
+import AppContainer from 'src/containers/App'
+import HomePage from 'src/containers/Home'
+import { PropsRoute } from 'src/components/PropsRoute'
 
-const AppRoutes = () => (
-  <BrowserRouter>
-    <AppContainer>
+const AppRoutes = props => {
+  return (
+    <AppContainer {...props}>
       <Switch>
-        <Route path='/' component={HomePage} />
-        <Redirect to="/" />
+        <PropsRoute path='/' component={HomePage} {...props} />
       </Switch>
     </AppContainer>
-  </BrowserRouter>
-);
+  )
+}
 
-export default AppRoutes;
+export default AppRoutes

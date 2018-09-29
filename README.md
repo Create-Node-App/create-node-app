@@ -1,4 +1,4 @@
-# JSPlayground
+# React Redux + Webpack Starter
 
 The template consists of:
 
@@ -6,7 +6,7 @@ The template consists of:
 -   a Babel setup and configuration
 -   a Webpack setup and configuration
 -   an ESLint setup and configuration
--   a SCSS setup and configuration
+-   a LESS and Semantic UI setup and configuration
 -   a sample React component to display list codes
 -   a Redux setup to handle state
 -   a React Router setup to show basic navigation
@@ -19,10 +19,10 @@ Additionaly, the template provides a development and production webpack configur
 
 -   [Node.js](https://nodejs.org/en/) - Javascript runtime
 -   [React](https://reactjs.org/) - A javascript library for building user interfaces
--   [React Router] - Declarative routing for React
--   [Redux] - Redux is a predictable state container for JavaScript apps.
--   [Redux-Promise-Middleware] - Redux middleware for promises, async functions and conditional optimistic updates
--   [Redux-Thunk] - Thunk middleware for Redux
+-   [React Router](https://reacttraining.com/react-router/) - Declarative routing for React
+-   [Redux](https://redux.js.org) - Redux is a predictable state container for JavaScript apps.
+-   [Redux-Promise-Middleware](https://github.com/pburtchaell/redux-promise-middleware) - Redux middleware for promises, async functions and conditional optimistic updates
+-   [Redux-Thunk](https://github.com/reduxjs/redux-thunk) - Thunk middleware for Redux
 -   [Babel](https://babeljs.io/) - A transpiler for javascript
 -   [Webpack](https://webpack.js.org/) - A module bundler
 -   [SCSS](http://sass-lang.com/) - A css metalanguage
@@ -37,8 +37,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 The following software is required to be installed on your system:
 
--   Node 9.10
--   Yarn 1.7
+-   Node v10.x
+-   Yarn v1.7.0 or later
 
 Type the following commands in the terminal to verify your node and yarn versions
 
@@ -54,19 +54,19 @@ Follow the following steps to get development environment running.
 -   Clone the repository from GitHub
 
     ```sh
-    $ git clone https://github.com/ulises-jeremias/playground.js.git
+    $ git clone https://github.com/ulises-jeremias/react-redux-webpack-starter.git
     ```
 
      _OR USING SSH_
 
     ```sh
-    $ git clone git@github.com:ulises-jeremias/playground.js.git
+    $ git clone git@github.com:ulises-jeremias/react-redux-webpack-starter.git
     ```
 
 -   Install node modules
 
     ```sh
-    $ cd playground.js
+    $ cd react-redux-webpack-starter
     $ yarn
     ```
 

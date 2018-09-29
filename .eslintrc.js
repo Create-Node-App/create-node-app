@@ -29,7 +29,6 @@ module.exports = {
     "import"
   ],
   "rules": {
-    "no-console": 0,
     "indent": ["error", 2, {
       "SwitchCase": 1
     }],
@@ -37,15 +36,24 @@ module.exports = {
       "error",
       "single"
     ],
-    "semi": [
-      "error",
-      "always"
-    ],
     "react/jsx-filename-extension": 0,
     "react/prefer-stateless-function": 0,
     "no-underscore-dangle": 0,
     "consistent-return": 0,
-    "class-methods-use-this": 0,
-    "import/no-dynamic-require": 0
+    "import/no-dynamic-require": 0,
+    "react/prop-types": 0,
+    "no-console": 0,
+    "jsx-a11y/label-has-for": 0,
+
+    "array-callback-return": "error",
+    "block-scoped-var": "error",
+    "class-methods-use-this": "error",
+    "default-case": "error",
+    "dot-location": ["error", "property"],
+    "dot-notation": "error",
+    "no-alert": "error",
+    "no-div-regex": "error",
+    "no-else-return": "error",
+    "no-eval": "error",
   }
 }
