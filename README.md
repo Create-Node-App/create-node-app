@@ -65,7 +65,7 @@ After confirming that your environment meets the above [requirements](#requireme
 $ git clone https://github.com/ulises-jeremias/react-redux-webpack-starter.git <my-project-name>
 ```
 
-    _OR USING SSH_
+_OR USING SSH_
 
 ```sh
 $ git clone git@github.com:ulises-jeremias/react-redux-webpack-starter.git <my-project-name>
