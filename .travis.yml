@@ -1,0 +1,13 @@
+sudo: false
+language: node_js
+node_js:
+  - "10"
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+script:
+  - yarn lint
+  - yarn build:prod
