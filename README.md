@@ -1,5 +1,13 @@
 # React Redux + Webpack Starter
 
+[![Build Status](https://travis-ci.com/ulises-jeremias/react-redux-webpack-starter.svg?branch=develop)](https://travis-ci.com/ulises-jeremias/react-redux-webpack-starter)
+
+This starter kit is designed to get you up and running with a bunch of awesome front-end technologies.
+
+The primary goal of this project is to provide a stable foundation upon which to build modern web appliications. Its purpose is not to dictate your project structure or to demonstrate a complete real-world application, but to provide a set of tools intended to make front-end development robust and easy.
+
+* * *
+
 The template consists of:
 
 -   a typical project layout structure
@@ -25,7 +33,7 @@ Additionaly, the template provides a development and production webpack configur
 -   [Redux-Thunk](https://github.com/reduxjs/redux-thunk) - Thunk middleware for Redux
 -   [Babel](https://babeljs.io/) - A transpiler for javascript
 -   [Webpack](https://webpack.js.org/) - A module bundler
--   [SCSS](http://sass-lang.com/) - A css metalanguage
+-   [LESS](http://lesscss.org/) - A css metalanguage
 
 * * *
 
@@ -33,7 +41,7 @@ Additionaly, the template provides a development and production webpack configur
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### Prerequisites
+### Requirements
 
 The following software is required to be installed on your system:
 
@@ -49,97 +57,92 @@ $ yarn -v
 
 ### Install
 
-Follow the following steps to get development environment running.
+After confirming that your environment meets the above [requirements](#requirements), you can create a new project based on `react-redux-webpack-starter` by doing the following:
 
--   Clone the repository from GitHub
-
-    ```sh
-    $ git clone https://github.com/ulises-jeremias/react-redux-webpack-starter.git
-    ```
-
-     _OR USING SSH_
-
-    ```sh
-    $ git clone git@github.com:ulises-jeremias/react-redux-webpack-starter.git
-    ```
-
--   Install node modules
-
-    ```sh
-    $ cd react-redux-webpack-starter
-    $ yarn
-    ```
-
-### Build
-
-#### Build Application
-
-|   development  |    production   |
-| :------------: | :-------------: |
-| yarn build:dev | yarn build:prod |
-
-#### Build Application And Watch For Changes
-
-|      development     |       production      |
-| :------------------: | :-------------------: |
-| yarn build:dev:watch | yarn build:prod:watch |
-
-#### Build Application With BundleAnalayzer Plugin Included
-
-|          development         |           production          |
-| :--------------------------: | :---------------------------: |
-| yarn build:dev:bundleanalyze | yarn build:prod:bundleanalyze |
-
-After running the above command, a browser window will open displaying an interactive graph.
-
-#### Build Application With BundleBuddy Plugin Included
-
-|         development        |          production         |
-| :------------------------: | :-------------------------: |
-| yarn build:dev:bundlebuddy | yarn build:prod:bundlebuddy |
-
-### Run ESlint
-
-#### Lint Project Using ESLint
+**Clone the repository from GitHub**
 
 ```sh
-$ yarn lint
+$ git clone https://github.com/ulises-jeremias/react-redux-webpack-starter.git <my-project-name>
 ```
 
-#### Lint Project Using ESLint, and autofix
+    _OR USING SSH_
 
 ```sh
-$ yarn lint:fix
+$ git clone git@github.com:ulises-jeremias/react-redux-webpack-starter.git <my-project-name>
 ```
 
-### Run
+**Install node modules**
 
-#### Run Start
-
-This will run the _'serve:dev'_ yarn task
+When that's done, install the project dependencies. It is recommended that you use [Yarn](https://yarnpkg.com/) for deterministic dependency management, but `npm install` will suffice.
 
 ```sh
-$ yarn start
+$ cd <my-project-name>
+$ yarn
 ```
 
-#### Run Dev Server
+### Running the Project
 
-```sh
-$ yarn serve:dev
+After completing the [installation](#installation) step, you're ready to start the project!
+
+```bash
+$ yarn start  # Start the development server (or `npm start`)
 ```
 
-#### Run Dev Server With Dashboard
+While developing, you will probably rely mostly on `yarn start`; however, there are additional scripts at your disposal:
 
-```sh
-$ yarn serve:dev:dashboard
+|`yarn <script>`                |Description|
+|-------------------------------|-----------|
+|`start`                        |Serves your app at `localhost:8091`|
+|`build:dev`                    |Builds the application to ./dist (_the build output dir could be configured in `./config/common-paths.js`_) |
+|`build:dev:watch`              |Builds the application and watch for changes|
+|`build:dev:bundleanalyze`      |Builds the application with Bundle Analyzer Plugin instaled|
+|`build:dev:bundlebuddy`        |Builds the application with Bundle Buddy Plugin instaled|
+|`build:dev:dashboard`          |Builds the application with Dashboard|
+|`test`                         |Runs unit tests with Jest. See [testing](#testing)|
+|`test:watch`                   |Runs `test` in watch mode to re-run tests when changed|
+|`lint`                         |[Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors|
+|`lint:fix`                     |Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix)|
+
+## Project Structure
+
+```
+.
+├── config                   # Webpack configuration
+├── public                   # Static public assets (not imported anywhere in source code)
+│   └── index.html           # Main HTML page container for app
+├── src                      # Application source code
+|   ├── actions              # Redux actions
+│   ├── components           # Global Reusable Components
+│   ├── containers           # Global Reusable Container Components and pplication Layout in which to render routes
+|   ├── reducers             # Reducer registry and injection
+│   ├── routes               # Main route definitions and async split points
+│   │   └── app.js           # Bootstrap main application routes
+|   ├── state                # Store initial state
+│   ├── store.js             # Redux-specific pieces
+│   ├── styles               # Application-wide styles
+|   |   ├── custom           # Custom application styles
+|   |   └── semantic-ui      # Semantic-UI theme files
+|   ├── i18n.js              # i18n configuration
+|   ├── index.js             # Application bootstrap and rendering with store
+|   └── store.js             # Create and instrument redux store
+├── static                   # Static public assets imported anywhere in source code
+└── tests                    # Unit tests
 ```
 
-The above command will display a dashboard view in your console.
+## Live Delopment
 
-#### Run Prod Server
+### Hot Reloading
 
-This command will build application using production settings and start the application using _live-server_
+Hot reloading is enabled by default when the application is running in development mode (`yarn start`). This feature is implemented with webpack's [Hot Module Replacement](https://webpack.github.io/docs/hot-module-replacement.html) capabilities, where code updates can be injected to the application while it's running, no full reload required. Here's how it works:
 
-```sh
-$ yarn serve:prod
-```
+For **JavaScript** modules, a code change will trigger the application to re-render from the top of the tree. **Global state is preserved (i.e. redux), but any local component state is reset**. This differs from React Hot Loader, but we've found that performing a full re-render helps avoid subtle bugs caused by RHL patching.
+
+## Testing
+
+To add a unit test, create a `.test.js` file anywhere inside of `./test`. Jest and webpack will automatically find these files.
+
+## Deployment
+
+Out of the box, this starter kit is deployable by serving the `./dist` folder generated by `yarn build:prod`. This project does not concern itself with the details of server-side rendering or API structure, since that demands a more opinionated structure that makes it difficult to extend the starter kit. The simplest deployment strategy is a static deployment.
+
+_the build output dir could be configured in `./config/common-paths.js`_

@@ -22,8 +22,10 @@
     "serve:dev": "webpack-dev-server --mode development",
     "serve:dev:dashboard": "webpack-dashboard webpack-dev-server -- --mode development --addons=dashboard",
     "serve:prod": "yarn build:prod && live-server ./dist",
+    "start": "yarn serve:dev",
     "test": "jest --config .jest.config.js",
     "test:ci": "yarn test --ci",
+    "test:watch": "jest --config .jest.config.js --watch",
     "webpack-defaults": "webpack-defaults"
   },
   "repository": {
