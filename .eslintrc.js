@@ -6,7 +6,8 @@ module.exports = {
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "jest/globals": true,
   },
   "extends": ["airbnb", "eslint:recommended", "plugin:react/recommended"],
   "settings": {
@@ -26,7 +27,8 @@ module.exports = {
   "plugins": [
     "react",
     "jsx-a11y",
-    "import"
+    "import",
+    "jest",
   ],
   "rules": {
     "indent": ["error", 2, {
@@ -44,6 +46,7 @@ module.exports = {
     "react/prop-types": 0,
     "no-console": 0,
     "jsx-a11y/label-has-for": 0,
+    "jsx-a11y/label-has-associated-control": 0,
 
     "array-callback-return": "error",
     "block-scoped-var": "error",

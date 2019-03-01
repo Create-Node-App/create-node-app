@@ -1,6 +1,6 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
+const TerserWebpackPlugin = require('terser-webpack-plugin')
 
 const commonPaths = require('./common-paths')
 
@@ -13,7 +13,7 @@ const config = {
   devtool: 'source-map',
   mode: 'production',
   plugins: [
-    new UglifyJsWebpackPlugin({
+    new TerserWebpackPlugin({
       sourceMap: true
     }),
     new CleanWebpackPlugin([

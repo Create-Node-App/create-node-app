@@ -40,13 +40,13 @@ const config = {
         use: ['css-loader', 'less-loader']
       }),
     },
-      // this rule handles images
+    // this rule handles images
     {
       test: /\.jpe?g$|\.gif$|\.ico$|\.png$|\.svg$/,
       use: 'file-loader?name=fonts/[name].[hash].[ext]'
     },
 
-      // the following 3 rules handle font extraction
+    // the following 3 rules handle font extraction
     {
       test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       loader: 'url-loader?limit=10000&mimetype=application/font-woff&name=fonts/[name].[hash].[ext]'
