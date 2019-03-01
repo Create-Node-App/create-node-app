@@ -1,5 +1,5 @@
 {
-  "name": "playground.js",
+  "name": "react-redux-webpack-starter",
   "version": "1.0.0",
   "description": "A basic template that consists of the essential elements that are required to start building a React application using Redux",
   "scripts": {
@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ulises-jeremias/playground.js.git"
+    "url": "git+https://github.com/ulises-jeremias/react-redux-webpack-starter.git"
   },
   "license": "MIT",
   "devDependencies": {
