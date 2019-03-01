@@ -1,6 +1,6 @@
 # React Redux + Webpack Starter
 
-[![Build Status](https://travis-ci.com/ulises-jeremias/react-redux-webpack-starter.svg?branch=develop)](https://travis-ci.com/ulises-jeremias/react-redux-webpack-starter)
+[![Build Status](https://travis-ci.com/ulises-jeremias/react-redux-webpack-starter.svg?branch=master)](https://travis-ci.com/ulises-jeremias/react-redux-webpack-starter)
 
 This starter kit is designed to get you up and running with a bunch of awesome front-end technologies.
 
