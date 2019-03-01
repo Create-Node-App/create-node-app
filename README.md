@@ -126,7 +126,7 @@ While developing, you will probably rely mostly on `yarn start`; however, there 
 |   ├── index.js             # Application bootstrap and rendering with store
 |   └── store.js             # Create and instrument redux store
 ├── static                   # Static public assets imported anywhere in source code
-└── tests                    # Unit tests
+└── test                     # Unit tests
 ```
 
 ## Live Delopment
