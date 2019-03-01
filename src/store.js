@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore } from 'redux'
+import { applyMiddleware, createStore, compose } from 'redux'
 import { createLogger } from 'redux-logger'
 import { createCookieMiddleware } from 'redux-cookie'
 import thunk from 'redux-thunk'
@@ -24,8 +24,10 @@ const middleware = applyMiddleware(...packages)
 
 const store = createStore(
   reducers,
-  ...enhancers,
-  middleware,
+  compose(
+    middleware,
+    ...enhancers,
+  )
 )
 
 export default store

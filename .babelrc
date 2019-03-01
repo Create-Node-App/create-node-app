@@ -8,10 +8,17 @@
         }
       }
     ],
-    "react"
+    "@babel/preset-react",
+    "@babel/preset-env",
   ],
   "plugins": [
-    "transform-object-rest-spread",
-    "react-hot-loader/babel"
+    "@babel/plugin-proposal-object-rest-spread",
+    "react-hot-loader/babel",
+    ["module-resolver", {
+      "root": ["."],
+      "alias": {
+        "src": "./src",
+      }
+    }]
   ]
 }
