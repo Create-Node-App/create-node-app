@@ -37,6 +37,7 @@
     "cross-spawn": "^6.0.5",
     "envinfo": "^7.1.0",
     "fs-extra": "^7.0.1",
-    "semver": "^5.6.0"
+    "semver": "^5.6.0",
+    "underscore": "^1.9.1"
   }
 }
