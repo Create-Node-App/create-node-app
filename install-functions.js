@@ -179,8 +179,8 @@ function createApp(
     packageJson.scripts = {
       ...packageJson.scripts,
       "docker:dev": "yarn docker:build && yarn docker:start",
-      "docker:build": "docker build -f docker/Dockerfile -t sarha-ui-frontend .",
-      "docker:start": "docker run --rm -it --network host -v $PWD:/usr/src/app sarha-ui-frontend",
+      "docker:build": `docker build -f docker/Dockerfile -t ${appName} .`,
+      "docker:start": `docker run --rm -it --network host -v $PWD:/usr/src/app ${appName}`,
 
     }
   }
