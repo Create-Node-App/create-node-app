@@ -78,5 +78,5 @@ createApp(
   program.verbose,
   program.useNpm,
   program.typescript,
-);
+)
 

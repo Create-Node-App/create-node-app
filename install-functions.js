@@ -7,8 +7,8 @@ const spawn = require('cross-spawn')
 const { execSync } = require('child_process')
 const dns = require('dns')
 
-const dependencies = require('./dependencies')
-const devDependencies = require('./devDependencies')
+var dependencies = require('./dependencies')
+var devDependencies = require('./devDependencies')
 
 function shouldUseYarn() {
   try {
@@ -102,23 +102,23 @@ function checkIfOnline(useYarn) {
   if (!useYarn) {
     // Don't ping the Yarn registry.
     // We'll just assume the best case.
-    return Promise.resolve(true);
+    return Promise.resolve(true)
   }
 
   return new Promise(resolve => {
     dns.lookup('registry.yarnpkg.com', err => {
-      let proxy;
+      let proxy
       if (err != null && (proxy = getProxy())) {
         // If a proxy is defined, we likely can't resolve external hostnames.
         // Try to resolve the proxy name as an indication of a connection.
         dns.lookup(url.parse(proxy).hostname, proxyErr => {
-          resolve(proxyErr == null);
-        });
+          resolve(proxyErr == null)
+        })
       } else {
-        resolve(err == null);
+        resolve(err == null)
       }
-    });
-  });
+    })
+  })
 }
 
 function createApp(
@@ -202,7 +202,7 @@ function createApp(
       fs.copySync(
         require.resolve('./yarn.lock.cached'),
         path.join(root, 'yarn.lock')
-      );
+      )
     }
   }
 
@@ -222,81 +222,82 @@ function run(
   useYarn,
   useTypescript,
 ) {
-  const allDependencies = ['react', 'react-dom'];
   if (useTypescript) {
     // TODO: get user's node version instead of installing latest
-    allDependencies.push(
+    dependencies.push(
       '@types/node',
       '@types/react',
       '@types/react-dom',
       '@types/jest',
       'typescript'
-    );
+    )
   }
-
-  allDependencies.push(...dependencies)
 
   if (useYarn) {
     checkIfOnline(useYarn).then(isOnline => {
-      console.log('Installing packages. This might take a couple of minutes.');
+      console.log(chalk.green('Installing packages. This might take a couple of minutes.'))
+      console.log(chalk.green('Installing dependencies...'))
+      console.log()
     
-    
-        return install(
-          root,
-          useYarn,
-          allDependencies,
-          verbose,
-          isOnline,
-          false,
-        )
-          .then(() => {
-            if (devDependencies.length > 0) {
-              install(
-                root,
-                useYarn,
-                devDependencies,
-                verbose,
-                isOnline,
-                true
-              ).then(console.log)
-              .catch(console.err)
-            }
-          })
+      return install(
+        root,
+        useYarn,
+        dependencies,
+        verbose,
+        isOnline,
+        false,
+      )
+        .then(() => {
+          if (devDependencies.length > 0) {
+            console.log()
+            console.log(chalk.green('Installing devDependencies...'))
+            console.log()
+            install(
+              root,
+              useYarn,
+              devDependencies,
+              verbose,
+              isOnline,
+              true
+            ).then(console.log)
+            .catch(console.err)
+          }
         })
-         .catch(console.err)
+      })
+      .catch(console.err)
   }
 }
 
 function install(root, useYarn, dependencies, verbose, isOnline, isDevDependencies) {
   return new Promise((resolve, reject) => {
-    let command;
-    let args;
+    let command
+    let args
     if (useYarn) {
-      command = 'yarnpkg';
-      args = ['add', '--exact'];
+      command = 'yarnpkg'
+      args = ['add', '--exact']
       if (!isOnline) {
-        args.push('--offline');
+        args.push('--offline')
       }
       if (isDevDependencies) {
         args.push('--dev')
       }
-      [].push.apply(args, dependencies);
+      [].push.apply(args, dependencies)
 
       // Explicitly set cwd() to work around issues like
       // https://github.com/facebook/create-react-app/issues/3326.
       // Unfortunately we can only do this for Yarn because npm support for
       // equivalent --prefix flag doesn't help with this issue.
       // This is why for npm, we run checkThatNpmCanReadCwd() early instead.
-      args.push('--cwd');
-      args.push(root);
+      args.push('--cwd')
+      args.push(root)
 
       if (!isOnline) {
-        console.log(chalk.yellow('You appear to be offline.'));
-        console.log(chalk.yellow('Falling back to the local Yarn cache.'));
-        console.log();
+        console.log(chalk.yellow('You appear to be offline.'))
+        console.log(chalk.yellow('Falling back to the local Yarn cache.'))
+        console.log()
       }
     } else {
-      command = 'npm';
+      command = 'npm'
       args = [
         'install',
         '--save',
@@ -307,24 +308,24 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
       if (isDevDependencies) {
         args.push('--save-dev')
       }
-      args.concat(dependencies);
+      args.concat(dependencies)
     }
 
     if (verbose) {
-      args.push('--verbose');
+      args.push('--verbose')
     }
 
-    const child = spawn(command, args, { stdio: 'inherit' });
+    const child = spawn(command, args, { stdio: 'inherit' })
     child.on('close', code => {
       if (code !== 0) {
         reject({
           command: `${command} ${args.join(' ')}`,
-        });
-        return;
+        })
+        return
       }
-      resolve();
-    });
-  });
+      resolve()
+    })
+  })
 }
 
 module.exports = {
