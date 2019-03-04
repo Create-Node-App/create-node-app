@@ -280,14 +280,14 @@ async function run(
     console.log()
   
     // Install dependencies
-    //await install(root, useYarn, dependencies, verbose, isOnline, false)
+    await install(root, useYarn, dependencies, verbose, isOnline, false)
 
     if (devDependencies.length > 0) {
       console.log()
       console.log(chalk.green('Installing devDependencies...'))
       console.log()
       //Install devDependencies
-      //await install(root, useYarn, devDependencies, verbose, isOnline, true)
+      await install(root, useYarn, devDependencies, verbose, isOnline, true)
     }
 
     provisionConfig(root, originalDirectory, verbose)
