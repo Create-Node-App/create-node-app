@@ -4,9 +4,32 @@
   "description": "A basic template that consists of the essential elements that are required to start building a React application using Redux",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ulises-jeremias/react-redux-webpack-starter.git",
-    "issues": "https://github.com/ulises-jeremias/react-redux-webpack-starter/issues/new"
+    "url": "git+https://github.com/ulises-jeremias/react-redux-webpack-starter.git"
   },
+  "bugs": {
+    "url": "https://github.com/ulises-jeremias/react-redux-webpack-starter/issues"
+  },
+  "homepage": "https://github.com/ulises-jeremias/react-redux-webpack-starter#readme",
+  "keywords": [
+    "react",
+    "redux",
+    "webpack",
+    "babel",
+    "code generator"
+  ],
+  "bin": {
+    "create-react-redux-webpack": "./index.js"
+  },
+  "authors": [
+    {
+      "name": "Ulises Jeremias Cornejo Fandos",
+      "email": "ulisescf.24@gmail.com"
+    },
+    {
+      "name": "Lucas Di Cunzolo",
+      "email": "lucasdicunzolo@gmail.com"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.2",
