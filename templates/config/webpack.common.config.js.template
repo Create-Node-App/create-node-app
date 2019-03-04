@@ -76,7 +76,7 @@ const config = {
   plugins: [
     new webpack.ProgressPlugin(),
     new ExtractTextWebpackPlugin('styles.css'),
-    new CleanWebpackPlugin([commonPaths.outputPath], {
+    new CleanWebpackPlugin({
       root: commonPaths.root
     }),
     new CopyWebpackPlugin([
