@@ -361,13 +361,13 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
 }
 
 function provisionConfig(root, originalDirectory, verbose) {
-  fs.readdir(`${originalDirectory}/configurations`, (err, data) => {
+  fs.readdir(`${__dirname}/configurations`, (err, data) => {
     if (err && verbose) {
       console.log(err)
     }
 
     data.forEach(elem => {
-      fs.copy(`${originalDirectory}/configurations/${elem}`, `${root}/${elem}`, err => {
+      fs.copy(`${__dirname}/configurations/${elem}`, `${root}/${elem}`, err => {
         if (err) {
           console.log(chalk.red(`Cannot copy ${elem}`))
           if (verbose) {
@@ -384,13 +384,13 @@ function provisionConfig(root, originalDirectory, verbose) {
 }
 
 function provisionTemplates(root, originalDirectory, verbose) {
-  fs.readdir(`${originalDirectory}/templates`, (err, data) => {
+  fs.readdir(`${__dirname}/templates`, (err, data) => {
     if (err && verbose) {
       console.log(err)
     }
 
     data.forEach(elem => {
-      fs.copy(`${originalDirectory}/templates/${elem}`, `${root}/${elem}`, err => {
+      fs.copy(`${__dirname}/templates/${elem}`, `${root}/${elem}`, err => {
         if (err) {
           console.log(chalk.red(`Cannot copy ${elem}`))
           if (verbose) {
@@ -407,13 +407,13 @@ function provisionTemplates(root, originalDirectory, verbose) {
 }
 
 function provisionDocker(root, originalDirectory, verbose) {
-  fs.readdir(`${originalDirectory}/docker`, (err, data) => {
+  fs.readdir(`${__dirname}/docker`, (err, data) => {
     if (err && verbose) {
       console.log(err)
     }
 
     data.forEach(elem => {
-      fs.copy(`${originalDirectory}/docker/${elem}`, `${root}/docker/${elem}`, err => {
+      fs.copy(`${__dirname}/docker/${elem}`, `${root}/docker/${elem}`, err => {
         if (err) {
           console.log(chalk.red(`Cannot copy ${elem}`))
           if (verbose) {
