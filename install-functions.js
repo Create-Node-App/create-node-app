@@ -126,6 +126,7 @@ function createApp(
   verbose,
   useNpm,
   useTypescript,
+  docker,
 ) {
   const root = path.resolve(name)
   const appName = path.basename(root)
@@ -141,17 +142,52 @@ function createApp(
   console.log(`Creating a new React app in ${chalk.green(root)}.`)
   console.log()
 
-  const packageJson = {
+  var packageJson = {
     name: appName,
     version: '0.1.0',
     private: true,
+    scripts: {
+      "build": "webpack",
+      "build:dev": "yarn build --mode development",
+      "build:dev:watch": "yarn build:dev --watch",
+      "build:dev:bundleanalyze": "yarn build:dev --addons=bundleanalyze",
+      "build:dev:bundlebuddy": "yarn build:dev --addons=bundlebuddy",
+      "build:prod": "yarn build -p",
+      "build:prod:watch": "yarn build:prod --watch",
+      "build:prod:bundleanalyze": "yarn build:prod --addons=bundleanalyze",
+      "build:prod:bundlebuddy": "yarn build:prod --addons=bundlebuddy",
+      "lint": "eslint .; exit 0",
+      "lint:fix": "eslint . --fix; exit 0",
+      "reducer:generate": "reducer-maker -w src",
+      "reducer:help": "reducer-maker --help",
+      "serve:dev": "webpack-dev-server --mode development",
+      "serve:dev:dashboard": "webpack-dashboard webpack-dev-server -- --mode development --addons=dashboard",
+      "serve:prod": "yarn build:prod && live-server ./dist",
+      "start": "yarn serve:dev",
+      "test": "jest --config .jest.config.js",
+      "test:ci": "yarn test --ci",
+      "test:watch": "jest --config .jest.config.js --watch",
+      "webpack-defaults": "webpack-defaults"
+    }
   }
+
+  if (docker) {
+    packageJson.scripts = {
+      ...packageJson.scripts,
+      "docker:dev": "yarn docker:build && yarn docker:start",
+      "docker:build": "docker build -f docker/Dockerfile -t sarha-ui-frontend .",
+      "docker:start": "docker run --rm -it --network host -v $PWD:/usr/src/app sarha-ui-frontend",
+
+    }
+  }
+
   fs.writeFileSync(
     path.join(root, 'package.json'),
     JSON.stringify(packageJson, null, 2) + os.EOL
   )
 
   const useYarn = useNpm ? false : shouldUseYarn()
+  const originalDirectory = process.cwd();
   process.chdir(root)
   if (!useYarn && !checkThatNpmCanReadCwd()) {
     process.exit(1)
@@ -209,18 +245,22 @@ function createApp(
   run(
     root,
     appName,
+    originalDirectory,
     verbose,
     useYarn,
     useTypescript,
-  )
+    docker,
+  ).then()
 }
 
-function run(
+async function run(
   root,
   appName,
+  originalDirectory,
   verbose,
   useYarn,
   useTypescript,
+  docker,
 ) {
   if (useTypescript) {
     // TODO: get user's node version instead of installing latest
@@ -234,37 +274,29 @@ function run(
   }
 
   if (useYarn) {
-    checkIfOnline(useYarn).then(isOnline => {
-      console.log(chalk.green('Installing packages. This might take a couple of minutes.'))
-      console.log(chalk.green('Installing dependencies...'))
+    isOnline = await checkIfOnline(useYarn)
+    console.log(chalk.green('Installing packages. This might take a couple of minutes.'))
+    console.log(chalk.green('Installing dependencies...'))
+    console.log()
+  
+    // Install dependencies
+    //await install(root, useYarn, dependencies, verbose, isOnline, false)
+
+    if (devDependencies.length > 0) {
       console.log()
-    
-      return install(
-        root,
-        useYarn,
-        dependencies,
-        verbose,
-        isOnline,
-        false,
-      )
-        .then(() => {
-          if (devDependencies.length > 0) {
-            console.log()
-            console.log(chalk.green('Installing devDependencies...'))
-            console.log()
-            install(
-              root,
-              useYarn,
-              devDependencies,
-              verbose,
-              isOnline,
-              true
-            ).then(console.log)
-            .catch(console.err)
-          }
-        })
-      })
-      .catch(console.err)
+      console.log(chalk.green('Installing devDependencies...'))
+      console.log()
+      //Install devDependencies
+      //await install(root, useYarn, devDependencies, verbose, isOnline, true)
+    }
+
+    provisionConfig(root, originalDirectory, verbose)
+
+    provisionTemplates(root, originalDirectory, verbose)
+
+    if (docker) {
+      provisionDocker(root, originalDirectory, verbose)
+    }
   }
 }
 
@@ -324,6 +356,75 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
         return
       }
       resolve()
+    })
+  })
+}
+
+function provisionConfig(root, originalDirectory, verbose) {
+  fs.readdir(`${originalDirectory}/configurations`, (err, data) => {
+    if (err && verbose) {
+      console.log(err)
+    }
+
+    data.forEach(elem => {
+      fs.copy(`${originalDirectory}/configurations/${elem}`, `${root}/${elem}`, err => {
+        if (err) {
+          console.log(chalk.red(`Cannot copy ${elem}`))
+          if (verbose) {
+            console.log(chalk.red(err))
+          }
+        } else {
+          if (verbose) {
+            console.log(chalk.green(`Copied "${elem}" successfully`))
+          }
+        }
+      })
+    })
+  })
+}
+
+function provisionTemplates(root, originalDirectory, verbose) {
+  fs.readdir(`${originalDirectory}/templates`, (err, data) => {
+    if (err && verbose) {
+      console.log(err)
+    }
+
+    data.forEach(elem => {
+      fs.copy(`${originalDirectory}/templates/${elem}`, `${root}/${elem}`, err => {
+        if (err) {
+          console.log(chalk.red(`Cannot copy ${elem}`))
+          if (verbose) {
+            console.log(chalk.red(err))
+          }
+        } else {
+          if (verbose) {
+            console.log(chalk.green(`Copied "${elem}" successfully`))
+          }
+        }
+      })
+    })
+  })
+}
+
+function provisionDocker(root, originalDirectory, verbose) {
+  fs.readdir(`${originalDirectory}/docker`, (err, data) => {
+    if (err && verbose) {
+      console.log(err)
+    }
+
+    data.forEach(elem => {
+      fs.copy(`${originalDirectory}/docker/${elem}`, `${root}/docker/${elem}`, err => {
+        if (err) {
+          console.log(chalk.red(`Cannot copy ${elem}`))
+          if (verbose) {
+            console.log(chalk.red(err))
+          }
+        } else {
+          if (verbose) {
+            console.log(chalk.green(`Copied "docker/${elem}" successfully`))
+          }
+        }
+      })
     })
   })
 }

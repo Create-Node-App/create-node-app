@@ -19,6 +19,7 @@ program
   .option('--info', 'print environment debug info')
   .option('--use-npm')
   .option('--typescript')
+  .option('--docker', 'generate dockerfiles')
   .allowUnknownOption()
   .on('--help', () => {
     console.log()
@@ -78,5 +79,6 @@ createApp(
   program.verbose,
   program.useNpm,
   program.typescript,
+  program.docker,
 )
 
