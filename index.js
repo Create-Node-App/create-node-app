@@ -31,7 +31,7 @@ program
       `    If you have any problems, do not hesitate to file an issue:`
     )
     console.log(
-      `      ${chalk.cyan(packageJS.repository.issues)}`
+      `      ${chalk.cyan(`${packageJS.bugs.url}/new`)}`
     )
     console.log()
     console.log(
