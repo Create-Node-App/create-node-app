@@ -302,12 +302,12 @@ async function run(
       console.log(chalk.yellow('Run npm install/yarn in your project.'))
     }
 
-    provisionConfig(root, originalDirectory, alias, verbose)
+    provisionConfig(root, appName, originalDirectory, alias, verbose)
 
-    provisionTemplates(root, originalDirectory, alias, verbose)
+    provisionTemplates(root, appName, originalDirectory, alias, verbose)
 
     if (docker) {
-      provisionDocker(root, originalDirectory, alias, verbose)
+      provisionDocker(root, appName, originalDirectory, alias, verbose)
     }
   }
 }
@@ -373,7 +373,7 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
   })
 }
 
-function provisionConfig(root, originalDirectory, alias, verbose) {
+function provisionConfig(root, appName, originalDirectory, alias, verbose) {
   fs.readdir(`${__dirname}/configurations`, (err, data) => {
     if (err && verbose) {
       console.log(err)
@@ -396,7 +396,7 @@ function provisionConfig(root, originalDirectory, alias, verbose) {
   })
 }
 
-function provisionTemplates(root, originalDirectory, alias, verbose) {
+function provisionTemplates(root, appName, originalDirectory, alias, verbose) {
   readdirp({ root: `${__dirname}/templates`, fileFilter: '*.template'})
     .on('data', ({path, parentDir}) => {
       const file = fs.readFileSync(`${__dirname}/templates/${path}`, 'utf8')
@@ -408,7 +408,7 @@ function provisionTemplates(root, originalDirectory, alias, verbose) {
           console.log(chalk.red(`Cannot create directory ${parentDir}`))
         }
         
-        fs.writeFile(`${root}/${newPath}`, newFile({ project: alias}))
+        fs.writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }))
       })
     })
     .on('error', error => console.error('fatal error', error))
@@ -431,7 +431,7 @@ function provisionTemplates(root, originalDirectory, alias, verbose) {
     .on('error', error => console.error('fatal error', error))
 }
 
-function provisionDocker(root, originalDirectory, alias, verbose) {
+function provisionDocker(root, appName, originalDirectory, alias, verbose) {
   fs.readdir(`${__dirname}/docker`, (err, data) => {
     if (err && verbose) {
       console.log(err)
