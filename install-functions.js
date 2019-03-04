@@ -6,6 +6,8 @@ const semver = require('semver')
 const spawn = require('cross-spawn')
 const { execSync } = require('child_process')
 const dns = require('dns')
+const _ = require('underscore')
+const readdirp = require('readdirp')
 
 var dependencies = require('./dependencies')
 var devDependencies = require('./devDependencies')
@@ -127,6 +129,8 @@ function createApp(
   useNpm,
   useTypescript,
   docker,
+  alias,
+  installDependencies,
 ) {
   const root = path.resolve(name)
   const appName = path.basename(root)
@@ -250,6 +254,8 @@ function createApp(
     useYarn,
     useTypescript,
     docker,
+    alias,
+    installDependencies,
   ).then()
 }
 
@@ -261,6 +267,8 @@ async function run(
   useYarn,
   useTypescript,
   docker,
+  alias,
+  installDependencies,
 ) {
   if (useTypescript) {
     // TODO: get user's node version instead of installing latest
@@ -275,27 +283,31 @@ async function run(
 
   if (useYarn) {
     isOnline = await checkIfOnline(useYarn)
-    console.log(chalk.green('Installing packages. This might take a couple of minutes.'))
-    console.log(chalk.green('Installing dependencies...'))
-    console.log()
-  
-    // Install dependencies
-    await install(root, useYarn, dependencies, verbose, isOnline, false)
+    if (installDependencies) {
+      console.log(chalk.green('Installing packages. This might take a couple of minutes.'))
+      console.log(chalk.green('Installing dependencies...'))
+      console.log()
+      // Install dependencies
+      await install(root, useYarn, dependencies, verbose, isOnline, false)
 
-    if (devDependencies.length > 0) {
-      console.log()
-      console.log(chalk.green('Installing devDependencies...'))
-      console.log()
-      //Install devDependencies
-      await install(root, useYarn, devDependencies, verbose, isOnline, true)
+      if (devDependencies.length > 0) {
+        console.log()
+        console.log(chalk.green('Installing devDependencies...'))
+        console.log()
+        //Install devDependencies
+        await install(root, useYarn, devDependencies, verbose, isOnline, true)
+      }
+    } else {
+      console.log(chalk.yellow('Skip package installation.'))
+      console.log(chalk.yellow('Run npm install/yarn in your project.'))
     }
 
-    provisionConfig(root, originalDirectory, verbose)
+    provisionConfig(root, originalDirectory, alias, verbose)
 
-    provisionTemplates(root, originalDirectory, verbose)
+    provisionTemplates(root, originalDirectory, alias, verbose)
 
     if (docker) {
-      provisionDocker(root, originalDirectory, verbose)
+      provisionDocker(root, originalDirectory, alias, verbose)
     }
   }
 }
@@ -360,7 +372,7 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
   })
 }
 
-function provisionConfig(root, originalDirectory, verbose) {
+function provisionConfig(root, originalDirectory, alias, verbose) {
   fs.readdir(`${__dirname}/configurations`, (err, data) => {
     if (err && verbose) {
       console.log(err)
@@ -383,30 +395,42 @@ function provisionConfig(root, originalDirectory, verbose) {
   })
 }
 
-function provisionTemplates(root, originalDirectory, verbose) {
-  fs.readdir(`${__dirname}/templates`, (err, data) => {
-    if (err && verbose) {
-      console.log(err)
-    }
+function provisionTemplates(root, originalDirectory, alias, verbose) {
+  readdirp({ root: `${__dirname}/templates`, fileFilter: '*.template'})
+    .on('data', ({path, parentDir}) => {
+      const file = fs.readFileSync(`${__dirname}/templates/${path}`, 'utf8')
+      const newFile = _.template(file)
+      const newPath = path.replace(/.template$/, '')
+      fs.mkdir(parentDir, { recursive: true }, err => {
+        // Not fail if directory already exists
+        if (err && err.code !== 'EEXIST') {
+          console.log(chalk.red(`Cannot create directory ${parentDir}`))
+        }
+        
+        fs.writeFile(`${root}/${newPath}`, newFile({ project: alias}))
+      })
+    })
+    .on('error', error => console.error('fatal error', error))
 
-    data.forEach(elem => {
-      fs.copy(`${__dirname}/templates/${elem}`, `${root}/${elem}`, err => {
+  readdirp({ root: `${__dirname}/templates`, fileFilter: '!*.template'})
+    .on('data', ({path}) => {
+      fs.copy(`${__dirname}/templates/${path}`, `${root}/${path}`, err => {
         if (err) {
-          console.log(chalk.red(`Cannot copy ${elem}`))
+          console.log(chalk.red(`Cannot copy ${path}`))
           if (verbose) {
             console.log(chalk.red(err))
           }
         } else {
           if (verbose) {
-            console.log(chalk.green(`Copied "${elem}" successfully`))
+            console.log(chalk.green(`Copied "${path}" successfully`))
           }
         }
       })
     })
-  })
+    .on('error', error => console.error('fatal error', error))
 }
 
-function provisionDocker(root, originalDirectory, verbose) {
+function provisionDocker(root, originalDirectory, alias, verbose) {
   fs.readdir(`${__dirname}/docker`, (err, data) => {
     if (err && verbose) {
       console.log(err)

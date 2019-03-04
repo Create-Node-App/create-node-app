@@ -22,6 +22,8 @@ program
   .option('--use-npm')
   .option('--typescript')
   .option('--docker', 'generate dockerfiles')
+  .option('-a, --alias <alias>', 'webpack alias', 'src')
+  .option('--no-install-dependencies')
   .allowUnknownOption()
   .on('--help', () => {
     console.log()
@@ -82,5 +84,7 @@ createApp(
   program.useNpm,
   program.typescript,
   program.docker,
+  program.alias,
+  program.installDependencies,
 )
 
