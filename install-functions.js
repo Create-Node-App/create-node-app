@@ -309,6 +309,8 @@ async function run(
     if (docker) {
       provisionDocker(root, appName, originalDirectory, alias, verbose)
     }
+
+    spawn('git', [ 'init' ])
   }
 }
 
