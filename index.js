@@ -7,7 +7,7 @@ const envinfo = require('envinfo')
 const packageJS = require('./package.json')
 const {
   createApp
-} = require('./install-functions')
+} = require('./src/install-functions')
 
 let projectName
 program
