@@ -146,30 +146,34 @@ function createApp(
   console.log(`Creating a new React app in ${chalk.green(root)}.`)
   console.log()
 
+  const useYarn = useNpm ? false : shouldUseYarn()
+  const command = useYarn ? 'yarn' : 'npm run'
+
   var packageJson = {
     name: appName,
     version: '0.1.0',
     private: true,
     scripts: {
       "build": "webpack",
-      "build:dev": "yarn build --mode development",
-      "build:dev:watch": "yarn build:dev --watch",
-      "build:dev:bundleanalyze": "yarn build:dev --addons=bundleanalyze",
-      "build:dev:bundlebuddy": "yarn build:dev --addons=bundlebuddy",
-      "build:prod": "yarn build -p",
-      "build:prod:watch": "yarn build:prod --watch",
-      "build:prod:bundleanalyze": "yarn build:prod --addons=bundleanalyze",
-      "build:prod:bundlebuddy": "yarn build:prod --addons=bundlebuddy",
+      "build:dev": `${command} build --mode development`,
+      "build:dev:watch": `${command} build:dev --watch`,
+      "build:dev:bundleanalyze": `${command} build:dev --addons=bundleanalyze`,
+      "build:dev:bundlebuddy": `${command} build:dev --addons=bundlebuddy`,
+      "build:prod": `${command} build -p`,
+      "build:prod:watch": `${command} build:prod --watch`,
+      "build:prod:bundleanalyze": `${command} build:prod --addons=bundleanalyze`,
+      "build:prod:bundlebuddy": `${command} build:prod --addons=bundlebuddy`,
+      "upgrade:package": `${command} upgrade-interactive --latest`  ,
       "lint": "eslint .; exit 0",
       "lint:fix": "eslint . --fix; exit 0",
       "reducer:generate": "reducer-maker -w src",
       "reducer:help": "reducer-maker --help",
       "serve:dev": "webpack-dev-server --mode development",
       "serve:dev:dashboard": "webpack-dashboard webpack-dev-server -- --mode development --addons=dashboard",
-      "serve:prod": "yarn build:prod && live-server ./dist",
-      "start": "yarn serve:dev",
+      "serve:prod": `${command} build:prod && live-server ./dist`,
+      "start": `${command} serve:dev`,
       "test": "jest --config .jest.config.js",
-      "test:ci": "yarn test --ci",
+      "test:ci": `${command} test --ci`,
       "test:watch": "jest --config .jest.config.js --watch",
       "webpack-defaults": "webpack-defaults"
     }
@@ -178,7 +182,7 @@ function createApp(
   if (docker) {
     packageJson.scripts = {
       ...packageJson.scripts,
-      "docker:dev": "yarn docker:build && yarn docker:start",
+      "docker:dev": `${command} docker:build && ${command} docker:start`,
       "docker:build": `docker build -f docker/Dockerfile -t ${appName} .`,
       "docker:start": `docker run --rm -it --network host -v $PWD:/usr/src/app ${appName}`,
 
@@ -190,7 +194,6 @@ function createApp(
     JSON.stringify(packageJson, null, 2) + os.EOL
   )
 
-  const useYarn = useNpm ? false : shouldUseYarn()
   const originalDirectory = process.cwd();
   process.chdir(root)
   if (!useYarn && !checkThatNpmCanReadCwd()) {
@@ -283,43 +286,45 @@ async function run(
 
   if (useYarn) {
     isOnline = await checkIfOnline(useYarn)
-    if (installDependencies) {
-      console.log(chalk.green('Installing packages. This might take a couple of minutes.'))
-      console.log(chalk.green('Installing dependencies...'))
+  } else {
+    isOnline = true
+  }
+  if (installDependencies) {
+    console.log(chalk.green('Installing packages. This might take a couple of minutes.'))
+    console.log(chalk.green('Installing dependencies...'))
+    console.log()
+    // Install dependencies
+    await install(root, useYarn, dependencies, verbose, isOnline, false)
+
+    if (devDependencies.length > 0) {
       console.log()
-      // Install dependencies
-      await install(root, useYarn, dependencies, verbose, isOnline, false)
-
-      if (devDependencies.length > 0) {
-        console.log()
-        console.log(chalk.green('Installing devDependencies...'))
-        console.log()
-        //Install devDependencies
-        await install(root, useYarn, devDependencies, verbose, isOnline, true)
-      }
-    } else {
-      console.log(chalk.yellow('Skip package installation.'))
-      console.log(chalk.yellow('Run npm install/yarn in your project.'))
-      let packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, 'utf8'))
-      packageJson.dependencies = dependencies.reduce((dep, elem) => {
-        if (/.+@[0-9a-zA-Z-.]+$/.test(elem)) {
-          let [ name, version ] = elem.split('@')
-          dep[name] = `^${version}`
-        } else {
-          dep[elem] = '*'
-        }
-        return dep
-      }, {})
-      packageJson.devDependencies = devDependencies.reduce((dep, elem) => {
-        dep[elem] = '*'
-        return dep
-      }, {})
-
-      fs.writeFileSync(
-        path.join(root, 'package.json'),
-        JSON.stringify(packageJson, null, 2) + os.EOL
-      )
+      console.log(chalk.green('Installing devDependencies...'))
+      console.log()
+      //Install devDependencies
+      await install(root, useYarn, devDependencies, verbose, isOnline, true)
     }
+  } else {
+    console.log(chalk.yellow('Skip package installation.'))
+    console.log(chalk.yellow('Run npm install/yarn in your project.'))
+    let packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, 'utf8'))
+    packageJson.dependencies = dependencies.reduce((dep, elem) => {
+      if (/.+@[0-9a-zA-Z-.]+$/.test(elem)) {
+        let [ name, version ] = elem.split('@')
+        dep[name] = `^${version}`
+      } else {
+        dep[elem] = '*'
+      }
+      return dep
+    }, {})
+    packageJson.devDependencies = devDependencies.reduce((dep, elem) => {
+      dep[elem] = '*'
+      return dep
+    }, {})
+
+    fs.writeFileSync(
+      path.join(root, 'package.json'),
+      JSON.stringify(packageJson, null, 2) + os.EOL
+    )
 
     provisionConfig(root, appName, originalDirectory, alias, verbose)
 
