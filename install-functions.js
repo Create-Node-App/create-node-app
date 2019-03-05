@@ -300,6 +300,25 @@ async function run(
     } else {
       console.log(chalk.yellow('Skip package installation.'))
       console.log(chalk.yellow('Run npm install/yarn in your project.'))
+      let packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, 'utf8'))
+      packageJson.dependencies = dependencies.reduce((dep, elem) => {
+        if (/.+@[0-9a-zA-Z-.]+$/.test(elem)) {
+          let [ name, version ] = elem.split('@')
+          dep[name] = `^${version}`
+        } else {
+          dep[elem] = '*'
+        }
+        return dep
+      }, {})
+      packageJson.devDependencies = devDependencies.reduce((dep, elem) => {
+        dep[elem] = '*'
+        return dep
+      }, {})
+
+      fs.writeFileSync(
+        path.join(root, 'package.json'),
+        JSON.stringify(packageJson, null, 2) + os.EOL
+      )
     }
 
     provisionConfig(root, appName, originalDirectory, alias, verbose)
@@ -404,14 +423,19 @@ function provisionTemplates(root, appName, originalDirectory, alias, verbose) {
       const file = fs.readFileSync(`${__dirname}/templates/${path}`, 'utf8')
       const newFile = _.template(file)
       const newPath = path.replace(/.template$/, '')
-      fs.mkdir(parentDir, { recursive: true }, err => {
-        // Not fail if directory already exists
-        if (err && err.code !== 'EEXIST') {
-          console.log(chalk.red(`Cannot create directory ${parentDir}`))
-        }
-        
+      if (parentDir) {
+        fs.mkdir(parentDir, { recursive: true }, err => {
+          // Not fail if directory already exists
+          if (err && err.code !== 'EEXIST') {
+            console.log(err)
+            console.log(chalk.red(`Cannot create directory ${parentDir}`))
+          }
+          
+          fs.writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }))
+        })
+      } else {
         fs.writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }))
-      })
+      }
     })
     .on('error', error => console.error('fatal error', error))
 
