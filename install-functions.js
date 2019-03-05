@@ -183,8 +183,11 @@ function createApp(
     packageJson.scripts = {
       ...packageJson.scripts,
       "docker:dev": `${command} docker:build && ${command} docker:start`,
-      "docker:build": `docker build -f docker/Dockerfile -t ${appName} .`,
+      "docker:build": `docker build -f docker/Dockerfile --target development -t ${appName} .`,
       "docker:start": `docker run --rm -it --network host -v $PWD:/usr/src/app ${appName}`,
+      "docker:prod": `${command} docker:build:prod && ${command} docker:start:prod`,
+      "docker:build:prod": `docker build -f docker/Dockerfile --target production -t ${appName}:production .`,
+      "docker:start:prod": `docker run --rm -it --network host -v $PWD:/usr/src/app ${appName}:production`,
 
     }
   }
