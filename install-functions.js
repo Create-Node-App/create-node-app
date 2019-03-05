@@ -406,13 +406,13 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
 }
 
 function provisionConfig(root, appName, originalDirectory, alias, verbose) {
-  fs.readdir(`${__dirname}/configurations`, (err, data) => {
+  fs.readdir(`${__dirname}/config`, (err, data) => {
     if (err && verbose) {
       console.log(err)
     }
 
     data.forEach(elem => {
-      fs.copy(`${__dirname}/configurations/${elem}`, `${root}/${elem}`, err => {
+      fs.copy(`${__dirname}/config/${elem}`, `${root}/${elem}`, err => {
         if (err) {
           console.log(chalk.red(`Cannot copy ${elem}`))
           if (verbose) {
