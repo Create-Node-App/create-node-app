@@ -37,6 +37,6 @@ if (module.hot) {
   module.hot.accept('./routes/app', () => {
     render(AppRoutes)
 
-    render(require('<%= projectName %>/routes/app'))
+    render(require('<%= project %>/routes/app'))
   })
 }
