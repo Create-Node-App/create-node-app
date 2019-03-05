@@ -16,9 +16,7 @@ const config = {
     new TerserWebpackPlugin({
       sourceMap: true
     }),
-    new CleanWebpackPlugin([
-      commonPaths.outputServerPath
-    ], {
+    new CleanWebpackPlugin({
       root: commonPaths.root
     }),
     new CopyWebpackPlugin([
