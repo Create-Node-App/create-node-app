@@ -289,6 +289,7 @@ async function run(
   } else {
     isOnline = true
   }
+
   if (installDependencies) {
     console.log(chalk.green('Installing packages. This might take a couple of minutes.'))
     console.log(chalk.green('Installing dependencies...'))
@@ -326,16 +327,17 @@ async function run(
       JSON.stringify(packageJson, null, 2) + os.EOL
     )
 
-    provisionConfig(root, appName, originalDirectory, alias, verbose)
-
-    provisionTemplates(root, appName, originalDirectory, alias, verbose)
-
-    if (docker) {
-      provisionDocker(root, appName, originalDirectory, alias, verbose)
-    }
-
-    spawn('git', [ 'init' ])
   }
+
+  provisionConfig(root, appName, originalDirectory, alias, verbose)
+
+  provisionTemplates(root, appName, originalDirectory, alias, verbose)
+
+  if (docker) {
+    provisionDocker(root, appName, originalDirectory, alias, verbose)
+  }
+
+  spawn('git', [ 'init' ])
 }
 
 function install(root, useYarn, dependencies, verbose, isOnline, isDevDependencies) {
@@ -371,15 +373,16 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
       command = 'npm'
       args = [
         'install',
-        '--save',
-        '--save-exact',
         '--loglevel',
         'error',
       ]
       if (isDevDependencies) {
         args.push('--save-dev')
+      } else {
+        args.push('--save')
       }
-      args.concat(dependencies)
+
+      [].push.apply(args, dependencies)
     }
 
     if (verbose) {
