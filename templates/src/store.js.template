@@ -4,8 +4,8 @@ import { createCookieMiddleware } from 'redux-cookie'
 import thunk from 'redux-thunk'
 import Cookies from 'js-cookie'
 
-import reducers from 'src/reducers'
-import DevTools from 'src/components/DevTools'
+import reducers from '<%= project %>/reducers'
+import DevTools from '<%= project %>/components/DevTools'
 
 const packages = []
 const enhancers = []

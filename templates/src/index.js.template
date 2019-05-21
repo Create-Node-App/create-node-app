@@ -5,13 +5,13 @@ import { Provider } from 'react-redux'
 import { AppContainer } from 'react-hot-loader'
 import { I18n } from 'react-i18next'
 
-import 'src/styles/semantic-ui/semantic.less'
-import 'src/styles/custom/main.less'
+import '<%= project %>/styles/semantic-ui/semantic.less'
+import '<%= project %>/styles/custom/main.less'
 
-import store from 'src/store'
-import AppRoutes from 'src/routes/app'
+import store from '<%= project %>/store'
+import AppRoutes from '<%= project %>/routes/app'
 
-import 'src/i18n'
+import '<%= project %>/i18n'
 
 const render = (Component) => {
   ReactDOM.render(
@@ -37,6 +37,6 @@ if (module.hot) {
   module.hot.accept('./routes/app', () => {
     render(AppRoutes)
 
-    render(require('src/routes/app'))
+    render(require('<%= project %>/routes/app'))
   })
 }

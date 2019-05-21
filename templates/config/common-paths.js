@@ -5,8 +5,8 @@ module.exports = {
   root: path.resolve(__dirname, '../../'),
 
   outputPath: path.resolve(__dirname, '../', 'dist/'),
-  outputServerPath: path.resolve(__dirname, '../../', 'dist/'),
-  templatesOutputServerPath: path.resolve(__dirname, '../../', 'dist/'),
+  outputServerPath: path.resolve(__dirname, '../', 'dist/'),
+  templatesOutputServerPath: path.resolve(__dirname, '../', 'dist/'),
   entryPath: path.resolve(__dirname, '../', 'src/index.js'),
   sourcePath: path.resolve(__dirname, '../', 'src/'),
 

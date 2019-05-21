@@ -63,8 +63,8 @@ const config = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      src: commonPaths.sourcePath,
-      'src-static': path.resolve(__dirname, '../', 'static/'),
+      <%= project %>: commonPaths.sourcePath,
+      '<%= project %>-static': path.resolve(__dirname, '../', 'static/'),
       '../../theme.config$': path.resolve(__dirname, '../', 'src/styles/semantic-ui/theme.config'),
       heading: path.resolve(__dirname, '../', 'src/semantic/heading.less'),
     },
@@ -76,7 +76,7 @@ const config = {
   plugins: [
     new webpack.ProgressPlugin(),
     new ExtractTextWebpackPlugin('styles.css'),
-    new CleanWebpackPlugin([commonPaths.outputPath], {
+    new CleanWebpackPlugin({
       root: commonPaths.root
     }),
     new CopyWebpackPlugin([
