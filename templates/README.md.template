@@ -76,3 +76,6 @@ $ npm run serve:prod
 
 To add a unit test, create a `.test.js` file anywhere inside of `./test`. Jest and webpack will automatically find these files.
 
+## More info
+
+You can learn more about the operation of this starter kit in the official [github repository](https://github.com/ulises-jeremias/react-redux-webpack-starter).
