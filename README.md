@@ -163,7 +163,7 @@ While developing, you will probably rely mostly on `yarn start`; however, there 
 ├── src                      # Application source code
 |   ├── actions              # Redux actions
 │   ├── components           # Global Reusable Components
-│   ├── containers           # Global Reusable Container Components and pplication Layout in which to render routes
+│   ├── containers           # Global Reusable Container Components and application Layout in which to render routes
 |   ├── reducers             # Reducer registry and injection
 │   ├── routes               # Main route definitions and async split points
 │   │   └── app.js           # Bootstrap main application routes
@@ -179,7 +179,7 @@ While developing, you will probably rely mostly on `yarn start`; however, there 
 └── test                     # Unit tests
 ```
 
-## Live Delopment
+## Live Development
 
 ### Hot Reloading
 
