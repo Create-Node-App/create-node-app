@@ -13,7 +13,7 @@ module.exports = [
   "css-loader",
   "enzyme",
   "enzyme-adapter-react-16",
-  "eslint",
+  "eslint@5.6.0",
   "eslint-config-airbnb",
   "eslint-import-resolver-webpack",
   "eslint-loader",
@@ -33,6 +33,6 @@ module.exports = [
   "sass-loader",
   "sinon",
   "style-loader",
-  "url-loader",
+  "url-loader@1.1.2",
   "webpack-hot-middleware",
 ]

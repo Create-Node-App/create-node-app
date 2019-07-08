@@ -45,8 +45,6 @@ module.exports = {
     "import/no-dynamic-require": 0,
     "react/prop-types": 0,
     "no-console": 0,
-    "jsx-a11y/label-has-for": 0,
-    "jsx-a11y/label-has-associated-control": 0,
 
     "array-callback-return": "error",
     "block-scoped-var": "error",
