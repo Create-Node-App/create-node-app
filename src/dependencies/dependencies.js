@@ -21,7 +21,6 @@ module.exports = [
   "react-dom",
   "react-hot-loader",
   "react-i18next@7.9.0",
-  "react-mixin",
   "react-redux",
   "react-router",
   "react-router-dom",
