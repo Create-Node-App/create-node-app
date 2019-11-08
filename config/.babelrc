@@ -4,12 +4,12 @@
       "env",
       {
         "targets": {
-          "node": "10.6"
+          "node": "12.13"
         }
       }
     ],
     "@babel/preset-react",
-    "@babel/preset-env",
+    "@babel/preset-env"
   ],
   "plugins": [
     "@babel/plugin-proposal-object-rest-spread",
@@ -17,7 +17,7 @@
     ["module-resolver", {
       "root": ["."],
       "alias": {
-        "src": "./src",
+        "src": "./src"
       }
     }]
   ]

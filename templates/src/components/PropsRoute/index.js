@@ -1,19 +1,11 @@
-import React from 'react'
-import { Route } from 'react-router-dom'
+import React from 'react';
+import { Route } from 'react-router-dom';
 
-export const renderMergedProps = (component, ...rest) => {
-  const finalProps = Object.assign({}, ...rest)
+export const renderMergedProps = (component, ...rest) => React.createElement(component, rest);
 
-  return React.createElement(component, finalProps)
-}
-
-export const PropsRoute = ({ component, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={routeProps => {
-        return renderMergedProps(component, routeProps, rest)
-      }}
-    />
-  )
-}
+export const PropsRoute = ({ component, ...rest }) => (
+  <Route
+    {...rest}
+    render={(routeProps) => renderMergedProps(component, routeProps, rest)}
+  />
+);
