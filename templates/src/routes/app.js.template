@@ -1,18 +1,16 @@
-import React from 'react'
-import { Switch } from 'react-router-dom'
+import React from 'react';
+import { Switch } from 'react-router-dom';
 
-import AppContainer from '<%= project %>/containers/App'
-import HomePage from '<%= project %>/containers/Home'
-import { PropsRoute } from '<%= project %>/components/PropsRoute'
+import AppContainer from '<%= project %>/containers/App';
+import HomePage from '<%= project %>/containers/Home';
+import { PropsRoute } from '<%= project %>/components/PropsRoute';
 
-const AppRoutes = props => {
-  return (
-    <AppContainer {...props}>
-      <Switch>
-        <PropsRoute path='/' component={HomePage} {...props} />
-      </Switch>
-    </AppContainer>
-  )
-}
+const AppRoutes = (props) => (
+  <AppContainer {...props}>
+    <Switch>
+      <PropsRoute path="/" component={HomePage} {...props} />
+    </Switch>
+  </AppContainer>
+);
 
-export default AppRoutes
+export default AppRoutes;

@@ -45,6 +45,7 @@ module.exports = {
     "import/no-dynamic-require": 0,
     "react/prop-types": 0,
     "no-console": 0,
+    "react/jsx-props-no-spreading": 0,
 
     "array-callback-return": "error",
     "block-scoped-var": "error",
@@ -56,5 +57,7 @@ module.exports = {
     "no-div-regex": "error",
     "no-else-return": "error",
     "no-eval": "error",
+    "no-void": "warn",
+    "global-require": "warn"
   }
 }

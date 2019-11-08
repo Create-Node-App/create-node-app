@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
@@ -14,4 +14,4 @@ module.exports = {
   images: path.resolve(__dirname, '../', 'static/images/'),
   template: path.resolve(__dirname, '../', 'public/index.html'),
   favicon: path.resolve(__dirname, '../', 'public/favicon.ico'),
-}
+};
