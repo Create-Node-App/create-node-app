@@ -1,18 +1,18 @@
-# React Redux + Webpack Starter
+# React + Webpack Starter
 
-[![Build Status](https://travis-ci.com/ulises-jeremias/react-redux-webpack-starter.svg?branch=master)](https://travis-ci.com/ulises-jeremias/react-redux-webpack-starter)
+[![Build Status](https://travis-ci.com/ulises-jeremias/react-webpack-starter.svg?branch=master)](https://travis-ci.com/ulises-jeremias/react-webpack-starter)
 
 This starter kit is designed to get you up and running with a bunch of awesome front-end technologies.
 
 The primary goal of this project is to provide a stable foundation upon which to build modern web appliications. Its purpose is not to dictate your project structure or to demonstrate a complete real-world application, but to provide a set of tools intended to make front-end development robust and easy.
 
--  [Creating an app](#creating-an-app) - Create a _React Redux + Webpack_ app.
--  [Generated App](#generated-app) - Understanding apps bootstraped _React Redux + Webpack Starter_.
+-  [Creating an app](#creating-an-app) - Create a _React + Webpack_ app.
+-  [Generated App](#generated-app) - Understanding apps bootstraped _React + Webpack Starter_.
 
 ## Quickstart
 
 ```sh
-$ npx create-react-redux-webpack-project my-app
+$ npx create-react-webpack-project my-app
 $ cd my-app
 $ npm start
 ```
@@ -30,7 +30,7 @@ To create a new app, you may choose one of the following methods:
 ### npx
 
 ```sh
-$ npx create-react-redux-webpack-project my-app
+$ npx create-react-webpack-project my-app
 ```
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
@@ -38,7 +38,7 @@ _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7
 ### npm
 
 ```sh
-$ npm init react-redux-webpack-project my-app
+$ npm init react-webpack-project my-app
 ```
 
 _`npm init <initializer>` is available in npm 6+_
@@ -46,46 +46,13 @@ _`npm init <initializer>` is available in npm 6+_
 ### yarn
 
 ```sh
-$ yarn create react-redux-webpack-project my-app
+$ yarn create react-webpack-project my-app
 ```
 
 _`yarn create` is available in Yarn 0.25+_
 
 It will create a directory called `my-app` inside the current folder.<br>
 Inside that directory, it will generate the initial project structure and install the transitive dependencies. See [Project Structure](#project-structure).
-
-## Generated App
-
-Understanding apps bootstrapped with _React Redux + Webpack Starter_.
-
-The template consists of:
-
--   a typical project layout structure
--   a Babel setup and configuration
--   a Webpack setup and configuration
--   an ESLint setup and configuration
--   a LESS and Semantic UI setup and configuration
--   a sample React component to display list codes
--   a Redux setup to handle state
--   a React Router setup to show basic navigation
-
-Additionaly, the template provides a development and production webpack configuration.
-
-* * *
-
-## Developed With
-
--   [Node.js](https://nodejs.org/en/) - Javascript runtime
--   [React](https://reactjs.org/) - A javascript library for building user interfaces
--   [React Router](https://reacttraining.com/react-router/) - Declarative routing for React
--   [Redux](https://redux.js.org) - Redux is a predictable state container for JavaScript apps.
--   [Redux-Promise-Middleware](https://github.com/pburtchaell/redux-promise-middleware) - Redux middleware for promises, async functions and conditional optimistic updates
--   [Redux-Thunk](https://github.com/reduxjs/redux-thunk) - Thunk middleware for Redux
--   [Babel](https://babeljs.io/) - A transpiler for javascript
--   [Webpack](https://webpack.js.org/) - A module bundler
--   [LESS](http://lesscss.org/) - A css metalanguage
-
-* * *
 
 ## Getting Started
 
@@ -107,18 +74,18 @@ $ yarn -v
 
 ### Install
 
-After confirming that your environment meets the above [requirements](#requirements), you can create a new project based on `react-redux-webpack-starter` by doing the following:
+After confirming that your environment meets the above [requirements](#requirements), you can create a new project based on `react-webpack-starter` by doing the following:
 
 **Clone the repository from GitHub**
 
 ```sh
-$ git clone https://github.com/ulises-jeremias/react-redux-webpack-starter.git <my-project-name>
+$ git clone https://github.com/ulises-jeremias/react-webpack-starter.git <my-project-name>
 ```
 
 _OR USING SSH_
 
 ```sh
-$ git clone git@github.com:ulises-jeremias/react-redux-webpack-starter.git <my-project-name>
+$ git clone git@github.com:ulises-jeremias/react-webpack-starter.git <my-project-name>
 ```
 
 **Install node modules**
@@ -145,36 +112,33 @@ While developing, you will probably rely mostly on `yarn start`; however, there 
 |`start`                        |Serves your app at `localhost:8091`|
 |`build:dev`                    |Builds the application to ./dist (_the build output dir could be configured in `./config/common-paths.js`_) |
 |`build:dev:watch`              |Builds the application and watch for changes|
-|`build:dev:bundleanalyze`      |Builds the application with Bundle Analyzer Plugin instaled|
-|`build:dev:bundlebuddy`        |Builds the application with Bundle Buddy Plugin instaled|
+|`build:dev:analyze`            |Builds the application with Bundle Analyzer and Visualizer Plugins instaled|
 |`build:dev:dashboard`          |Builds the application with Dashboard|
+|`serve:dev:dashboard`          |Builds the application with Dashboard|
 |`test`                         |Runs unit tests with Jest. See [testing](#testing)|
 |`test:watch`                   |Runs `test` in watch mode to re-run tests when changed|
 |`lint`                         |[Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors|
 |`lint:fix`                     |Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix)|
 
+
 ## Project Structure
+
+The base structure will be modified in the presence of the flags `--typescript`, `--redux`, `--docker`, `--semantic-ui`.
 
 ```
 .
-├── config                   # Webpack configuration
+├── config                   # Webpack and Jest configuration
 ├── public                   # Static public assets (not imported anywhere in source code)
-│   └── index.html           # Main HTML page container for app
+│   └── index.html           # Main HTML page template for app
 ├── src                      # Application source code
-|   ├── actions              # Redux actions
 │   ├── components           # Global Reusable Components
-│   ├── containers           # Global Reusable Container Components and application Layout in which to render routes
-|   ├── reducers             # Reducer registry and injection
+│   ├── containers           # Global Reusable Container Components and pplication Layout in which to render routes
 │   ├── routes               # Main route definitions and async split points
-│   │   └── app.js           # Bootstrap main application routes
-|   ├── state                # Store initial state
-│   ├── store.js             # Redux-specific pieces
+│   │   └── AppRoutes.jsx    # Bootstrap main application routes
 │   ├── styles               # Application-wide styles
-|   |   ├── custom           # Custom application styles
-|   |   └── semantic-ui      # Semantic-UI theme files
+|   ├── ...
 |   ├── i18n.js              # i18n configuration
-|   ├── index.js             # Application bootstrap and rendering with store
-|   └── store.js             # Create and instrument redux store
+|   ├── index.jsx            # Application bootstrap and rendering with store
 ├── static                   # Static public assets imported anywhere in source code
 └── test                     # Unit tests
 ```

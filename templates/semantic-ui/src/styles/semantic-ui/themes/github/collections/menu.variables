@@ -1,0 +1,77 @@
+/*-------------------
+      Collection
+--------------------*/
+
+/* Menu */
+@boxShadow: none;
+@dropdownIconDistance: @relative12px;
+@inputVerticalPadding: @relative6px;
+
+@itemTextColor: #767676;
+@iconOpacity: 0.5;
+
+@dropdownHoveredItemBackground: #4078C0;
+@dropdownHoveredItemColor: @white;
+
+@verticalIconFloat: none;
+@verticalIconMargin: 0em @relative1px 0em 0em;
+
+/* States */
+@hoverItemBackground: none transparent;
+@hoverItemTextColor: @linkHoverColor;
+@pressedItemBackground: @hoverItemBackground;
+
+/*-------------------
+        Types
+--------------------*/
+
+/* Tabular */
+@tabularBorderColor: #EEEEEE;
+@tabularVerticalBackground: linear-gradient(to left, #f6f6f6 0%, #fff 8px) transparent;
+@tabularVerticalPadding: @relative7px;
+@tabularHorizontalPadding: 1.15384em;
+
+@tabularActiveBoxShadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
+
+/* Text Menu */
+@textMenuItemSpacing: @relative8px;
+@textMenuItemColor: #333333;
+@textMenuItemFontWeight: normal;
+
+/* Pagination */
+@paginationMinWidth: 3.5em;
+
+/*-------------------
+      Elements
+--------------------*/
+
+@dropdownMenuPadding: @relative5px 0px;
+@dropdownMenuBoxShadow: 0px 3px 12px rgba(0, 0, 0, 0.15);
+
+@dropdownItemPadding: @relative6px @relative14px;
+
+/* Label */
+@labelBackground: #EEEEEE;
+@labelOffset: 0px;
+@labelTextColor: #666666;
+@labelTextMargin: @4px;
+@labelVerticalPadding: @relative2px;
+@labelHorizontalPadding: @relative5px;
+
+/* Button */
+@buttonOffset: -0.15em;
+@buttonVerticalPadding: 0.75em;
+
+/*-------------------
+      Variations
+--------------------*/
+
+@verticalBackground: #FFFFFF;
+@verticalItemBackground: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.02));
+
+@invertedBackground: @black linear-gradient(rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.0));
+@invertedBoxShadow             :
+  0px 1px 2px 0px rgba(0, 0, 0, 0.15),
+  0px 0px 0px 1px rgba(255, 255, 255, 0.15)
+;
+@secondaryVerticalPadding: 0.75em;

@@ -25,6 +25,8 @@ function createApp(
   verbose,
   useNpm,
   useTypescript,
+  useRedux,
+  useSemanticUI,
   docker,
   alias,
   installDependencies,
@@ -40,47 +42,56 @@ function createApp(
   const useYarn = useNpm ? false : shouldUseYarn()
   const command = useYarn ? 'yarn' : 'npm run'
 
-  var packageJson = {
+  const packageJson = {
     name: appName,
     version: '0.1.0',
     private: true,
+    browserslist: {
+      production: [
+        ">0.2%",
+        "not dead",
+        "not op_mini all"
+      ],
+      development: [
+        "last 1 chrome version",
+        "last 1 firefox version",
+        "last 1 safari version"
+      ]
+    },
     scripts: {
-      "build": "webpack",
-      "build:dev": `${command} build --mode development`,
-      "build:dev:watch": `${command} build:dev --watch`,
-      "build:dev:bundleanalyze": `${command} build:dev --addons=bundleanalyze`,
-      "build:dev:bundlebuddy": `${command} build:dev --addons=bundlebuddy`,
-      "build:prod": `${command} build -p`,
+      "build": "webpack --config webpack.config.js",
+      "build:dev": `${command} build --env.env=development`,
+      "build:dev:watch": `${command} build:dev --watch --hot`,
+      "build:dev:analyze": `${command} build:dev --env.addon=bundleanalyze --env.addon=bundlevisualizer`,
+      "build:prod": `${command} build -p --env.env=production`,
       "build:prod:watch": `${command} build:prod --watch`,
-      "build:prod:bundleanalyze": `${command} build:prod --addons=bundleanalyze`,
-      "build:prod:bundlebuddy": `${command} build:prod --addons=bundlebuddy`,
-      "upgrade:package": `${command} upgrade-interactive --latest`  ,
-      "lint": "eslint .; exit 0",
-      "lint:fix": "eslint . --fix; exit 0",
-      "reducer:generate": "reducer-maker -w src",
-      "reducer:help": "reducer-maker --help",
-      "serve:dev": "webpack-dev-server --mode development",
-      "serve:dev:dashboard": "webpack-dashboard webpack-dev-server -- --mode development --addons=dashboard",
-      "serve:prod": `${command} build:prod && live-server ./dist`,
+      "build:prod:analyze": `${command} build:prod --env.addon=bundleanalyze --env.addon=bundlevisualizer`,
+      "lint": "eslint ./src --ext .jsx --ext .js",
+      "lint:fix": "eslint ./src --fix --ext .jsx --ext .js --fix",
+      "serve:dev": "webpack-dev-server --mode development --open --hot --env.env=development",
+      "serve:dev:dashboard": "webpack-dashboard webpack-dev-server -- --mode development --env.addon=dashboard",
       "start": `${command} serve:dev`,
-      "test": "jest --config .jest.config.js",
-      "test:ci": `${command} test --ci`,
-      "test:watch": "jest --config .jest.config.js --watch",
-      "webpack-defaults": "webpack-defaults"
+      "test": "jest --runInBand --detectOpenHandles --config .jest.config.js",
+      "test:watch": "jest -u --runInBand --verbose --watch --detectOpenHandles --config .jest.config.js",
+      "test:coverage": "jest -u --coverage --verbose --runInBand --detectOpenHandles --config .jest.config.js",
     }
   }
 
   if (docker) {
     packageJson.scripts = {
       ...packageJson.scripts,
-      "docker:dev": `${command} docker:build && ${command} docker:start`,
-      "docker:build": `docker build -f docker/Dockerfile --target development -t ${appName} .`,
-      "docker:start": `docker run --rm -it --network host -v $PWD:/usr/src/app ${appName}`,
-      "docker:prod": `${command} docker:build:prod && ${command} docker:start:prod`,
-      "docker:build:prod": `docker build -f docker/Dockerfile --target production -t ${appName}:production .`,
-      "docker:start:prod": `docker run --rm -it --network host -v $PWD:/usr/src/app ${appName}:production`,
-
+      "docker:dev": `${command} docker:dev:build && ${command} docker:dev:start`,
+      "docker:dev:build": `docker build -f docker/Dockerfile --target development -t ${appName} .`,
+      "docker:dev:start": `docker run --rm -it --network host -v $PWD:/usr/src/app ${appName}`,
+      "docker:prod": `${command} docker:prod:build && ${command} docker:prod:start`,
+      "docker:prod:build": `docker build --build-arg API_BASE_URL=$API_BASE_URL -f docker/Dockerfile --target production -t ${appName}:production .`,
+      "docker:prod:start": `docker run --rm -it --network host -e API_BASE_URL=$API_BASE_URL -v $PWD:/usr/src/app ${appName}:production`
     }
+  }
+
+  if (useTypescript) {
+    packageJson.scripts.lint += " && prettier --check \"src/**/*.{ts,tsx}\""
+    packageJson.scripts["lint:fix"] += " && prettier --write \"src/**/*.{ts,tsx}\""
   }
 
   fs.writeFileSync(
@@ -88,7 +99,7 @@ function createApp(
     JSON.stringify(packageJson, null, 2) + os.EOL
   )
 
-  const originalDirectory = process.cwd();
+  const originalDirectory = process.cwd()
   process.chdir(root)
   if (!useYarn && !checkThatNpmCanReadCwd()) {
     process.exit(1)
@@ -98,9 +109,9 @@ function createApp(
     console.log(
       chalk.yellow(
         `You are using Node ${
-          process.version
+        process.version
         } so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
-          `Please update to Node 6 or higher for a better, fully supported experience.\n`
+        `Please update to Node 6 or higher for a better, fully supported experience.\n`
       )
     )
     // Fall back to latest supported react-scripts on Node 4
@@ -114,9 +125,9 @@ function createApp(
         console.log(
           chalk.yellow(
             `You are using npm ${
-              npmInfo.npmVersion
+            npmInfo.npmVersion
             } so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
-              `Please update to npm 3 or higher for a better, fully supported experience.\n`
+            `Please update to npm 3 or higher for a better, fully supported experience.\n`
           )
         )
       }
@@ -150,6 +161,8 @@ function createApp(
     verbose,
     useYarn,
     useTypescript,
+    useRedux,
+    useSemanticUI,
     docker,
     alias,
     installDependencies,
@@ -163,18 +176,75 @@ async function run(
   verbose,
   useYarn,
   useTypescript,
+  useRedux,
+  useSemanticUI,
   docker,
   alias,
   installDependencies,
 ) {
+  let configs = ['common']
+
   if (useTypescript) {
-    // TODO: get user's node version instead of installing latest
-    dependencies.push(
+    configs.push('typescript')
+
+    devDependencies.push(
       '@types/node',
       '@types/react',
-      '@types/react-dom',
+      "@types/react-dom",
+      "@types/react-router",
+      "@types/react-router-dom",
+      "@types/react-test-renderer",
       '@types/jest',
-      'typescript'
+      '@types/enzyme',
+      '@types/enzyme-adapter-react-16',
+      'awesome-typescript-loader',
+      'eslint-config-prettier',
+      'eslint-plugin-prettier',
+      'prettier',
+      'prettier-tslint',
+      'tslint-config-prettier',
+      'tslint-plugin-prettier',
+      'ts-jest',
+      'tslint',
+      'tslint-config-prettier',
+      'tslint-loader',
+      'tslint-plugin-prettier',
+      'tslint-react',
+      'typescript',
+    )
+  }
+
+  if (useRedux) {
+    configs.push('redux')
+
+    dependencies.push(
+      'connected-react-router',
+      'history',
+      'react-redux',
+      'redux',
+      'redux-cookie',
+      'redux-form',
+      'redux-logger',
+      'redux-persist',
+      'redux-thunk',
+    )
+
+    devDependencies.push(
+      'redux-mock-store',
+    )
+  }
+
+  if (useSemanticUI) {
+    configs.push('semantic-ui')
+
+    dependencies.push(
+      'semantic-ui-less',
+      'semantic-ui-react',
+    )
+
+    devDependencies.push(
+      'less@2.7.3',
+      'less-loader@^5.0.0',
     )
   }
 
@@ -204,7 +274,7 @@ async function run(
     let packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, 'utf8'))
     packageJson.dependencies = dependencies.reduce((dep, elem) => {
       if (/.+@[0-9a-zA-Z-.]+$/.test(elem)) {
-        let [ name, version ] = elem.split('@')
+        let [name, version] = elem.split('@')
         dep[name] = `^${version}`
       } else {
         dep[elem] = '*'
@@ -223,15 +293,15 @@ async function run(
 
   }
 
-  provisionConfig(root, appName, originalDirectory, alias, verbose)
+  provisionConfig(root, configs, appName, originalDirectory, alias, verbose)
 
-  provisionTemplates(root, appName, originalDirectory, alias, verbose)
+  provisionTemplates(root, configs, appName, originalDirectory, alias, verbose)
 
   if (docker) {
     provisionDocker(root, appName, originalDirectory, alias, verbose)
   }
 
-  spawn('git', [ 'init' ])
+  spawn('git', ['init'])
 }
 
 function install(root, useYarn, dependencies, verbose, isOnline, isDevDependencies) {
@@ -296,67 +366,71 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
   })
 }
 
-function provisionConfig(root, appName, originalDirectory, alias, verbose) {
-  fs.readdir(`${__dirname}/../config`, (err, data) => {
-    if (err && verbose) {
-      console.log(err)
-    }
+function provisionConfig(root, configs = [], appName, originalDirectory, alias, verbose) {
+  configs.forEach((config) => {
+    fs.readdir(`${__dirname}/../config/${config}`, (err, data) => {
+      if (err && verbose) {
+        console.log(err)
+      }
 
-    data.forEach(elem => {
-      fs.copy(`${__dirname}/../config/${elem}`, `${root}/${elem}`, err => {
-        if (err) {
-          console.log(chalk.red(`Cannot copy ${elem}`))
-          if (verbose) {
-            console.log(chalk.red(err))
+      (data || []).forEach(elem => {
+        secureCopy(`${__dirname}/../config/${config}/${elem}`, `${root}/${elem}`, err => {
+          if (err) {
+            console.log(chalk.red(`Cannot copy ${elem}`))
+            if (verbose) {
+              console.log(chalk.red(err))
+            }
+          } else {
+            if (verbose) {
+              console.log(chalk.green(`Copied "${elem}" successfully`))
+            }
           }
-        } else {
-          if (verbose) {
-            console.log(chalk.green(`Copied "${elem}" successfully`))
-          }
-        }
+        })
       })
     })
   })
 }
 
-function provisionTemplates(root, appName, originalDirectory, alias, verbose) {
-  readdirp({ root: `${__dirname}/../templates`, fileFilter: '*.template'})
-    .on('data', ({path, parentDir}) => {
-      const file = fs.readFileSync(`${__dirname}/../templates/${path}`, 'utf8')
-      const newFile = _.template(file)
-      const newPath = path.replace(/.template$/, '')
-      if (parentDir) {
-        fs.mkdir(parentDir, { recursive: true }, err => {
-          // Not fail if directory already exists
-          if (err && err.code !== 'EEXIST') {
-            console.log(err)
-            console.log(chalk.red(`Cannot create directory ${parentDir}`))
-          }
-          
-          fs.writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }))
-        })
-      } else {
-        fs.writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }))
-      }
-    })
-    .on('error', error => console.error('fatal error', error))
+function provisionTemplates(root, configs = [], appName, originalDirectory, alias, verbose) {
+  configs.forEach((config) => {
+    readdirp({ root: `${__dirname}/../templates/${config}`, fileFilter: '*.template' })
+      .on('data', ({ path, parentDir }) => {
+        const file = fs.readFileSync(`${__dirname}/../templates/${config}/${path}`, 'utf8')
+        const newFile = _.template(file)
+        const newPath = path.replace(/.template$/, '')
+        if (parentDir) {
+          fs.mkdir(parentDir, { recursive: true }, err => {
+            // Not fail if directory already exists
+            if (err && err.code !== 'EEXIST') {
+              console.log(err)
+              console.log(chalk.red(`Cannot create directory ${parentDir}`))
+            }
 
-  readdirp({ root: `${__dirname}/../templates`, fileFilter: '!*.template'})
-    .on('data', ({path}) => {
-      fs.copy(`${__dirname}/../templates/${path}`, `${root}/${path}`, err => {
-        if (err) {
-          console.log(chalk.red(`Cannot copy ${path}`))
-          if (verbose) {
-            console.log(chalk.red(err))
-          }
+            fs.writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }))
+          })
         } else {
-          if (verbose) {
-            console.log(chalk.green(`Copied "${path}" successfully`))
-          }
+          fs.writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }))
         }
       })
-    })
-    .on('error', error => console.error('fatal error', error))
+      .on('error', error => console.error('fatal error', error))
+
+    readdirp({ root: `${__dirname}/../templates/${config}`, fileFilter: '!*.template' })
+      .on('data', ({ path }) => {
+        secureCopy(`${__dirname}/../templates/${config}/${path}`, `${root}/${path}`, err => {
+          if (err) {
+            console.log(chalk.red(`Cannot copy ${path}`))
+            if (verbose) {
+              console.log(chalk.red(err))
+            }
+          } else {
+            if (verbose) {
+              console.log(chalk.green(`Copied "${path}" successfully`))
+            }
+          }
+        })
+      })
+      .on('error', error => console.error('fatal error', error))
+  })
 }
 
 function provisionDocker(root, appName, originalDirectory, alias, verbose) {
@@ -365,8 +439,8 @@ function provisionDocker(root, appName, originalDirectory, alias, verbose) {
       console.log(err)
     }
 
-    data.forEach(elem => {
-      fs.copy(`${__dirname}/../docker/${elem}`, `${root}/docker/${elem}`, err => {
+    (data || []).forEach(elem => {
+      secureCopy(`${__dirname}/../docker/${elem}`, `${root}/docker/${elem}`, err => {
         if (err) {
           console.log(chalk.red(`Cannot copy ${elem}`))
           if (verbose) {
@@ -382,6 +456,10 @@ function provisionDocker(root, appName, originalDirectory, alias, verbose) {
   })
 }
 
+function secureCopy(src, dest, callback) {
+  return fs.copy(src, dest, { overwrite: true }, callback)
+}
+
 module.exports = {
-  createApp
+  createApp,
 }

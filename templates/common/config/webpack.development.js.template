@@ -1,0 +1,70 @@
+const webpack = require('webpack');
+const path = require('path');
+const Dotenv = require('dotenv-webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssWebpackPlugin = require('mini-css-extract-plugin')
+
+const commonPaths = require('./common-paths');
+
+const HOST = process.env.HOST || 'localhost';
+const PORT = process.env.PORT || 8091;
+const URL_BASE = process.env.URL_BASE || `http://${HOST}:${PORT}`;
+
+const config = {
+  entry: [
+    'react-hot-loader/patch',
+  ],
+  mode: 'development',
+  devtool: 'cheap-module-eval-source-map',
+  devServer: {
+    contentBase: commonPaths.outputPath,
+    compress: true,
+    historyApiFallback: true,
+    hot: true,
+    inline: true,
+    port: 8091,
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    public: URL_BASE,
+    proxy: {
+      '/api': {
+        target: 'http://citisci.lifia.info.unlp.edu.ar:12482',
+      },
+    },
+
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('development')
+      },
+    }),
+    new Dotenv({
+      path: './.env.development',
+    }),
+    new MiniCssWebpackPlugin({
+      filename: 'static/css/[name].css',
+      chunkFilename: 'static/css/[id].css',
+    }),
+    new HtmlWebpackPlugin({
+      template: commonPaths.template,
+      base: URL_BASE,
+      title: '<%= projectName%>',
+      filename: path.resolve(__dirname, commonPaths.outputPath, 'index.html'),
+      favicon: commonPaths.favicon,
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: commonPaths.favicon,
+          to: commonPaths.outputPath,
+        },
+      ]
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NamedModulesPlugin(),
+  ],
+};
+
+module.exports = config;

@@ -1,5 +1,5 @@
-var dependencies = require('./dependencies')
-var devDependencies = require('./devDependencies')
+const dependencies = require('./dependencies')
+const devDependencies = require('./devDependencies')
 
 module.exports = {
   dependencies,

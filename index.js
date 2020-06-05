@@ -10,6 +10,7 @@ const {
 } = require('./src/install-functions')
 
 let projectName
+
 program
   .version(packageJS.version)
   .arguments('<project-directory>')
@@ -20,9 +21,11 @@ program
   .option('--verbose', 'print additional logs')
   .option('--info', 'print environment debug info')
   .option('--use-npm')
-  .option('--typescript')
+  .option('--typescript', 'add TypeScript support')
+  .option('--redux', 'add redux support and setup ussing redux thunk middleware')
+  .option('--semantic-ui', 'add semantic ui and semantic ui react setup with theme config')
   .option('--docker', 'generate dockerfiles')
-  .option('-a, --alias <alias>', 'webpack alias', 'src')
+  .option('-a, --alias <alias>', 'webpack alias', 'app')
   .option('--no-install-dependencies')
   .allowUnknownOption()
   .on('--help', () => {
@@ -83,6 +86,8 @@ createApp(
   program.verbose,
   program.useNpm,
   program.typescript,
+  program.redux,
+  program.semanticUi,
   program.docker,
   program.alias,
   program.installDependencies,
