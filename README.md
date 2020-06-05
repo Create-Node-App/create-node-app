@@ -56,52 +56,11 @@ _`yarn create` is available in Yarn 0.25+_
 It will create a directory called `my-app` inside the current folder.<br>
 Inside that directory, it will generate the initial project structure and install the transitive dependencies. See [Project Structure](#project-structure).
 
-## Getting Started
+## Generated App
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+### Running the App
 
-### Requirements
-
-The following software is required to be installed on your system:
-
--   Node v10.x
--   Yarn v1.7.0 or later
-
-Type the following commands in the terminal to verify your node and yarn versions
-
-```sh
-$ node -v
-$ yarn -v
-```
-
-### Install
-
-After confirming that your environment meets the above [requirements](#requirements), you can create a new project based on `react-webpack-starter` by doing the following:
-
-**Clone the repository from GitHub**
-
-```sh
-$ git clone https://github.com/ulises-jeremias/react-webpack-starter.git <my-project-name>
-```
-
-_OR USING SSH_
-
-```sh
-$ git clone git@github.com:ulises-jeremias/react-webpack-starter.git <my-project-name>
-```
-
-**Install node modules**
-
-When that's done, install the project dependencies. It is recommended that you use [Yarn](https://yarnpkg.com/) for deterministic dependency management, but `npm install` will suffice.
-
-```sh
-$ cd <my-project-name>
-$ yarn
-```
-
-### Running the Project
-
-After completing the [installation](#installation) step, you're ready to start the project!
+After completing the previous steps, you're ready to start the project!
 
 ```bash
 $ yarn start  # Start the development server (or `npm start`)
