@@ -2,8 +2,8 @@ import React from 'react';
 
 const HomeContainer = () => (
   <div>
-    <h1>"<%= projectName %>"</h1
-    <h3>"Powered by react-webpack-starter"</h3>
+    <h1><%= projectName %></h1>
+    <h3>Powered by react-webpack-starter</h3>
   </div>
 );
 

@@ -5,9 +5,7 @@ const chalk = require('chalk')
 const envinfo = require('envinfo')
 
 const packageJS = require('./package.json')
-const {
-  createApp
-} = require('./src/install-functions')
+const { createApp } = require('./src/install-functions')
 
 let projectName
 
@@ -81,13 +79,17 @@ if (typeof projectName === 'undefined') {
   process.exit(1)
 }
 
+let addons = ['common']
+
+if (program.typescript) { addons.push('typescript') }
+if (program.redux) { addons.push('redux') }
+if (program.semanticUi) { addons.push('semantic-ui') }
+
 createApp(
   projectName,
   program.verbose,
   program.useNpm,
-  program.typescript,
-  program.redux,
-  program.semanticUi,
+  addons,
   program.docker,
   program.alias,
   program.installDependencies,

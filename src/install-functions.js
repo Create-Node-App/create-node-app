@@ -15,18 +15,13 @@ const {
   checkIfOnline,
 } = require('./helpers-functions')
 
-var {
-  dependencies,
-  devDependencies,
-} = require('./dependencies')
+const resolvePackage = require('./package')
 
 function createApp(
   name,
   verbose,
   useNpm,
-  useTypescript,
-  useRedux,
-  useSemanticUI,
+  addons,
   docker,
   alias,
   installDependencies,
@@ -42,57 +37,7 @@ function createApp(
   const useYarn = useNpm ? false : shouldUseYarn()
   const command = useYarn ? 'yarn' : 'npm run'
 
-  const packageJson = {
-    name: appName,
-    version: '0.1.0',
-    private: true,
-    browserslist: {
-      production: [
-        ">0.2%",
-        "not dead",
-        "not op_mini all"
-      ],
-      development: [
-        "last 1 chrome version",
-        "last 1 firefox version",
-        "last 1 safari version"
-      ]
-    },
-    scripts: {
-      "build": "webpack --config webpack.config.js",
-      "build:dev": `${command} build --env.env=development`,
-      "build:dev:watch": `${command} build:dev --watch --hot`,
-      "build:dev:analyze": `${command} build:dev --env.addon=bundleanalyze --env.addon=bundlevisualizer`,
-      "build:prod": `${command} build -p --env.env=production`,
-      "build:prod:watch": `${command} build:prod --watch`,
-      "build:prod:analyze": `${command} build:prod --env.addon=bundleanalyze --env.addon=bundlevisualizer`,
-      "lint": "eslint ./src --ext .jsx --ext .js",
-      "lint:fix": "eslint ./src --fix --ext .jsx --ext .js --fix",
-      "serve:dev": "webpack-dev-server --mode development --open --hot --env.env=development",
-      "serve:dev:dashboard": "webpack-dashboard webpack-dev-server -- --mode development --env.addon=dashboard",
-      "start": `${command} serve:dev`,
-      "test": "jest --runInBand --detectOpenHandles --config .jest.config.js",
-      "test:watch": "jest -u --runInBand --verbose --watch --detectOpenHandles --config .jest.config.js",
-      "test:coverage": "jest -u --coverage --verbose --runInBand --detectOpenHandles --config .jest.config.js",
-    }
-  }
-
-  if (docker) {
-    packageJson.scripts = {
-      ...packageJson.scripts,
-      "docker:dev": `${command} docker:dev:build && ${command} docker:dev:start`,
-      "docker:dev:build": `docker build -f docker/Dockerfile --target development -t ${appName} .`,
-      "docker:dev:start": `docker run --rm -it --network host -v $PWD:/usr/src/app ${appName}`,
-      "docker:prod": `${command} docker:prod:build && ${command} docker:prod:start`,
-      "docker:prod:build": `docker build --build-arg API_BASE_URL=$API_BASE_URL -f docker/Dockerfile --target production -t ${appName}:production .`,
-      "docker:prod:start": `docker run --rm -it --network host -e API_BASE_URL=$API_BASE_URL -v $PWD:/usr/src/app ${appName}:production`
-    }
-  }
-
-  if (useTypescript) {
-    packageJson.scripts.lint += " && prettier --check \"src/**/*.{ts,tsx}\""
-    packageJson.scripts["lint:fix"] += " && prettier --write \"src/**/*.{ts,tsx}\""
-  }
+  const { packageJson, dependencies, devDependencies } = resolvePackage({ addons, appName, command, docker })
 
   fs.writeFileSync(
     path.join(root, 'package.json'),
@@ -160,9 +105,9 @@ function createApp(
     originalDirectory,
     verbose,
     useYarn,
-    useTypescript,
-    useRedux,
-    useSemanticUI,
+    addons,
+    dependencies,
+    devDependencies,
     docker,
     alias,
     installDependencies,
@@ -175,79 +120,13 @@ async function run(
   originalDirectory,
   verbose,
   useYarn,
-  useTypescript,
-  useRedux,
-  useSemanticUI,
+  addons,
+  dependencies,
+  devDependencies,
   docker,
   alias,
   installDependencies,
 ) {
-  let configs = ['common']
-
-  if (useTypescript) {
-    configs.push('typescript')
-
-    devDependencies.push(
-      '@types/node',
-      '@types/react',
-      "@types/react-dom",
-      "@types/react-router",
-      "@types/react-router-dom",
-      "@types/react-test-renderer",
-      '@types/jest',
-      '@types/enzyme',
-      '@types/enzyme-adapter-react-16',
-      'awesome-typescript-loader',
-      'eslint-config-prettier',
-      'eslint-plugin-prettier',
-      'prettier',
-      'prettier-tslint',
-      'tslint-config-prettier',
-      'tslint-plugin-prettier',
-      'ts-jest',
-      'tslint',
-      'tslint-config-prettier',
-      'tslint-loader',
-      'tslint-plugin-prettier',
-      'tslint-react',
-      'typescript',
-    )
-  }
-
-  if (useRedux) {
-    configs.push('redux')
-
-    dependencies.push(
-      'connected-react-router',
-      'history',
-      'react-redux',
-      'redux',
-      'redux-cookie',
-      'redux-form',
-      'redux-logger',
-      'redux-persist',
-      'redux-thunk',
-    )
-
-    devDependencies.push(
-      'redux-mock-store',
-    )
-  }
-
-  if (useSemanticUI) {
-    configs.push('semantic-ui')
-
-    dependencies.push(
-      'semantic-ui-less',
-      'semantic-ui-react',
-    )
-
-    devDependencies.push(
-      'less@2.7.3',
-      'less-loader@^5.0.0',
-    )
-  }
-
   if (useYarn) {
     isOnline = await checkIfOnline(useYarn)
   } else {
@@ -293,9 +172,9 @@ async function run(
 
   }
 
-  provisionConfig(root, configs, appName, originalDirectory, alias, verbose)
+  provisionConfig(root, addons, appName, originalDirectory, alias, verbose)
 
-  provisionTemplates(root, configs, appName, originalDirectory, alias, verbose)
+  provisionTemplates(root, addons, appName, originalDirectory, alias, verbose)
 
   if (docker) {
     provisionDocker(root, appName, originalDirectory, alias, verbose)
@@ -366,15 +245,15 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
   })
 }
 
-function provisionConfig(root, configs = [], appName, originalDirectory, alias, verbose) {
-  configs.forEach((config) => {
-    fs.readdir(`${__dirname}/../config/${config}`, (err, data) => {
+function provisionConfig(root, addons = [], appName, originalDirectory, alias, verbose) {
+  addons.forEach((addon) => {
+    fs.readdir(`${__dirname}/../addons/${addon}/config`, (err, data) => {
       if (err && verbose) {
         console.log(err)
       }
 
       (data || []).forEach(elem => {
-        secureCopy(`${__dirname}/../config/${config}/${elem}`, `${root}/${elem}`, err => {
+        secureCopy(`${__dirname}/../addons/${addon}/config/${elem}`, `${root}/${elem}`, err => {
           if (err) {
             console.log(chalk.red(`Cannot copy ${elem}`))
             if (verbose) {
@@ -391,11 +270,11 @@ function provisionConfig(root, configs = [], appName, originalDirectory, alias, 
   })
 }
 
-function provisionTemplates(root, configs = [], appName, originalDirectory, alias, verbose) {
-  configs.forEach((config) => {
-    readdirp({ root: `${__dirname}/../templates/${config}`, fileFilter: '*.template' })
+function provisionTemplates(root, addons = [], appName, originalDirectory, alias, verbose) {
+  addons.forEach((addon) => {
+    readdirp({ root: `${__dirname}/../addons/${addon}/templates`, fileFilter: '*.template' })
       .on('data', ({ path, parentDir }) => {
-        const file = fs.readFileSync(`${__dirname}/../templates/${config}/${path}`, 'utf8')
+        const file = fs.readFileSync(`${__dirname}/../addons/${addon}/templates/${path}`, 'utf8')
         const newFile = _.template(file)
         const newPath = path.replace(/.template$/, '')
         if (parentDir) {
@@ -414,9 +293,9 @@ function provisionTemplates(root, configs = [], appName, originalDirectory, alia
       })
       .on('error', error => console.error('fatal error', error))
 
-    readdirp({ root: `${__dirname}/../templates/${config}`, fileFilter: '!*.template' })
+    readdirp({ root: `${__dirname}/../addons/${addon}/templates`, fileFilter: '!*.template' })
       .on('data', ({ path }) => {
-        secureCopy(`${__dirname}/../templates/${config}/${path}`, `${root}/${path}`, err => {
+        secureCopy(`${__dirname}/../addons/${addon}/templates/${path}`, `${root}/${path}`, err => {
           if (err) {
             console.log(chalk.red(`Cannot copy ${path}`))
             if (verbose) {
