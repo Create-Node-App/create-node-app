@@ -1,0 +1,12 @@
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+
+import HomePage from '<%= project %>/containers/Home';
+
+const AppRoutes = (props) => (
+  <Switch>
+    <Route path="/" component={HomePage} {...props} />
+  </Switch>
+);
+
+export default AppRoutes;

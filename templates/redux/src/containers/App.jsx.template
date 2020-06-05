@@ -1,0 +1,30 @@
+import React from 'react';
+import { I18n } from 'react-i18next';
+import { ConnectedRouter } from 'connected-react-router';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+
+import '<%= project %>/styles/custom/main.less';
+
+import { store, persistor, history } from '<%= project %>/store';
+import AppRoutes from '<%= project %>/routes/AppRoutes';
+
+import '<%= project %>/i18n';
+
+const App = () => (
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <ConnectedRouter history={history}>
+        <I18n ns="translations">
+          {
+            (t, { i18n }) => (
+              <AppRoutes t={t} i18n={i18n} />
+            )
+          }
+        </I18n>
+      </ConnectedRouter>
+    </PersistGate>
+  </Provider>
+);
+
+export default App;

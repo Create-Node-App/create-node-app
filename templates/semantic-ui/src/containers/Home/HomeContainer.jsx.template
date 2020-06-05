@@ -1,0 +1,14 @@
+import React from 'react';
+import { Container, Header } from 'semantic-ui-react';
+
+const HomeContainer = () => (
+  <Container text textAlign="justified">
+    <Header
+      as="h1"
+      content="<%= projectName %>"
+      subheader="Powered by react-webpack-starter"
+    />
+  </Container>
+);
+
+export default HomeContainer;
