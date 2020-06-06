@@ -7,13 +7,15 @@ import { PersistGate } from 'redux-persist/integration/react';
 import '<%= project %>/styles/custom/main.less';
 
 import { store, persistor, history } from '<%= project %>/store';
+
+import Loading from '<%= project %>/components/Loading';
 import AppRoutes from '<%= project %>/routes/AppRoutes';
 
 import '<%= project %>/i18n';
 
 const App = () => (
   <Provider store={store}>
-    <PersistGate persistor={persistor}>
+    <PersistGate persistor={persistor} loading={<Loading />}>
       <ConnectedRouter history={history}>
         <I18n ns="translations">
           {
