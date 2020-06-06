@@ -4,7 +4,6 @@ module.exports = function resolvePackage(setup) {
     'history',
     'react-redux',
     'redux',
-    'redux-cookie',
     'redux-form',
     'redux-logger',
     'redux-persist',

@@ -2,15 +2,15 @@ module.exports = function resolvePackage(setup) {
   const dependencies = []
 
   const devDependencies = [
-    '@types/node',
-    '@types/react',
-    "@types/react-dom",
-    "@types/react-router",
-    "@types/react-router-dom",
-    "@types/react-test-renderer",
     '@types/jest',
     '@types/enzyme',
     '@types/enzyme-adapter-react-16',
+    '@types/node',
+    '@types/react',
+    '@types/react-dom',
+    '@types/react-router',
+    '@types/react-router-dom',
+    '@types/react-test-renderer',
     'awesome-typescript-loader',
     'eslint-config-prettier',
     'eslint-plugin-prettier',

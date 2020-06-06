@@ -21,6 +21,7 @@ program
   .option('--use-npm')
   .option('--typescript', 'add TypeScript support')
   .option('--redux', 'add redux support and setup ussing redux thunk middleware')
+  .option('--recoil', 'add recoil.js support and setup the state management library for React')
   .option('--semantic-ui', 'add semantic ui and semantic ui react setup with theme config')
   .option('--docker', 'generate dockerfiles')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
@@ -83,6 +84,7 @@ let addons = ['common']
 
 if (program.typescript) { addons.push('typescript') }
 if (program.redux) { addons.push('redux') }
+if (program.recoil) { addons.push('recoil') }
 if (program.semanticUi) { addons.push('semantic-ui') }
 
 createApp(

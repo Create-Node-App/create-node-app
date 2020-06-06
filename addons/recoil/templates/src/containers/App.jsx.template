@@ -1,0 +1,26 @@
+import React from 'react';
+import { RecoilRoot } from 'recoil';
+import { I18n } from 'react-i18next';
+import { BrowserRouter } from 'react-router-dom';
+
+import '<%= project %>/styles/custom/main.less';
+
+import AppRoutes from '<%= project %>/routes/AppRoutes';
+
+import '<%= project %>/i18n';
+
+const App = () => (
+  <RecoilRoot>
+    <BrowserRouter>
+      <I18n ns="translations">
+        {
+          (t, { i18n }) => (
+            <AppRoutes t={t} i18n={i18n} />
+          )
+        }
+      </I18n>
+    </BrowserRouter>
+  </RecoilRoot>
+);
+
+export default App;
