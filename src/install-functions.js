@@ -22,7 +22,6 @@ function createApp(
   verbose,
   useNpm,
   addons,
-  docker,
   alias,
   installDependencies,
 ) {
@@ -37,7 +36,7 @@ function createApp(
   const useYarn = useNpm ? false : shouldUseYarn()
   const command = useYarn ? 'yarn' : 'npm run'
 
-  const { packageJson, dependencies, devDependencies } = resolvePackage({ addons, appName, command, docker })
+  const { packageJson, dependencies, devDependencies } = resolvePackage({ addons, appName, command })
 
   fs.writeFileSync(
     path.join(root, 'package.json'),
@@ -108,7 +107,6 @@ function createApp(
     addons,
     dependencies,
     devDependencies,
-    docker,
     alias,
     installDependencies,
   ).then()
@@ -123,7 +121,6 @@ async function run(
   addons,
   dependencies,
   devDependencies,
-  docker,
   alias,
   installDependencies,
 ) {
@@ -173,12 +170,7 @@ async function run(
   }
 
   provisionConfig(root, addons, appName, originalDirectory, alias, verbose)
-
   provisionTemplates(root, addons, appName, originalDirectory, alias, verbose)
-
-  if (docker) {
-    provisionDocker(root, appName, originalDirectory, alias, verbose)
-  }
 
   spawn('git', ['init'])
 }
@@ -309,29 +301,6 @@ function provisionTemplates(root, addons = [], appName, originalDirectory, alias
         })
       })
       .on('error', error => console.error('fatal error', error))
-  })
-}
-
-function provisionDocker(root, appName, originalDirectory, alias, verbose) {
-  fs.readdir(`${__dirname}/../docker`, (err, data) => {
-    if (err && verbose) {
-      console.log(err)
-    }
-
-    (data || []).forEach(elem => {
-      secureCopy(`${__dirname}/../docker/${elem}`, `${root}/docker/${elem}`, err => {
-        if (err) {
-          console.log(chalk.red(`Cannot copy ${elem}`))
-          if (verbose) {
-            console.log(chalk.red(err))
-          }
-        } else {
-          if (verbose) {
-            console.log(chalk.green(`Copied "docker/${elem}" successfully`))
-          }
-        }
-      })
-    })
   })
 }
 

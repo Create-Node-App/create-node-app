@@ -86,13 +86,13 @@ if (program.typescript) { addons.push('typescript') }
 if (program.redux) { addons.push('redux') }
 if (program.recoil) { addons.push('recoil') }
 if (program.semanticUi) { addons.push('semantic-ui') }
+if (program.docker) { addons.push('docker-web') }
 
 createApp(
   projectName,
   program.verbose,
   program.useNpm,
   addons,
-  program.docker,
   program.alias,
   program.installDependencies,
 )
