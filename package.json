@@ -13,12 +13,14 @@
   "keywords": [
     "react",
     "redux",
+    "recoil",
+    "semantic-ui",
     "webpack",
     "babel",
     "code generator"
   ],
   "bin": {
-    "create-react-redux-webpack-project": "./index.js"
+    "create-react-webpack-project": "./index.js"
   },
   "authors": [
     {

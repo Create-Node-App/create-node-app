@@ -3,12 +3,12 @@ const path = require('path');
 const Dotenv = require('dotenv-webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssWebpackPlugin = require('mini-css-extract-plugin')
+const MiniCssWebpackPlugin = require('mini-css-extract-plugin');
 
 const commonPaths = require('./common-paths');
 
 const HOST = process.env.HOST || 'localhost';
-const PORT = process.env.PORT || 8091;
+const PORT = process.env.PORT || PORT;
 const URL_BASE = process.env.URL_BASE || `http://${HOST}:${PORT}`;
 
 const config = {
@@ -23,15 +23,9 @@ const config = {
     historyApiFallback: true,
     hot: true,
     inline: true,
-    port: 8091,
+    port: PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
     public: URL_BASE,
-    proxy: {
-      '/api': {
-        target: 'http://citisci.lifia.info.unlp.edu.ar:12482',
-      },
-    },
-
   },
   plugins: [
     new webpack.DefinePlugin({
