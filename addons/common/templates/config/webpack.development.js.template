@@ -28,13 +28,11 @@ const config = {
     public: URL_BASE,
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('development')
-      },
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
     }),
     new Dotenv({
-      path: './.env.development',
+      path: commonPaths.devEnv,
     }),
     new MiniCssWebpackPlugin({
       filename: 'static/css/[name].css',

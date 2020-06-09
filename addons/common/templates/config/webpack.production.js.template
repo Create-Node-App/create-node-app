@@ -36,13 +36,11 @@ const config = {
     ],
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      },
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'production', // use 'production' unless process.env.NODE_ENV is defined
     }),
     new Dotenv({
-      path: './.env.production',
+      path: commonPaths.prodEnv,
     }),
     new MiniCssWebpackPlugin({
       filename: 'static/css/[name].[hash].css',
