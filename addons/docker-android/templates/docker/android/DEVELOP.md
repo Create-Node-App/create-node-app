@@ -1,3 +1,7 @@
+# Android Development
+
+This document details the use of useful development tools present on this project.
+
 ## Build docker
 
 ```sh
@@ -7,7 +11,7 @@ $ docker image build -t ionic-react:latest -f ./docker/android/develop.Dockerfil
 ## Set up the helper script
 
 This Docker image is most easily used by utilizing the `ionic-react` script available in
-`scripts/`. `ionic-react` will take any command you give it and run it within a Ionic React
+`bin/`. `ionic-react` will take any command you give it and run it within a Ionic React
 docker container. Alternatively, you can use `ionic-react bash` to drop into a shell for
 interactive use.
 

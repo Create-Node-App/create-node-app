@@ -1,6 +1,6 @@
 # Can't use alpine since it can't run 32-bit binaries, and the SDK doesn't have
 # 64-bit binaries
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ARG VERSION_SDK_TOOLS=4333796
 ARG NODE_VERSION=12.x
@@ -70,12 +70,6 @@ RUN echo "deb https://deb.nodesource.com/node_${NODE_VERSION} stretch main" > /e
     rm -rf /var/lib/apt/lists/*
 
 RUN yarn global add @ionic/cli
-
-### This is the port that the Ionic app will use to communicate with the
-### build server for loading new builds, and also where the debugger page will
-### be hosted (ie. localhost:8081/debugger-ui)
-
-EXPOSE 8081
 
 RUN apt-get update -q
 

@@ -1,0 +1,23 @@
+# Android Docker
+
+## Build
+
+```sh
+$ docker image build -t <%= projectName%>-android:latest -f ./docker/android/android.Dockerfile .
+```
+
+## Usage examples
+
+### Build project
+
+```sh
+$ docker run --rm --name android-build -v $PWD:/pwd -w /pwd  <%= projectName%>-android /bin/sh -c \
+  "yarn && yarn build:prod && yarn prepare:android && cd android && ./gradlew build && ./gradlew bundleRelease"
+```
+
+### Test avd
+
+```sh
+$ docker run --rm --name android-build -v $PWD:/pwd -w /pwd  <%= projectName%>-android /bin/sh -c \
+  "chmod +x ./bin/test-avd.sh && ./bin/test-avd.sh"
+```

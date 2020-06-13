@@ -96,4 +96,3 @@ createApp(
   program.alias,
   program.installDependencies,
 )
-
