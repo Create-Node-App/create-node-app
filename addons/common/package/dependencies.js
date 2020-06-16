@@ -1,10 +1,10 @@
 module.exports = [
   "i18next",
   "i18next-browser-languagedetector",
-  "i18next-xhr-backend",
+  "i18next-http-backend",
   "prop-types",
   "react",
   "react-dom",
-  "react-i18next@7.9.0",
+  "react-i18next",
   "react-router-dom",
 ]

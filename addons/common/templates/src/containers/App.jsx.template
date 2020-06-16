@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react';
-import { I18n } from 'react-i18next';
 import { BrowserRouter } from 'react-router-dom';
 
 import '<%= project %>/styles/custom/main.less';
@@ -12,13 +11,7 @@ import '<%= project %>/i18n';
 const App = () => (
   <Suspense fallback={<Loading />}>
     <BrowserRouter>
-      <I18n ns="translations">
-        {
-          (t, { i18n }) => (
-            <AppRoutes t={t} i18n={i18n} />
-          )
-        }
-      </I18n>
+      <AppRoutes />
     </BrowserRouter>
   </Suspense>
 );

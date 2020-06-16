@@ -1,5 +1,4 @@
 import React from 'react';
-import { I18n } from 'react-i18next';
 import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -17,13 +16,7 @@ const App = () => (
   <Provider store={store}>
     <PersistGate persistor={persistor} loading={<Loading />}>
       <ConnectedRouter history={history}>
-        <I18n ns="translations">
-          {
-            (t, { i18n }) => (
-              <AppRoutes t={t} i18n={i18n} />
-            )
-          }
-        </I18n>
+        <AppRoutes />
       </ConnectedRouter>
     </PersistGate>
   </Provider>
