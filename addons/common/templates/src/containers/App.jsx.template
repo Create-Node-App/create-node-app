@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import '<%= project %>/styles/custom/main.less';
 
 import Loading from '<%= project %>/components/Loading';
+import MomentLocale from '<%= project %>/components/MomentLocale';
 import AppRoutes from '<%= project %>/routes/AppRoutes';
 
 import '<%= project %>/i18n';
@@ -11,6 +12,7 @@ import '<%= project %>/i18n';
 const App = () => (
   <Suspense fallback={<Loading />}>
     <BrowserRouter>
+      <MomentLocale />
       <AppRoutes />
     </BrowserRouter>
   </Suspense>

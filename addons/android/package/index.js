@@ -8,7 +8,7 @@ module.exports = function resolvePackage(setup) {
     "@capacitor/android",
     "@capacitor/cli",
     "@capacitor/core",
-    "ionic"
+    "@ionic/cli"
   ]
 
   const packageJson = setup.packageJson
