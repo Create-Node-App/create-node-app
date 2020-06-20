@@ -13,7 +13,7 @@ module.exports = {
     path.resolve(__dirname, '../', 'src/index.jsx'),
   ],
 
-  outputPath: path.resolve(__dirname, '../', 'dist/'),
+  outputPath: path.resolve(__dirname, '../', 'build/'),
   outputServerPath: path.resolve(__dirname, '../', 'build/'),
   templatesOutputServerPath: path.resolve(__dirname, '../', 'build/'),
 

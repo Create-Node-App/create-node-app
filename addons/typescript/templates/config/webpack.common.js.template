@@ -65,7 +65,7 @@ const config = {
       exclude: /(node_modules|bower_components)/,
       loader: 'babel-loader',
     },
-    
+
     // these rules handle styles
     {
       test: /\.css$/,
@@ -126,7 +126,23 @@ const config = {
   },
   plugins: [
     new AsyncChunkNames(),
-    new ManifestPlugin(),
+    new ManifestPlugin({
+      seed: {
+        name: "<%= projectName%>",
+        short_name: "<%= projectName%>",
+        start_url: "index.html",
+        display: "standalone",
+        icons: [
+          {
+            src: "favicon.ico",
+            sizes: "512x512",
+            type: "image/x-icon"
+          }
+        ],
+        background_color: "#4e0041",
+        theme_color: "#4e0041"
+      },
+    }),
     new CleanWebpackPlugin({
       root: commonPaths.root,
     }),
