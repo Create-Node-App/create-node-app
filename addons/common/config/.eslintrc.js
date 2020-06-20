@@ -9,7 +9,7 @@ module.exports = {
     "node": true,
     "jest/globals": true,
   },
-  "extends": ["airbnb", "eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
   "settings": {
     "import/resolver": {
       "webpack": {
