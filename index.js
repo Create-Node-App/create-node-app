@@ -24,6 +24,7 @@ program
   .option('--recoil', 'add recoil.js support and setup the state management library for React')
   .option('--semantic-ui', 'add semantic ui and semantic ui react setup with theme config')
   .option('--docker', 'generate dockerfiles')
+  .option('--android', 'generates android setup using ionic react and capacitor')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
   .option('--no-install-dependencies')
   .allowUnknownOption()
@@ -86,7 +87,11 @@ if (program.typescript) { addons.push('typescript') }
 if (program.redux) { addons.push('redux') }
 if (program.recoil) { addons.push('recoil') }
 if (program.semanticUi) { addons.push('semantic-ui') }
-if (program.docker) { addons.push('docker-web') }
+if (program.android) { addons.push('android') }
+if (program.docker) {
+  addons.push('docker-web')
+  if (program.android) { addons.push('docker-android') }
+}
 
 createApp(
   projectName,
