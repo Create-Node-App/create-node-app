@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/ulises-jeremias/react-webpack-starter/issues"
   },
-  "Landing": "https://github.com/ulises-jeremias/react-webpack-starter#readme",
+  "homepage": "https://github.com/ulises-jeremias/react-webpack-starter#readme",
   "keywords": [
     "react",
     "redux",
