@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import * as serviceWorker from '<%= project%>/service-worker';
-import App from '<%= project%>/containers/App';
+import App from '<%= project%>/App';
 
 ReactDOM.render(<App />, document.getElementById('app'));
 

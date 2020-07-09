@@ -27,6 +27,7 @@ program
   .option('--android', 'generates android setup using ionic react and capacitor')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
   .option('--no-install-dependencies')
+  .option('--inplace', 'apply config to an existing project')
   .allowUnknownOption()
   .on('--help', () => {
     console.log()

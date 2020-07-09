@@ -9,7 +9,6 @@ module.exports = {
   prodEnv: path.resolve(__dirname, '../', '.env.production'),
 
   entryPoints: [
-    path.resolve(__dirname, '../', 'src/containers/App.jsx'),
     path.resolve(__dirname, '../', 'src/index.jsx'),
   ],
 

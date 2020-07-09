@@ -93,7 +93,7 @@ The base structure will be modified in the presence of the flags `--typescript`,
 │   └── index.html           # Main HTML page template for app
 ├── src                      # Application source code
 │   ├── components           # Global Reusable Components
-│   ├── containers           # Global Reusable Container Components and pplication Layout in which to render routes
+│   ├── pages                # Components associated with routes
 │   ├── routes               # Main route definitions and async split points
 │   │   └── AppRoutes.jsx    # Bootstrap main application routes
 │   ├── styles               # Application-wide styles
