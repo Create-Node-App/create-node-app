@@ -75,7 +75,7 @@ if (typeof projectName === 'undefined') {
   process.exit(1)
 }
 
-let addons = program.inplace ? [] : ['common']
+let addons = ['common']
 
 if (program.typescript) { addons.push('typescript') }
 if (program.redux) { addons.push('redux') }
@@ -91,6 +91,7 @@ createApp(
   projectName,
   program.verbose,
   program.useNpm,
+  program.inplace,
   addons,
   program.alias,
   program.installDependencies,

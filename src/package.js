@@ -7,7 +7,6 @@ module.exports = function resolvePackage({ addons = [], ...config } = {}) {
         const resolveAddonPackage = require(`../addons/${addon}/package`)
         return resolveAddonPackage(setup, config)
       } catch (err) {
-        console.log(err)
         return setup
       }
     }, { packageJson: {}, dependencies: [], devDependencies: [] })
