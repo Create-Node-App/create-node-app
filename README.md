@@ -21,11 +21,11 @@ the generated project will vary in the presence of the flags `--typescript`, `--
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
 
-Then open [http://localhost:8091/](http://localhost:8091/) to see your app.<br>
+Then open [http://localhost:8091/](http://localhost:8091/) to see your app.
 
 ## Creating an app
 
-**You’ll need to have Node 8.10.0 or later on your local development machine** (but it’s not required on the server). You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to easily switch Node versions between different projects.
+**You’ll need to have Node 8.10.0 or later on your local development machine** (but it’s not required on the server). You can use [fnm](https://github.com/Schniz/fnm) to easily switch Node versions between different projects.
 
 To create a new app, you may choose one of the following methods:
 
@@ -83,8 +83,6 @@ While developing, you will probably rely mostly on `yarn start`; however, there 
 
 
 ## Project Structure
-
-The base structure will be modified in the presence of the flags `--typescript`, `--redux`, `--recoil`,`--semantic-ui`, `--docker`.
 
 ```
 .
