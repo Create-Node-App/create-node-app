@@ -1,0 +1,17 @@
+name: Lint
+
+on:
+  schedule:
+    - cron:  '31 1,12 * * *'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install
+        run: yarn --no-progress --non-interactive --no-lockfile
+      - name: Build
+        run: node index.js app
+      - name: Lint
+        run: yarn --cwd "./app" lint
