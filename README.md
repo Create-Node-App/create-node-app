@@ -1,6 +1,6 @@
 # React + Webpack Starter
 
-[![Build Status](https://github.com/ulises-jeremias/react-webpack-starter/workflows/Build/badge.svg)](https://github.com/ulises-jeremias/react-webpack-starter/commits/master)
+[![Build Status](https://github.com/ulises-jeremias/react-webpack-starter/workflows/Build/badge.svg)](https://github.com/ulises-jeremias/react-webpack-starter/commits/develop)
 
 This starter kit is designed to get you up and running with a bunch of awesome front-end technologies.
 
