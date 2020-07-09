@@ -32,7 +32,7 @@ docker run \
        --privileged \
        -v /tmp/.X11-unix:/tmp/.X11-unix \
        -v /dev/bus/usb:/dev/bus/usb \
-       -v "$HOST_ANDROID_DIR":/home/"$DOCKER_USERNAME"/.android \
+       -v "$HOST_ANDROID_DIR":/Landing/"$DOCKER_USERNAME"/.android \
        -v "$(pwd)":"$DOCKER_PROJECT_MOUNT" \
        -v /dev/shm:/dev/shm \
        -v /etc/machine-id:/etc/machine-id \

@@ -1,0 +1,10 @@
+body {
+  background: rgba(20, 5, 5, 1);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  perspective: 800px;
+}

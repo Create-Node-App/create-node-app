@@ -1,11 +1,11 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import HomePage from '<%= project %>/pages/Home';
+import Landing from '<%= project %>/pages/Landing';
 
 const AppRoutes = (props) => (
   <Switch>
-    <Route path="/" component={HomePage} {...props} />
+    <Route path="/" component={Landing} {...props} />
   </Switch>
 );
 

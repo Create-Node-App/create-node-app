@@ -1,4 +1,4 @@
-const webpackMerge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 
 const commonConfig = require('./config/webpack.common.js');
 
@@ -15,5 +15,5 @@ const getAddons = addonsArgs => {
 module.exports = ({ env, addon }) => {
   const envConfig = require(`./config/webpack.${env || 'development'}.js`);
 
-  return webpackMerge(commonConfig, envConfig, ...getAddons(addon));
+  return merge(commonConfig, envConfig, ...getAddons(addon));
 };

@@ -27,7 +27,7 @@ program
   .option('--android', 'generates android setup using ionic react and capacitor')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
   .option('--no-install-dependencies')
-  .option('--inplace', 'apply config to an existing project')
+  .option('--inplace', 'apply setup to an existing project')
   .allowUnknownOption()
   .on('--help', () => {
     console.log()
@@ -38,13 +38,6 @@ program
     )
     console.log(
       `      ${chalk.cyan(`${packageJS.bugs.url}/new`)}`
-    )
-    console.log()
-    console.log(
-      `    Based on create-react-app`
-    )
-    console.log(
-      `      ${chalk.cyan('https://github.com/facebook/create-react-app')}`
     )
   })
   .parse(process.argv)
@@ -82,7 +75,7 @@ if (typeof projectName === 'undefined') {
   process.exit(1)
 }
 
-let addons = ['common']
+let addons = program.inplace ? [] : ['common']
 
 if (program.typescript) { addons.push('typescript') }
 if (program.redux) { addons.push('redux') }
