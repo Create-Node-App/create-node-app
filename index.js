@@ -20,7 +20,7 @@ program
   .option('--info', 'print environment debug info')
   .option('--use-npm')
   .option('--typescript', 'add TypeScript support')
-  .option('--redux', 'add redux support and setup ussing redux thunk middleware')
+  .option('--redux', 'add redux support and setup using redux thunk middleware')
   .option('--recoil', 'add recoil.js support and setup the state management library for React')
   .option('--semantic-ui', 'add semantic ui and semantic ui react setup with theme config')
   .option('--material-ui', 'add material ui setup with SVG icons')
