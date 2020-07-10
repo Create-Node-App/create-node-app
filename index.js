@@ -20,10 +20,11 @@ program
   .option('--info', 'print environment debug info')
   .option('--use-npm')
   .option('--typescript', 'add TypeScript support')
-  .option('--redux', 'add redux support and setup using redux thunk middleware')
+  .option('--redux', 'add redux support and setup using redux thunk middleware by default')
+  .option('--saga', 'add redux support and setup using redux saga middleware. --redux flag is required')
   .option('--recoil', 'add recoil.js support and setup the state management library for React')
-  .option('--semantic-ui', 'add semantic ui and semantic ui react setup with theme config')
   .option('--material-ui', 'add material ui setup with SVG icons')
+  .option('--semantic-ui', 'add semantic ui and semantic ui react setup with theme config')
   .option('--docker', 'generate dockerfiles')
   .option('--android', 'generates android setup using ionic react and capacitor')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
@@ -80,9 +81,10 @@ let addons = ['common']
 
 if (program.typescript) { addons.push('typescript') }
 if (program.redux) { addons.push('redux') }
+if (program.saga) { addons.push('saga') }
 if (program.recoil) { addons.push('recoil') }
-if (program.semanticUi) { addons.push('semantic-ui') }
 if (program.materialUi) { addons.push('material-ui') }
+if (program.semanticUi) { addons.push('semantic-ui') }
 if (program.android) { addons.push('android') }
 if (program.docker) {
   addons.push('docker-web')
