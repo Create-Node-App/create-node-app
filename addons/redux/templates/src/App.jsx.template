@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -16,10 +16,12 @@ import '<%= project %>/i18n';
 const App = () => (
   <Provider store={store}>
     <PersistGate persistor={persistor} loading={<Loading />}>
-      <ConnectedRouter history={history}>
-        <MomentLocale />
-        <AppRoutes />
-      </ConnectedRouter>
+      <Suspense fallback={<Loading />}>
+        <ConnectedRouter history={history}>
+          <MomentLocale />
+          <AppRoutes />
+        </ConnectedRouter>
+      </Suspense>
     </PersistGate>
   </Provider>
 );
