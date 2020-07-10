@@ -1,0 +1,29 @@
+import React, { Suspense } from 'react';
+import { ConnectedRouter } from 'connected-react-router';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+
+import '<%= project %>/styles/custom/main.less';
+
+import { store, persistor, history } from '<%= project %>/store';
+
+import Loading from '<%= project %>/components/Loading';
+import MomentLocale from '<%= project %>/components/MomentLocale';
+import AppRoutes from '<%= project %>/routes/AppRoutes';
+
+import '<%= project %>/i18n';
+
+const App = () => (
+  <Provider store={store}>
+    <PersistGate persistor={persistor} loading={<Loading />}>
+      <Suspense fallback={<Loading />}>
+        <ConnectedRouter history={history}>
+          <MomentLocale />
+          <AppRoutes />
+        </ConnectedRouter>
+      </Suspense>
+    </PersistGate>
+  </Provider>
+);
+
+export default App;
