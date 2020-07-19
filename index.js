@@ -23,6 +23,7 @@ program
   .option('--redux', 'add redux support and setup using redux thunk middleware by default')
   .option('--saga', 'add redux support and setup using redux saga middleware. --redux flag is required')
   .option('--recoil', 'add recoil.js support and setup the state management library for React')
+  .option('--antd', 'add ant-design setup with ant-design icons package')
   .option('--bootstrap', 'add bootstrap and bootstrap-react setup with theme config')
   .option('--material-ui', 'add material ui setup with SVG icons')
   .option('--semantic-ui', 'add semantic ui and semantic ui react setup with theme config')
@@ -84,9 +85,10 @@ if (program.typescript) { addons.push('typescript') }
 if (program.redux) { addons.push('redux') }
 if (program.saga) { addons.push('saga') }
 if (program.recoil) { addons.push('recoil') }
+if (program.antd) { addons.push('ant-design') }
+if (program.bootstrap) { addons.push('bootstrap') }
 if (program.materialUi) { addons.push('material-ui') }
 if (program.semanticUi) { addons.push('semantic-ui') }
-if (program.bootstrap) { addons.push('bootstrap') }
 if (program.android) { addons.push('android') }
 if (program.docker) {
   addons.push('docker-web')
