@@ -3,7 +3,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import '<%= project %>/styles/custom/main.less';
+import '<%= project %>/theme';
 
 import { store, persistor, history } from '<%= project %>/store';
 

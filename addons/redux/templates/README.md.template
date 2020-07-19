@@ -77,7 +77,7 @@ $ npm run serve:prod
 |   ├── reducers             # Reducer registry and injection
 │   ├── routes               # Main route definitions and async split points
 │   │   └── AppRoutes.jsx    # Bootstrap main application routes
-│   ├── styles               # Application-wide styles
+│   ├── theme                # Application-wide styles and theme
 |   |   └── custom           # Custom application styles
 |   ├── ...
 |   ├── i18n.js              # i18n configuration

@@ -116,7 +116,7 @@ const config = {
     alias: {
       <%= project%>: commonPaths.sourcePath,
       '<%= project%>-static': path.resolve(__dirname, '../', 'static/'),
-      '../../theme.config$': path.resolve(__dirname, '../', 'src/styles/semantic-ui/theme.config'),
+      '../../theme.config$': path.resolve(__dirname, '../', 'src/theme/semantic-ui/theme.config'),
       heading: path.resolve(__dirname, '../', 'src/semantic/heading.less'),
     },
     modules: [

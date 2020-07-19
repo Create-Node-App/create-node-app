@@ -78,7 +78,7 @@ $ npm run serve:prod
 │   ├── routes               # Main route definitions and async split points
 │   │   └── AppRoutes.jsx    # Bootstrap main application routes
 │   ├── sagas                # Custom sagas and root saga definition
-│   ├── styles               # Application-wide styles
+│   ├── theme                # Application-wide styles and theme
 |   |   └── custom           # Custom application styles
 |   ├── ...
 |   ├── i18n.js              # i18n configuration
