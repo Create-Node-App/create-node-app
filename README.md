@@ -17,7 +17,25 @@ $ cd my-app
 $ npm start
 ```
 
-the generated project will vary in the presence of the flags `--typescript`, `--redux`, `--saga`, `--recoil`, `--material-ui`, `--semantic-ui`, `--docker`, `--android`.
+the generated project will vary in the presence of the following flags:
+| Flag | What is it for? | 
+|------|-----------------|
+| --verbose | print additional logs |
+| --info | print environment debug info |
+| --no-install-dependencies | will no install dependencies on the generated project |
+| --use-npm | will use npm as command |
+| --inplace | apply setup to an existing project |
+| -a, --alias \<alias\> | will setup webpack alias. Default value: app |
+| --typescript | add TypeScript support |
+| --redux | add redux support and setup using redux thunk middleware by default |
+| --redux --saga | add redux support and setup using redux saga middleware |
+| --recoil | add recoil.js support and setup the state management library for React |
+| --antd | add ant-design setup with ant-design icons package |
+| --bootstrap | add bootstrap and bootstrap-react setup with theme config |
+| --material-ui | add material ui setup with SVG icons |
+| --semantic-ui | add semantic ui and semantic ui react setup with theme config |
+| --docker | generate dockerfiles for development and production environments |
+| --android | generates android setup using ionic react and capacitor. If --docker flag is active, then will generate all dockerfile related to android emulation and testing |
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
 
