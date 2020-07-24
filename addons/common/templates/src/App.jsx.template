@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-import '<%= project %>/styles/custom/main.less';
+import '<%= project %>/theme';
 
 import Loading from '<%= project %>/components/Loading';
 import MomentLocale from '<%= project %>/components/MomentLocale';

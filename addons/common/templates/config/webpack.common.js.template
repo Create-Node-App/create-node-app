@@ -15,7 +15,7 @@ const config = {
     ...commonPaths.entryPoints,
   ],
   output: {
-    filename: 'static/js/[name].[hash:8].bundle.js',
+    filename: 'assets/js/[name].[hash:8].bundle.js',
     path: commonPaths.outputPath,
     publicPath: '/',
   },
@@ -64,21 +64,21 @@ const config = {
     // this rule handles images
     {
       test: /\.jpe?g$|\.gif$|\.ico$|\.png$|\.svg$/,
-      use: 'file-loader?name=static/fonts/[name].[hash].[ext]',
+      use: 'file-loader?name=assets/fonts/[name].[hash].[ext]',
     },
 
     // the following 3 rules handle font extraction
     {
       test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: 'url-loader?limit=10000&mimetype=application/font-woff&name=static/fonts/[name].[hash].[ext]',
+      loader: 'url-loader?limit=10000&mimetype=application/font-woff&name=assets/fonts/[name].[hash].[ext]',
     },
     {
       test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: 'file-loader?name=static/fonts/[name].[hash].[ext]',
+      loader: 'file-loader?name=assets/fonts/[name].[hash].[ext]',
     },
     {
       test: /\.otf(\?.*)?$/,
-      use: 'file-loader?name=static/fonts/[name].[ext]&mimetype=application/font-otf',
+      use: 'file-loader?name=assets/fonts/[name].[ext]&mimetype=application/font-otf',
     }],
   },
   resolve: {
@@ -86,8 +86,7 @@ const config = {
     alias: {
       <%= project%>: commonPaths.sourcePath,
       '<%= project%>-static': path.resolve(__dirname, '../', 'static/'),
-      '../../theme.config$': path.resolve(__dirname, '../', 'src/styles/semantic-ui/theme.config'),
-      heading: path.resolve(__dirname, '../', 'src/semantic/heading.less'),
+      '../../theme.config$': path.resolve(__dirname, '../', 'src/theme/semantic-ui/theme.config'),
     },
     modules: [
       'src',
