@@ -30,7 +30,7 @@ program
   .option('--docker', 'generate dockerfiles')
   .option('--android', 'generates android setup using ionic react and capacitor')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
-  .option('--no-install-dependencies')
+  .option('--no-deps')
   .option('--inplace', 'apply setup to an existing project')
   .allowUnknownOption()
   .on('--help', () => {
