@@ -9,12 +9,16 @@ const Dotenv = require('dotenv-webpack');
 
 const commonPaths = require('./common-paths');
 
+const PUBLIC_URL = process.env.PUBLIC_URL || '/';
+
+console.log(`App Base Url: ${PUBLIC_URL}`);
+
 const config = {
   output: {
-    filename: 'static/js/[name].[chunkhash:8].bundle.js',
-    chunkFilename: 'static/js/[name].[chunkhash:8].js',
+    filename: 'assets/js/[name].[chunkhash:8].bundle.js',
+    chunkFilename: 'assets/js/[name].[chunkhash:8].js',
     path: commonPaths.outputServerPath,
-    publicPath: '/'
+    publicPath: `${PUBLIC_URL}`
   },
   mode: 'production',
   optimization: {
@@ -36,6 +40,9 @@ const config = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      PUBLIC_URL: JSON.stringify(PUBLIC_URL),
+    }),
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production', // use 'production' unless process.env.NODE_ENV is defined
     }),
@@ -43,12 +50,13 @@ const config = {
       path: commonPaths.prodEnv,
     }),
     new MiniCssWebpackPlugin({
-      filename: 'static/css/[name].[hash].css',
-      chunkFilename: 'static/css/[id].[hash].css',
+      filename: 'assets/css/[name].[hash].css',
+      chunkFilename: 'assets/css/[id].[hash].css',
     }),
     new HtmlWebpackPlugin({
       template: commonPaths.template,
       title: '<%= projectName%>',
+      base: `${PUBLIC_URL}`,
       filename: path.resolve(__dirname, commonPaths.templatesOutputServerPath, 'index.html'),
       favicon: commonPaths.favicon,
     }),

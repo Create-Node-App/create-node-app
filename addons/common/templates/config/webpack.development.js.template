@@ -35,8 +35,8 @@ const config = {
       path: commonPaths.devEnv,
     }),
     new MiniCssWebpackPlugin({
-      filename: 'static/css/[name].css',
-      chunkFilename: 'static/css/[id].css',
+      filename: 'assets/css/[name].css',
+      chunkFilename: 'assets/css/[id].css',
     }),
     new HtmlWebpackPlugin({
       template: commonPaths.template,
