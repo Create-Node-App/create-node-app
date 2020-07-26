@@ -14,4 +14,4 @@ jobs:
       - name: Build
         run: node index.js app
       - name: Lint
-        run: yarn --cwd "./app" lint
+        run: cd app && yarn lint
