@@ -21,4 +21,5 @@ module.exports = {
   template: path.resolve(__dirname, '../', 'public/index.html'),
   favicon: path.resolve(__dirname, '../', 'public/favicon.ico'),
   manifest: path.resolve(__dirname, '../', 'public/manifest.json'),
+  serviceWorker: path.resolve(__dirname, '../', 'src/', 'service-worker.js'),
 };

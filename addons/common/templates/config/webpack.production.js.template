@@ -69,6 +69,10 @@ const config = {
           from: commonPaths.favicon,
           to: commonPaths.outputServerPath,
         },
+        {
+          from: commonPaths.serviceWorker,
+          to: commonPaths.outputServerPath,
+        },
       ]
     }),
   ],
