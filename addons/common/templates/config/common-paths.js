@@ -5,16 +5,16 @@ module.exports = {
   root: path.resolve(__dirname, '../../'),
   sourcePath: path.resolve(__dirname, '../', 'src/'),
 
-  devEnv: path.resolve(__dirname, '../', '.env.development'),
-  prodEnv: path.resolve(__dirname, '../', '.env.production'),
+  devEnv: path.resolve(__dirname, '../', process.env.DEV_ENV_FILE || '.env.development'),
+  prodEnv: path.resolve(__dirname, '../', process.env.PROD_ENV_FILE || '.env.production'),
 
   entryPoints: [
     path.resolve(__dirname, '../', 'src/index.jsx'),
   ],
 
-  outputPath: path.resolve(__dirname, '../', 'build/'),
-  outputServerPath: path.resolve(__dirname, '../', 'build/'),
-  templatesOutputServerPath: path.resolve(__dirname, '../', 'build/'),
+  outputPath: path.resolve(__dirname, '../', process.env.DEV_BUILD_DIR || 'build/'),
+  outputServerPath: path.resolve(__dirname, '../', process.env.PROD_BUILD_DIR || 'build/'),
+  templatesOutputServerPath: path.resolve(__dirname, '../', process.env.PROD_TEMPLATES_BUILD_DIR || process.env.PROD_BUILD_DIR || 'build/'),
 
   locales: path.resolve(__dirname, '../', 'assets/locales/'),
   images: path.resolve(__dirname, '../', 'assets/images/'),

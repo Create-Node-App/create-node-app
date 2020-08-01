@@ -102,5 +102,5 @@ createApp(
   program.inplace,
   addons,
   program.alias,
-  program.installDependencies,
+  !program.noDeps,
 )
