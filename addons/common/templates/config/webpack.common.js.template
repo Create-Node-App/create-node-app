@@ -85,7 +85,7 @@ const config = {
     extensions: ['.js', '.jsx'],
     alias: {
       <%= project%>: commonPaths.sourcePath,
-      '<%= project%>-static': path.resolve(__dirname, '../', 'static/'),
+      '<%= project%>-assets': path.resolve(__dirname, '../', 'static/'),
       '../../theme.config$': path.resolve(__dirname, '../', 'src/theme/semantic-ui/theme.config'),
     },
     modules: [

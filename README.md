@@ -117,8 +117,7 @@ While developing, you will probably rely mostly on `yarn start`; however, there 
 |   ├── ...
 |   ├── i18n.js              # i18n configuration
 |   ├── index.jsx            # Application bootstrap and rendering with store
-├── static                   # Static public assets imported anywhere in source code
-└── test                     # Unit tests
+└── static                   # Static public assets imported anywhere in source code
 ```
 
 ## Live Development

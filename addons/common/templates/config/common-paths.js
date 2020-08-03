@@ -16,8 +16,8 @@ module.exports = {
   outputServerPath: path.resolve(__dirname, '../', process.env.PROD_BUILD_DIR || 'build/'),
   templatesOutputServerPath: path.resolve(__dirname, '../', process.env.PROD_TEMPLATES_BUILD_DIR || process.env.PROD_BUILD_DIR || 'build/'),
 
-  locales: path.resolve(__dirname, '../', 'assets/locales/'),
-  images: path.resolve(__dirname, '../', 'assets/images/'),
+  locales: path.resolve(__dirname, '../', 'static/locales/'),
+  images: path.resolve(__dirname, '../', 'static/images/'),
   template: path.resolve(__dirname, '../', 'public/index.html'),
   favicon: path.resolve(__dirname, '../', 'public/favicon.ico'),
   manifest: path.resolve(__dirname, '../', 'public/manifest.json'),

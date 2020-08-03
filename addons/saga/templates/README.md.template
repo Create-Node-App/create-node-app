@@ -84,8 +84,7 @@ $ npm run serve:prod
 |   ├── i18n.js              # i18n configuration
 |   ├── index.jsx            # Application bootstrap and rendering with store
 │   ├── store.js             # Redux-specific pieces. Create and instrument redux store
-├── static                   # Static public assets imported anywhere in source code
-└── test                     # Unit tests
+└── static                   # Static public assets imported anywhere in source code
 ```
 
 ## Testing
