@@ -5,7 +5,6 @@ module.exports = [
   "@babel/plugin-proposal-object-rest-spread",
   "@babel/preset-env",
   "@babel/preset-react",
-  "@babel/preset-typescript",
   "babel-eslint",
   "babel-jest",
   "babel-loader",
