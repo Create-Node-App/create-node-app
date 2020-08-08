@@ -2,6 +2,7 @@ module.exports = function resolvePackage(setup) {
   const dependencies = []
 
   const devDependencies = [
+    '@babel/preset-typescript',
     '@types/jest',
     '@types/enzyme',
     '@types/enzyme-adapter-react-16',

@@ -1,4 +1,4 @@
-FROM node:12.14-alpine as development
+FROM node:12.14 as development
 WORKDIR /usr/src/app
 COPY . .
 RUN yarn
