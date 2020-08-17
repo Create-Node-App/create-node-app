@@ -12,22 +12,16 @@ module.exports = function resolvePackage(setup) {
     '@types/react-router',
     '@types/react-router-dom',
     '@types/react-test-renderer',
+    '@typescript-eslint/eslint-plugin',
+    '@typescript-eslint/parser',
     'awesome-typescript-loader',
-    'prettier-tslint',
-    'tslint-config-prettier',
-    'tslint-plugin-prettier',
     'ts-jest',
-    'tslint',
-    'tslint-config-prettier',
-    'tslint-loader',
-    'tslint-plugin-prettier',
-    'tslint-react',
     'typescript',
   ]
 
   const packageJson = setup.packageJson
-  packageJson.scripts.lint += " && prettier --check \"src/**/*.{ts,tsx}\""
-  packageJson.scripts["lint:fix"] += " && prettier --write \"src/**/*.{ts,tsx}\""
+  packageJson.scripts.lint = "prettier --check \"src/**/*.{js,jsx,ts,tsx}\""
+  packageJson.scripts["lint:fix"] = "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
 
   return {
     ...setup,
