@@ -11,7 +11,7 @@ import storage from 'redux-persist/lib/storage';
 import reducers from '<%= project %>/reducers';
 
 export const history = createBrowserHistory({
-  basename: '/',
+  basename: process.env.PUBLIC_URL || '/',
 });
 
 const persistConfig = {

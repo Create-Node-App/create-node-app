@@ -11,7 +11,7 @@ import '<%= project %>/i18n';
 
 const App = () => (
   <Suspense fallback={<Loading />}>
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <MomentLocale />
       <AppRoutes />
     </BrowserRouter>
