@@ -26,14 +26,14 @@ module.exports = function resolvePackage(setup, { appName, command }) {
       "build:prod": `${command} build -p --env.env=production`,
       "build:prod:watch": `${command} build:prod --watch`,
       "build:prod:analyze": `${command} build:prod --env.addon=bundleanalyze --env.addon=bundlevisualizer`,
-      "lint": "eslint ./src --ext .jsx --ext .js",
-      "lint:fix": "eslint ./src --fix --ext .jsx --ext .js --fix",
+      "lint": "prettier --check \"src/**/*.{js,jsx}\"",
+      "lint:fix": "prettier --write \"src/**/*.{js,jsx}\"",
       "serve:dev": "webpack-dev-server --mode development --open --hot --env.env=development",
       "serve:dev:dashboard": "webpack-dashboard webpack-dev-server -- --mode development --env.addon=dashboard",
       "start": `${command} serve:dev`,
-      "test": "jest --runInBand --detectOpenHandles --config .jest.config.js",
-      "test:watch": "jest -u --runInBand --verbose --watch --detectOpenHandles --config .jest.config.js",
-      "test:coverage": "jest -u --coverage --verbose --runInBand --detectOpenHandles --config .jest.config.js",
+      "test": "jest --runInBand --detectOpenHandles --passWithNoTests",
+      "test:watch": "jest -u --runInBand --verbose --watch --detectOpenHandles --passWithNoTests",
+      "test:coverage": "jest -u --coverage --verbose --runInBand --detectOpenHandles --passWithNoTests",
     }
   }
 

@@ -13,7 +13,7 @@ import '<%= project %>/i18n';
 const App = () => (
   <RecoilRoot>
     <Suspense fallback={<Loading />}>
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <MomentLocale />
         <AppRoutes />
       </BrowserRouter>

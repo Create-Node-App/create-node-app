@@ -22,19 +22,9 @@ const config = {
   module: {
     rules: [{
       enforce: 'pre',
-      test: /\.(js|jsx)$/,
+      test: /\.(js|jsx|ts|tsx)$/,
       exclude: /(node_modules|bower_components)/,
       loader: 'eslint-loader',
-      options: {
-        failOnWarning: false,
-        failOnError: true,
-      },
-    },
-    {
-      enforce: 'pre',
-      test: /\.(ts|tsx)$/,
-      exclude: /(node_modules|bower_components)/,
-      loader: 'tslint-loader',
       options: {
         failOnWarning: false,
         failOnError: true,

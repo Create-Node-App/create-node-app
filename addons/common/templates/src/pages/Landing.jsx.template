@@ -1,12 +1,8 @@
 import React from 'react';
 import Cracked from 'app/components/Animation/Cracked';
 
-import "./Landing.css";
+import './Landing.css';
 
-const Landing = () => (
-  <Cracked>
-    <%= projectName %>
-  </Cracked>
-);
+const Landing = () => <Cracked><%= projectName %></Cracked>;
 
 export default Landing;

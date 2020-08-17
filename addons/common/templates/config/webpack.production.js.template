@@ -8,10 +8,7 @@ const TerserWebpackPlugin = require('terser-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 const commonPaths = require('./common-paths');
-
-const PUBLIC_URL = process.env.PUBLIC_URL || '/';
-
-console.log(`App Base Url: ${PUBLIC_URL}`);
+const PUBLIC_URL = require("../package.json").homepage;
 
 const config = {
   output: {
