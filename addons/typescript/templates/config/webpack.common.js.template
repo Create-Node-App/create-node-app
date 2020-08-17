@@ -31,7 +31,7 @@ const config = {
       },
     },
     {
-      test: /\.tsx?$/,
+      test: /\.(ts|tsx)?$/,
       use: [
         {
           loader: 'awesome-typescript-loader',
