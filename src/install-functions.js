@@ -167,10 +167,8 @@ async function run(
       path.join(root, 'package.json'),
       JSON.stringify(packageJson, null, 2) + os.EOL
     )
-
   }
 
-  provisionConfig(root, addons, appName, originalDirectory, alias, verbose)
   provisionTemplates(root, addons, appName, originalDirectory, alias, verbose)
 
   spawn('git', ['init'])
@@ -238,36 +236,16 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
   })
 }
 
-function provisionConfig(root, addons = [], appName, originalDirectory, alias, verbose) {
-  addons.forEach((addon) => {
-    fs.readdir(`${__dirname}/../addons/${addon}/config`, (err, data) => {
-      if (err && verbose) {
-        console.log(err)
-      }
-
-      (data || []).forEach(elem => {
-        secureCopy(`${__dirname}/../addons/${addon}/config/${elem}`, `${root}/${elem}`, err => {
-          if (err) {
-            console.log(chalk.red(`Cannot copy ${elem}`))
-            if (verbose) {
-              console.log(chalk.red(err))
-            }
-          } else {
-            if (verbose) {
-              console.log(chalk.green(`Copied "${elem}" successfully`))
-            }
-          }
-        })
-      })
-    })
-  })
-}
-
 function provisionTemplates(root, addons = [], appName, originalDirectory, alias, verbose) {
   addons.forEach((addon) => {
-    readdirp({ root: `${__dirname}/../addons/${addon}/templates`, fileFilter: '*.template' })
+    const templateDir = `${__dirname}/../addons/${addon}/template`;
+    if (!fs.existsSync(templateDir)) {
+      return;
+    }
+
+    readdirp({ root: `${templateDir}`, fileFilter: '*.template' })
       .on('data', ({ path, parentDir }) => {
-        const file = fs.readFileSync(`${__dirname}/../addons/${addon}/templates/${path}`, 'utf8')
+        const file = fs.readFileSync(`${templateDir}/${path}`, 'utf8')
         const newFile = _.template(file)
         const newPath = path.replace(/.template$/, '')
         if (parentDir) {
@@ -286,9 +264,9 @@ function provisionTemplates(root, addons = [], appName, originalDirectory, alias
       })
       .on('error', error => console.error('fatal error', error))
 
-    readdirp({ root: `${__dirname}/../addons/${addon}/templates`, fileFilter: '!*.template' })
+    readdirp({ root: `${templateDir}`, fileFilter: '!*.template' })
       .on('data', ({ path }) => {
-        secureCopy(`${__dirname}/../addons/${addon}/templates/${path}`, `${root}/${path}`, err => {
+        secureCopy(`${templateDir}/${path}`, `${root}/${path}`, err => {
           if (err) {
             console.log(chalk.red(`Cannot copy ${path}`))
             if (verbose) {

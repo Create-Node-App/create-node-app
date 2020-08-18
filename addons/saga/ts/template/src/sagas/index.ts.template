@@ -1,0 +1,8 @@
+import { all } from 'redux-saga/effects';
+import formActionSaga from 'redux-form-saga';
+import example from '<%= project %>/sagas/example';
+
+export default function* rootSaga() {
+  yield all([example(), formActionSaga]);
+  // code after all-effect
+}

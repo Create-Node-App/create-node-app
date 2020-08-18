@@ -6,6 +6,7 @@ const envinfo = require('envinfo')
 
 const packageJS = require('./package.json')
 const { createApp } = require('./src/install-functions')
+const { toCamelCase } = require('./src/helpers-functions')
 
 let projectName
 
@@ -79,20 +80,23 @@ if (typeof projectName === 'undefined') {
   process.exit(1)
 }
 
-let addons = ['common']
+const lang = program.typescript ? 'ts' : 'es'
+const langAddons = ['redux', 'saga','recoil', 'ant-design', 'bootstrap', 'material-ui', 'semantic-ui']
 
-if (program.typescript) { addons.push('typescript') }
-if (program.redux) { addons.push('redux') }
-if (program.saga) { addons.push('saga') }
-if (program.recoil) { addons.push('recoil') }
-if (program.antd) { addons.push('ant-design') }
-if (program.bootstrap) { addons.push('bootstrap') }
-if (program.materialUi) { addons.push('material-ui') }
-if (program.semanticUi) { addons.push('semantic-ui') }
+// initialized with base template
+let addons = ['base/common', `base/${lang}`]
+
+langAddons.forEach(addon => {
+  if (program[toCamelCase(addon)]) {
+    addons.push(`${addon}/common`)
+    addons.push(`${addon}/${lang}`)
+  }
+})
+
 if (program.android) { addons.push('android') }
 if (program.docker) {
-  addons.push('docker-web')
-  if (program.android) { addons.push('docker-android') }
+  addons.push('docker/web')
+  if (program.android) { addons.push('docker/android') }
 }
 
 createApp(
