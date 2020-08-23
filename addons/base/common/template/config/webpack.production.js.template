@@ -8,7 +8,7 @@ const TerserWebpackPlugin = require('terser-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 const commonPaths = require('./common-paths');
-const PUBLIC_URL = require("../package.json").homepage;
+const PUBLIC_URL = require("../package.json").homepage || '/';
 
 const config = {
   output: {
