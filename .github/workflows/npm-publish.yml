@@ -2,7 +2,9 @@ name: npm-publish
 on:
   push:
     branches:
-      - master # Change this to your default branch
+      - master
+      - develop
+
 jobs:
   npm-publish:
     name: npm-publish
