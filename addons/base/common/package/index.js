@@ -41,12 +41,12 @@ module.exports = function resolvePackage(setup, { appName, command }) {
       }
     },
     "lint-staged": {
-      "*.(js|jsx)": [
+      "*.{js,jsx}": [
         "prettier --write",
         "yarn lint:fix",
         "git add"
       ],
-      "*.{json,css,sass,scss,less,sahtml,md}": [
+      "*.{json,css,sass,scss,less,html,md}": [
         "prettier --write",
         "git add"
       ]

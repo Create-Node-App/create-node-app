@@ -1,6 +1,6 @@
-import { combineReducers } from '../../../../ts/template/src/reducers/node_modules/redux';
-import { reducer as formReducer } from '../../../../ts/template/src/reducers/node_modules/redux-form';
-import { connectRouter } from '../../../../ts/template/src/reducers/node_modules/connected-react-router';
+import { combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form';
+import { connectRouter } from 'connected-react-router';
 
 export default (history) =>
   combineReducers({

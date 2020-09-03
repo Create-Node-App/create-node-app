@@ -28,7 +28,7 @@ module.exports = function resolvePackage(setup) {
   // update pre-commit stage
   packageJson["lint-staged"] = {
     ...(packageJson["lint-staged"] || {}),
-    "*.(ts|tsx)": [
+    "*.{ts,tsx}": [
       "prettier --write",
       "yarn lint:fix",
       "git add"
