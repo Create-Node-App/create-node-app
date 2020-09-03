@@ -1,6 +1,6 @@
 {
   "name": "create-react-webpack-project",
-  "version": "1.4.3",
+  "version": "1.4.5",
   "description": "A basic template that consists of the essential elements that are required to start building a React application using Redux",
   "repository": {
     "type": "git",
