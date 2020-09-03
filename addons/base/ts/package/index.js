@@ -20,8 +20,20 @@ module.exports = function resolvePackage(setup) {
   ]
 
   const packageJson = setup.packageJson
-  packageJson.scripts.lint = "prettier --check \"src/**/*.{js,jsx,ts,tsx}\""
-  packageJson.scripts["lint:fix"] = "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
+
+  // update formater for ts and tsx files
+  packageJson.scripts.lint = "prettier --ignore-path .eslintignore --check \"**/*.{js,jsx,ts,tsx,json,css,sass,scss,less,html,md}\""
+  packageJson.scripts["lint:fix"] = "prettier --ignore-path .eslintignore --write \"**/*.{js,jsx,ts,tsx,json,css,sass,scss,less,html,md}\""
+
+  // update pre-commit stage
+  packageJson["lint-staged"] = {
+    ...(packageJson["lint-staged"] || {}),
+    "*.(ts|tsx)": [
+      "prettier --write",
+      "yarn lint:fix",
+      "git add"
+    ],
+  }
 
   return {
     ...setup,

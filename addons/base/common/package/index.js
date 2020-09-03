@@ -26,8 +26,8 @@ module.exports = function resolvePackage(setup, { appName, command }) {
       "build:prod": `${command} build -p --env.env=production`,
       "build:prod:watch": `${command} build:prod --watch`,
       "build:prod:analyze": `${command} build:prod --env.addon=bundleanalyze --env.addon=bundlevisualizer`,
-      "lint": "prettier --check \"src/**/*.{js,jsx}\"",
-      "lint:fix": "prettier --write \"src/**/*.{js,jsx}\"",
+      "lint": "prettier --ignore-path .eslintignore --check \"**/*.{js,jsx,json,css,sass,scss,less,html,md}\"",
+      "lint:fix": "prettier --ignore-path .eslintignore --write \"**/*.{js,jsx,json,css,sass,scss,less,html,md}\"",
       "serve:dev": "webpack-dev-server --mode development --open --hot --env.env=development",
       "serve:dev:dashboard": "webpack-dashboard webpack-dev-server -- --mode development --env.addon=dashboard",
       "start": `${command} serve:dev`,
@@ -36,13 +36,21 @@ module.exports = function resolvePackage(setup, { appName, command }) {
       "test:coverage": "jest -u --coverage --verbose --runInBand --detectOpenHandles --passWithNoTests",
     },
     husky: {
-        "hooks": {
-          "pre-commit": "lint-staged"
-        }
-      },
-      "lint-staged": {
-        "*.(js|jsx|ts|tsx)": ["yarn lint:fix", "git add"]
+      "hooks": {
+        "pre-commit": "lint-staged"
       }
+    },
+    "lint-staged": {
+      "*.(js|jsx)": [
+        "prettier --write",
+        "yarn lint:fix",
+        "git add"
+      ],
+      "*.{json,css,sass,scss,less,sahtml,md}": [
+        "prettier --write",
+        "git add"
+      ]
+    }
   }
 
   return { packageJson, dependencies, devDependencies }
