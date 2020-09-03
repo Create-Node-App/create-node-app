@@ -34,7 +34,15 @@ module.exports = function resolvePackage(setup, { appName, command }) {
       "test": "jest --runInBand --detectOpenHandles --passWithNoTests",
       "test:watch": "jest -u --runInBand --verbose --watch --detectOpenHandles --passWithNoTests",
       "test:coverage": "jest -u --coverage --verbose --runInBand --detectOpenHandles --passWithNoTests",
-    }
+    },
+    husky: {
+        "hooks": {
+          "pre-commit": "lint-staged"
+        }
+      },
+      "lint-staged": {
+        "*.(js|jsx|ts|tsx)": ["yarn lint:fix", "git add"]
+      }
   }
 
   return { packageJson, dependencies, devDependencies }

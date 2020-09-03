@@ -31,6 +31,7 @@ module.exports = [
   "eslint-plugin-react",
   "file-loader",
   "html-webpack-plugin",
+  "husky",
   "inject-html-webpack-plugin",
   "jest",
   "jest-transform-stub",
