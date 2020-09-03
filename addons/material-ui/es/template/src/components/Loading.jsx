@@ -1,6 +1,6 @@
-import React from '../../../../ts/template/src/components/node_modules/react';
-import { makeStyles } from '../../../../ts/template/src/components/node_modules/@material-ui/core/styles';
-import CircularProgress from '../../../../ts/template/src/components/node_modules/@material-ui/core/CircularProgress';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
