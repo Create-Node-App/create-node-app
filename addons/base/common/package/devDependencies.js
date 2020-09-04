@@ -37,6 +37,7 @@ module.exports = [
   "jest-transform-stub",
   "less",
   "less-loader",
+  "lint-staged",
   "mini-css-extract-plugin",
   "node-sass",
   "path",
