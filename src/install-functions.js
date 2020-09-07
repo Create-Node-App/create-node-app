@@ -105,7 +105,7 @@ function createApp(
     originalDirectory,
     verbose,
     useYarn,
-    inplace ? addons.filter((addon) => addon !== 'common') : addons,
+    inplace ? addons.filter((addon) => !addon.startsWith('base/')) : addons,
     dependencies,
     devDependencies,
     alias,
