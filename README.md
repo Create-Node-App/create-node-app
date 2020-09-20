@@ -8,8 +8,8 @@ This starter kit is designed to get you up and running with a bunch of awesome f
 
 The primary goal of this project is to provide a stable foundation upon which to build modern web appliications. Its purpose is not to dictate your project structure or to demonstrate a complete real-world application, but to provide a set of tools intended to make front-end development robust and easy.
 
--  [Creating an app](#creating-an-app) - Create a _React + Webpack_ app.
--  [Generated App](#generated-app) - Understanding apps bootstraped _React + Webpack Starter_.
+- [Creating an app](#creating-an-app) - Create a _React + Webpack_ app.
+- [Generated App](#generated-app) - Understanding apps bootstraped _React + Webpack Starter_.
 
 ## Quickstart
 
@@ -21,24 +21,24 @@ $ npm start
 
 the generated project will vary in the presence of the following flags:
 
-| Flag | What is it for? | 
-|------|-----------------|
-| `--verbose` | print additional logs. |
-| `--info` | print environment debug info. |
-| `--no-deps` | will no install dependencies on the generated project. |
-| `--use-npm` | will use npm as command. |
-| `--inplace` | apply setup to an existing project. |
-| `-a <alias>` | will setup webpack alias. `app` by default. |
-| `--typescript` | add TypeScript support. |
-| `--redux` | add redux support and setup using redux thunk middleware by default. |
-| `--redux --saga` | add redux support and setup using redux saga middleware. |
-| `--recoil` | add recoil.js support and setup the state management library for React. |
-| `--antd` | add ant-design setup with ant-design icons package. |
-| `--bootstrap` | add bootstrap and bootstrap-react setup with theme config. |
-| `--material-ui` | add material ui setup with SVG icons. |
-| `--semantic-ui` | add semantic ui and semantic ui react setup with theme config. |
-| `--docker` | generate dockerfiles for development and production environments. |
-| `--android` | generates android setup using ionic react and capacitor.<br />if `--docker` flag is active, then will generate all dockerfiles to perform android emulation, testing and apk generation. |
+| Flag             | What is it for?                                                                                                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--verbose`      | print additional logs.                                                                                                                                                                   |
+| `--info`         | print environment debug info.                                                                                                                                                            |
+| `--no-deps`      | will no install dependencies on the generated project.                                                                                                                                   |
+| `--use-npm`      | will use npm as command.                                                                                                                                                                 |
+| `--inplace`      | apply setup to an existing project.                                                                                                                                                      |
+| `-a <alias>`     | will setup webpack alias. `app` by default.                                                                                                                                              |
+| `--typescript`   | add TypeScript support.                                                                                                                                                                  |
+| `--redux`        | add redux support and setup using redux thunk middleware by default.                                                                                                                     |
+| `--redux --saga` | add redux support and setup using redux saga middleware.                                                                                                                                 |
+| `--recoil`       | add recoil.js support and setup the state management library for React.                                                                                                                  |
+| `--antd`         | add ant-design setup with ant-design icons package.                                                                                                                                      |
+| `--bootstrap`    | add bootstrap and bootstrap-react setup with theme config.                                                                                                                               |
+| `--material-ui`  | add material ui setup with SVG icons.                                                                                                                                                    |
+| `--semantic-ui`  | add semantic ui and semantic ui react setup with theme config.                                                                                                                           |
+| `--docker`       | generate dockerfiles for development and production environments.                                                                                                                        |
+| `--android`      | generates android setup using ionic react and capacitor.<br />if `--docker` flag is active, then will generate all dockerfiles to perform android emulation, testing and apk generation. |
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
 
@@ -89,19 +89,18 @@ $ yarn start  # Start the development server (or `npm start`)
 
 While developing, you will probably rely mostly on `yarn start`; however, there are additional scripts at your disposal:
 
-|`yarn <script>`                |Description|
-|-------------------------------|-----------|
-|`start`                        |Serves your app at `localhost:8091`|
-|`build:dev`                    |Builds the application to ./build (_the build output dir could be configured in `./config/common-paths.js`_) |
-|`build:dev:watch`              |Builds the application and watch for changes|
-|`build:dev:analyze`            |Builds the application with Bundle Analyzer and Visualizer Plugins instaled|
-|`build:dev:dashboard`          |Builds the application with Dashboard|
-|`serve:dev:dashboard`          |Builds the application with Dashboard|
-|`test`                         |Runs unit tests with Jest. See [testing](#testing)|
-|`test:watch`                   |Runs `test` in watch mode to re-run tests when changed|
-|`lint`                         |[Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors|
-|`lint:fix`                     |Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix)|
-
+| `yarn <script>`       | Description                                                                                                             |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `start`               | Serves your app at `localhost:8091`                                                                                     |
+| `build:dev`           | Builds the application to ./build (_the build output dir could be configured in `./config/common-paths.js`_)            |
+| `build:dev:watch`     | Builds the application and watch for changes                                                                            |
+| `build:dev:analyze`   | Builds the application with Bundle Analyzer and Visualizer Plugins instaled                                             |
+| `build:dev:dashboard` | Builds the application with Dashboard                                                                                   |
+| `serve:dev:dashboard` | Builds the application with Dashboard                                                                                   |
+| `test`                | Runs unit tests with Jest. See [testing](#testing)                                                                      |
+| `test:watch`          | Runs `test` in watch mode to re-run tests when changed                                                                  |
+| `lint`                | [Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors                    |
+| `lint:fix`            | Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix) |
 
 ## Project Structure
 

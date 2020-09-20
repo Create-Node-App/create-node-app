@@ -43,5 +43,32 @@
     "readdirp": "^2.2.1",
     "semver": "^5.6.0",
     "underscore": "^1.10.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
+    "prettier": "^2.1.2"
+  },
+  "scripts": {
+    "lint": "prettier --ignore-path .eslintignore --check \"**/*.{js,json,md}\"",
+    "lint:fix": "prettier --ignore-path .eslintignore --write \"**/*.{js,json,md}\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js}": [
+      "prettier --write",
+      "yarn lint:fix",
+      "git add"
+    ],
+    "*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
