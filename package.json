@@ -20,7 +20,8 @@
     "code generator"
   ],
   "bin": {
-    "create-react-webpack-project": "./index.js"
+    "create-react-webpack-project": "./index.js",
+    "crwp": "./index.js"
   },
   "authors": [
     {
