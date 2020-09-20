@@ -25,7 +25,7 @@ the generated project will vary in the presence of the following flags:
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--verbose`      | print additional logs.                                                                                                                                                                   |
 | `--info`         | print environment debug info.                                                                                                                                                            |
-| `--no-deps`      | will no install dependencies on the generated project.                                                                                                                                   |
+| `--nodeps`       | will no install dependencies on the generated project.                                                                                                                                   |
 | `--use-npm`      | will use npm as command.                                                                                                                                                                 |
 | `--inplace`      | apply setup to an existing project.                                                                                                                                                      |
 | `-a <alias>`     | will setup webpack alias. `app` by default.                                                                                                                                              |
