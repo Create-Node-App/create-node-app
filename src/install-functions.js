@@ -16,6 +16,7 @@ const {
 } = require('./helpers-functions');
 
 const resolvePackage = require('./package');
+const { fileLoader } = require('./file-loader');
 
 function createApp(name, verbose, useNpm, inplace, addons, alias, installDependencies) {
   const root = path.resolve(name);
@@ -154,7 +155,7 @@ async function run(
     );
   }
 
-  provisionTemplates(root, addons, appName, originalDirectory, alias, verbose);
+  loadFiles(root, addons, appName, originalDirectory, alias, verbose);
 
   spawn('git', ['init']);
 }
@@ -217,55 +218,21 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
   });
 }
 
-function provisionTemplates(root, addons = [], appName, originalDirectory, alias, verbose) {
-  addons.forEach((addon) => {
+function loadFiles(root, addons = [], appName, originalDirectory, alias, verbose) {
+  addons.forEach(async (addon) => {
     const templateDir = `${__dirname}/../addons/${addon}/template`;
     if (!fs.existsSync(templateDir)) {
       return;
     }
 
-    readdirp({ root: `${templateDir}`, fileFilter: '*.template' })
-      .on('data', ({ path, parentDir }) => {
-        const file = fs.readFileSync(`${templateDir}/${path}`, 'utf8');
-        const newFile = _.template(file);
-        const newPath = path.replace(/.template$/, '');
-        if (parentDir) {
-          fs.mkdir(parentDir, { recursive: true }, (err) => {
-            // Not fail if directory already exists
-            if (err && err.code !== 'EEXIST') {
-              console.log(err);
-              console.log(chalk.red(`Cannot create directory ${parentDir}`));
-            }
-
-            fs.writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }));
-          });
-        } else {
-          fs.writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }));
-        }
-      })
-      .on('error', (error) => console.error('fatal error', error));
-
-    readdirp({ root: `${templateDir}`, fileFilter: '!*.template' })
-      .on('data', ({ path }) => {
-        secureCopy(`${templateDir}/${path}`, `${root}/${path}`, (err) => {
-          if (err) {
-            console.log(chalk.red(`Cannot copy ${path}`));
-            if (verbose) {
-              console.log(chalk.red(err));
-            }
-          } else {
-            if (verbose) {
-              console.log(chalk.green(`Copied "${path}" successfully`));
-            }
-          }
-        });
-      })
-      .on('error', (error) => console.error('fatal error', error));
+    for await (const entry of readdirp(`${templateDir}`)) {
+      try {
+        fileLoader(root, templateDir, appName, originalDirectory, alias, verbose)(entry)
+      } catch (err) {
+        console.log(err);
+      }
+    }
   });
-}
-
-function secureCopy(src, dest, callback) {
-  return fs.copy(src, dest, { overwrite: true }, callback);
 }
 
 module.exports = {

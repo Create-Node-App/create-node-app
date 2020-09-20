@@ -19,7 +19,7 @@ program
   })
   .option('--verbose', 'print additional logs')
   .option('--info', 'print environment debug info')
-  .option('--use-npm')
+  .option('--use-npm', 'use npm mandatorily')
   .option('--typescript', 'add TypeScript support')
   .option('--redux', 'add redux support and setup using redux thunk middleware by default')
   .option(
@@ -34,7 +34,7 @@ program
   .option('--docker', 'generate dockerfiles')
   .option('--android', 'generates android setup using ionic react and capacitor')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
-  .option('--no-deps')
+  .option('--nodeps', 'generate package.json file without installing dependencies')
   .option('--inplace', 'apply setup to an existing project')
   .allowUnknownOption()
   .on('--help', () => {
@@ -113,5 +113,5 @@ createApp(
   program.inplace,
   addons,
   program.alias,
-  !program.noDeps
+  !program.nodeps
 );
