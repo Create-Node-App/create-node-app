@@ -12,9 +12,6 @@
   "homepage": "https://github.com/ulises-jeremias/react-webpack-starter#readme",
   "keywords": [
     "react",
-    "redux",
-    "recoil",
-    "semantic-ui",
     "webpack",
     "babel",
     "code generator"
