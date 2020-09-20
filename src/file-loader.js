@@ -17,7 +17,7 @@ function copyFile(src, dest, verbose) {
   }
 }
 
-function writeFile(path, content, flag='w', verbose) {
+function writeFile(path, content, flag = 'w', verbose) {
   try {
     const parentDir = dirname(path);
     if (parentDir) {
@@ -41,20 +41,19 @@ function appendFile(src, dest, verbose) {
 }
 
 function getModeFromPath(path = '') {
-  const matchExts = (...exts) => exts.find(ext => path.endsWith(ext))
+  const matchExts = (...exts) => exts.find((ext) => path.endsWith(ext));
 
   if (matchExts('.append')) {
-    return 'append'
+    return 'append';
   }
   if (matchExts('.append.template', '.template.append')) {
-    return 'appendTemplate'
+    return 'appendTemplate';
   }
   if (matchExts('.template')) {
-    return 'copyTemplate'
+    return 'copyTemplate';
   }
-  return 'copy'
+  return 'copy';
 }
-
 
 const copyLoader = ({ root, templateDir, verbose }) => ({ path }) => {
   copyFile(`${templateDir}/${path}`, `${root}/${path}`, verbose);
@@ -74,7 +73,9 @@ const templateLoader = ({ root, templateDir, appName, alias, verbose, mode }) =>
   writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }), flag, verbose);
 };
 
-const fileLoader = (root, templateDir, appName, alias, originalDirectory, verbose) => ({ path }) => {
+const fileLoader = (root, templateDir, appName, alias, originalDirectory, verbose) => ({
+  path,
+}) => {
   const mode = getModeFromPath(path);
 
   const loaders = {
@@ -84,7 +85,9 @@ const fileLoader = (root, templateDir, appName, alias, originalDirectory, verbos
     appendTemplate: appendLoader,
   };
 
-  return loaders[mode]({ root, templateDir, appName, alias, originalDirectory, verbose, mode })({ path });
+  return loaders[mode]({ root, templateDir, appName, alias, originalDirectory, verbose, mode })({
+    path,
+  });
 };
 
 module.exports = {

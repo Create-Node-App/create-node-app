@@ -227,7 +227,7 @@ function loadFiles(root, addons = [], appName, originalDirectory, alias, verbose
 
     for await (const entry of readdirp(`${templateDir}`)) {
       try {
-        fileLoader(root, templateDir, appName, originalDirectory, alias, verbose)(entry)
+        fileLoader(root, templateDir, appName, originalDirectory, alias, verbose)(entry);
       } catch (err) {
         console.log(err);
       }
