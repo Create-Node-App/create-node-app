@@ -1,0 +1,31 @@
+name: PR Validation
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Begin CI...
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Use Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1.1.0
+        with:
+          node-version: '12'
+
+      - name: Use cached node_modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: nodeModules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            nodeModules-
+
+      - name: Install dependencies without generating a lockfile and fail if an update is needed
+        run: yarn --frozen-lockfile
+
+      - name: Run lint
+        run: yarn lint
