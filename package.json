@@ -60,12 +60,10 @@
   "lint-staged": {
     "*.{js}": [
       "prettier --write",
-      "yarn lint:fix",
-      "git add"
+      "yarn lint:fix"
     ],
     "*.{json,md}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }
