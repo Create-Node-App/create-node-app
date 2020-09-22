@@ -40,5 +40,9 @@ module.exports = (program) => {
     }
   }
 
+  addons.push(...String(program.extend).split(',').map((addon) => {
+    return { addon, git: true };
+  }));
+
   return addons;
 };

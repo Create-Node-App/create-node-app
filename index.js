@@ -33,6 +33,7 @@ program
   .option('--semantic-ui', 'add semantic ui and semantic ui react setup with theme config')
   .option('--docker', 'generate dockerfiles')
   .option('--android', 'generates android setup using ionic react and capacitor')
+  .option('--extend <repos>', 'git repositories to extend your boilerplate')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
   .option('--nodeps', 'generate package.json file without installing dependencies')
   .option('--inplace', 'apply setup to an existing project')
