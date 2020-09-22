@@ -5,7 +5,7 @@ const gitCache = require('./git-tools');
 async function solveGitPath(addon) {
   const [gitPath, type] = addon.split('#type=');
   const [url, branch] = gitPath.split('@');
-  const id = new Buffer(gitPath).toString('base64').substr(0, 6);
+  const id = new Buffer(gitPath).toString('base64');
   const target = findCacheDir({ name: `crwp/${id}` });
   try {
     await gitCache({ git: url, branch, target });
@@ -18,7 +18,10 @@ async function solveGitPath(addon) {
 async function getAddonPackagePath({ addon, git }) {
   if (git) {
     const { dir, type } = await solveGitPath(addon);
-    return path.resolve(dir, type, 'package');
+    if (type) {
+      return path.resolve(dir, type, 'package');
+    }
+    return path.resolve(dir, 'package');
   }
 
   return `../addons/${addon}/package`;
@@ -27,7 +30,10 @@ async function getAddonPackagePath({ addon, git }) {
 async function getAddonTemplateDir({ addon, git }) {
   if (git) {
     const { dir, type } = await solveGitPath(addon);
-    return path.resolve(dir, type, 'template');
+    if (type) {
+      return path.resolve(dir, type, 'template');
+    }
+    return path.resolve(dir, 'template');
   }
 
   return `${__dirname}/../addons/${addon}/template`;

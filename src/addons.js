@@ -15,7 +15,13 @@ module.exports = (program) => {
   ];
 
   // initialized with base template
-  let addons = [{ addon: 'base/common' }, { addon: `base/${lang}` }];
+  let addons = [{
+    addon: `${BASE_URL}@addon/base#type=common`,
+    git: true
+  }, {
+    addon: `${BASE_URL}@addon/base#type=${lang}`,
+    git: true
+  }];
 
   langAddons.forEach((addon) => {
     if (program[toCamelCase(addon)]) {
@@ -25,12 +31,12 @@ module.exports = (program) => {
   });
 
   if (program.android) {
-    addons.push({ addon: 'android' });
+    addons.push({ addon: `${BASE_URL}@addon/android`, git: true });
   }
   if (program.docker) {
-    addons.push({ addon: 'docker/web' });
+    addons.push({ addon: `${BASE_URL}@addon/docker/web`, git: true });
     if (program.android) {
-      addons.push({ addon: 'docker/android' });
+      addons.push({ addon: `${BASE_URL}@addon/docker/android`, git: true });
     }
   }
 

@@ -30,7 +30,7 @@ module.exports = async function git(opts) {
   const isGithub = /^[^\/]+\/[^\/]+$/.test(git);
   const gitUrl = isGithub ? `https://github.com/${git}` : git;
   const zipUrl = isGithub ? `https://github.com/${git}/archive/${branch}.zip` : zip;
-  const id = new Buffer(git).toString('base64').substr(0, 6);
+  const id = new Buffer(`${git}@${branch}`).toString('base64');
   let cacheDir = opts.cacheDir || path.join(os.homedir(), '.crwp', id);
 
   cacheDir = path.isAbsolute(cacheDir) ? cacheDir : path.resolve(cacheDir);
@@ -61,12 +61,13 @@ module.exports = async function git(opts) {
     }
 
     if (offline) {
-      await fs.copy(cacheDir, absoluteTarget, { filter: filterGit });
+      fs.copySync(cacheDir, absoluteTarget, { filter: filterGit });
       return;
     }
 
     await pull(cacheDir);
-    await fs.copy(cacheDir, absoluteTarget, { filter: filterGit });
+    setTimeout(() => {}, 300);
+    fs.copySync(cacheDir, absoluteTarget, { filter: filterGit });
   }
 
   /**
