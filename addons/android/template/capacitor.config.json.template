@@ -1,8 +1,0 @@
-{
-  "appId": "io.ionic.starter",
-  "appName": "<%= projectName%>",
-  "bundledWebRuntime": false,
-  "npmClient": "yarn",
-  "webDir": "build",
-  "cordova": {}
-}

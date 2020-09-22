@@ -1,7 +1,0 @@
-{
-  "name": "<%= projectName%>",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react"
-}

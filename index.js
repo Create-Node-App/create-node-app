@@ -5,8 +5,8 @@ const chalk = require('chalk');
 const envinfo = require('envinfo');
 
 const packageJS = require('./package.json');
-const { createApp } = require('./src/install-functions');
-const { toCamelCase } = require('./src/helpers-functions');
+const { createApp } = require('./src/install');
+const getAddons = require('./src/addons');
 
 let projectName;
 
@@ -75,36 +75,7 @@ if (typeof projectName === 'undefined') {
   process.exit(1);
 }
 
-const lang = program.typescript ? 'ts' : 'es';
-const langAddons = [
-  'redux',
-  'saga',
-  'recoil',
-  'ant-design',
-  'bootstrap',
-  'material-ui',
-  'semantic-ui',
-];
-
-// initialized with base template
-let addons = ['base/common', `base/${lang}`];
-
-langAddons.forEach((addon) => {
-  if (program[toCamelCase(addon)]) {
-    addons.push(`${addon}/common`);
-    addons.push(`${addon}/${lang}`);
-  }
-});
-
-if (program.android) {
-  addons.push('android');
-}
-if (program.docker) {
-  addons.push('docker/web');
-  if (program.android) {
-    addons.push('docker/android');
-  }
-}
+const addons = getAddons(program);
 
 createApp(
   projectName,

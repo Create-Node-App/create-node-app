@@ -1,9 +1,0 @@
-/*******************************
-           Overrides
-*******************************/
-
-.ui.compact.icon.buttons .button,
-.ui.compact.icon.button {
-  padding: @compactVerticalPadding @compactHorizontalPadding ( @compactVerticalPadding + @shadowOffset );
-}
-
