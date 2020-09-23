@@ -86,7 +86,7 @@ async function createApp(name, verbose, useNpm, inplace, addons, alias, installD
     originalDirectory,
     verbose,
     useYarn,
-    inplace ? addons.filter((addon) => !addon.startsWith('base/')) : addons,
+    inplace ? addons.filter(({ addon }) => !addon.startsWith('ulises-jeremias/react-webpack-starter@addon/base')) : addons,
     dependencies,
     devDependencies,
     alias,
