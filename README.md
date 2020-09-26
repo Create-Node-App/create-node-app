@@ -1,6 +1,6 @@
 # React + Webpack Starter
 
-[![Build Status](https://github.com/ulises-jeremias/react-webpack-starter/workflows/Build/badge.svg)](https://github.com/ulises-jeremias/react-webpack-starter/commits/master)
+[![Build Status](https://github.com/Create-Node-App/create-react-webpack-app/workflows/Build/badge.svg)](https://github.com/Create-Node-App/create-react-webpack-app/commits/master)
 [![npm](https://img.shields.io/npm/v/create-react-webpack-project.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/create-react-webpack-project)
 [![npm](https://img.shields.io/npm/dm/create-react-webpack-project.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/create-react-webpack-project)
 

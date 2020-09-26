@@ -4,12 +4,12 @@
   "description": "A basic template that consists of the essential elements that are required to start building a React application using Redux",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ulises-jeremias/react-webpack-starter.git"
+    "url": "git+https://github.com/Create-Node-App/create-react-webpack-app.git"
   },
   "bugs": {
-    "url": "https://github.com/ulises-jeremias/react-webpack-starter/issues"
+    "url": "https://github.com/Create-Node-App/create-react-webpack-app/issues"
   },
-  "homepage": "https://github.com/ulises-jeremias/react-webpack-starter#readme",
+  "homepage": "https://github.com/Create-Node-App/create-react-webpack-app#readme",
   "keywords": [
     "react",
     "webpack",

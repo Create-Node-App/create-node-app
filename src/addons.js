@@ -1,6 +1,6 @@
 const { toCamelCase } = require('./helpers');
 
-const BASE_URL = 'ulises-jeremias/react-webpack-starter';
+const BASE_URL = 'Create-Node-App/create-react-webpack-app';
 
 module.exports = (program) => {
   const lang = program.typescript ? 'ts' : 'es';
