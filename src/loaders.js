@@ -75,7 +75,7 @@ const templateLoader = ({ root, templateDir, appName, alias, verbose, mode }) =>
   writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }), flag, verbose);
 };
 
-const fileLoader = (root, templateDir, appName, alias, originalDirectory, verbose) => ({
+const fileLoader = (root, templateDir, appName, originalDirectory, alias, verbose) => ({
   path,
 }) => {
   const mode = getModeFromPath(path);
@@ -87,7 +87,7 @@ const fileLoader = (root, templateDir, appName, alias, originalDirectory, verbos
     appendTemplate: appendLoader,
   };
 
-  return loaders[mode]({ root, templateDir, appName, alias, originalDirectory, verbose, mode })({
+  return loaders[mode]({ root, templateDir, appName, originalDirectory, alias, verbose, mode })({
     path,
   });
 };
