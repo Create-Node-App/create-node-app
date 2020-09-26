@@ -40,9 +40,11 @@ module.exports = (program) => {
     addons.push({ addon: `${BASE_URL}@addon/docker/web`, git: true });
   }
 
-  addons.push(...String(program.extend).split(',').map((addon) => {
-    return { addon, git: true };
-  }));
+  if (program.extend) {
+    addons.push(...String(program.extend).split(',').map((addon) => {
+      return { addon, git: true };
+    }));
+  }
 
   return addons;
 };
