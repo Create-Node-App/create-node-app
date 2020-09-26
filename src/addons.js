@@ -30,14 +30,14 @@ module.exports = (program) => {
     }
   });
 
-  if (program.android) {
-    addons.push({ addon: `${BASE_URL}@addon/android`, git: true });
+  if (program.ionic) {
+    addons.push({ addon: `${BASE_URL}@addon/ionic`, git: true });
+  }
+  if (program.androidTools) {
+    addons.push({ addon: `${BASE_URL}@addon/docker/android`, git: true });
   }
   if (program.docker) {
     addons.push({ addon: `${BASE_URL}@addon/docker/web`, git: true });
-    if (program.android) {
-      addons.push({ addon: `${BASE_URL}@addon/docker/android`, git: true });
-    }
   }
 
   addons.push(...String(program.extend).split(',').map((addon) => {
