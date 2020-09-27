@@ -36,10 +36,10 @@ module.exports = (program) => {
     addons.push({ addon: `${BASE_URL}@addon/ionic`, git: true });
   }
   if (program.androidTools) {
-    addons.push({ addon: `${BASE_URL}@addon/docker/android`, git: true });
+    addons.push({ addon: `${ANDROID_TOOLS_BASE_URL}@addon/docker/android`, git: true });
   }
   if (program.docker) {
-    addons.push({ addon: `${BASE_URL}@addon/docker/web`, git: true });
+    addons.push({ addon: `${DOCKER_BASE_URL}@addon/docker/web`, git: true });
   }
 
   if (program.extend) {
