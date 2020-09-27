@@ -1,6 +1,8 @@
 const { toCamelCase } = require('./helpers');
 
 const BASE_URL = 'Create-Node-App/create-react-webpack-app';
+const DOCKER_BASE_URL = 'Create-Node-App/docker-extensions';
+const ANDROID_TOOLS_BASE_URL = 'Create-Node-App/android-tools';
 
 module.exports = (program) => {
   const lang = program.typescript ? 'ts' : 'es';
