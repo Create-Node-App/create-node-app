@@ -1,12 +1,12 @@
+const os = require('os');
 const path = require('path');
-const findCacheDir = require('find-cache-dir');
 const gitCache = require('./git-tools');
 
 async function solveGitPath(addon) {
   const [gitPath, type] = addon.split('#type=');
   const [url, branch] = gitPath.split('@');
   const id = new Buffer(gitPath).toString('base64');
-  const target = findCacheDir({ name: `crwp/${id}` });
+  const target = path.join(os.homedir(), '.crwp', 'crwp', id);
   try {
     await gitCache({ git: url, branch, target });
   } catch (err) {

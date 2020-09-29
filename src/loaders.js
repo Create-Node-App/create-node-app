@@ -75,10 +75,11 @@ const templateLoader = ({ root, templateDir, appName, alias, verbose, mode }) =>
   writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }), flag, verbose);
 };
 
-const fileLoader = (root, templateDir, appName, originalDirectory, alias, verbose) => ({
+const fileLoader = ({ root, templateDir, appName, originalDirectory, alias, verbose }) => ({
   path,
 }) => {
   const mode = getModeFromPath(path);
+  console.log(path);
 
   const loaders = {
     copy: copyLoader,
@@ -92,7 +93,7 @@ const fileLoader = (root, templateDir, appName, originalDirectory, alias, verbos
   });
 };
 
-function loadFiles(root, addons = [], appName, originalDirectory, alias, verbose) {
+function loadFiles({ root, addons = [], appName, originalDirectory, alias, verbose }) {
   addons.forEach(async ({ addon, git }) => {
     const templateDir = await getAddonTemplateDir({ addon, git });
     if (!fs.existsSync(templateDir)) {
@@ -101,7 +102,7 @@ function loadFiles(root, addons = [], appName, originalDirectory, alias, verbose
 
     for await (const entry of readdirp(`${templateDir}`)) {
       try {
-        fileLoader(root, templateDir, appName, originalDirectory, alias, verbose)(entry);
+        fileLoader({ root, templateDir, appName, originalDirectory, alias, verbose })(entry);
       } catch (err) {
         console.log(err);
       }

@@ -37,7 +37,6 @@
     "cross-spawn": "^6.0.5",
     "download": "^8.0.0",
     "envinfo": "^7.1.0",
-    "find-cache-dir": "^3.3.1",
     "fs-extra": "^7.0.1",
     "readdirp": "^3.4.0",
     "semver": "^5.6.0",
