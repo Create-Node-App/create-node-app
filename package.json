@@ -1,35 +1,26 @@
 {
-  "name": "create-react-webpack-project",
+  "name": "create-node-app",
   "version": "1.7.8",
-  "description": "A basic template that consists of the essential elements that are required to start building a React application using Redux",
+  "description": "Command line tool to create Node apps with a lot of different addons.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Create-Node-App/create-react-webpack-app.git"
+    "url": "git+https://github.com/Create-Node-App/create-node-app.git"
   },
   "bugs": {
-    "url": "https://github.com/Create-Node-App/create-react-webpack-app/issues"
+    "url": "https://github.com/Create-Node-App/create-node-app/issues"
   },
-  "homepage": "https://github.com/Create-Node-App/create-react-webpack-app#readme",
+  "homepage": "https://github.com/Create-Node-App/create-node-app#readme",
   "keywords": [
-    "react",
-    "webpack",
-    "babel",
     "code generator"
   ],
   "bin": {
-    "create-react-webpack-project": "./index.js",
+    "create-node-app": "./index.js",
     "crwp": "./index.js"
   },
-  "authors": [
-    {
-      "name": "Ulises Jeremias Cornejo Fandos",
-      "email": "ulisescf.24@gmail.com"
-    },
-    {
-      "name": "Lucas Di Cunzolo",
-      "email": "lucasdicunzolo@gmail.com"
-    }
-  ],
+  "authors": [{
+    "name": "Ulises Jeremias Cornejo Fandos",
+    "email": "ulisescf.24@gmail.com"
+  }],
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.2",

@@ -1,14 +1,14 @@
-# React Webpack Starter's contributing guide
+# Create Node App's contributing guide
 
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
 
 Please note we have a [code of conduct](./CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
 
-You can help contribute to React Webpack Starter in many ways, including:
+You can help contribute to Create Node App in many ways, including:
 
 ## Pull Requests
 
-1. Fork the React Webpack Starter repository.
+1. Fork the Create Node App repository.
 2. Create a new branch for each feature or improvement.
 3. Send a pull request from each feature branch to the **develop** branch.
 

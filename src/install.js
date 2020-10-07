@@ -23,7 +23,7 @@ async function createApp(name, verbose, useNpm, inplace, addons, alias, installD
 
   fs.ensureDirSync(name);
 
-  console.log(`Creating a new React app in ${chalk.green(root)}.`);
+  console.log(`Creating a new Node app in ${chalk.green(root)}.`);
   console.log();
 
   const useYarn = useNpm ? false : shouldUseYarn();
@@ -86,11 +86,7 @@ async function createApp(name, verbose, useNpm, inplace, addons, alias, installD
     originalDirectory,
     verbose,
     useYarn,
-    inplace
-      ? addons.filter(
-          ({ addon }) => !addon.startsWith('Create-Node-App/react-webpack-extensions@addon/base')
-        )
-      : addons,
+    addons,
     dependencies,
     devDependencies,
     alias,
@@ -179,12 +175,6 @@ function install(root, useYarn, dependencies, verbose, isOnline, isDevDependenci
         args.push('--dev');
       }
       [].push.apply(args, dependencies);
-
-      // Explicitly set cwd() to work around issues like
-      // https://github.com/facebook/create-react-app/issues/3326.
-      // Unfortunately we can only do this for Yarn because npm support for
-      // equivalent --prefix flag doesn't help with this issue.
-      // This is why for npm, we run checkThatNpmCanReadCwd() early instead.
       args.push('--cwd');
       args.push(root);
 

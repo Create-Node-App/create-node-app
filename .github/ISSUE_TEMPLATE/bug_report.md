@@ -6,7 +6,7 @@ labels: 'Type: Bug'
 assignees: ''
 ---
 
-**React + Webpack Starter version:**
+**Create Node App version:**
 
 **OS:**
 
