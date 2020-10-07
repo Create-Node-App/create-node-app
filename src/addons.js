@@ -17,13 +17,16 @@ module.exports = (program) => {
   ];
 
   // initialized with base template
-  let addons = [{
-    addon: `${BASE_URL}@addon/base#type=common`,
-    git: true
-  }, {
-    addon: `${BASE_URL}@addon/base#type=${lang}`,
-    git: true
-  }];
+  let addons = [
+    {
+      addon: `${BASE_URL}@addon/base#type=common`,
+      git: true,
+    },
+    {
+      addon: `${BASE_URL}@addon/base#type=${lang}`,
+      git: true,
+    },
+  ];
 
   langAddons.forEach((addon) => {
     if (program[toCamelCase(addon)]) {
@@ -43,9 +46,13 @@ module.exports = (program) => {
   }
 
   if (program.extend) {
-    addons.push(...String(program.extend).split(',').map((addon) => {
-      return { addon, git: true };
-    }));
+    addons.push(
+      ...String(program.extend)
+        .split(',')
+        .map((addon) => {
+          return { addon, git: true };
+        })
+    );
   }
 
   return addons;
