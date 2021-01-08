@@ -30,7 +30,7 @@ module.exports = async function git(opts) {
   const isGithub = /^[^\/]+\/[^\/]+$/.test(git);
   const gitUrl = isGithub ? `https://github.com/${git}` : git;
   const zipUrl = isGithub ? `https://github.com/${git}/archive/${branch}.zip` : zip;
-  const id = new Buffer(`${git}@${branch}`).toString('base64');
+  const id = Buffer.from(`${git}@${branch}`).toString('base64');
   let cacheDir = opts.cacheDir || path.join(os.homedir(), '.crwp', id);
 
   cacheDir = path.isAbsolute(cacheDir) ? cacheDir : path.resolve(cacheDir);
