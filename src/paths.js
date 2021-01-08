@@ -5,7 +5,7 @@ const gitCache = require('./git-tools');
 async function solveGitPath(addon) {
   const [gitPath, type] = addon.split('#type=');
   const [branch, ...url] = gitPath.split('@').reverse();
-  const id = new Buffer(gitPath).toString('base64');
+  const id = Buffer.from(addon).toString('base64');
   const target = path.join(os.homedir(), '.crwp', 'crwp', id);
   try {
     await gitCache({ git: url.reverse().join('@'), branch, target });
