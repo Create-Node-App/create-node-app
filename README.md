@@ -1,8 +1,8 @@
 # Create Node App
 
-[![Build Status](https://github.com/create-nodejs-app/create-nodejs-app/workflows/Build/badge.svg)](https://github.com/create-nodejs-app/create-nodejs-app/commits/master)
-[![npm](https://img.shields.io/npm/v/cna.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna)
-[![npm](https://img.shields.io/npm/dm/cna.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna)
+[![Build Status](https://github.com/create-node-app/create-node-app/workflows/Build/badge.svg)](https://github.com/create-node-app/create-node-app/commits/master)
+[![npm](https://img.shields.io/npm/v/@cna/cli.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/@cna/cli)
+[![npm](https://img.shields.io/npm/dm/@cna/cli.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/@cna/cli)
 
 This starter kit is designed to get you up and running with a bunch of awesome front-end technologies.
 
@@ -13,7 +13,7 @@ The primary goal of this project is to provide a stable foundation upon which to
 ## Quickstart
 
 ```sh
-$ npx cna my-app
+$ npx @cna/cli my-app
 $ cd my-app
 $ npm start
 ```
@@ -40,25 +40,9 @@ To create a new app, you may choose one of the following methods:
 ### npx
 
 ```sh
-$ npx create-nodejs-app my-app
+$ npx @cna/cli my-app
 ```
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
-
-### npm
-
-```sh
-$ npm init node-app my-app
-```
-
-_`npm init <initializer>` is available in npm 6+_
-
-### yarn
-
-```sh
-$ yarn create node-app my-app
-```
-
-_`yarn create` is available in Yarn 0.25+_
 
 It will create a directory called `my-app` inside the current folder.
