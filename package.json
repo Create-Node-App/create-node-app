@@ -17,18 +17,20 @@
     "create-node-app": "./index.js",
     "crwp": "./index.js"
   },
-  "authors": [{
-    "name": "Ulises Jeremias Cornejo Fandos",
-    "email": "ulisescf.24@gmail.com"
-  }],
+  "authors": [
+    {
+      "name": "Ulises Jeremias Cornejo Fandos",
+      "email": "ulisescf.24@gmail.com"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
-    "chalk": "^2.4.2",
-    "commander": "^2.19.0",
+    "chalk": "^4.1.0",
+    "commander": "^7.0.0",
     "cross-spawn": "^6.0.5",
     "debug": "^4.2.0",
     "download": "^8.0.0",
-    "envinfo": "^7.1.0",
+    "envinfo": "^7.7.4",
     "fs-extra": "^7.0.1",
     "readdirp": "^3.4.0",
     "semver": "^5.6.0",

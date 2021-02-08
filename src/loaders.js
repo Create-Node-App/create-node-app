@@ -9,7 +9,7 @@ function copyFile(src, dest, verbose) {
   try {
     fs.copySync(src, dest, { overwrite: true });
     if (verbose) {
-      console.log(chalk.green(`Added "${path}" successfully`));
+      console.log(chalk.green(`Added "${dest}" successfully`));
     }
   } catch (err) {
     console.log(chalk.red(`Cannot copy file ${src} to ${dest}`));
@@ -79,7 +79,6 @@ const fileLoader = ({ root, templateDir, appName, originalDirectory, alias, verb
   path,
 }) => {
   const mode = getModeFromPath(path);
-  console.log(path);
 
   const loaders = {
     copy: copyLoader,

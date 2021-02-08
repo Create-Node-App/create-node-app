@@ -20,7 +20,7 @@ program
   .option('--verbose', 'print additional logs')
   .option('--info', 'print environment debug info')
   .option('--use-npm', 'use npm mandatorily')
-  .option('--extend <repos>', 'git repositories to extend your boilerplate')
+  .option('--extend <repos...>', 'git repositories to extend your boilerplate')
   .option('-a, --alias <alias>', 'alias for import statements from root dir', 'app')
   .option('--nodeps', 'generate package.json file without installing dependencies')
   .option('--inplace', 'apply setup to an existing project')
@@ -34,7 +34,9 @@ program
   })
   .parse(process.argv);
 
-if (program.info) {
+const options = program.opts();
+
+if (options.info) {
   console.log(chalk.bold('\nEnvironment Info:'));
   return envinfo
     .run(
@@ -63,14 +65,14 @@ if (typeof projectName === 'undefined') {
   process.exit(1);
 }
 
-const addons = getAddons(program);
+const addons = getAddons(options);
 
 createApp(
   projectName,
-  program.verbose,
-  program.useNpm,
-  program.inplace,
+  options.verbose,
+  options.useNpm,
+  options.inplace,
   addons,
-  program.alias,
-  !program.nodeps
+  options.alias,
+  !options.nodeps
 );
