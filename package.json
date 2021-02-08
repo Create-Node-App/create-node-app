@@ -1,6 +1,6 @@
 {
-  "name": "@cna/cli",
-  "version": "1.7.9",
+  "name": "cna-cli",
+  "version": "1.0.0",
   "description": "Command line tool to create Node apps with a lot of different addons.",
   "repository": {
     "type": "git",
@@ -23,6 +23,10 @@
       "email": "ulisescf.24@gmail.com"
     }
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.0",
