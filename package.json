@@ -4,12 +4,12 @@
   "description": "Command line tool to create Node apps with a lot of different addons.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/create-node-app/create-node-app.git"
+    "url": "git+https://github.com/Create-Node-App/create-node-app.git"
   },
   "bugs": {
-    "url": "https://github.com/create-node-app/create-node-app/issues"
+    "url": "https://github.com/Create-Node-App/create-node-app/issues"
   },
-  "homepage": "https://github.com/create-node-app/create-node-app#readme",
+  "homepage": "https://github.com/Create-Node-App/create-node-app#readme",
   "keywords": [
     "code generator"
   ],

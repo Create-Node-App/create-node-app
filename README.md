@@ -1,6 +1,6 @@
 # Create Node App
 
-[![Build Status](https://github.com/create-node-app/create-node-app/workflows/Build/badge.svg)](https://github.com/create-node-app/create-node-app/commits/master)
+[![Build Status](https://github.com/Create-Node-App/create-node-app/workflows/Build/badge.svg)](https://github.com/Create-Node-App/create-node-app/commits/master)
 [![npm](https://img.shields.io/npm/v/cna-cli.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna-cli)
 [![npm](https://img.shields.io/npm/dm/cna-cli.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna-cli)
 
