@@ -5,13 +5,7 @@ module.exports = (options) => {
   let addons = [];
 
   if (options.extend) {
-    addons.push(
-      ...String(options.extend)
-        .split(',')
-        .map((addon) => {
-          return { addon, git: true };
-        })
-    );
+    addons.push(...options.extend.map((addon) => ({ addon, git: true })));
   }
 
   return addons;

@@ -1,8 +1,8 @@
 # Create Node App
 
 [![Build Status](https://github.com/Create-Node-App/create-node-app/workflows/Build/badge.svg)](https://github.com/Create-Node-App/create-node-app/commits/master)
-[![npm](https://img.shields.io/npm/v/create-node-app.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/create-node-app)
-[![npm](https://img.shields.io/npm/dm/create-node-app.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/create-node-app)
+[![npm](https://img.shields.io/npm/v/cna.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna)
+[![npm](https://img.shields.io/npm/dm/cna.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna)
 
 This starter kit is designed to get you up and running with a bunch of awesome front-end technologies.
 
@@ -13,7 +13,7 @@ The primary goal of this project is to provide a stable foundation upon which to
 ## Quickstart
 
 ```sh
-$ npx create-node-app my-app
+$ npx cna my-app
 $ cd my-app
 $ npm start
 ```
