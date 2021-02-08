@@ -1,20 +1,20 @@
 {
   "name": "cna",
-  "version": "1.7.8",
+  "version": "1.7.9",
   "description": "Command line tool to create Node apps with a lot of different addons.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Create-Node-App/create-node-app.git"
+    "url": "git+https://github.com/create-nodejs-app/create-nodejs-app.git"
   },
   "bugs": {
-    "url": "https://github.com/Create-Node-App/create-node-app/issues"
+    "url": "https://github.com/create-nodejs-app/create-nodejs-app/issues"
   },
-  "homepage": "https://github.com/Create-Node-App/create-node-app#readme",
+  "homepage": "https://github.com/create-nodejs-app/create-nodejs-app#readme",
   "keywords": [
     "code generator"
   ],
   "bin": {
-    "create-node-app": "./index.js",
+    "create-nodejs-app": "./index.js",
     "crwp": "./index.js"
   },
   "authors": [

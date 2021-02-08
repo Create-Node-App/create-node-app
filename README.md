@@ -1,6 +1,6 @@
 # Create Node App
 
-[![Build Status](https://github.com/Create-Node-App/create-node-app/workflows/Build/badge.svg)](https://github.com/Create-Node-App/create-node-app/commits/master)
+[![Build Status](https://github.com/create-nodejs-app/create-nodejs-app/workflows/Build/badge.svg)](https://github.com/create-nodejs-app/create-nodejs-app/commits/master)
 [![npm](https://img.shields.io/npm/v/cna.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna)
 [![npm](https://img.shields.io/npm/dm/cna.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna)
 
@@ -40,7 +40,7 @@ To create a new app, you may choose one of the following methods:
 ### npx
 
 ```sh
-$ npx create-node-app my-app
+$ npx create-nodejs-app my-app
 ```
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
