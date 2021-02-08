@@ -14,7 +14,6 @@
     "code generator"
   ],
   "bin": {
-    "@cna/cli": "./index.js",
     "create-node-app": "./index.js",
     "cna": "./index.js"
   },
