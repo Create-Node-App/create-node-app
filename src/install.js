@@ -152,7 +152,7 @@ async function run(
     );
   }
 
-  loadFiles({ root, addons, appName, originalDirectory, alias, verbose });
+  await loadFiles({ root, addons, appName, originalDirectory, alias, verbose });
 
   spawn('git', ['init']);
   if (installDependencies && isOnline) {

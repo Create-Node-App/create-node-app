@@ -1,15 +1,19 @@
-const fs = require('fs-extra');
-const { dirname } = require('path');
-const chalk = require('chalk');
 const _ = require('underscore');
+const fs = require('fs-extra');
+const chalk = require('chalk');
 const readdirp = require('readdirp');
+const { dirname } = require('path');
 const { getAddonTemplateDir } = require('./paths');
 
 function copyFile(src, dest, verbose) {
   try {
+    const parentDir = dirname(dest);
+    if (parentDir) {
+      fs.mkdirSync(parentDir, { recursive: true });
+    }
     fs.copySync(src, dest, { overwrite: true });
     if (verbose) {
-      console.log(chalk.green(`Added "${dest}" successfully`));
+      console.log(chalk.green(`Added "${dest}" from "${src}" successfully`));
     }
   } catch (err) {
     console.log(chalk.red(`Cannot copy file ${src} to ${dest}`));
