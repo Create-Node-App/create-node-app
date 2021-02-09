@@ -96,21 +96,23 @@ const fileLoader = ({ root, templateDir, appName, originalDirectory, alias, verb
   });
 };
 
-function loadFiles({ root, addons = [], appName, originalDirectory, alias, verbose }) {
-  addons.forEach(async ({ addon, git }) => {
-    const templateDir = await getAddonTemplateDir({ addon, git });
-    if (!fs.existsSync(templateDir)) {
-      return;
-    }
-
-    for await (const entry of readdirp(`${templateDir}`)) {
-      try {
-        fileLoader({ root, templateDir, appName, originalDirectory, alias, verbose })(entry);
-      } catch (err) {
-        console.log(err);
+async function loadFiles({ root, addons = [], appName, originalDirectory, alias, verbose }) {
+  return await Promise.all(
+    addons.map(async ({ addon, git }) => {
+      const templateDir = await getAddonTemplateDir({ addon, git });
+      if (!fs.existsSync(templateDir)) {
+        return;
       }
-    }
-  });
+
+      for await (const entry of readdirp(`${templateDir}`)) {
+        try {
+          fileLoader({ root, templateDir, appName, originalDirectory, alias, verbose })(entry);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    })
+  );
 }
 
 module.exports = {
