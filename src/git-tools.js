@@ -16,7 +16,7 @@ const exec = promisify(child_process.exec);
  * type '<username>/<repo>'.
  * @param {string} opts.target The folder of generating to.
  * @param {string} opts.cacheDir? Default `~/.cache/cna/${name}`, the folder
- * @param {string} opts.branch? Default 'master'. Git branch.
+ * @param {string} opts.branch? Default 'main'. Git branch.
  * @param {string} opts.way? The way of install git, only 'git' or 'zip'.
  * to keep cache.
  * @param {string} opts.zip? Zip downloading url. If opt.git is a github
@@ -29,7 +29,7 @@ module.exports = async function git(opts) {
     zip,
     offline = false,
     target = './',
-    branch = 'master',
+    branch = 'main',
     way = 'git',
     targetId,
   } = opts;
