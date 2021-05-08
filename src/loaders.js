@@ -98,7 +98,7 @@ const fileLoader = ({ root, templateDir, appName, originalDirectory, alias, verb
 
 async function loadFiles({ root, addons = [], appName, originalDirectory, alias, verbose }) {
   for await (const { addon, git } of addons) {
-    const templateDir = await getAddonTemplateDir({ addon, git });
+    const templateDir = await getAddonTemplateDir(addon, git);
     if (!fs.existsSync(templateDir)) {
       return;
     }
