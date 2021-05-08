@@ -24,15 +24,7 @@ const exec = promisify(child_process.exec);
  * @param {boolean} opts.offline? use cached files, and don't update.
  */
 module.exports = async function git(opts) {
-  const {
-    git,
-    zip,
-    offline = false,
-    target = './',
-    branch = 'main',
-    way = 'git',
-    targetId,
-  } = opts;
+  const { git, zip, offline = false, target = './', branch = 'main', way = 'git', targetId } = opts;
 
   const absoluteTarget = path.isAbsolute(target) ? target : path.resolve(target);
   const isGithub = /^[^\/]+\/[^\/]+$/.test(git);
