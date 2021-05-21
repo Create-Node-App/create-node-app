@@ -5,7 +5,6 @@ const os = require('os');
 const semver = require('semver');
 const spawn = require('cross-spawn');
 const { execSync } = require('child_process');
-const _ = require('underscore');
 
 const {
   shouldUseYarn,
@@ -17,7 +16,123 @@ const {
 const resolvePackage = require('./package');
 const { loadFiles } = require('./loaders');
 
-async function createApp(name, verbose, useNpm, inplace, addons, alias, installDependencies) {
+const install = (root, useYarn, dependencies, verbose, isOnline, isDevDependencies) => {
+  return new Promise((resolve, reject) => {
+    let command;
+    let args;
+    if (useYarn) {
+      command = 'yarnpkg';
+      // args = ['add', '--exact']
+      args = ['add'];
+      if (!isOnline) {
+        args.push('--offline');
+      }
+      if (isDevDependencies) {
+        args.push('--dev');
+      }
+      [].push.apply(args, dependencies);
+      args.push('--cwd');
+      args.push(root);
+
+      if (!isOnline) {
+        console.log(chalk.yellow('You appear to be offline.'));
+        console.log(chalk.yellow('Falling back to the local Yarn cache.'));
+        console.log();
+      }
+    } else {
+      command = 'npm';
+      args = ['install', '--loglevel', 'error'];
+      if (isDevDependencies) {
+        args.push('--save-dev');
+      } else {
+        args.push('--save');
+      }
+
+      [].push.apply(args, dependencies);
+    }
+
+    if (verbose) {
+      args.push('--verbose');
+    }
+
+    const child = spawn(command, args, { stdio: 'inherit' });
+    child.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error(`${command} ${args.join(' ')}`));
+        return;
+      }
+      resolve();
+    });
+  });
+};
+
+const run = async (
+  root,
+  appName,
+  originalDirectory,
+  verbose,
+  useYarn,
+  addons,
+  dependencies,
+  devDependencies,
+  alias,
+  installDependencies
+) => {
+  let isOnline = true;
+  if (useYarn) {
+    isOnline = await checkIfOnline(useYarn);
+  }
+
+  const command = useYarn ? 'yarn' : 'npm run';
+
+  if (installDependencies) {
+    console.log(chalk.green('Installing packages. This might take a couple of minutes.'));
+    console.log(chalk.green('Installing dependencies...'));
+    console.log();
+    // Install dependencies
+    await install(root, useYarn, dependencies, verbose, isOnline, false);
+
+    if (devDependencies.length > 0) {
+      console.log();
+      console.log(chalk.green('Installing devDependencies...'));
+      console.log();
+      // Install devDependencies
+      await install(root, useYarn, devDependencies, verbose, isOnline, true);
+    }
+  } else {
+    console.log(chalk.yellow('Skip package installation.'));
+    console.log(chalk.yellow('Run npm install/yarn in your project.'));
+    let packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, 'utf8'));
+    packageJson.dependencies = dependencies.reduce((dep, elem) => {
+      let nextDep = dep;
+      if (/.+@[0-9a-zA-Z-.]+$/.test(elem)) {
+        let [name, version] = elem.split('@');
+        nextDep[name] = `^${version}`;
+      } else {
+        nextDep[elem] = '*';
+      }
+      return nextDep;
+    }, {});
+    packageJson.devDependencies = devDependencies.reduce(
+      (dep, elem) => ({ ...dep, [elem]: '*' }),
+      {}
+    );
+
+    fs.writeFileSync(
+      path.join(root, 'package.json'),
+      JSON.stringify(packageJson, null, 2) + os.EOL
+    );
+  }
+
+  await loadFiles({ root, addons, appName, originalDirectory, alias, verbose });
+
+  spawn('git', ['init']);
+  if (installDependencies && isOnline) {
+    spawn(command, ['lint:fix'], { stdio: 'inherit' });
+  }
+};
+
+const createApp = async (name, verbose, useNpm, inplace, addons, alias, installDependencies) => {
   const root = path.resolve(name);
   const appName = path.basename(root);
 
@@ -92,125 +207,7 @@ async function createApp(name, verbose, useNpm, inplace, addons, alias, installD
     alias,
     installDependencies
   );
-}
-
-async function run(
-  root,
-  appName,
-  originalDirectory,
-  verbose,
-  useYarn,
-  addons,
-  dependencies,
-  devDependencies,
-  alias,
-  installDependencies
-) {
-  if (useYarn) {
-    isOnline = await checkIfOnline(useYarn);
-  } else {
-    isOnline = true;
-  }
-
-  const command = useYarn ? 'yarn' : 'npm run';
-
-  if (installDependencies) {
-    console.log(chalk.green('Installing packages. This might take a couple of minutes.'));
-    console.log(chalk.green('Installing dependencies...'));
-    console.log();
-    // Install dependencies
-    await install(root, useYarn, dependencies, verbose, isOnline, false);
-
-    if (devDependencies.length > 0) {
-      console.log();
-      console.log(chalk.green('Installing devDependencies...'));
-      console.log();
-      //Install devDependencies
-      await install(root, useYarn, devDependencies, verbose, isOnline, true);
-    }
-  } else {
-    console.log(chalk.yellow('Skip package installation.'));
-    console.log(chalk.yellow('Run npm install/yarn in your project.'));
-    let packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, 'utf8'));
-    packageJson.dependencies = dependencies.reduce((dep, elem) => {
-      if (/.+@[0-9a-zA-Z-.]+$/.test(elem)) {
-        let [name, version] = elem.split('@');
-        dep[name] = `^${version}`;
-      } else {
-        dep[elem] = '*';
-      }
-      return dep;
-    }, {});
-    packageJson.devDependencies = devDependencies.reduce((dep, elem) => {
-      dep[elem] = '*';
-      return dep;
-    }, {});
-
-    fs.writeFileSync(
-      path.join(root, 'package.json'),
-      JSON.stringify(packageJson, null, 2) + os.EOL
-    );
-  }
-
-  await loadFiles({ root, addons, appName, originalDirectory, alias, verbose });
-
-  spawn('git', ['init']);
-  if (installDependencies && isOnline) {
-    spawn(command, ['lint:fix'], { stdio: 'inherit' });
-  }
-}
-
-function install(root, useYarn, dependencies, verbose, isOnline, isDevDependencies) {
-  return new Promise((resolve, reject) => {
-    let command;
-    let args;
-    if (useYarn) {
-      command = 'yarnpkg';
-      //args = ['add', '--exact']
-      args = ['add'];
-      if (!isOnline) {
-        args.push('--offline');
-      }
-      if (isDevDependencies) {
-        args.push('--dev');
-      }
-      [].push.apply(args, dependencies);
-      args.push('--cwd');
-      args.push(root);
-
-      if (!isOnline) {
-        console.log(chalk.yellow('You appear to be offline.'));
-        console.log(chalk.yellow('Falling back to the local Yarn cache.'));
-        console.log();
-      }
-    } else {
-      command = 'npm';
-      args = ['install', '--loglevel', 'error'];
-      if (isDevDependencies) {
-        args.push('--save-dev');
-      } else {
-        args.push('--save');
-      }
-
-      [].push.apply(args, dependencies);
-    }
-
-    if (verbose) {
-      args.push('--verbose');
-    }
-
-    const child = spawn(command, args, { stdio: 'inherit' });
-    child.on('close', (code) => {
-      if (code !== 0) {
-        reject({
-          command: `${command} ${args.join(' ')}`,
-        });
-        return;
-      }
-      resolve();
-    });
-  });
-}
+};
 
 module.exports = {
   createApp,

@@ -5,7 +5,7 @@ const readdirp = require('readdirp');
 const { dirname } = require('path');
 const { getAddonTemplateDir } = require('./paths');
 
-function copyFile(src, dest, verbose) {
+const copyFile = (src, dest, verbose) => {
   try {
     const parentDir = dirname(dest);
     if (parentDir) {
@@ -21,9 +21,9 @@ function copyFile(src, dest, verbose) {
       console.log(chalk.red(err));
     }
   }
-}
+};
 
-function writeFile(path, content, flag = 'w', verbose) {
+const writeFile = (path, content, flag = 'w', verbose) => {
   try {
     const parentDir = dirname(path);
     if (parentDir) {
@@ -39,14 +39,14 @@ function writeFile(path, content, flag = 'w', verbose) {
       console.log(chalk.red(err));
     }
   }
-}
+};
 
-function appendFile(src, dest, verbose) {
+const appendFile = (src, dest, verbose) => {
   const content = fs.readFileSync(src, 'utf8');
   writeFile(dest, content, 'a+', verbose);
-}
+};
 
-function getModeFromPath(path = '') {
+const getModeFromPath = (path = '') => {
   const matchExts = (...exts) => exts.find((ext) => path.endsWith(ext));
 
   if (matchExts('.append')) {
@@ -59,7 +59,7 @@ function getModeFromPath(path = '') {
     return 'copyTemplate';
   }
   return 'copy';
-}
+};
 
 const copyLoader = ({ root, templateDir, verbose }) => ({ path }) => {
   copyFile(`${templateDir}/${path}`, `${root}/${path}`, verbose);
@@ -96,13 +96,15 @@ const fileLoader = ({ root, templateDir, appName, originalDirectory, alias, verb
   });
 };
 
-async function loadFiles({ root, addons = [], appName, originalDirectory, alias, verbose }) {
+const loadFiles = async ({ root, addons = [], appName, originalDirectory, alias, verbose }) => {
+  // eslint-disable-next-line no-restricted-syntax
   for await (const { addon, git } of addons) {
     const templateDir = await getAddonTemplateDir(addon, git);
     if (!fs.existsSync(templateDir)) {
       return;
     }
 
+    // eslint-disable-next-line no-restricted-syntax
     for await (const entry of readdirp(`${templateDir}`)) {
       try {
         fileLoader({ root, templateDir, appName, originalDirectory, alias, verbose })(entry);
@@ -111,7 +113,7 @@ async function loadFiles({ root, addons = [], appName, originalDirectory, alias,
       }
     }
   }
-}
+};
 
 module.exports = {
   loadFiles,

@@ -1,8 +1,8 @@
-const _ = require('underscore');
+/* eslint-disable global-require */
 const merge = require('lodash.merge');
 const { getAddonPackagePath } = require('./paths');
 
-module.exports = async function resolvePackage({ addons = [], ...config } = {}) {
+module.exports = async ({ addons = [], ...config } = {}) => {
   const { packageJson, dependencies, devDependencies } = await addons.reduce(
     async (setupPromise, { addon, git }) => {
       let setup = await setupPromise;

@@ -38,7 +38,7 @@ const options = program.opts();
 
 if (options.info) {
   console.log(chalk.bold('\nEnvironment Info:'));
-  return envinfo
+  envinfo
     .run(
       {
         System: ['OS', 'CPU'],
@@ -51,7 +51,10 @@ if (options.info) {
         showNotFound: true,
       }
     )
-    .then(console.log);
+    .then((info) => {
+      console.log(info);
+      process.exit(0);
+    });
 }
 
 if (typeof projectName === 'undefined') {

@@ -2,7 +2,7 @@ const os = require('os');
 const path = require('path');
 const gitCache = require('./git-tools');
 
-async function solveGitPath(addon) {
+const solveGitPath = async (addon) => {
   const [gitPath, type] = addon.split('#type=');
   const [branch, ...url] = gitPath.split('@').reverse();
   const targetId = Buffer.from(addon).toString('base64');
@@ -15,12 +15,12 @@ async function solveGitPath(addon) {
       targetId,
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
   return { dir: target, type };
-}
+};
 
-async function getAddonPackagePath(addon, git, json = false) {
+const getAddonPackagePath = async (addon, git, json = false) => {
   let packagePath = `../addons/${addon}/package`;
 
   if (git) {
@@ -36,9 +36,9 @@ async function getAddonPackagePath(addon, git, json = false) {
   }
 
   return packagePath;
-}
+};
 
-async function getAddonTemplateDir(addon, git) {
+const getAddonTemplateDir = async (addon, git) => {
   if (git) {
     const { dir, type } = await solveGitPath(addon);
     if (type) {
@@ -48,7 +48,7 @@ async function getAddonTemplateDir(addon, git) {
   }
 
   return `${__dirname}/../addons/${addon}/template`;
-}
+};
 
 module.exports = {
   getAddonPackagePath,

@@ -1,12 +1,38 @@
 const os = require('os');
-const child_process = require('child_process');
+const childProcess = require('child_process');
 const path = require('path');
 const { promisify } = require('util');
 const fs = require('fs-extra');
 const download = require('download');
 const debug = require('debug')('cna');
 
-const exec = promisify(child_process.exec);
+const exec = promisify(childProcess.exec);
+
+/**
+ * filter .git folder
+ */
+const filterGit = (src) => {
+  return !/(\\|\/)\.git\b/.test(src);
+};
+
+/**
+ *
+ * @param {string} git git repository src
+ * @param {string} target the target git clone to
+ * @param {string} branch git branch
+ */
+const clone = (git, target, branch) => {
+  const command = ['git', 'clone', '--depth=1', '-b', branch, git, target];
+  return exec(command.join(' '));
+};
+
+/**
+ * git pull
+ */
+const pull = async (cwd) => {
+  await exec('git checkout -f', { cwd });
+  await exec('git pull', { cwd });
+};
 
 /**
  * @todo add options.filter
@@ -23,11 +49,11 @@ const exec = promisify(child_process.exec);
  * repository, this option is unnecessary.
  * @param {boolean} opts.offline? use cached files, and don't update.
  */
-module.exports = async function git(opts) {
+module.exports = async (opts) => {
   const { git, zip, offline = false, target = './', branch = 'main', way = 'git', targetId } = opts;
 
   const absoluteTarget = path.isAbsolute(target) ? target : path.resolve(target);
-  const isGithub = /^[^\/]+\/[^\/]+$/.test(git);
+  const isGithub = /^[^/]+\/[^/]+$/.test(git);
   const gitUrl = isGithub ? `https://github.com/${git}` : git;
   const zipUrl = isGithub ? `https://github.com/${git}/archive/${branch}.zip` : zip;
   const id = targetId || Buffer.from(`${git}@${branch}`).toString('base64');
@@ -41,19 +67,10 @@ module.exports = async function git(opts) {
 
   const cached = fs.existsSync(cacheDir);
 
-  switch (way) {
-    case 'git':
-      return await createByGit();
-    case 'zip':
-      return await createByZip();
-    default:
-      throw new Error(`Expect parameter opts.way is 'git' or 'zip'`);
-  }
-
   /**
    * opts.way === 'git'
    */
-  async function createByGit() {
+  const createByGit = async () => {
     debug('git mode');
 
     if (!cached) {
@@ -68,40 +85,23 @@ module.exports = async function git(opts) {
     await pull(cacheDir);
     setTimeout(() => {}, 400);
     fs.copySync(cacheDir, absoluteTarget, { filter: filterGit });
-  }
+  };
 
   /**
    * opts.way === 'zip'
    * It will never use cached files, opts.cached & opts.offline will be Invalid.
    */
-  async function createByZip() {
+  const createByZip = async () => {
     debug('zip mode');
     await download(zipUrl, target, { extract: true });
+  };
+
+  switch (way) {
+    case 'git':
+      return createByGit();
+    case 'zip':
+      return createByZip();
+    default:
+      throw new Error(`Expect parameter opts.way is 'git' or 'zip'`);
   }
 };
-
-/**
- * filter .git folder
- */
-function filterGit(src) {
-  return !/(\\|\/)\.git\b/.test(src);
-}
-
-/**
- *
- * @param {string} git git repository src
- * @param {string} target the target git clone to
- * @param {string} branch git branch
- */
-function clone(git, target, branch) {
-  const command = ['git', 'clone', '--depth=1', '-b', branch, git, target];
-  return exec(command.join(' '));
-}
-
-/**
- * git pull
- */
-async function pull(cwd) {
-  await exec('git checkout -f', { cwd });
-  await exec('git pull', { cwd });
-}

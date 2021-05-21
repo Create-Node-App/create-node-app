@@ -3,8 +3,9 @@ const spawn = require('cross-spawn');
 const chalk = require('chalk');
 const semver = require('semver');
 const dns = require('dns');
+const { URL } = require('url');
 
-function toCamelCase(str) {
+const toCamelCase = (str) => {
   // Lower cases the string
   return (
     str
@@ -15,15 +16,15 @@ function toCamelCase(str) {
       .replace(/[^\w\s]/g, '')
       // Uppercases the first character in each group immediately following a space
       // (delimited by spaces)
-      .replace(/ (.)/g, function ($1) {
+      .replace(/ (.)/g, ($1) => {
         return $1.toUpperCase();
       })
       // Removes spaces
       .replace(/ /g, '')
   );
-}
+};
 
-function shouldUseYarn() {
+const shouldUseYarn = () => {
   try {
     execSync('yarnpkg --version', { stdio: 'ignore' });
     return true;
@@ -31,9 +32,9 @@ function shouldUseYarn() {
     console.log(e);
     return false;
   }
-}
+};
 
-function checkThatNpmCanReadCwd() {
+const checkThatNpmCanReadCwd = () => {
   const cwd = process.cwd();
   let childOutput = null;
   try {
@@ -57,7 +58,7 @@ function checkThatNpmCanReadCwd() {
   // " cwd = C:\path\to\current\dir" (unquoted)
   // I couldn't find an easier way to get it.
   const prefix = ' cwd = ';
-  const line = lines.find((line) => line.indexOf(prefix) === 0);
+  const line = lines.find((l) => l.indexOf(prefix) === 0);
   if (typeof line !== 'string') {
     // Fail gracefully. They could remove it.
     return true;
@@ -90,9 +91,9 @@ function checkThatNpmCanReadCwd() {
     );
   }
   return false;
-}
+};
 
-function checkNpmVersion() {
+const checkNpmVersion = () => {
   let hasMinNpm = false;
   let npmVersion = null;
   try {
@@ -105,9 +106,23 @@ function checkNpmVersion() {
     hasMinNpm: hasMinNpm,
     npmVersion: npmVersion,
   };
-}
+};
 
-function checkIfOnline(useYarn) {
+const getProxy = () => {
+  if (process.env.https_proxy) {
+    return process.env.https_proxy;
+  }
+  try {
+    // Trying to read https-proxy from .npmrc
+    let httpsProxy = execSync('npm config get https-proxy').toString().trim();
+    return httpsProxy !== 'null' ? httpsProxy : undefined;
+  } catch (e) {
+    // ignore
+  }
+  return '';
+};
+
+const checkIfOnline = (useYarn) => {
   if (!useYarn) {
     // Don't ping the Yarn registry.
     // We'll just assume the best case.
@@ -117,10 +132,11 @@ function checkIfOnline(useYarn) {
   return new Promise((resolve) => {
     dns.lookup('registry.yarnpkg.com', (err) => {
       let proxy;
+      // eslint-disable-next-line no-cond-assign
       if (err != null && (proxy = getProxy())) {
         // If a proxy is defined, we likely can't resolve external hostnames.
         // Try to resolve the proxy name as an indication of a connection.
-        dns.lookup(url.parse(proxy).hostname, (proxyErr) => {
+        dns.lookup(new URL(proxy).hostname, (proxyErr) => {
           resolve(proxyErr == null);
         });
       } else {
@@ -128,7 +144,7 @@ function checkIfOnline(useYarn) {
       }
     });
   });
-}
+};
 
 module.exports = {
   toCamelCase,
