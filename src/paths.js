@@ -3,7 +3,7 @@ const path = require('path');
 const gitCache = require('./git-tools');
 
 const solveGitPath = async (addon) => {
-  const [gitPath, type] = addon.split('#type=');
+  const [gitPath, type] = addon.split('#path=');
   const [branch, ...url] = gitPath.split('@').reverse();
   const targetId = Buffer.from(addon).toString('base64');
   const target = path.join(os.homedir(), '.cna', targetId);
