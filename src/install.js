@@ -166,6 +166,7 @@ const createApp = async (
     appName,
     command,
     ignorePackage,
+    srcDir,
   });
 
   fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify(packageJson, null, 2) + os.EOL);
