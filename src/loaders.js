@@ -7,6 +7,8 @@ const { getAddonTemplateDir } = require('./paths');
 
 const SRC_PATH_PATTERN = '[src]/';
 
+const getSrcDirPattern = (srcDir) => `${srcDir === '.' ? '' : srcDir}/`;
+
 const copyFile = (src, dest, verbose) => {
   try {
     const parentDir = dirname(dest);
@@ -66,15 +68,13 @@ const getModeFromPath = (path = '') => {
 const copyLoader = ({ root, templateDir, verbose, srcDir }) => ({ path }) => {
   copyFile(
     `${templateDir}/${path}`,
-    `${root}/${path}`.replace(SRC_PATH_PATTERN, srcDir === '.' ? '' : srcDir),
+    `${root}/${path}`.replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir)),
     verbose
   );
 };
 
 const appendLoader = ({ root, templateDir, verbose, srcDir }) => ({ path }) => {
-  const newPath = path
-    .replace(/.append$/, '')
-    .replace(SRC_PATH_PATTERN, srcDir === '.' ? '' : srcDir);
+  const newPath = path.replace(/.append$/, '').replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
   appendFile(`${templateDir}/${path}`, `${root}/${newPath}`, verbose);
 };
 
@@ -87,7 +87,7 @@ const templateLoader = ({ root, templateDir, appName, alias, verbose, mode, srcD
   const newPath = path
     .replace(/.template$/, '')
     .replace(/.append$/, '')
-    .replace(SRC_PATH_PATTERN, srcDir === '.' ? '' : srcDir);
+    .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
 
   writeFile(
     `${root}/${newPath}`,
