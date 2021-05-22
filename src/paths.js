@@ -20,22 +20,16 @@ const solveGitPath = async (addon) => {
   return { dir: target, type };
 };
 
-const getAddonPackagePath = async (addon, git, json = false) => {
-  let packagePath = `../addons/${addon}/package`;
-
+const getAddonPackagePath = async (addon, git, name = 'package') => {
   if (git) {
     const { dir, type } = await solveGitPath(addon);
     if (type) {
-      packagePath = path.resolve(dir, type, 'package');
+      return path.resolve(dir, type, 'package');
     }
-    packagePath = path.resolve(dir, 'package');
+    return path.resolve(dir, 'package');
   }
 
-  if (json) {
-    return `${packagePath}.json`;
-  }
-
-  return packagePath;
+  return `${__dirname}/../addons/${addon}/${name}`;
 };
 
 const getAddonTemplateDir = async (addon, git) => {

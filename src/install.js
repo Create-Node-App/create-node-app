@@ -76,7 +76,8 @@ const run = async (
   dependencies,
   devDependencies,
   alias,
-  installDependencies
+  installDependencies,
+  srcDir
 ) => {
   let isOnline = true;
   if (useYarn) {
@@ -105,18 +106,24 @@ const run = async (
     let packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, 'utf8'));
     packageJson.dependencies = dependencies.reduce((dep, elem) => {
       let nextDep = dep;
-      if (/.+@[0-9a-zA-Z-.]+$/.test(elem)) {
+      if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
         let [name, version] = elem.split('@');
-        nextDep[name] = `^${version}`;
+        nextDep[name] = `${version}`;
       } else {
         nextDep[elem] = '*';
       }
       return nextDep;
     }, {});
-    packageJson.devDependencies = devDependencies.reduce(
-      (dep, elem) => ({ ...dep, [elem]: '*' }),
-      {}
-    );
+    packageJson.devDependencies = devDependencies.reduce((dep, elem) => {
+      let nextDep = dep;
+      if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
+        let [name, version] = elem.split('@');
+        nextDep[name] = `${version}`;
+      } else {
+        nextDep[elem] = '*';
+      }
+      return nextDep;
+    }, {});
 
     fs.writeFileSync(
       path.join(root, 'package.json'),
@@ -124,7 +131,7 @@ const run = async (
     );
   }
 
-  await loadFiles({ root, addons, appName, originalDirectory, alias, verbose });
+  await loadFiles({ root, addons, appName, originalDirectory, alias, verbose, srcDir });
 
   spawn('git', ['init']);
   if (installDependencies && isOnline) {
@@ -132,7 +139,17 @@ const run = async (
   }
 };
 
-const createApp = async (name, verbose, useNpm, inplace, addons, alias, installDependencies) => {
+const createApp = async (
+  name,
+  verbose,
+  useNpm,
+  inplace,
+  addons,
+  alias,
+  installDependencies,
+  ignorePackage = false,
+  srcDir
+) => {
   const root = path.resolve(name);
   const appName = path.basename(root);
 
@@ -148,6 +165,7 @@ const createApp = async (name, verbose, useNpm, inplace, addons, alias, installD
     addons,
     appName,
     command,
+    ignorePackage,
   });
 
   fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify(packageJson, null, 2) + os.EOL);
@@ -205,7 +223,8 @@ const createApp = async (name, verbose, useNpm, inplace, addons, alias, installD
     dependencies,
     devDependencies,
     alias,
-    installDependencies
+    installDependencies,
+    srcDir
   );
 };
 

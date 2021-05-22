@@ -5,6 +5,8 @@ const readdirp = require('readdirp');
 const { dirname } = require('path');
 const { getAddonTemplateDir } = require('./paths');
 
+const SRC_PATH_PATTERN = '[src]/';
+
 const copyFile = (src, dest, verbose) => {
   try {
     const parentDir = dirname(dest);
@@ -61,27 +63,49 @@ const getModeFromPath = (path = '') => {
   return 'copy';
 };
 
-const copyLoader = ({ root, templateDir, verbose }) => ({ path }) => {
-  copyFile(`${templateDir}/${path}`, `${root}/${path}`, verbose);
+const copyLoader = ({ root, templateDir, verbose, srcDir }) => ({ path }) => {
+  copyFile(
+    `${templateDir}/${path}`,
+    `${root}/${path}`.replace(SRC_PATH_PATTERN, srcDir === '.' ? '' : srcDir),
+    verbose
+  );
 };
 
-const appendLoader = ({ root, templateDir, verbose }) => ({ path }) => {
-  const newPath = path.replace(/.append$/, '');
+const appendLoader = ({ root, templateDir, verbose, srcDir }) => ({ path }) => {
+  const newPath = path
+    .replace(/.append$/, '')
+    .replace(SRC_PATH_PATTERN, srcDir === '.' ? '' : srcDir);
   appendFile(`${templateDir}/${path}`, `${root}/${newPath}`, verbose);
 };
 
-const templateLoader = ({ root, templateDir, appName, alias, verbose, mode }) => ({ path }) => {
+const templateLoader = ({ root, templateDir, appName, alias, verbose, mode, srcDir }) => ({
+  path,
+}) => {
   const flag = mode.includes('append') ? 'a+' : 'w';
   const file = fs.readFileSync(`${templateDir}/${path}`, 'utf8');
   const newFile = _.template(file);
-  const newPath = path.replace(/.template$/, '').replace(/.append$/, '');
+  const newPath = path
+    .replace(/.template$/, '')
+    .replace(/.append$/, '')
+    .replace(SRC_PATH_PATTERN, srcDir === '.' ? '' : srcDir);
 
-  writeFile(`${root}/${newPath}`, newFile({ project: alias, projectName: appName }), flag, verbose);
+  writeFile(
+    `${root}/${newPath}`,
+    newFile({ project: alias, projectName: appName, srcDir: srcDir || '.' }),
+    flag,
+    verbose
+  );
 };
 
-const fileLoader = ({ root, templateDir, appName, originalDirectory, alias, verbose }) => ({
-  path,
-}) => {
+const fileLoader = ({
+  root,
+  templateDir,
+  appName,
+  originalDirectory,
+  alias,
+  verbose,
+  srcDir = 'src/',
+}) => ({ path }) => {
   const mode = getModeFromPath(path);
 
   const loaders = {
@@ -91,12 +115,29 @@ const fileLoader = ({ root, templateDir, appName, originalDirectory, alias, verb
     appendTemplate: appendLoader,
   };
 
-  return loaders[mode]({ root, templateDir, appName, originalDirectory, alias, verbose, mode })({
+  return loaders[mode]({
+    root,
+    templateDir,
+    appName,
+    originalDirectory,
+    alias,
+    verbose,
+    mode,
+    srcDir,
+  })({
     path,
   });
 };
 
-const loadFiles = async ({ root, addons = [], appName, originalDirectory, alias, verbose }) => {
+const loadFiles = async ({
+  root,
+  addons = [],
+  appName,
+  originalDirectory,
+  alias,
+  verbose,
+  srcDir = 'src/',
+}) => {
   // eslint-disable-next-line no-restricted-syntax
   for await (const { addon, git } of addons) {
     const templateDir = await getAddonTemplateDir(addon, git);
@@ -107,7 +148,9 @@ const loadFiles = async ({ root, addons = [], appName, originalDirectory, alias,
     // eslint-disable-next-line no-restricted-syntax
     for await (const entry of readdirp(`${templateDir}`)) {
       try {
-        fileLoader({ root, templateDir, appName, originalDirectory, alias, verbose })(entry);
+        fileLoader({ root, templateDir, appName, originalDirectory, alias, verbose, srcDir })(
+          entry
+        );
       } catch (err) {
         console.log(err);
       }

@@ -22,6 +22,7 @@ program
   .option('--use-npm', 'use npm mandatorily')
   .option('--extend <repos...>', 'git repositories to extend your boilerplate')
   .option('-a, --alias <alias>', 'alias for import statements from root dir', 'app')
+  .option('--src-dir', 'dir name to put content under [src]/', 'src')
   .option('--nodeps', 'generate package.json file without installing dependencies')
   .option('--inplace', 'apply setup to an existing project')
   .allowUnknownOption()
@@ -77,5 +78,7 @@ createApp(
   options.inplace,
   addons,
   options.alias,
-  !options.nodeps
+  !options.nodeps,
+  false,
+  options.srcDir
 );
