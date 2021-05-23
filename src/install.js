@@ -135,7 +135,10 @@ const run = async (
 
   spawn('git', ['init']);
   if (installDependencies && isOnline) {
-    spawn(command, ['lint:fix'], { stdio: 'inherit' });
+    const packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, 'utf8'));
+    if (packageJson.scripts && packageJson.scripts['lint:fix']) {
+      spawn(command, ['lint:fix'], { stdio: 'inherit' });
+    }
   }
 };
 

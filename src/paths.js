@@ -24,9 +24,9 @@ const getAddonPackagePath = async (addon, git, name = 'package') => {
   if (git) {
     const { dir, type } = await solveGitPath(addon);
     if (type) {
-      return path.resolve(dir, type, 'package');
+      return path.resolve(dir, type, name);
     }
-    return path.resolve(dir, 'package');
+    return path.resolve(dir, name);
   }
 
   return `${__dirname}/../addons/${addon}/${name}`;

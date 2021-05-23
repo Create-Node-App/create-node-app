@@ -1,4 +1,5 @@
 /* eslint-disable global-require */
+const { existsSync } = require('fs');
 const merge = require('lodash.merge');
 const { getAddonPackagePath } = require('./paths');
 
@@ -13,24 +14,34 @@ const getInstallableSetup = ({ dependencies, devDependencies, ...packageJson }) 
   };
 };
 
+const requireIfExists = (path) => {
+  if (existsSync(path)) {
+    return require(path);
+  }
+
+  throw new Error(`file ${path} not exists`);
+};
+
 module.exports = async ({ addons = [], ignorePackage = false, ...config } = {}) => {
   const setup = await addons.reduce(async (setupPromise, { addon, git }) => {
     let packageJson = await setupPromise;
 
     try {
-      if (!ignorePackage) {
-        const addonPackageJson = require(await getAddonPackagePath(addon, git, 'package.json'));
-        packageJson = merge(packageJson, addonPackageJson);
-      }
-    } catch (error) {
-      // ignore this case since it failed executing the require of the `package.json`
-    }
-
-    try {
-      const template = require(await getAddonPackagePath(addon, git, 'template.json'));
+      const template = requireIfExists(await getAddonPackagePath(addon, git, 'template.json'));
       packageJson = merge(packageJson, template.package || {});
     } catch (error) {
       // ignore this case since it failed executing the require of the `template.json`
+    }
+
+    try {
+      if (!ignorePackage) {
+        const addonPackageJson = requireIfExists(
+          await getAddonPackagePath(addon, git, 'package.json')
+        );
+        return merge(packageJson, addonPackageJson);
+      }
+    } catch (error) {
+      // ignore this case since it failed executing the require of the `package.json`
     }
 
     try {
@@ -40,7 +51,7 @@ module.exports = async ({ addons = [], ignorePackage = false, ...config } = {}) 
     } catch (err) {
       return packageJson;
     }
-  }, Promise.resolve({ dependencies: {}, devDependencies: {}, scripts: {} }));
+  }, Promise.resolve({ name: config.appName, dependencies: {}, devDependencies: {}, scripts: {} }));
 
   return getInstallableSetup(setup);
 };
