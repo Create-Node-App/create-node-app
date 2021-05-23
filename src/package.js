@@ -47,10 +47,11 @@ module.exports = async ({ addons = [], ignorePackage = false, ...config } = {}) 
     try {
       // apply updates using package module
       const resolveAddonPackage = require(await getAddonPackagePath(addon, git));
-      return resolveAddonPackage(packageJson, config);
+      packageJson = resolveAddonPackage(packageJson, config);
     } catch (err) {
-      return packageJson;
+      // ignore this case since it failed executing `resolveAddonPackage(...)`
     }
+    return packageJson;
   }, Promise.resolve({ name: config.appName, dependencies: {}, devDependencies: {}, scripts: {} }));
 
   return getInstallableSetup(setup);
