@@ -22,7 +22,7 @@ const requireIfExists = (path) => {
   throw new Error(`file ${path} not exists`);
 };
 
-module.exports = async ({ addons = [], ...config } = {}) => {
+module.exports = async ({ addons = [], ignorePackage: globalIgnorePackage, ...config } = {}) => {
   const setup = await addons.reduce(async (setupPromise, { addon, git, ignorePackage }) => {
     let packageJson = await setupPromise;
 
@@ -34,7 +34,7 @@ module.exports = async ({ addons = [], ...config } = {}) => {
     }
 
     try {
-      if (!ignorePackage) {
+      if (!globalIgnorePackage || !ignorePackage) {
         const addonPackageJson = requireIfExists(
           await getAddonPackagePath(addon, git, 'package.json')
         );
