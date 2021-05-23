@@ -1,6 +1,6 @@
 {
   "name": "cna-cli",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Command line tool to create Node apps with a lot of different addons.",
   "repository": {
     "type": "git",
