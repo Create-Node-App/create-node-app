@@ -46,7 +46,8 @@ const getAddonPackagePath = async (addon, name = 'package') => {
 
 const getAddonTemplateDir = async (addon, templateDirName = '') => {
   const { dir, subdir, templateDirName: addonTemplateDirName } = await solveAddonPath(addon);
-  const safeDirName = addonTemplateDirName === null ? templateDirName : addonTemplateDirName;
+  const safeDirName =
+    (addonTemplateDirName === null ? templateDirName : addonTemplateDirName) || '';
   if (subdir) {
     return path.resolve(dir, subdir, safeDirName);
   }
