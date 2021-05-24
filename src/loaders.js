@@ -154,7 +154,13 @@ const loadFiles = async ({
 
     // eslint-disable-next-line no-restricted-syntax
     for await (const entry of readdirp(templateDir, {
-      fileFilter: ['!package.js', '!package.json', '!template.json'],
+      fileFilter: [
+        '!package.js',
+        '!package.json',
+        '!package-lock.json',
+        '!template.json',
+        '!yarn.lock',
+      ],
       directoryFilter: ['!package'],
     })) {
       try {
