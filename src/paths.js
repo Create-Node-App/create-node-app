@@ -2,46 +2,55 @@ const os = require('os');
 const path = require('path');
 const gitCache = require('./git-tools');
 
-const solveGitPath = async (addon) => {
-  const [gitPath, type] = addon.split('#path=');
-  const [branch, ...url] = gitPath.split('@').reverse();
-  const targetId = Buffer.from(addon).toString('base64');
+const solveGitPath = async ({ url, branch, subdir }) => {
+  const targetId = Buffer.from(`${url}#${branch}#${subdir}`).toString('base64');
   const target = path.join(os.homedir(), '.cna', targetId);
   try {
     await gitCache({
-      git: url.reverse().join('@'),
+      git: url,
       branch,
       target,
       targetId,
     });
-  } catch (err) {
-    console.error(err);
+  } catch {
+    // ignore git error
   }
-  return { dir: target, type };
+  return { dir: target, subdir };
 };
 
-const getAddonPackagePath = async (addon, git, name = 'package') => {
-  if (git) {
-    const { dir, type } = await solveGitPath(addon);
-    if (type) {
-      return path.resolve(dir, type, name);
+const solveAddonPath = async (addon) => {
+  try {
+    const url = new URL(addon);
+    const branch = url.searchParams.get('branch');
+    const subdir = url.searchParams.get('subdir');
+    const templateDirName = url.searchParams.get('templatedir');
+    if (url.protocol === 'file:') {
+      return { dir: path.resolve(url.host, url.pathname), subdir, templateDirName };
     }
-    return path.resolve(dir, name);
+    const urlWithoutParams = `${url.origin}${url.pathname}`;
+    const gitData = await solveGitPath({ url: urlWithoutParams, branch, subdir });
+    return { ...gitData, templateDirName };
+  } catch {
+    // failed solving file/http/ssh/... url
+    return { dir: path.resolve(__dirname, '..', 'addons', addon) };
   }
-
-  return `${__dirname}/../addons/${addon}/${name}`;
 };
 
-const getAddonTemplateDir = async (addon, git) => {
-  if (git) {
-    const { dir, type } = await solveGitPath(addon);
-    if (type) {
-      return path.resolve(dir, type, 'template');
-    }
-    return path.resolve(dir, 'template');
+const getAddonPackagePath = async (addon, name = 'package') => {
+  const { dir, subdir } = await solveAddonPath(addon);
+  if (subdir) {
+    return path.resolve(dir, subdir, name);
   }
+  return path.resolve(dir, name);
+};
 
-  return `${__dirname}/../addons/${addon}/template`;
+const getAddonTemplateDir = async (addon, templateDirName = '') => {
+  const { dir, subdir, templateDirName: addonTemplateDirName } = await solveAddonPath(addon);
+  const safeDirName = addonTemplateDirName === null ? templateDirName : addonTemplateDirName;
+  if (subdir) {
+    return path.resolve(dir, subdir, safeDirName);
+  }
+  return path.resolve(dir, safeDirName);
 };
 
 module.exports = {

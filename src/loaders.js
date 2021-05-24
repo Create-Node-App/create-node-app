@@ -6,6 +6,7 @@ const { dirname } = require('path');
 const { getAddonTemplateDir } = require('./paths');
 
 const SRC_PATH_PATTERN = '[src]/';
+const DEFAULT_SRC_PATH = 'src/';
 
 const getSrcDirPattern = (srcDir) => `${srcDir === '.' ? '' : srcDir}/`;
 
@@ -91,7 +92,13 @@ const templateLoader = ({ root, templateDir, appName, alias, verbose, mode, srcD
 
   writeFile(
     `${root}/${newPath}`,
-    newFile({ project: alias, projectName: appName, srcDir: srcDir || '.' }),
+    newFile({
+      project: alias,
+      projectImport: alias,
+      projectImportPath: alias === '' ? '' : `${alias}/`,
+      projectName: appName,
+      srcDir: srcDir || '.',
+    }),
     flag,
     verbose
   );
@@ -104,7 +111,7 @@ const fileLoader = ({
   originalDirectory,
   alias,
   verbose,
-  srcDir = 'src/',
+  srcDir = DEFAULT_SRC_PATH,
 }) => ({ path }) => {
   const mode = getModeFromPath(path);
 
@@ -136,17 +143,20 @@ const loadFiles = async ({
   originalDirectory,
   alias,
   verbose,
-  srcDir = 'src/',
+  srcDir = DEFAULT_SRC_PATH,
 }) => {
   // eslint-disable-next-line no-restricted-syntax
-  for await (const { addon, git } of addons) {
-    const templateDir = await getAddonTemplateDir(addon, git);
+  for await (const { addon, templateDirName = 'template' } of addons) {
+    const templateDir = await getAddonTemplateDir(addon, templateDirName);
     if (!fs.existsSync(templateDir)) {
       return;
     }
 
     // eslint-disable-next-line no-restricted-syntax
-    for await (const entry of readdirp(`${templateDir}`)) {
+    for await (const entry of readdirp(templateDir, {
+      fileFilter: ['!package.js', '!package.json', '!template.json'],
+      directoryFilter: ['!package'],
+    })) {
       try {
         fileLoader({ root, templateDir, appName, originalDirectory, alias, verbose, srcDir })(
           entry

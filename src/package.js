@@ -23,11 +23,11 @@ const requireIfExists = (path) => {
 };
 
 module.exports = async ({ addons = [], ignorePackage: globalIgnorePackage, ...config } = {}) => {
-  const setup = await addons.reduce(async (setupPromise, { addon, git, ignorePackage }) => {
+  const setup = await addons.reduce(async (setupPromise, { addon, ignorePackage }) => {
     let packageJson = await setupPromise;
 
     try {
-      const template = requireIfExists(await getAddonPackagePath(addon, git, 'template.json'));
+      const template = requireIfExists(await getAddonPackagePath(addon, 'template.json'));
       packageJson = merge(packageJson, template.package || {});
     } catch (error) {
       // ignore this case since it failed executing the require of the `template.json`
@@ -35,9 +35,7 @@ module.exports = async ({ addons = [], ignorePackage: globalIgnorePackage, ...co
 
     try {
       if (!globalIgnorePackage || !ignorePackage) {
-        const addonPackageJson = requireIfExists(
-          await getAddonPackagePath(addon, git, 'package.json')
-        );
+        const addonPackageJson = requireIfExists(await getAddonPackagePath(addon, 'package.json'));
         return merge(packageJson, addonPackageJson);
       }
     } catch (error) {
@@ -46,7 +44,7 @@ module.exports = async ({ addons = [], ignorePackage: globalIgnorePackage, ...co
 
     try {
       // apply updates using package module
-      const resolveAddonPackage = require(await getAddonPackagePath(addon, git));
+      const resolveAddonPackage = require(await getAddonPackagePath(addon));
       packageJson = resolveAddonPackage(packageJson, config);
     } catch (err) {
       // ignore this case since it failed executing `resolveAddonPackage(...)`
