@@ -37,9 +37,11 @@
     "envinfo": "^7.7.4",
     "fs-extra": "^7.0.1",
     "lodash.merge": "^4.6.2",
+    "prompts": "^2.4.1",
     "readdirp": "^3.4.0",
     "semver": "^5.6.0",
-    "underscore": "^1.10.2"
+    "underscore": "^1.10.2",
+    "yargs": "^17.0.1"
   },
   "devDependencies": {
     "eslint": "^7.9.0",

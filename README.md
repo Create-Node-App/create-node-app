@@ -13,21 +13,22 @@ The primary goal of this project is to provide a stable foundation upon which to
 ## Quickstart
 
 ```sh
-$ npx cna-cli my-app
+$ npx cna-cli my-app # or specify flag `-i` to use interactive menu
 $ cd my-app
 $ npm start
 ```
 
 the generated project will vary in the presence of the following flags:
 
-| Flag         | What is it for?                                        |
-| ------------ | ------------------------------------------------------ |
-| `--verbose`  | print additional logs.                                 |
-| `--info`     | print environment debug info.                          |
-| `--nodeps`   | will no install dependencies on the generated project. |
-| `--use-npm`  | will use npm as command.                               |
-| `--inplace`  | apply setup to an existing project.                    |
-| `-a <alias>` | will setup webpack alias. `app` by default.            |
+| Flag                | What is it for?                                        |
+| ------------------- | ------------------------------------------------------ |
+| `-i, --interactive` | use interactive mode to bootstrap your app             |
+| `--verbose`         | print additional logs.                                 |
+| `--info`            | print environment debug info.                          |
+| `--nodeps`          | will no install dependencies on the generated project. |
+| `--use-npm`         | will use npm as command.                               |
+| `--inplace`         | apply setup to an existing project.                    |
+| `-a <alias>`        | will setup webpack alias. `app` by default.            |
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
 
