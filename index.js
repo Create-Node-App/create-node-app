@@ -129,15 +129,11 @@ if (options.interactive) {
       },
     ]);
 
-    let { addons: selectedAddons, ...appOptions } = {
+    let { ...appOptions } = {
       ...options,
       ...baseInput,
       ...backendConfig,
     };
-
-    selectedAddons.forEach((addon) => {
-      appOptions[addon] = true;
-    });
 
     const addons = getAddons(appOptions);
 
