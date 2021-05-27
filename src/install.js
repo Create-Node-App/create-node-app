@@ -1,3 +1,4 @@
+const _ = require('underscore');
 const path = require('path');
 const fs = require('fs-extra');
 const chalk = require('chalk');
@@ -82,6 +83,13 @@ const run = async (
   let isOnline = true;
   if (useYarn) {
     isOnline = await checkIfOnline(useYarn);
+  }
+
+  if (_.isEmpty(addons)) {
+    console.log();
+    console.log(chalk.yellow('No addons specified to bootstrap application.'));
+    console.log();
+    process.exit(0);
   }
 
   const command = useYarn ? 'yarn' : 'npm run';
