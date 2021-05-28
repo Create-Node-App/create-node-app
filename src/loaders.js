@@ -149,7 +149,8 @@ const loadFiles = async ({
   for await (const { addon, templateDirName = 'template' } of addons) {
     const templateDir = await getAddonTemplateDir(addon, templateDirName);
     if (!fs.existsSync(templateDir)) {
-      return;
+      // eslint-disable-next-line no-continue
+      continue;
     }
 
     // eslint-disable-next-line no-restricted-syntax
@@ -168,7 +169,9 @@ const loadFiles = async ({
           entry
         );
       } catch (err) {
-        console.log(err);
+        if (verbose) {
+          console.log(err);
+        }
       }
     }
   }
