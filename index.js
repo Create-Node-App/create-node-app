@@ -3,12 +3,25 @@
 const program = require('commander');
 const chalk = require('chalk');
 const envinfo = require('envinfo');
-const prompts = require('prompts');
-prompts.override(require('yargs').argv);
 
 const packageJS = require('./package.json');
-const { createApp } = require('./src/install');
-const getAddons = require('./src/addons');
+const { createApp } = require('./lib/install');
+const { getCnaOptions } = require('./cna');
+
+/**
+ * Options to bootstrap the Node application
+ * @typedef {Object} Options
+ * @property {boolean} info - Print environment debug info
+ * @property {string} alias - Metadata to specify alias, usefull for backends using webpack
+ * @property {string} srcDir - Metadata to specify where to put the source code
+ * @property {boolean} interactive - Specify if it is needed to use interactive mode or not
+ * @property {boolean} verbose - Specify if it is needed to use verbose mode or not
+ * @property {string} projectName - Project's name
+ * @property {boolean} useNpm - Use npm mandatorily
+ * @property {(string | undefined)} template - Template to bootstrap the aplication
+ * @property {[]string} extend - Extensions to apply for the boilerplate generation
+ * @property {({ addon: string }[]|undefined)} addons - Official extensions to apply
+ */
 
 let projectName = 'app';
 
@@ -23,6 +36,7 @@ program
   .option('--info', 'print environment debug info')
   .option('--use-npm', 'use npm mandatorily')
   .option('-i, --interactive', 'use interactive mode to bootstrap your app')
+  .option('--template <template>', 'especify template to use for initial setup')
   .option('--extend <repos...>', 'git repositories to extend your boilerplate')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
   .option('--src-dir <src-dir>', 'dir name to put content under [src]/', '')
@@ -40,12 +54,14 @@ program
   })
   .parse(process.argv);
 
-const options = program.opts();
-
-if (options.info) {
-  console.log(chalk.bold('\nEnvironment Info:'));
-  envinfo
-    .run(
+/**
+ * Main procress to bootstrap the Node app using user options
+ * @param {Options} options - Options to bootstrap application
+ */
+const main = async (options) => {
+  if (options.info) {
+    console.log(chalk.bold('\nEnvironment Info:'));
+    const info = await envinfo.run(
       {
         System: ['OS', 'CPU'],
         Binaries: ['Node', 'npm', 'Yarn'],
@@ -56,115 +72,35 @@ if (options.info) {
         duplicates: true,
         showNotFound: true,
       }
-    )
-    .then((info) => {
-      console.log(info);
-      process.exit(0);
-    });
-}
-
-if (typeof projectName === 'undefined') {
-  console.error('Please specify the project directory:');
-  console.log(`  ${chalk.cyan(program.name())} ${chalk.green('[project-directory]')}`);
-  console.log();
-  console.log('For example:');
-  console.log(`  ${chalk.cyan(program.name())} ${chalk.green('my-node-app')}`);
-  console.log();
-  console.log(`Run ${chalk.cyan(`${program.name()} --help`)} to see all options.`);
-  process.exit(1);
-}
-
-if (options.interactive) {
-  (async () => {
-    const baseInput = await prompts([
-      {
-        type: 'text',
-        name: 'projectName',
-        message: `What's your project name?`,
-        initial: projectName,
-      },
-      {
-        type: 'toggle',
-        name: 'useNpm',
-        message: 'Use `npm` mandatorily?',
-        initial: options.useNpm,
-        active: 'yes',
-        inactive: 'no',
-      },
-    ]);
-
-    const { template } = await prompts([
-      {
-        type: 'text',
-        name: 'template',
-        message: 'Template to use to bootstrap application',
-        initial: '',
-      },
-    ]);
-
-    baseInput.template = template;
-
-    const defaultSrcDir = baseInput.cra === true ? 'src' : options.srcDir;
-
-    const backendConfig = await prompts([
-      {
-        type: 'text',
-        name: 'srcDir',
-        message:
-          'Sub directory to put all source content (.e.g. `src`, `app`). Will be on root directory by default',
-        initial: defaultSrcDir,
-      },
-      {
-        type: 'text',
-        name: 'alias',
-        message: 'Webpack alias if needed',
-        initial: options.alias,
-      },
-      {
-        type: 'list',
-        name: 'extend',
-        message: 'Enter extensions',
-        initial: '',
-        separator: ',',
-      },
-    ]);
-
-    let { ...appOptions } = {
-      ...options,
-      ...baseInput,
-      ...backendConfig,
-    };
-
-    const addons = getAddons(appOptions);
-
-    if (appOptions.verbose) {
-      console.log({ ...appOptions, addons });
-    }
-
-    await createApp(
-      appOptions.projectName,
-      appOptions.verbose,
-      appOptions.useNpm,
-      appOptions.inplace,
-      addons,
-      appOptions.alias,
-      !appOptions.nodeps,
-      false,
-      appOptions.srcDir
     );
-  })();
-} else {
-  const addons = getAddons(options);
+    console.log(info);
+    process.exit(0);
+  }
 
-  createApp(
-    projectName,
-    options.verbose,
-    options.useNpm,
-    options.inplace,
-    addons,
-    options.alias,
-    !options.nodeps,
+  if (typeof options.projectName === 'undefined') {
+    console.error('Please specify the project directory:');
+    console.log(`  ${chalk.cyan(program.name())} ${chalk.green('[project-directory]')}`);
+    console.log();
+    console.log('For example:');
+    console.log(`  ${chalk.cyan(program.name())} ${chalk.green('my-app')}`);
+    console.log();
+    console.log(`Run ${chalk.cyan(`${program.name()} --help`)} to see all options.`);
+    process.exit(1);
+  }
+
+  const appOptions = await getCnaOptions(options);
+
+  await createApp(
+    appOptions.projectName,
+    appOptions.verbose,
+    appOptions.useNpm,
+    appOptions.inplace,
+    appOptions.addons,
+    appOptions.alias,
+    !appOptions.nodeps,
     false,
-    options.srcDir
+    appOptions.srcDir
   );
-}
+};
+
+main({ ...program.opts(), projectName });
