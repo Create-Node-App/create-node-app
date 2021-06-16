@@ -54,27 +54,32 @@ program
   })
   .parse(process.argv);
 
+const printEnvInfo = async () => {
+  console.log(chalk.bold('\nEnvironment Info:'));
+  const info = await envinfo.run(
+    {
+      System: ['OS', 'CPU'],
+      Binaries: ['Node', 'npm', 'Yarn'],
+      Browsers: ['Chrome', 'Edge', 'Internet Explorer', 'Firefox', 'Safari'],
+    },
+    {
+      clipboard: false,
+      duplicates: true,
+      showNotFound: true,
+    }
+  );
+  console.log(info);
+  process.exit(0);
+};
+
 /**
  * Main procress to bootstrap the Node app using user options
  * @param {Options} options - Options to bootstrap application
+ * @param {(options: Options) => Promise<Options>} transformOptions - Transform options with customization
  */
-const main = async (options) => {
+const cna = async (options, transformOptions = getCnaOptions) => {
   if (options.info) {
-    console.log(chalk.bold('\nEnvironment Info:'));
-    const info = await envinfo.run(
-      {
-        System: ['OS', 'CPU'],
-        Binaries: ['Node', 'npm', 'Yarn'],
-        Browsers: ['Chrome', 'Edge', 'Internet Explorer', 'Firefox', 'Safari'],
-      },
-      {
-        clipboard: false,
-        duplicates: true,
-        showNotFound: true,
-      }
-    );
-    console.log(info);
-    process.exit(0);
+    await printEnvInfo();
   }
 
   if (typeof options.projectName === 'undefined') {
@@ -88,7 +93,7 @@ const main = async (options) => {
     process.exit(1);
   }
 
-  const appOptions = await getCnaOptions(options);
+  const appOptions = await transformOptions(options);
 
   await createApp(
     appOptions.projectName,
@@ -103,4 +108,12 @@ const main = async (options) => {
   );
 };
 
-main({ ...program.opts(), projectName });
+if (require.main === module) {
+  cna({ ...program.opts(), projectName });
+}
+
+module.exports = {
+  cna,
+  printEnvInfo,
+  createApp,
+};
