@@ -1,4 +1,4 @@
-const { Options } = require('.');
+const { Options } = require('./docs');
 
 /**
  * get addons from user options

@@ -2,7 +2,7 @@ const prompts = require('prompts');
 prompts.override(require('yargs').argv);
 
 const getAddons = require('./addons');
-const { Options } = require('.');
+const { Options } = require('./docs');
 
 /**
  * Addons options to bootstrap the Node app
