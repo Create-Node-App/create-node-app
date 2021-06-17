@@ -20,7 +20,7 @@ const { getCnaOptions } = require('./cna');
  * @property {boolean} useNpm - Use npm mandatorily
  * @property {(string | undefined)} template - Template to bootstrap the aplication
  * @property {[]string} extend - Extensions to apply for the boilerplate generation
- * @property {({ addon: string }[]|undefined)} addons - Official extensions to apply
+ * @property {({ addon: string, ignorePackage?: boolean }[]|undefined)} addons - Official extensions to apply
  */
 
 let projectName = 'app';
