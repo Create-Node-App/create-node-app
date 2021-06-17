@@ -20,21 +20,22 @@ $ npm start
 
 the generated project will vary in the presence of the following flags:
 
-| Flag                | What is it for?                                        |
-| ------------------- | ------------------------------------------------------ |
-| `-i, --interactive` | use interactive mode to bootstrap your app             |
-| `--verbose`         | print additional logs.                                 |
-| `--info`            | print environment debug info.                          |
-| `--nodeps`          | will no install dependencies on the generated project. |
-| `--use-npm`         | will use npm as command.                               |
-| `--inplace`         | apply setup to an existing project.                    |
-| `-a <alias>`        | will setup webpack alias. `app` by default.            |
+| Flag                    | What is it for?                                        |
+| ----------------------- | ------------------------------------------------------ |
+| `-i, --interactive`     | use interactive mode to bootstrap your app             |
+| `--verbose`             | print additional logs.                                 |
+| `--info`                | print environment debug info.                          |
+| `--nodeps`              | will no install dependencies on the generated project. |
+| `--use-npm`             | will use npm as command.                               |
+| `--template <template>` | specify template to use for initial setup              |
+| `--inplace`             | apply setup to an existing project.                    |
+| `-a <alias>`            | will setup webpack alias. `app` by default.            |
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
 
 ## Creating an app
 
-**You’ll need to have Node 8.10.0 or later on your local development machine** (but it’s not required on the server). You can use [fnm](https://github.com/Schniz/fnm) to easily switch Node versions between different projects.
+**You’ll need to have Node 12.14.0 or later on your local development machine** (but it’s not required on the server). You can use [fnm](https://github.com/Schniz/fnm) to easily switch Node versions between different projects.
 
 To create a new app, you may choose one of the following methods:
 
@@ -47,3 +48,11 @@ $ npx cna-cli my-app
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
 
 It will create a directory called `my-app` inside the current folder.
+
+## Contributors
+
+<a href="https://github.com/Create-Node-App/create-node-app/contributors">
+  <img src="https://contrib.rocks/image?repo=Create-Node-App/create-node-app"/>
+</a>
+
+Made with [contributors-img](https://contrib.rocks).

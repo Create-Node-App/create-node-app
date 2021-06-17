@@ -36,7 +36,7 @@ program
   .option('--info', 'print environment debug info')
   .option('--use-npm', 'use npm mandatorily')
   .option('-i, --interactive', 'use interactive mode to bootstrap your app')
-  .option('--template <template>', 'especify template to use for initial setup')
+  .option('--template <template>', 'specify template to use for initial setup')
   .option('--extend <repos...>', 'git repositories to extend your boilerplate')
   .option('-a, --alias <alias>', 'webpack alias', 'app')
   .option('--src-dir <src-dir>', 'dir name to put content under [src]/', '')
