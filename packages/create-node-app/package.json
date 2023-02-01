@@ -1,5 +1,5 @@
 {
-  "name": "cna-cli",
+  "name": "@create-node-app/cli",
   "version": "1.5.3",
   "description": "Command line tool to create Node apps with a lot of different addons.",
   "repository": {
