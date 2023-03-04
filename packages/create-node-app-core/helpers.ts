@@ -111,12 +111,12 @@ export const checkNpmVersion = () => {
 };
 
 const getProxy = () => {
-  if (process.env.https_proxy) {
-    return process.env.https_proxy;
+  if (process.env.HTTPS_PROXY) {
+    return process.env.HTTPS_PROXY;
   }
   try {
     // Trying to read https-proxy from .npmrc
-    let httpsProxy = execSync("npm config get https-proxy").toString().trim();
+    const httpsProxy = execSync("npm config get https-proxy").toString().trim();
     return httpsProxy !== "null" ? httpsProxy : undefined;
   } catch (e) {
     // ignore

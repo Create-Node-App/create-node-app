@@ -39,7 +39,7 @@ const pull = async (cwd: string) => {
 };
 
 export type DownloadRepositoryOptions = {
-  git: string;
+  git?: string;
   target: string;
   cacheDir?: string;
   branch?: string;
@@ -65,7 +65,7 @@ export type DownloadRepositoryOptions = {
  * @param opts.offline? use cached files, and don't update.
  */
 export const downloadRepository = async ({
-  git,
+  git = "",
   zip,
   offline = false,
   target = "./",
@@ -100,6 +100,11 @@ export const downloadRepository = async ({
     log("git mode");
 
     if (!cached) {
+      if (!gitUrl) {
+        throw new Error(
+          `Expect parameter opts.git when opts.way is 'git', but got ${gitUrl}`
+        );
+      }
       await clone(gitUrl, cacheDir, branch);
     }
 
@@ -109,8 +114,9 @@ export const downloadRepository = async ({
     }
 
     await pull(cacheDir);
-    setTimeout(() => {}, 400);
-    fs.copySync(cacheDir, absoluteTarget, { filter: filterGit });
+    setTimeout(() => {
+      fs.copySync(cacheDir, absoluteTarget, { filter: filterGit });
+    }, 400);
   };
 
   /**
@@ -119,6 +125,11 @@ export const downloadRepository = async ({
    */
   const createByZip = async () => {
     log("zip mode");
+    if (!zipUrl) {
+      throw new Error(
+        `Expect parameter opts.zip when opts.way is 'zip', but got ${zipUrl}`
+      );
+    }
     await download(zipUrl, target, { extract: true });
   };
 

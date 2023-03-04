@@ -134,14 +134,14 @@ const run = async ({
   } else {
     console.log(chalk.yellow("Skip package installation."));
     console.log(chalk.yellow("Run npm install/yarn in your project."));
-    let packageJson = JSON.parse(
+    const packageJson = JSON.parse(
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
 
     packageJson.dependencies = dependencies.reduce((dep, elem) => {
-      let nextDep = dep;
+      const nextDep = dep;
       if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
-        let [name, version] = elem.split("@");
+        const [name, version] = elem.split("@");
         nextDep[name] = `${version}`;
       } else {
         nextDep[elem] = "*";
@@ -150,9 +150,9 @@ const run = async ({
     }, {} as { [key: string]: string });
 
     packageJson.devDependencies = devDependencies.reduce((dep, elem) => {
-      let nextDep = dep;
+      const nextDep = dep;
       if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
-        let [name, version] = elem.split("@");
+        const [name, version] = elem.split("@");
         nextDep[name] = `${version}`;
       } else {
         nextDep[elem] = "*";
@@ -291,7 +291,7 @@ export const createApp = async ({
     }
   }
 
-  await run(
+  return run({
     root,
     appName,
     originalDirectory,
@@ -302,6 +302,6 @@ export const createApp = async ({
     devDependencies,
     alias,
     installDependencies,
-    srcDir
-  );
+    srcDir,
+  });
 };

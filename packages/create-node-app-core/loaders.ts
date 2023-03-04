@@ -1,9 +1,9 @@
-const _ = require("underscore");
-const fs = require("fs-extra");
-const chalk = require("chalk");
-const readdirp = require("readdirp");
-const { dirname } = require("path");
-const { getAddonTemplateDir } = require("./paths");
+import _ from "underscore";
+import fs from "fs-extra";
+import chalk from "chalk";
+import readdirp from "readdirp";
+import { dirname } from "path";
+import { getAddonTemplateDirPath } from "./paths";
 
 const SRC_PATH_PATTERN = "[src]/";
 const DEFAULT_SRC_PATH = "src/";
@@ -189,7 +189,7 @@ export const loadFiles = async ({
   srcDir = DEFAULT_SRC_PATH,
 }: LoadFilesOptions) => {
   for await (const { addon, templateDirName = "template" } of addons) {
-    const templateDir = await getAddonTemplateDir(addon, templateDirName);
+    const templateDir = await getAddonTemplateDirPath(addon, templateDirName);
     if (!(await fs.exists(templateDir))) {
       continue;
     }

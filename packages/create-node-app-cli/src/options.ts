@@ -1,14 +1,15 @@
 import { CnaOptions } from "@create-node-app/core";
-const prompts = require("prompts");
-prompts.override(require("yargs").argv);
-const getAddons = require("./addons");
+import prompts from "prompts";
+import yargs from "yargs";
+prompts.override(yargs.argv);
+import { getCnaAddons } from "./addons";
 
 /**
  * Addons options to bootstrap the Node app
  */
 export const addonsOptions = [];
 
-export const getCnaOptions = async (options: CnaOptions): CnaOptions => {
+export const getCnaOptions = async (options: CnaOptions) => {
   let appOptions = options;
 
   if (appOptions.interactive) {
@@ -65,7 +66,7 @@ export const getCnaOptions = async (options: CnaOptions): CnaOptions => {
       },
     ]);
 
-    let { ...nextAppOptions } = {
+    const { ...nextAppOptions } = {
       ...options,
       ...baseInput,
       ...backendConfig,
@@ -74,11 +75,13 @@ export const getCnaOptions = async (options: CnaOptions): CnaOptions => {
     appOptions = nextAppOptions;
   }
 
-  const addons = getAddons(appOptions);
+  const addons = getCnaAddons(appOptions);
 
   if (appOptions.verbose) {
     console.log({ ...appOptions, addons });
   }
 
-  return { ...appOptions, addons };
+  const nextOptions: CnaOptions = { ...appOptions, addons };
+
+  return nextOptions;
 };

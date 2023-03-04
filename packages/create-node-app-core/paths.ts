@@ -1,5 +1,5 @@
-const os = require("os");
-const path = require("path");
+import os from "os";
+import path from "path";
 import { downloadRepository } from "./git";
 
 type SolveRepositoryPathOptions = {

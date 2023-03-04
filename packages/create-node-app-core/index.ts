@@ -12,7 +12,6 @@ export const printEnvInfo = async () => {
       Browsers: ["Chrome", "Edge", "Internet Explorer", "Firefox", "Safari"],
     },
     {
-      clipboard: false,
       duplicates: true,
       showNotFound: true,
     }

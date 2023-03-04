@@ -19,12 +19,31 @@
     "dev": "tsup index.ts --format esm,cjs --watch --dts"
   },
   "devDependencies": {
+    "@create-node-app/eslint-config-ts": "*",
+    "@types/cross-spawn": "^6.0.2",
+    "@types/debug": "^4.1.7",
+    "@types/download": "^8.0.2",
+    "@types/envinfo": "^7.8.1",
+    "@types/fs-extra": "^11.0.1",
+    "@types/lodash.merge": "^4.6.7",
+    "@types/node": "^18.14.6",
+    "@types/underscore": "^1.11.4",
     "eslint": "^7.32.0",
-    "@nanlabs/eslint-config-ts": "*",
     "tsconfig": "*",
     "typescript": "^4.5.2"
   },
   "dependencies": {
-    "tsup": "^6.2.3"
+    "chalk": "^4.1.0",
+    "commander": "^7.0.0",
+    "cross-spawn": "^6.0.5",
+    "debug": "^4.2.0",
+    "download": "^8.0.0",
+    "envinfo": "^7.7.4",
+    "fs-extra": "^7.0.1",
+    "lodash.merge": "^4.6.2",
+    "readdirp": "^3.4.0",
+    "semver": "^5.6.0",
+    "tsup": "^6.2.3",
+    "underscore": "^1.10.2"
   }
 }
