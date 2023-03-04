@@ -14,8 +14,8 @@
     "code generator"
   ],
   "bin": {
-    "create-node-app": "./index.js",
-    "cna": "./index.js"
+    "create-node-app": "ts-node ./src/cli.ts",
+    "cna": "ts-node ./src/cli.ts"
   },
   "authors": [
     {
@@ -31,6 +31,7 @@
   "dependencies": {
     "@create-node-app/core": "*",
     "prompts": "^2.4.1",
+    "ts-node": "^10.9.1",
     "yargs": "^17.0.1"
   },
   "devDependencies": {

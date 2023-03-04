@@ -15,8 +15,8 @@
   "scripts": {
     "lint": "eslint **/*.ts*",
     "lint:fix": "eslint **/*.ts* --fix",
-    "build": "tsup index.ts --format esm,cjs --dts",
-    "dev": "tsup index.ts --format esm,cjs --watch --dts"
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts"
   },
   "devDependencies": {
     "@create-node-app/eslint-config-ts": "*",
@@ -37,7 +37,7 @@
     "commander": "^7.0.0",
     "cross-spawn": "^6.0.5",
     "debug": "^4.2.0",
-    "download": "^8.0.0",
+    "download": "^3.3.0",
     "envinfo": "^7.7.4",
     "fs-extra": "^7.0.1",
     "lodash.merge": "^4.6.2",

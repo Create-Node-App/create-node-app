@@ -28,9 +28,6 @@ export const getCnaOptions = async (options: CnaOptions) => {
         active: "yes",
         inactive: "no",
       },
-    ]);
-
-    const { template } = await prompts([
       {
         type: "text",
         name: "template",
@@ -39,9 +36,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
       },
     ]);
 
-    baseInput.template = template;
-
-    const defaultSrcDir = baseInput.cra === true ? "src" : appOptions.srcDir;
+    const defaultSrcDir = appOptions.srcDir;
 
     const backendConfig = await prompts([
       {
