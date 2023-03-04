@@ -1,0 +1,26 @@
+{
+  "name": "@create-node-app/eslint-config-ts",
+  "version": "0.5.2",
+  "main": "index.js",
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "eslint": "^7.23.0",
+    "@create-node-app/eslint-config": "*"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Create-Node-App/nancy.js.git",
+    "directory": "packages/eslint-config-nancy-ts"
+  }
+}

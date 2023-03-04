@@ -1,0 +1,47 @@
+name: Continuous Integration
+
+concurrency:
+  group: ci-${{ github.event.number }}
+  cancel-in-progress: true
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+  schedule:
+    - cron: "31 1,12 * * *"
+
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  linter:
+    if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    name: Linter
+    uses: ./.github/workflows/lint.yml
+    secrets: inherit
+
+  shellcheck:
+    if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    name: Shellcheck
+    uses: ./.github/workflows/shellcheck.yml
+
+  markdownlint:
+    if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    name: Markdownlint
+    uses: ./.github/workflows/markdownlint.yml
+
+  todo:
+    if: github.event_name == 'push'
+    name: TODO
+    uses: ./.github/workflows/todo.yml
+
+  pr-review:
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    name: Pull Request Validation
+    uses: ./.github/workflows/pr-review.yml

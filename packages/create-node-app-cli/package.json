@@ -1,0 +1,54 @@
+{
+  "name": "@create-node-app/tools",
+  "version": "1.5.3",
+  "description": "Command line tool to create Node apps with a lot of different addons.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Create-Node-App/create-node-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Create-Node-App/create-node-app/issues"
+  },
+  "homepage": "https://github.com/Create-Node-App/create-node-app#readme",
+  "keywords": [
+    "code generator"
+  ],
+  "bin": {
+    "create-node-app": "./index.js",
+    "cna": "./index.js"
+  },
+  "authors": [
+    {
+      "name": "Ulises Jeremias Cornejo Fandos",
+      "email": "ulisescf.24@gmail.com"
+    }
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "commander": "^7.0.0",
+    "cross-spawn": "^6.0.5",
+    "debug": "^4.2.0",
+    "download": "^8.0.0",
+    "envinfo": "^7.7.4",
+    "fs-extra": "^7.0.1",
+    "lodash.merge": "^4.6.2",
+    "prompts": "^2.4.1",
+    "readdirp": "^3.4.0",
+    "semver": "^5.6.0",
+    "underscore": "^1.10.2",
+    "yargs": "^17.0.1"
+  },
+  "devDependencies": {
+    "@create-node-app/eslint-config": "*",
+    "eslint": "^7.9.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@create-node-app/core",
+  "version": "0.3.4",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "lint": "eslint **/*.ts*",
+    "lint:fix": "eslint **/*.ts* --fix",
+    "build": "tsup index.ts --format esm,cjs --dts",
+    "dev": "tsup index.ts --format esm,cjs --watch --dts"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "@nanlabs/eslint-config-ts": "*",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "tsup": "^6.2.3"
+  }
+}

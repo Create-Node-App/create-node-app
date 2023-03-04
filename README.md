@@ -1,53 +1,44 @@
-# Create Node App
+<!--lint disable double-link awesome-heading awesome-git-repo-age awesome-toc-->
 
-[![Build Status](https://github.com/Create-Node-App/create-node-app/workflows/Build/badge.svg)](https://github.com/Create-Node-App/create-node-app/commits/main)
-[![npm](https://img.shields.io/npm/v/cna-cli.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna-cli)
-[![npm](https://img.shields.io/npm/dm/cna-cli.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/cna-cli)
+<div align="center">
+<p>
+    <img
+        style="width: 200px"
+        width="200"
+        src="https://avatars.githubusercontent.com/u/71946272?s=200&v=4"
+    >
+</p>
+<h1>TypeScript Monorepo Boilerplate</h1>
 
-This starter kit is designed to get you up and running with a bunch of awesome front-end technologies.
+[Changelog](#) |
+[Contributing](./CONTRIBUTING.md)
 
-The primary goal of this project is to provide a stable foundation upon which to build modern web appliications. Its purpose is not to dictate your project structure or to demonstrate a complete real-world application, but to provide a set of tools intended to make front-end development robust and easy.
+</div>
+<div align="center">
 
-- [Creating an app](#creating-an-app) - Create a _Node_ app.
+[![Continious Integration][cibadge]][ciurl]
+[![License: MIT][licensebadge]][licenseurl]
 
-## Quickstart
+</div>
 
-```sh
-$ npx cna-cli my-app # or specify flag `-i` to use interactive menu
-$ cd my-app
-$ npm start
-```
+This repository is a starter kit for a TypeScript monorepo project. It is based on TypeScript, Npm, ESLint, Prettier, Jest, Turborepo and Changesets.
 
-the generated project will vary in the presence of the following flags:
+## Available Scripts
 
-| Flag                    | What is it for?                                        |
-| ----------------------- | ------------------------------------------------------ |
-| `-i, --interactive`     | use interactive mode to bootstrap your app             |
-| `--verbose`             | print additional logs.                                 |
-| `--info`                | print environment debug info.                          |
-| `--nodeps`              | will no install dependencies on the generated project. |
-| `--use-npm`             | will use npm as command.                               |
-| `--template <template>` | specify template to use for initial setup              |
-| `--inplace`             | apply setup to an existing project.                    |
-| `-a <alias>`            | will setup webpack alias. `app` by default.            |
+In the project directory, you can run:
 
-_([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
+| `npm run <script>` | Description                                                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `test`             | Runs unit tests with Jest.                                                                                              |
+| `lint`             | [Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors                    |
+| `lint:fix`         | Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix) |
+| `format`           | Formats the project using [Prettier](https://prettier.io/)                                                              |
 
-## Creating an app
+## Contributing
 
-**You’ll need to have Node 12.14.0 or later on your local development machine** (but it’s not required on the server). You can use [fnm](https://github.com/Schniz/fnm) to easily switch Node versions between different projects.
-
-To create a new app, you may choose one of the following methods:
-
-### npx
-
-```sh
-$ npx cna-cli my-app
-```
-
-_([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
-
-It will create a directory called `my-app` inside the current folder.
+- Contributions make the open source community such an amazing place to learn, inspire, and create.
+- Any contributions you make are **truly appreciated**.
+- Check out our [contribution guidelines](./CONTRIBUTING.md) for more information.
 
 ## Contributors
 
@@ -56,3 +47,8 @@ It will create a directory called `my-app` inside the current folder.
 </a>
 
 Made with [contributors-img](https://contrib.rocks).
+
+[cibadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/ci.yml/badge.svg
+[licensebadge]: https://img.shields.io/badge/License-MIT-blue.svg
+[ciurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/ci.yml
+[licenseurl]: https://github.com/Create-Node-App/create-node-app/blob/main/LICENSE

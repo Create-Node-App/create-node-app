@@ -1,0 +1,25 @@
+{
+  "name": "create-node-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Create-Node-App/create-node-app.git"
+  },
+  "author": "ulises-jeremias",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Create-Node-App/create-node-app/issues"
+  },
+  "homepage": "https://github.com/Create-Node-App/create-node-app#readme",
+  "devDependencies": {
+    "danger": "^11.1.1"
+  }
+}
