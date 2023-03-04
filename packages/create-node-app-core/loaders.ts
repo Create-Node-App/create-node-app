@@ -1,14 +1,14 @@
-const _ = require('underscore');
-const fs = require('fs-extra');
-const chalk = require('chalk');
-const readdirp = require('readdirp');
-const { dirname } = require('path');
-const { getAddonTemplateDir } = require('./paths');
+const _ = require("underscore");
+const fs = require("fs-extra");
+const chalk = require("chalk");
+const readdirp = require("readdirp");
+const { dirname } = require("path");
+const { getAddonTemplateDir } = require("./paths");
 
-const SRC_PATH_PATTERN = '[src]/';
-const DEFAULT_SRC_PATH = 'src/';
+const SRC_PATH_PATTERN = "[src]/";
+const DEFAULT_SRC_PATH = "src/";
 
-const getSrcDirPattern = (srcDir: string) => `${srcDir === '.' ? '' : srcDir}/`;
+const getSrcDirPattern = (srcDir: string) => `${srcDir === "." ? "" : srcDir}/`;
 
 const copyFile = async (src: string, dest: string, verbose = false) => {
   try {
@@ -29,7 +29,12 @@ const copyFile = async (src: string, dest: string, verbose = false) => {
   }
 };
 
-const writeFile = async (path: string, content: string, flag = 'w', verbose = false) => {
+const writeFile = async (
+  path: string,
+  content: string,
+  flag = "w",
+  verbose = false
+) => {
   try {
     const parentDir = dirname(path);
     if (parentDir) {
@@ -49,23 +54,24 @@ const writeFile = async (path: string, content: string, flag = 'w', verbose = fa
 };
 
 const appendFile = async (src: string, dest: string, verbose = false) => {
-  const content = await fs.readFile(src, 'utf8');
-  return writeFile(dest, content, 'a+', verbose);
+  const content = await fs.readFile(src, "utf8");
+  return writeFile(dest, content, "a+", verbose);
 };
 
-const getModeFromPath = (path = '') => {
-  const matchExts = (...exts: string[]) => exts.find((ext) => path.endsWith(ext));
+const getModeFromPath = (path = "") => {
+  const matchExts = (...exts: string[]) =>
+    exts.find((ext) => path.endsWith(ext));
 
-  if (matchExts('.append')) {
-    return 'append';
+  if (matchExts(".append")) {
+    return "append";
   }
-  if (matchExts('.append.template', '.template.append')) {
-    return 'appendTemplate';
+  if (matchExts(".append.template", ".template.append")) {
+    return "appendTemplate";
   }
-  if (matchExts('.template')) {
-    return 'copyTemplate';
+  if (matchExts(".template")) {
+    return "copyTemplate";
   }
-  return 'copy';
+  return "copy";
 };
 
 type FileLoaderOptions = {
@@ -103,7 +109,7 @@ const appendLoader: FileLoader =
   };
 
 const templateLoader: FileLoader =
-  ({ root, templateDir, appName, alias, verbose, mode = '', srcDir }) =>
+  ({ root, templateDir, appName, alias, verbose, mode = "", srcDir }) =>
   async ({ path }) => {
     const flag = mode.includes("append") ? "a+" : "w";
     const file = await fs.readFile(`${templateDir}/${path}`, "utf8");
@@ -127,41 +133,45 @@ const templateLoader: FileLoader =
     );
   };
 
-const fileLoader: FileLoader = ({
-  root,
-  templateDir,
-  appName,
-  originalDirectory,
-  alias,
-  verbose,
-  srcDir = DEFAULT_SRC_PATH,
-}) => ({ path }) => {
-  const mode = getModeFromPath(path);
-
-  const loaders = {
-    copy: copyLoader,
-    append: appendLoader,
-    copyTemplate: templateLoader,
-    appendTemplate: appendLoader,
-  };
-
-  return loaders[mode]({
+const fileLoader: FileLoader =
+  ({
     root,
     templateDir,
     appName,
     originalDirectory,
     alias,
     verbose,
-    mode,
-    srcDir,
-  })({
-    path,
-  });
-};
+    srcDir = DEFAULT_SRC_PATH,
+  }) =>
+  ({ path }) => {
+    const mode = getModeFromPath(path);
+
+    const loaders = {
+      copy: copyLoader,
+      append: appendLoader,
+      copyTemplate: templateLoader,
+      appendTemplate: appendLoader,
+    };
+
+    return loaders[mode]({
+      root,
+      templateDir,
+      appName,
+      originalDirectory,
+      alias,
+      verbose,
+      mode,
+      srcDir,
+    })({
+      path,
+    });
+  };
+
+export type Addon = { addon: string; templateDirName?: string };
 
 export type LoadFilesOptions = {
   root: string;
-  addons?: { addon: string; templateDirName?: string }[];
+  addons?: Addon[];
   appName: string;
   originalDirectory: string;
   alias: string;
@@ -191,7 +201,7 @@ export const loadFiles = async ({
         "!package-lock.json",
         "!template.json",
         "!yarn.lock",
-        "!pnpm-lock.yaml"
+        "!pnpm-lock.yaml",
       ],
       directoryFilter: ["!package"],
     })) {

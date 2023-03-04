@@ -5,5 +5,5 @@ module.exports = {
     commonjs: true,
     node: true,
     es2020: true,
-  }
+  },
 };

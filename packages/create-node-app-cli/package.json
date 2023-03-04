@@ -1,5 +1,5 @@
 {
-  "name": "@create-node-app/tools",
+  "name": "@create-node-app/cli",
   "version": "1.5.3",
   "description": "Command line tool to create Node apps with a lot of different addons.",
   "repository": {
@@ -29,19 +29,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chalk": "^4.1.0",
-    "commander": "^7.0.0",
-    "cross-spawn": "^6.0.5",
-    "debug": "^4.2.0",
-    "download": "^8.0.0",
-    "envinfo": "^7.7.4",
-    "fs-extra": "^7.0.1",
-    "lodash.merge": "^4.6.2",
-    "prompts": "^2.4.1",
-    "readdirp": "^3.4.0",
-    "semver": "^5.6.0",
-    "underscore": "^1.10.2",
-    "yargs": "^17.0.1"
+    "@create-node-app/core": "*"
   },
   "devDependencies": {
     "@create-node-app/eslint-config": "*",

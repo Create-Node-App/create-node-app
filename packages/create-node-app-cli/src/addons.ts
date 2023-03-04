@@ -1,15 +1,12 @@
-const { Options } = require('./docs');
+import { CnaOptions } from "@create-node-app/core";
+import { Addon } from "@create-node-app/core/loader";
 
 /**
  * get addons from user options
- * @param {Options} options - Options specified by the user to create addons
- * @returns {{ addon: string, ignorePackage?: boolean }[]}
  */
-module.exports = (options) => {
-  // const lang = options.typescript ? 'ts' : 'es';
-
+export const getCnaAddons = (options: CnaOptions): Addon[] => {
   // initialized with base template
-  let addons = [];
+  let addons: Addon[] = [];
 
   if (options.template) {
     addons = [{ addon: options.template }];

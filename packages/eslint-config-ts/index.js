@@ -1,6 +1,9 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
-  extends: ["@create-node-app/eslint-config", "plugin:@typescript-eslint/recommended"],
+  extends: [
+    "@create-node-app/eslint-config",
+    "plugin:@typescript-eslint/recommended",
+  ],
   rules: {
     "@typescript-eslint/ban-ts-comment": [
       "error",
@@ -9,5 +12,5 @@ module.exports = {
         minimumDescriptionLength: 10,
       },
     ],
-  }
+  },
 };
