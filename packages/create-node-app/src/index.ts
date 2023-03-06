@@ -50,7 +50,7 @@ const main = async () => {
     .parse(process.argv);
 
   return createNodeApp(
-    programName,
+    projectName,
     { ...program.opts(), projectName },
     getCnaOptions
   );

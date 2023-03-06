@@ -2,6 +2,7 @@
   "name": "create-node-app",
   "version": "1.5.3",
   "description": "Command line tool to create Node apps with a lot of different addons.",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Create-Node-App/create-node-app.git"
@@ -13,25 +14,29 @@
   "keywords": [
     "code generator"
   ],
-  "bin": {
-    "create-node-app": "ts-node ./src/cli.ts",
-    "cna": "ts-node ./src/cli.ts"
-  },
   "authors": [
     {
       "name": "Ulises Jeremias Cornejo Fandos",
       "email": "ulisescf.24@gmail.com"
     }
   ],
+  "bin": {
+    "create-node-app": "./dist/index.js",
+    "cna": "./dist/index.js"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "license": "MIT",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --watch --format esm,cjs --dts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
   "dependencies": {
     "@create-node-app/core": "*",
     "prompts": "^2.4.1",
-    "ts-node": "^10.9.1",
     "yargs": "^17.0.1"
   },
   "devDependencies": {
@@ -39,10 +44,7 @@
     "@types/node": "^18.14.6",
     "@types/prompts": "^2.4.2",
     "@types/yargs": "^17.0.22",
+    "tsup": "^6.2.3",
     "eslint": "^7.9.0"
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
   }
 }

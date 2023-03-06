@@ -33,7 +33,7 @@ export type CnaOptions = {
   addons?: Addon[];
 };
 
-export type CnaOptionsTransform = (options: CnaOptions) => CnaOptions;
+export type CnaOptionsTransform = (options: CnaOptions) => Promise<CnaOptions>;
 
 /**
  * Main procress to bootstrap the Node app using user options
