@@ -105,8 +105,8 @@ export const getAddonPackagePath = async (
   return path.resolve(dir, name);
 };
 
-export const getAddonTemplateDirPath = async (addon: string) => {
-  const { dir, subdir = "" } = await solveAddonPath(addon);
+export const getAddonTemplateDirPath = async (addonUrl: string) => {
+  const { dir, subdir = "" } = await solveAddonPath(addonUrl);
 
   let templateDirPath = path.resolve(dir, subdir);
 

@@ -167,7 +167,7 @@ const fileLoader: FileLoader =
     });
   };
 
-export type Addon = { addon: string; templateDirName?: string };
+export type Addon = { url: string };
 
 export type LoadFilesOptions = {
   root: string;
@@ -188,8 +188,8 @@ export const loadFiles = async ({
   verbose,
   srcDir = DEFAULT_SRC_PATH,
 }: LoadFilesOptions) => {
-  for await (const { addon } of addons) {
-    const templateDir = await getAddonTemplateDirPath(addon);
+  for await (const { url: addonUrl } of addons) {
+    const templateDir = await getAddonTemplateDirPath(addonUrl);
     if (!(await fs.exists(templateDir))) {
       continue;
     }

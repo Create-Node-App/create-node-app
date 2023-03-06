@@ -17,7 +17,6 @@ const main = async () => {
     .option("--verbose", "print additional logs")
     .option("--info", "print environment debug info")
     .option("--use-npm", "use npm mandatorily")
-    .option("-i, --interactive", "use interactive mode to bootstrap your app")
     .option(
       "--template <template>",
       "specify template to use for initial setup"
