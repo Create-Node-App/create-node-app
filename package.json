@@ -1,5 +1,5 @@
 {
-  "name": "create-node-app",
+  "name": "create-node-app-tools",
   "version": "0.0.0",
   "workspaces": [
     "packages/*"
@@ -18,7 +18,8 @@
     "prepare": "is-ci || husky install",
     "publish-packages": "turbo run build lint && changeset version && changeset publish",
     "storybook": "turbo run storybook",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

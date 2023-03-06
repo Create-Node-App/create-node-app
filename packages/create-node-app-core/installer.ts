@@ -1,6 +1,6 @@
 import _ from "underscore";
 import path from "path";
-import fs from "fs-extra";
+import fs from "fs";
 import chalk from "chalk";
 import os from "os";
 import semver from "semver";
@@ -223,7 +223,9 @@ export const createApp = async ({
   const root = path.resolve(name);
   const appName = path.basename(root);
 
-  fs.ensureDirSync(name);
+  fs.mkdirSync(name, {
+    recursive: true,
+  });
 
   console.log(`Creating a new Node app in ${chalk.green(root)}.`);
   console.log();
@@ -284,7 +286,7 @@ export const createApp = async ({
       // ignore
     }
     if (false && yarnUsesDefaultRegistry) {
-      fs.copySync(
+      fs.cpSync(
         require.resolve("./yarn.lock.cached"),
         path.join(root, "yarn.lock")
       );

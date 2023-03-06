@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import os from "os";
 import path from "path";
 import { downloadRepository } from "./git";
@@ -113,9 +113,16 @@ export const getAddonTemplateDirPath = async (addonUrl: string) => {
   // if `${templateDirPath}/template` is a directory, return it
   // otherwise, return `${templateDirPath}`
   const templateDirPathWithTemplate = path.resolve(templateDirPath, "template");
-  if ((await fs.stat(templateDirPathWithTemplate)).isDirectory()) {
-    templateDirPath = templateDirPathWithTemplate;
-  }
 
-  return templateDirPath;
+  return new Promise<string>((resolve, reject) => {
+    fs.stat(templateDirPathWithTemplate, (err, stats) => {
+      if (err) {
+        return reject(err);
+      }
+      if (stats.isDirectory()) {
+        templateDirPath = templateDirPathWithTemplate;
+      }
+      resolve(templateDirPath);
+    });
+  });
 };

@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 import { existsSync } from "fs";
 import merge from "lodash.merge";
+import { Addon } from "./loaders";
 import { getAddonPackagePath } from "./paths";
 
 type GetInstallableSetupOptions = {
@@ -33,10 +34,7 @@ const requireIfExists = (path: string) => {
 };
 
 export type LoadAddonsPackagesOptions = {
-  addons?: {
-    addon: string;
-    ignorePackage?: boolean;
-  }[];
+  addons?: Addon[];
   ignorePackage?: boolean;
   [key: string]: unknown;
 };
@@ -54,7 +52,7 @@ export const loadAddonsPackages = async ({
   ...config
 }: LoadAddonsPackagesOptions) => {
   const setup = await addons.reduce(
-    async (setupPromise, { addon, ignorePackage }) => {
+    async (setupPromise, { url: addon, ignorePackage }) => {
       let packageJson = await setupPromise;
 
       try {

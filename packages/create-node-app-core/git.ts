@@ -2,7 +2,7 @@ import os from "os";
 import childProcess from "child_process";
 import path from "path";
 import { promisify } from "util";
-import fs from "fs-extra";
+import fs from "fs";
 import download from "download";
 import debug from "debug";
 
@@ -109,13 +109,13 @@ export const downloadRepository = async ({
     }
 
     if (offline) {
-      fs.copySync(cacheDir, absoluteTarget, { filter: filterGit });
+      fs.cpSync(cacheDir, absoluteTarget, { filter: filterGit });
       return;
     }
 
     await pull(cacheDir);
     setTimeout(() => {
-      fs.copySync(cacheDir, absoluteTarget, { filter: filterGit });
+      fs.cpSync(cacheDir, absoluteTarget, { filter: filterGit });
     }, 400);
   };
 

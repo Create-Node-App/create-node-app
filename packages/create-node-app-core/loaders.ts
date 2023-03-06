@@ -1,5 +1,5 @@
 import _ from "underscore";
-import fs from "fs-extra";
+import fs from "fs";
 import chalk from "chalk";
 import readdirp from "readdirp";
 import { dirname } from "path";
@@ -14,9 +14,9 @@ const copyFile = async (src: string, dest: string, verbose = false) => {
   try {
     const parentDir = dirname(dest);
     if (parentDir) {
-      await fs.mkdir(parentDir, { recursive: true });
+      fs.mkdirSync(parentDir, { recursive: true });
     }
-    await fs.copy(src, dest, { overwrite: true });
+    fs.cpSync(src, dest, { force: true, recursive: true });
     if (verbose) {
       console.log(chalk.green(`Added "${dest}" from "${src}" successfully`));
     }
@@ -38,9 +38,9 @@ const writeFile = async (
   try {
     const parentDir = dirname(path);
     if (parentDir) {
-      await fs.mkdir(parentDir, { recursive: true });
+      fs.mkdirSync(parentDir, { recursive: true });
     }
-    await fs.writeFile(path, content, { flag });
+    fs.writeFileSync(path, content, { flag });
     if (verbose) {
       console.log(chalk.green(`Added "${path}" successfully`));
     }
@@ -54,7 +54,7 @@ const writeFile = async (
 };
 
 const appendFile = async (src: string, dest: string, verbose = false) => {
-  const content = await fs.readFile(src, "utf8");
+  const content = fs.readFileSync(src, "utf8");
   return writeFile(dest, content, "a+", verbose);
 };
 
@@ -112,7 +112,7 @@ const templateLoader: FileLoader =
   ({ root, templateDir, appName, alias, verbose, mode = "", srcDir }) =>
   async ({ path }) => {
     const flag = mode.includes("append") ? "a+" : "w";
-    const file = await fs.readFile(`${templateDir}/${path}`, "utf8");
+    const file = fs.readFileSync(`${templateDir}/${path}`, "utf8");
     const newFile = _.template(file);
     const newPath = path
       .replace(/.template$/, "")
@@ -167,7 +167,7 @@ const fileLoader: FileLoader =
     });
   };
 
-export type Addon = { url: string };
+export type Addon = { url: string; ignorePackage?: boolean };
 
 export type LoadFilesOptions = {
   root: string;
@@ -190,7 +190,8 @@ export const loadFiles = async ({
 }: LoadFilesOptions) => {
   for await (const { url: addonUrl } of addons) {
     const templateDir = await getAddonTemplateDirPath(addonUrl);
-    if (!(await fs.exists(templateDir))) {
+    // if it does not exists, continue
+    if (!fs.statSync(templateDir).isDirectory()) {
       continue;
     }
 
