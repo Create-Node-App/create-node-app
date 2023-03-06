@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@create-node-app/core": "*",
+    "create-node-app": "file:",
     "prompts": "^2.4.1",
     "yargs": "^17.0.1"
   },
@@ -53,7 +54,7 @@
     "@types/node": "^18.14.6",
     "@types/prompts": "^2.4.2",
     "@types/yargs": "^17.0.22",
-    "tsup": "^6.2.3",
-    "eslint": "^7.9.0"
+    "eslint": "^7.9.0",
+    "tsup": "^6.2.3"
   }
 }
