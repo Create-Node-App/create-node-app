@@ -1,6 +1,6 @@
 {
   "extends": "tsconfig/base.json",
-  "include": ["src"],
+  "include": ["."],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
     "resolveJsonModule": true
