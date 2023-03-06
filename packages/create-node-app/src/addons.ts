@@ -1,5 +1,5 @@
 import { CnaOptions } from "@create-node-app/core";
-import { Addon } from "@create-node-app/core/loader";
+import { Addon } from "@create-node-app/core/loaders";
 
 /**
  * get addons from user options
