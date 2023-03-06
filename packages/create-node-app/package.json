@@ -20,9 +20,10 @@
       "email": "ulisescf.24@gmail.com"
     }
   ],
+  "engines": {
+    "node": "^14.18.0 || >=16.0.0"
+  },
   "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist/**"
   ],
