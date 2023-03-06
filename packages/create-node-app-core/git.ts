@@ -109,13 +109,21 @@ export const downloadRepository = async ({
     }
 
     if (offline) {
-      fs.cpSync(cacheDir, absoluteTarget, { filter: filterGit });
+      fs.cpSync(cacheDir, absoluteTarget, {
+        force: true,
+        filter: filterGit,
+        recursive: true,
+      });
       return;
     }
 
     await pull(cacheDir);
     setTimeout(() => {
-      fs.cpSync(cacheDir, absoluteTarget, { filter: filterGit });
+      fs.cpSync(cacheDir, absoluteTarget, {
+        force: true,
+        filter: filterGit,
+        recursive: true,
+      });
     }, 400);
   };
 

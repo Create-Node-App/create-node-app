@@ -88,15 +88,23 @@ export const getCnaOptions = async (options: CnaOptions) => {
     ...appConfig,
   };
 
-  const addons: Addon[] = [...nextAppOptions.addons, ...nextAppOptions.extend]
+  const templateAddon =
+    baseInput.template ||
+    templates.find((template) => template.type === nextAppOptions.appType)?.url;
+
+  const addons: Addon[] = [
+    templateAddon,
+    ...nextAppOptions.addons,
+    ...nextAppOptions.extend,
+  ]
     .filter(Boolean)
     .map((addon) => ({ url: addon }));
 
-  if (nextAppOptions.verbose) {
-    console.log({ ...nextAppOptions, addons });
-  }
-
   const nextOptions = { ...nextAppOptions, addons };
+
+  if (nextAppOptions.verbose) {
+    console.log(JSON.stringify(nextOptions, null, 2));
+  }
 
   return nextOptions;
 };

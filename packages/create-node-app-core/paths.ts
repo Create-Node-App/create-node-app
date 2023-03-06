@@ -17,19 +17,20 @@ import { downloadRepository } from "./git";
 const solveValuesFromAddonUrl = (addon: string) => {
   const url = new URL(addon);
   const origin = `${url.protocol}//${url.host}`;
-  // parse branch and subdir from pathname
-  const [pathname, _, branch, ...subdir] = url.pathname.split("/");
+  const [org, repo, , branch = "", ...subdir] = url.pathname
+    .slice(1)
+    .split("/");
 
   // parse ignorePackageJson from searchParams
   const ignorePackage = url.searchParams.get("ignorePackage") === "true";
 
   return {
-    url: `${origin}/${pathname}`,
+    url: `${origin}/${org}/${repo}`,
     branch,
     subdir: subdir.join("/"),
     protocol: url.protocol,
     host: url.host,
-    pathname,
+    pathname: url.pathname,
     ignorePackage,
   };
 };

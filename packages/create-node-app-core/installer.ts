@@ -288,7 +288,8 @@ export const createApp = async ({
     if (false && yarnUsesDefaultRegistry) {
       fs.cpSync(
         require.resolve("./yarn.lock.cached"),
-        path.join(root, "yarn.lock")
+        path.join(root, "yarn.lock"),
+        { force: true }
       );
     }
   }
