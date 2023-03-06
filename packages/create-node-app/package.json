@@ -28,8 +28,8 @@
     "dist/**"
   ],
   "bin": {
-    "create-node-app": "./dist/index.js",
-    "cna": "./dist/index.js"
+    "create-node-app": "index.js",
+    "cna": "index.js"
   },
   "publishConfig": {
     "access": "public",
