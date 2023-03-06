@@ -1,6 +1,7 @@
 {
   "name": "create-node-app",
   "version": "1.5.3",
+  "type": "module",
   "description": "Command line tool to create Node apps with a lot of different addons.",
   "license": "MIT",
   "repository": {
@@ -23,22 +24,22 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "main": "./dist/index.js",
+  "main": "index.js",
   "files": [
     "index.js",
     "dist/**"
   ],
   "bin": {
-    "create-node-app": "./dist/index.js",
-    "cna": "./dist/index.js"
+    "create-node-app": "index.js",
+    "cna": "index.js"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "tsup src/index.ts",
-    "dev": "tsup src/index.ts --watch",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --watch --format cjs,esm --dts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
