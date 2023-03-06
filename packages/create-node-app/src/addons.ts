@@ -12,9 +12,5 @@ export const getCnaAddons = (options: CnaOptions): Addon[] => {
     addons = [{ addon: options.template }];
   }
 
-  if (options.extend) {
-    addons.push(...options.extend.filter(Boolean).map((addon) => ({ addon })));
-  }
-
   return addons;
 };
