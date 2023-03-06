@@ -29,23 +29,22 @@
     "dist/**"
   ],
   "bin": {
-    "create-node-app": "node ./dist/index.js",
-    "cna": "node ./dist/index.js"
+    "create-node-app": "./dist/index.js",
+    "cna": "./dist/index.js"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts",
-    "dev": "tsup src/index.ts --watch --format esm,cjs --dts",
+    "build": "tsup src/index.ts",
+    "dev": "tsup src/index.ts --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@create-node-app/core": "*",
-    "create-node-app": "file:",
     "prompts": "^2.4.1",
     "yargs": "^17.0.1"
   },

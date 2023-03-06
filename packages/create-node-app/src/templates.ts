@@ -1,6 +1,3 @@
-import { CnaOptions } from "@create-node-app/core";
-import { Addon } from "@create-node-app/core/loaders";
-
 const TEMPLATE_DATA_FILE_URL =
   "https://raw.githubusercontent.com/Create-Node-App/cna-templates/main/templates.json";
 

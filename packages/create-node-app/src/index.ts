@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import program from "commander";
 import chalk from "chalk";
 import { createNodeApp } from "@create-node-app/core";
