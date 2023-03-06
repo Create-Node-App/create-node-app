@@ -1,6 +1,38 @@
+import fs from "fs-extra";
 import os from "os";
 import path from "path";
 import { downloadRepository } from "./git";
+
+/**
+ * solveValuesFromAddonUrl solves values from addon url
+ * @param addon - addon url
+ *
+ * @example
+ * solveValuesFromAddonUrl("https://github.com/username/repo")
+ * // => { branch: "", subdir: "", protocol: "https:", host: "github.com", pathname: "/username/repo", ignorePackageJson: false
+ *
+ * solveValuesFromAddonUrl("https://github.com/username/repo/tree/main/examples/express?ignorePackage=true")
+ * // => { branch: "main", subdir: "examples/express", protocol: "https:", host: "github.com", pathname: "/username/repo", ignorePackageJson: true
+ */
+const solveValuesFromAddonUrl = (addon: string) => {
+  const url = new URL(addon);
+  const origin = `${url.protocol}//${url.host}`;
+  // parse branch and subdir from pathname
+  const [pathname, _, branch, ...subdir] = url.pathname.split("/");
+
+  // parse ignorePackageJson from searchParams
+  const ignorePackage = url.searchParams.get("ignorePackage") === "true";
+
+  return {
+    url: `${origin}/${pathname}`,
+    branch,
+    subdir: subdir.join("/"),
+    protocol: url.protocol,
+    host: url.host,
+    pathname,
+    ignorePackage,
+  };
+};
 
 type SolveRepositoryPathOptions = {
   url: string;
@@ -30,25 +62,21 @@ const solveRepositoryPath = async ({
 
 const solveAddonPath = async (addon: string) => {
   try {
-    const url = new URL(addon);
-    const branch = url.searchParams.get("branch") ?? "";
-    const subdir = url.searchParams.get("subdir") ?? "";
-    const templateDirName = url.searchParams.get("templatedir");
-    const ignorePackage = url.searchParams.get("ignorePackage") === "true";
-    if (url.protocol === "file:") {
+    const { url, branch, subdir, protocol, host, pathname, ignorePackage } =
+      solveValuesFromAddonUrl(addon);
+
+    if (protocol === "file:") {
       return {
-        dir: path.resolve(url.host, url.pathname),
+        dir: path.resolve(host, pathname),
         subdir,
-        templateDirName,
       };
     }
-    const urlWithoutParams = `${url.origin}${url.pathname}`;
     const gitData = await solveRepositoryPath({
-      url: urlWithoutParams,
+      url,
       branch,
       subdir,
     });
-    return { ...gitData, templateDirName, ignorePackage };
+    return { ...gitData, ignorePackage };
   } catch {
     // failed solving file/http/ssh/... url
     return {
@@ -77,18 +105,17 @@ export const getAddonPackagePath = async (
   return path.resolve(dir, name);
 };
 
-export const getAddonTemplateDirPath = async (
-  addon: string,
-  templateDirName = ""
-) => {
-  const {
-    dir,
-    subdir,
-    templateDirName: addonTemplateDirName,
-  } = await solveAddonPath(addon);
-  const safeDirName = addonTemplateDirName ?? (templateDirName || "");
-  if (subdir) {
-    return path.resolve(dir, subdir, safeDirName);
+export const getAddonTemplateDirPath = async (addon: string) => {
+  const { dir, subdir = "" } = await solveAddonPath(addon);
+
+  let templateDirPath = path.resolve(dir, subdir);
+
+  // if `${templateDirPath}/template` is a directory, return it
+  // otherwise, return `${templateDirPath}`
+  const templateDirPathWithTemplate = path.resolve(templateDirPath, "template");
+  if ((await fs.stat(templateDirPathWithTemplate)).isDirectory()) {
+    templateDirPath = templateDirPathWithTemplate;
   }
-  return path.resolve(dir, safeDirName);
+
+  return templateDirPath;
 };

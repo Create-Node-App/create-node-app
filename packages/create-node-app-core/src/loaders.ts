@@ -188,8 +188,8 @@ export const loadFiles = async ({
   verbose,
   srcDir = DEFAULT_SRC_PATH,
 }: LoadFilesOptions) => {
-  for await (const { addon, templateDirName = "template" } of addons) {
-    const templateDir = await getAddonTemplateDirPath(addon, templateDirName);
+  for await (const { addon } of addons) {
+    const templateDir = await getAddonTemplateDirPath(addon);
     if (!(await fs.exists(templateDir))) {
       continue;
     }
