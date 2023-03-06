@@ -20,6 +20,12 @@
       "email": "ulisescf.24@gmail.com"
     }
   ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
   "bin": {
     "create-node-app": "./dist/index.js",
     "cna": "./dist/index.js"
