@@ -117,6 +117,18 @@ const run = async ({
     process.exit(0);
   }
 
+  await loadFiles({
+    root,
+    addons,
+    appName,
+    originalDirectory,
+    alias,
+    verbose,
+    srcDir,
+    runCommand,
+    installCommand,
+  });
+
   if (installDependencies) {
     console.log(
       chalk.green("Installing packages. This might take a couple of minutes.")
@@ -167,18 +179,6 @@ const run = async ({
       JSON.stringify(packageJson, null, 2) + os.EOL
     );
   }
-
-  await loadFiles({
-    root,
-    addons,
-    appName,
-    originalDirectory,
-    alias,
-    verbose,
-    srcDir,
-    runCommand,
-    installCommand,
-  });
 
   spawn("git", ["init"], {
     cwd: root,
