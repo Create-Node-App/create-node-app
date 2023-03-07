@@ -27,8 +27,12 @@ const main = async () => {
       "--extend <repos...>",
       "git repositories to extend your boilerplate"
     )
-    .option("-a, --alias <alias>", "webpack alias", "app")
-    .option("--src-dir <src-dir>", "dir name to put content under [src]/", "")
+    .option(
+      "-a, --alias <alias>",
+      "Import alias to use for the project",
+      "@"
+    )
+    .option("--src-dir <src-dir>", "dir name to put content under [src]/", "src")
     .option(
       "--nodeps",
       "generate package.json file without installing dependencies"

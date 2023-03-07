@@ -86,6 +86,8 @@ export type RunOptions = {
   alias?: string;
   installDependencies?: boolean;
   srcDir?: string;
+  runCommand: string;
+  installCommand: string;
 };
 
 const run = async ({
@@ -100,6 +102,8 @@ const run = async ({
   alias = "",
   installDependencies = true,
   srcDir = "",
+  runCommand = "",
+  installCommand = "",
 }: RunOptions) => {
   let isOnline = true;
   if (useYarn) {
@@ -174,6 +178,8 @@ const run = async ({
     alias,
     verbose,
     srcDir,
+    runCommand,
+    installCommand,
   });
 
   spawn("git", ["init"]);
@@ -306,5 +312,7 @@ export const createApp = async ({
     alias,
     installDependencies,
     srcDir,
+    runCommand: command,
+    installCommand: useYarn ? "yarn" : "npm install",
   });
 };

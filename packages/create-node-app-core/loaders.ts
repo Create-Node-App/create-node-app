@@ -83,6 +83,8 @@ type FileLoaderOptions = {
   verbose: boolean;
   srcDir: string;
   mode?: string;
+  runCommand: string;
+  installCommand: string;
 };
 
 export type FileLoader = (
@@ -109,7 +111,7 @@ const appendLoader: FileLoader =
   };
 
 const templateLoader: FileLoader =
-  ({ root, templateDir, appName, alias, verbose, mode = "", srcDir }) =>
+  ({ root, templateDir, appName, alias, verbose, mode = "", srcDir, runCommand, installCommand }) =>
   async ({ path }) => {
     const flag = mode.includes("append") ? "a+" : "w";
     const file = fs.readFileSync(`${templateDir}/${path}`, "utf8");
@@ -127,6 +129,8 @@ const templateLoader: FileLoader =
         projectImportPath: alias === "" ? "" : `${alias}/`,
         projectName: appName,
         srcDir: srcDir || ".",
+        runCommand,
+        installCommand,
       }),
       flag,
       verbose
@@ -142,6 +146,8 @@ const fileLoader: FileLoader =
     alias,
     verbose,
     srcDir = DEFAULT_SRC_PATH,
+    runCommand,
+    installCommand,
   }) =>
   ({ path }) => {
     const mode = getModeFromPath(path);
@@ -162,6 +168,8 @@ const fileLoader: FileLoader =
       verbose,
       mode,
       srcDir,
+      runCommand,
+      installCommand,
     })({
       path,
     });
@@ -177,6 +185,8 @@ export type LoadFilesOptions = {
   alias: string;
   verbose: boolean;
   srcDir: string;
+  runCommand: string;
+  installCommand: string;
 };
 
 export const loadFiles = async ({
@@ -187,6 +197,8 @@ export const loadFiles = async ({
   alias,
   verbose,
   srcDir = DEFAULT_SRC_PATH,
+  runCommand,
+  installCommand,
 }: LoadFilesOptions) => {
   for await (const { url: addonUrl } of addons) {
     const templateDir = await getAddonTemplateDirPath(addonUrl);
@@ -215,6 +227,8 @@ export const loadFiles = async ({
           alias,
           verbose,
           srcDir,
+          runCommand,
+          installCommand,
         })(entry);
       } catch (err) {
         if (verbose) {
