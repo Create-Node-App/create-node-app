@@ -111,7 +111,17 @@ const appendLoader: FileLoader =
   };
 
 const templateLoader: FileLoader =
-  ({ root, templateDir, appName, alias, verbose, mode = "", srcDir, runCommand, installCommand }) =>
+  ({
+    root,
+    templateDir,
+    appName,
+    alias,
+    verbose,
+    mode = "",
+    srcDir,
+    runCommand,
+    installCommand,
+  }) =>
   async ({ path }) => {
     const flag = mode.includes("append") ? "a+" : "w";
     const file = fs.readFileSync(`${templateDir}/${path}`, "utf8");
