@@ -11,7 +11,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
   const appTypeOptions = templates.map((template) => ({
     title: template.name,
     value: template.type,
-    description: template.description,
+    description: template.description + " - " + template.labels?.join(", "),
   }));
 
   const baseInput = await prompts([
@@ -71,7 +71,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
       choices: extensions.map((option) => ({
         title: option.name,
         value: option.url,
-        description: option.description,
+        description: option.description + " - " + option.labels?.join(", "),
       })),
     },
     {
