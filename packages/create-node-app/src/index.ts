@@ -7,7 +7,7 @@ import { getCnaOptions } from "./options";
 import packageJS from "../package.json";
 
 const main = async () => {
-  let projectName = "app";
+  let projectName = "my-project";
 
   program
     .version(packageJS.version)

@@ -63,7 +63,7 @@ const install = (
       args.push("--verbose");
     }
 
-    const child = spawn(command, args, { stdio: "inherit" });
+    const child = spawn(command, args, { stdio: "inherit", cwd: root });
     child.on("close", (code) => {
       if (code !== 0) {
         reject(new Error(`${command} ${args.join(" ")}`));
@@ -116,8 +116,6 @@ const run = async ({
     console.log();
     process.exit(0);
   }
-
-  const command = useYarn ? "yarn" : "npm run";
 
   if (installDependencies) {
     console.log(
@@ -182,13 +180,15 @@ const run = async ({
     installCommand,
   });
 
-  spawn("git", ["init"]);
+  spawn("git", ["init"], {
+    cwd: root,
+  });
   if (installDependencies && isOnline) {
     const packageJson = JSON.parse(
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
     if (packageJson.scripts && packageJson.scripts["lint:fix"]) {
-      spawn(command, ["lint:fix"], { stdio: "inherit" });
+      spawn(runCommand, ["lint:fix"], { stdio: "inherit", cwd: root });
     }
   }
 };

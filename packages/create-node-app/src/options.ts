@@ -39,7 +39,8 @@ export const getCnaOptions = async (options: CnaOptions) => {
     {
       type: "text",
       name: "template",
-      message: "Template to use to bootstrap application",
+      message:
+        "Template to use to bootstrap application. e.g: https://github.com/username/repository/tree/main/subdir",
       initial: "",
     },
   ]);
@@ -76,7 +77,8 @@ export const getCnaOptions = async (options: CnaOptions) => {
     {
       type: "list",
       name: "extend",
-      message: "Enter extra extensions to extend the project",
+      message:
+        "Enter extra extensions separater by comma. e.g: https://github.com/username/repository/tree/main/extension1,https://github.com/username/repository/tree/main/extension2",
       initial: "",
       separator: ",",
     },
