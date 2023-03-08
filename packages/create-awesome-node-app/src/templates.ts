@@ -6,6 +6,7 @@ export type TemplateOrExtensionData = {
   description: string;
   url: string;
   type: string;
+  category: string;
   labels?: string[];
 };
 
@@ -32,16 +33,47 @@ const getTemplateData = async () => {
   return templateData;
 };
 
-export const getBaseTemplates = async () => {
+export const getTemplateCategories = async () => {
   const templateData = await getTemplateData();
 
-  return templateData.templates;
+  // ensure that the categories are unique
+  const categories = new Set<string>();
+
+  templateData.templates.forEach((template) => {
+    categories.add(template.category);
+  });
+
+  return Array.from(categories);
 };
 
-export const getCnaExtensions = async (appType: string) => {
+export const getTemplatesForCategory = async (category: string) => {
   const templateData = await getTemplateData();
 
-  return templateData.extensions.filter(
-    (extension) => extension.type === appType
+  const templates = templateData.templates.filter(
+    (template) => template.category === category
   );
+
+  return templates;
+};
+
+export const getExtensionsGroupedByCategory = async (type: string) => {
+  const templateData = await getTemplateData();
+
+  const extensions = templateData.extensions.filter(
+    (extension) => extension.type === type
+  );
+
+  const extensionsGroupedByCategory = extensions.reduce((acc, extension) => {
+    const category = extension.category;
+
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+
+    acc[category].push(extension);
+
+    return acc;
+  }, {} as Record<string, TemplateOrExtensionData[]>);
+
+  return extensionsGroupedByCategory;
 };
