@@ -1,5 +1,5 @@
 {
-  "name": "create-node-app",
+  "name": "create-ts-app",
   "version": "0.0.0",
   "type": "module",
   "description": "Command line tool to create Node apps with a lot of different addons.",
@@ -30,8 +30,7 @@
     "dist/**"
   ],
   "bin": {
-    "create-node-app": "index.js",
-    "cna": "index.js"
+    "create-ts-app": "index.js"
   },
   "publishConfig": {
     "access": "public",
