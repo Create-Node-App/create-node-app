@@ -47,16 +47,10 @@ const main = async () => {
     console.log();
     console.error(
       chalk.yellow(
-        `You are running \`create-react-app\` ${packageJson.version}, which is behind the latest release (${latest}).\n\n` +
-          "We recommend always using the latest version of create-react-app if possible."
+        `You are running \`create-awesome-node-app\` ${packageJson.version}, which is behind the latest release (${latest}).\n\n` +
+          "We recommend always using the latest version of create-awesome-node-app if possible."
       )
     );
-    console.log();
-    console.log(
-      "The latest instructions for creating a new app can be found here:\n" +
-        "https://create-react-app.dev/docs/getting-started/"
-    );
-    console.log();
     return;
   }
 
