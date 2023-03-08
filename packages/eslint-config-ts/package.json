@@ -15,12 +15,8 @@
     "typescript": "^4.7.4"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Create-Node-App/nancy.js.git",
-    "directory": "packages/eslint-config-nancy-ts"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "scope": "@create-node-app"
   }
 }

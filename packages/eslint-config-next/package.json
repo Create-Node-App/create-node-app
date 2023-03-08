@@ -12,12 +12,8 @@
     "eslint-config-next": "^12.0.8"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Create-Node-App/nancy.js.git",
-    "directory": "packages/eslint-config-nancy-next"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "scope": "@create-node-app"
   }
 }
