@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.1.1
+
+### Patch Changes
+
+- Fixed issues when importing helpers from core lib
+
 ## 0.1.0
 
 ### Minor Changes
