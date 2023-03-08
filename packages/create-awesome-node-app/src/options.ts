@@ -66,6 +66,12 @@ export const getCnaOptions = async (options: CnaOptions) => {
             message:
               "Enter the URL of your template. e.g: https://github.com/username/repository/tree/main/subdir",
             initial: "",
+            validate: (value) => {
+              if (!value) {
+                return "Template URL is required";
+              }
+              return true;
+            }
           },
         ]
       : [
