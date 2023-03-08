@@ -1,5 +1,16 @@
 # create-awesome-node-app
 
+## 0.2.0
+
+### Minor Changes
+
+- Added some validations for cross platform compatibility
+
+### Patch Changes
+
+- Updated dependencies
+  - @create-node-app/core@0.1.0
+
 ## 0.1.0
 
 ### Minor Changes
