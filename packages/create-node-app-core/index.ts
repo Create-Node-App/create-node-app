@@ -1,7 +1,37 @@
 import chalk from "chalk";
 import envinfo from "envinfo";
+import { execSync } from "child_process";
 import { Addon } from "./loaders";
 import { createApp } from "./installer";
+
+export const checkForLatestVersion = async (packageName: string) => {
+  // We first check the registry directly via the API, and if that fails, we try
+  // the slower `npm view [package] version` command.
+  //
+  // This is important for users in environments where direct access to npm is
+  // blocked by a firewall, and packages are provided exclusively via a private
+  // registry.
+  try {
+    const response = await fetch(
+      `https://registry.npmjs.org/-/package/${packageName}/dist-tags`
+    );
+
+    if (!response.ok) {
+      throw new Error("Registry request failed");
+    }
+
+    const { latest } = await response.json();
+    return latest as string;
+  } catch (error) {
+    try {
+      return execSync(`npm view ${packageName} version`).toString().trim();
+    } catch (error) {
+      // ignore
+    }
+    // ignore
+  }
+  return null;
+};
 
 export const printEnvInfo = async () => {
   console.log(chalk.bold("\nEnvironment Info:"));

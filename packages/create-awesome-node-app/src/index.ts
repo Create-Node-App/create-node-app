@@ -3,8 +3,7 @@
 import program from "commander";
 import chalk from "chalk";
 import semver from "semver";
-import { createNodeApp } from "@create-node-app/core";
-import { checkForLatestVersion } from "@create-node-app/core/helpers";
+import { createNodeApp, checkForLatestVersion } from "@create-node-app/core";
 import { getCnaOptions } from "./options";
 import packageJson from "../package.json";
 
