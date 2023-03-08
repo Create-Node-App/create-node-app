@@ -35,7 +35,8 @@
   },
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "scope": "@create-node-app"
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
