@@ -1,6 +1,6 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "globalEnv": ["HTTPS_PROXY"],
+  "globalEnv": ["HTTPS_PROXY", "npm_config_user_agent"],
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {

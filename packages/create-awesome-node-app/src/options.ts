@@ -71,7 +71,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
                 return "Template URL is required";
               }
               return true;
-            }
+            },
           },
         ]
       : [

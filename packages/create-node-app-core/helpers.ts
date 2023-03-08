@@ -24,12 +24,24 @@ export const toCamelCase = (str: string) => {
   );
 };
 
+export const isUsingYarn = () => {
+  return (process.env.npm_config_user_agent || "").indexOf("yarn") === 0;
+};
+
 export const shouldUseYarn = () => {
-  try {
-    execSync("yarnpkg --version", { stdio: "ignore" });
-    return true;
-  } catch (e) {
-    console.log(e);
+  const { hasMinYarnPnp, hasMaxYarnPnp } = checkYarnVersion();
+
+  if (!hasMinYarnPnp) {
+    return false;
+  }
+
+  if (!hasMaxYarnPnp) {
+    console.log(
+      chalk.yellow(
+        `You are using a pre-release version of Yarn which is not supported yet. ` +
+          `To use Yarn, install v1.12.0 or higher.`
+      )
+    );
     return false;
   }
 };
@@ -55,10 +67,10 @@ export const checkThatNpmCanReadCwd = () => {
   }
   const lines = childOutput.split("\n");
   // `npm config list` output includes the following line:
-  // " cwd = C:\path\to\current\dir" (unquoted)
+  // "; cwd = C:\path\to\current\dir" (unquoted)
   // I couldn't find an easier way to get it.
-  const prefix = " cwd = ";
-  const line = lines.find((l) => l.indexOf(prefix) === 0);
+  const prefix = "; cwd = ";
+  const line = lines.find((line) => line.startsWith(prefix));
   if (typeof line !== "string") {
     // Fail gracefully. They could remove it.
     return true;
@@ -95,12 +107,46 @@ export const checkThatNpmCanReadCwd = () => {
   return false;
 };
 
+export const checkYarnVersion = () => {
+  const minYarnPnp = "1.12.0";
+  const maxYarnPnp = "2.0.0";
+  let hasMinYarnPnp = false;
+  let hasMaxYarnPnp = false;
+  let yarnVersion = null;
+  try {
+    yarnVersion = execSync("yarnpkg --version").toString().trim();
+    if (semver.valid(yarnVersion)) {
+      hasMinYarnPnp = semver.gte(yarnVersion, minYarnPnp);
+      hasMaxYarnPnp = semver.lt(yarnVersion, maxYarnPnp);
+    } else {
+      // Handle non-semver compliant yarn version strings, which yarn currently
+      // uses for nightly builds. The regex truncates anything after the first
+      // dash. See #5362.
+      const trimmedYarnVersionMatch = /^(.+?)[-+].+$/.exec(yarnVersion);
+      if (trimmedYarnVersionMatch) {
+        const trimmedYarnVersion = trimmedYarnVersionMatch.pop();
+        if (trimmedYarnVersion) {
+          hasMinYarnPnp = semver.gte(trimmedYarnVersion, minYarnPnp);
+          hasMaxYarnPnp = semver.lt(trimmedYarnVersion, maxYarnPnp);
+        }
+      }
+    }
+  } catch (err) {
+    // ignore
+  }
+  return {
+    hasMinYarnPnp: hasMinYarnPnp,
+    hasMaxYarnPnp: hasMaxYarnPnp,
+    yarnVersion: yarnVersion,
+  };
+};
+
 export const checkNpmVersion = () => {
   let hasMinNpm = false;
-  let npmVersion: string | undefined = undefined;
+  let npmVersion = null;
   try {
     npmVersion = execSync("npm --version").toString().trim();
-    hasMinNpm = semver.gte(npmVersion, "3.0.0");
+    hasMinNpm = semver.gte(npmVersion, "6.0.0");
   } catch (err) {
     // ignore
   }
@@ -134,7 +180,6 @@ export const checkIfOnline = (useYarn?: boolean) => {
   return new Promise<boolean>((resolve) => {
     dns.lookup("registry.yarnpkg.com", (err) => {
       let proxy;
-      // eslint-disable-next-line no-cond-assign
       if (err != null && (proxy = getProxy())) {
         // If a proxy is defined, we likely can't resolve external hostnames.
         // Try to resolve the proxy name as an indication of a connection.
@@ -146,4 +191,33 @@ export const checkIfOnline = (useYarn?: boolean) => {
       }
     });
   });
+};
+
+export const checkForLatestVersion = async (packageName: string) => {
+  // We first check the registry directly via the API, and if that fails, we try
+  // the slower `npm view [package] version` command.
+  //
+  // This is important for users in environments where direct access to npm is
+  // blocked by a firewall, and packages are provided exclusively via a private
+  // registry.
+  try {
+    const response = await fetch(
+      `https://registry.npmjs.org/-/package/${packageName}/dist-tags`
+    );
+
+    if (!response.ok) {
+      throw new Error("Registry request failed");
+    }
+
+    const { latest } = await response.json();
+    return latest as string;
+  } catch (error) {
+    try {
+      return execSync(`npm view ${packageName} version`).toString().trim();
+    } catch (error) {
+      // ignore
+    }
+    // ignore
+  }
+  return null;
 };

@@ -2,15 +2,17 @@
 
 import program from "commander";
 import chalk from "chalk";
+import semver from "semver";
 import { createNodeApp } from "@create-node-app/core";
+import { checkForLatestVersion } from "@create-node-app/core/helpers";
 import { getCnaOptions } from "./options";
-import packageJS from "../package.json";
+import packageJson from "../package.json";
 
 const main = async () => {
   let projectName = "my-project";
 
   program
-    .version(packageJS.version)
+    .version(packageJson.version)
     .arguments("[project-directory]")
     .usage(`${chalk.green("[project-directory]")} [options]`)
     .action((name) => {
@@ -37,22 +39,27 @@ const main = async () => {
       "--nodeps",
       "generate package.json file without installing dependencies"
     )
-    .option("--inplace", "apply setup to an existing project");
-
-  program
-    .allowUnknownOption()
-    .on("--help", () => {
-      console.log();
-      console.log(
-        `    Only ${chalk.green("[project-directory]")} is required.`
-      );
-      console.log();
-      console.log(
-        `    If you have any problems, do not hesitate to file an issue:`
-      );
-      console.log(`      ${chalk.cyan(`${packageJS.bugs.url}/new`)}`);
-    })
+    .option("--inplace", "apply setup to an existing project")
     .parse(process.argv);
+
+  const latest = await checkForLatestVersion("create-awesome-node-app");
+
+  if (latest && semver.lt(packageJson.version, latest)) {
+    console.log();
+    console.error(
+      chalk.yellow(
+        `You are running \`create-react-app\` ${packageJson.version}, which is behind the latest release (${latest}).\n\n` +
+          "We recommend always using the latest version of create-react-app if possible."
+      )
+    );
+    console.log();
+    console.log(
+      "The latest instructions for creating a new app can be found here:\n" +
+        "https://create-react-app.dev/docs/getting-started/"
+    );
+    console.log();
+    return;
+  }
 
   return createNodeApp(
     projectName,
