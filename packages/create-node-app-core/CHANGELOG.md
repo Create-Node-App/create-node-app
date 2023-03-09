@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated to work with yarn
+
 ## 0.1.2
 
 ### Patch Changes

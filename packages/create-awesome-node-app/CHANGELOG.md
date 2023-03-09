@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.2.4
+
+### Patch Changes
+
+- Updated to work with yarn
+- Updated dependencies
+  - @create-node-app/core@0.1.3
+
 ## 0.2.3
 
 ### Patch Changes
