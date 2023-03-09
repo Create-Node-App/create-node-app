@@ -187,6 +187,9 @@ const run = async ({
     const packageJson = JSON.parse(
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
+    if (packageJson.scripts && packageJson.scripts["format"]) {
+      spawn(runCommand, ["format"], { stdio: "inherit", cwd: root });
+    }
     if (packageJson.scripts && packageJson.scripts["lint:fix"]) {
       spawn(runCommand, ["lint:fix"], { stdio: "inherit", cwd: root });
     }

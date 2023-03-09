@@ -44,6 +44,8 @@ export const shouldUseYarn = () => {
     );
     return false;
   }
+
+  return true;
 };
 
 export const checkThatNpmCanReadCwd = () => {
