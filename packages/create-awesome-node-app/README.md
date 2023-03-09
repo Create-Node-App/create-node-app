@@ -16,8 +16,6 @@
 
 </div>
 
-# Create Awesome Node App
-
 The primary goal of this project is to provide a stable foundation upon which to build modern web applications. Its purpose is not to dictate your project structure or to demonstrate a complete real-world application, but to provide a set of tools intended to make front-end development robust and easy.
 
 ## Quickstart
