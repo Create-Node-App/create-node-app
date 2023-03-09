@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.2.7
+
+### Patch Changes
+
+- 25f3260: Testing automation flow
+- Updated dependencies [25f3260]
+  - @create-node-app/core@0.1.5
+
 ## 0.2.6
 
 ### Patch Changes

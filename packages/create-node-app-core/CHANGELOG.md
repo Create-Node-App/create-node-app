@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.1.5
+
+### Patch Changes
+
+- 25f3260: Testing automation flow
+
 ## 0.1.4
 
 ### Patch Changes
