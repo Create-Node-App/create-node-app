@@ -90,6 +90,27 @@ export type RunOptions = {
   installCommand: string;
 };
 
+export const runCommandInProjectDir = (
+  root: string,
+  command: string,
+  args: string[] = [],
+  successMessage = "Operation completed successfully.",
+  errorMessage = "Operation failed."
+) => {
+  return new Promise<void>((resolve, reject) => {
+    const child = spawn(command, args, { stdio: "inherit", cwd: root });
+    child.on("close", (code) => {
+      if (code !== 0) {
+        console.log(chalk.red(errorMessage));
+        reject(new Error(`${command} ${args.join(" ")}`));
+        return;
+      }
+      console.log(chalk.green(successMessage));
+      resolve();
+    });
+  });
+};
+
 const run = async ({
   root,
   appName,
@@ -196,31 +217,21 @@ const run = async ({
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
     if (packageJson.scripts && packageJson.scripts["format"]) {
-      const formatProcess = spawn(runCommand, ["format"], {
-        stdio: "inherit",
-        cwd: root,
-      });
-
-      formatProcess.on("close", (code) => {
-        if (code !== 0) {
-          console.log(chalk.red("Failed to format code."));
-          return;
-        }
-        console.log(chalk.green("Formatted code."));
-      });
+      await runCommandInProjectDir(
+        root,
+        runCommand,
+        ["format"],
+        "Successfully formatted code.",
+      );
     }
     if (packageJson.scripts && packageJson.scripts["lint:fix"]) {
-      const lintFixProcess = spawn(runCommand, ["lint:fix"], {
-        stdio: "inherit",
-        cwd: root,
-      });
-      lintFixProcess.on("close", (code) => {
-        if (code !== 0) {
-          console.log(chalk.red("Failed to fix lint issues."));
-          return;
-        }
-        console.log(chalk.green("Fixed lint issues."));
-      });
+      await runCommandInProjectDir(
+        root,
+        runCommand,
+        ["lint:fix"],
+        "Successfully fixed linting errors.",
+        "Failed to fix linting errors."
+      );
     }
   }
 };
