@@ -180,18 +180,47 @@ const run = async ({
     );
   }
 
-  spawn("git", ["init"], {
+  const gitInitProcess = spawn("git", ["init"], {
     cwd: root,
   });
+  gitInitProcess.on("close", (code) => {
+    if (code !== 0) {
+      console.log(chalk.red("Failed to initialize git repository."));
+      return;
+    }
+    console.log(chalk.green("Initialized git repository."));
+  });
+
   if (installDependencies && isOnline) {
     const packageJson = JSON.parse(
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
     if (packageJson.scripts && packageJson.scripts["format"]) {
-      spawn(runCommand, ["format"], { stdio: "inherit", cwd: root });
+      const formatProcess = spawn(runCommand, ["format"], {
+        stdio: "inherit",
+        cwd: root,
+      });
+
+      formatProcess.on("close", (code) => {
+        if (code !== 0) {
+          console.log(chalk.red("Failed to format code."));
+          return;
+        }
+        console.log(chalk.green("Formatted code."));
+      });
     }
     if (packageJson.scripts && packageJson.scripts["lint:fix"]) {
-      spawn(runCommand, ["lint:fix"], { stdio: "inherit", cwd: root });
+      const lintFixProcess = spawn(runCommand, ["lint:fix"], {
+        stdio: "inherit",
+        cwd: root,
+      });
+      lintFixProcess.on("close", (code) => {
+        if (code !== 0) {
+          console.log(chalk.red("Failed to fix lint issues."));
+          return;
+        }
+        console.log(chalk.green("Fixed lint issues."));
+      });
     }
   }
 };

@@ -1,12 +1,5 @@
 <div align="center">
-<p>
-    <img
-        style="width: 200px"
-        width="200"
-        src="https://avatars.githubusercontent.com/u/4426989?s=200&v=4"
-    >
-</p>
-<h1>TypeScript Monorepo Boilerplate Packages</h1>
+<h1>Create Node App Packages</h1>
 
 </div>
 
