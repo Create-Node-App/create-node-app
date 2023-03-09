@@ -16,7 +16,7 @@
     "local:down": "npm run local down",
     "local:up": "npm run local up -- -d",
     "prepare": "is-ci || husky install",
-    "publish-packages": "turbo run build lint && changeset version && changeset publish",
+    "publish-packages": "turbo run lint && changeset version && turbo run build && changeset publish",
     "storybook": "turbo run storybook",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck"
