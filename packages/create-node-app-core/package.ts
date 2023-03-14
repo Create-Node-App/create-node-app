@@ -1,8 +1,8 @@
 /* eslint-disable global-require */
 import { existsSync } from "fs";
 import merge from "lodash.merge";
-import { Addon } from "./loaders";
-import { getAddonPackagePath } from "./paths";
+import { TemplateOrExtension } from "./loaders";
+import { getPackagePath } from "./paths";
 
 type GetInstallableSetupOptions = {
   dependencies?: Record<string, string>;
@@ -33,31 +33,31 @@ const requireIfExists = (path: string) => {
   throw new Error(`file ${path} not exists`);
 };
 
-export type LoadAddonsPackagesOptions = {
-  addons?: Addon[];
+export type LoadPackagesOptions = {
+  templatesorextensions?: TemplateOrExtension[];
   ignorePackage?: boolean;
   [key: string]: unknown;
 };
 
 /**
- * loadAddonsPackages loads the addons packages and merge them into a single package.json
- * @param opts.addons - addons to load
+ * loadPackages loads the templatesorextensions packages and merge them into a single package.json
+ * @param opts.templatesorextensions - templatesorextensions to load
  * @param opts.ignorePackage - ignore package.json file
- * @param opts.config - config to pass to the addons package module
+ * @param opts.config - config to pass to the templatesorextensions package module
  * @returns
  */
-export const loadAddonsPackages = async ({
-  addons = [],
+export const loadPackages = async ({
+  templatesorextensions = [],
   ignorePackage: globalIgnorePackage = false,
   ...config
-}: LoadAddonsPackagesOptions) => {
-  const setup = await addons.reduce(
-    async (setupPromise, { url: addon, ignorePackage }) => {
+}: LoadPackagesOptions) => {
+  const setup = await templatesorextensions.reduce(
+    async (setupPromise, { url: templateorextension, ignorePackage }) => {
       let packageJson = await setupPromise;
 
       try {
         const template = requireIfExists(
-          await getAddonPackagePath(addon, "template.json")
+          await getPackagePath(templateorextension, "template.json")
         );
         packageJson = merge(packageJson, template.package || {});
       } catch {
@@ -65,26 +65,26 @@ export const loadAddonsPackages = async ({
       }
 
       try {
-        const addonPackageJson = requireIfExists(
-          await getAddonPackagePath(
-            addon,
+        const templateorextensionPackageJson = requireIfExists(
+          await getPackagePath(
+            templateorextension,
             "package.json",
             globalIgnorePackage || ignorePackage
           )
         );
-        return merge(packageJson, addonPackageJson);
+        return merge(packageJson, templateorextensionPackageJson);
       } catch {
         // ignore this case since it failed executing the require of the `package.json`
       }
 
       try {
         // apply updates using package module
-        const resolveAddonPackage = requireIfExists(
-          await getAddonPackagePath(addon)
+        const resolveTemplateOrExtensionPackage = requireIfExists(
+          await getPackagePath(templateorextension)
         );
-        packageJson = resolveAddonPackage(packageJson, config);
+        packageJson = resolveTemplateOrExtensionPackage(packageJson, config);
       } catch {
-        // ignore this case since it failed executing `resolveAddonPackage(...)`
+        // ignore this case since it failed executing `resolveTemplateOrExtensionPackage(...)`
       }
       return packageJson;
     },

@@ -3,7 +3,7 @@ import fs from "fs";
 import chalk from "chalk";
 import readdirp from "readdirp";
 import { dirname } from "path";
-import { getAddonTemplateDirPath } from "./paths";
+import { getTemplateDirPath } from "./paths";
 
 const SRC_PATH_PATTERN = "[src]/";
 const DEFAULT_SRC_PATH = "src/";
@@ -185,11 +185,11 @@ const fileLoader: FileLoader =
     });
   };
 
-export type Addon = { url: string; ignorePackage?: boolean };
+export type TemplateOrExtension = { url: string; ignorePackage?: boolean };
 
 export type LoadFilesOptions = {
   root: string;
-  addons?: Addon[];
+  templatesorextensions?: TemplateOrExtension[];
   appName: string;
   originalDirectory: string;
   alias: string;
@@ -201,7 +201,7 @@ export type LoadFilesOptions = {
 
 export const loadFiles = async ({
   root,
-  addons = [],
+  templatesorextensions = [],
   appName,
   originalDirectory,
   alias,
@@ -210,8 +210,8 @@ export const loadFiles = async ({
   runCommand,
   installCommand,
 }: LoadFilesOptions) => {
-  for await (const { url: addonUrl } of addons) {
-    const templateDir = await getAddonTemplateDirPath(addonUrl);
+  for await (const { url: templateorextensionUrl } of templatesorextensions) {
+    const templateDir = await getTemplateDirPath(templateorextensionUrl);
     // if it does not exists, continue
     if (!fs.statSync(templateDir).isDirectory()) {
       continue;

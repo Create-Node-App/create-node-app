@@ -4,18 +4,18 @@ import path from "path";
 import { downloadRepository } from "./git";
 
 /**
- * solveValuesFromAddonUrl solves values from addon url
- * @param addon - addon url
+ * solveValuesFromTemplateOrExtensionUrl solves values from templateorextension url
+ * @param templateorextension - templateorextension url
  *
  * @example
- * solveValuesFromAddonUrl("https://github.com/username/repo")
+ * solveValuesFromTemplateOrExtensionUrl("https://github.com/username/repo")
  * // => { branch: "", subdir: "", protocol: "https:", host: "github.com", pathname: "/username/repo", ignorePackageJson: false
  *
- * solveValuesFromAddonUrl("https://github.com/username/repo/tree/main/examples/express?ignorePackage=true")
+ * solveValuesFromTemplateOrExtensionUrl("https://github.com/username/repo/tree/main/examples/express?ignorePackage=true")
  * // => { branch: "main", subdir: "examples/express", protocol: "https:", host: "github.com", pathname: "/username/repo", ignorePackageJson: true
  */
-const solveValuesFromAddonUrl = (addon: string) => {
-  const url = new URL(addon);
+const solveValuesFromTemplateOrExtensionUrl = (templateorextension: string) => {
+  const url = new URL(templateorextension);
   const origin = `${url.protocol}//${url.host}`;
   const [org, repo, , branch = "", ...subdir] = url.pathname
     .slice(1)
@@ -61,10 +61,10 @@ const solveRepositoryPath = async ({
   return { dir: target, subdir };
 };
 
-const solveAddonPath = async (addon: string) => {
+const solveTemplateOrExtensionPath = async (templateorextension: string) => {
   try {
     const { url, branch, subdir, protocol, host, pathname, ignorePackage } =
-      solveValuesFromAddonUrl(addon);
+      solveValuesFromTemplateOrExtensionUrl(templateorextension);
 
     if (protocol === "file:") {
       return {
@@ -81,24 +81,34 @@ const solveAddonPath = async (addon: string) => {
   } catch {
     // failed solving file/http/ssh/... url
     return {
-      dir: path.resolve(__dirname, "..", "addons", addon),
+      dir: path.resolve(
+        __dirname,
+        "..",
+        "templatesorextensions",
+        templateorextension
+      ),
       ignorePackage: undefined,
     };
   }
 };
 
-export const getAddonPackagePath = async (
-  addon: string,
+export const getPackagePath = async (
+  templateorextension: string,
   name = "package",
   ignorePackage = false
 ) => {
   const {
     dir,
     subdir,
-    ignorePackage: addonIgnorePackage,
-  } = await solveAddonPath(addon);
-  if (name === "package.json" && (ignorePackage || addonIgnorePackage)) {
-    throw new Error("package.json should be ignored for file addon");
+    ignorePackage: templateorextensionIgnorePackage,
+  } = await solveTemplateOrExtensionPath(templateorextension);
+  if (
+    name === "package.json" &&
+    (ignorePackage || templateorextensionIgnorePackage)
+  ) {
+    throw new Error(
+      "package.json should be ignored for file templateorextension"
+    );
   }
   if (subdir) {
     return path.resolve(dir, subdir, name);
@@ -106,8 +116,10 @@ export const getAddonPackagePath = async (
   return path.resolve(dir, name);
 };
 
-export const getAddonTemplateDirPath = async (addonUrl: string) => {
-  const { dir, subdir = "" } = await solveAddonPath(addonUrl);
+export const getTemplateDirPath = async (templateorextensionUrl: string) => {
+  const { dir, subdir = "" } = await solveTemplateOrExtensionPath(
+    templateorextensionUrl
+  );
 
   let templateDirPath = path.resolve(dir, subdir);
 

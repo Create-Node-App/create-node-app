@@ -1,5 +1,5 @@
 import { CnaOptions } from "@create-node-app/core";
-import { Addon } from "@create-node-app/core/loaders";
+import { TemplateOrExtension } from "@create-node-app/core/loaders";
 import prompts from "prompts";
 import yargs from "yargs";
 prompts.override(yargs.argv);
@@ -105,7 +105,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
     // The following prompts are placeholders for future inputs
     {
       type: null,
-      name: "addons",
+      name: "templatesorextensions",
       message: "Select extensions",
       initial: 0,
     },
@@ -117,7 +117,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
     },
   ]);
 
-  appConfig.addons = [];
+  appConfig.templatesorextensions = [];
   appConfig.extend = [];
 
   const extensionsGroupedByCategory = await getExtensionsGroupedByCategory(
@@ -140,8 +140,8 @@ export const getCnaOptions = async (options: CnaOptions) => {
       initial: 0,
     });
 
-    appConfig.addons = appConfig.addons
-      ? [...appConfig.addons, ...selected]
+    appConfig.templatesorextensions = appConfig.templatesorextensions
+      ? [...appConfig.templatesorextensions, ...selected]
       : [];
   }
 
@@ -175,21 +175,21 @@ export const getCnaOptions = async (options: CnaOptions) => {
     ...appConfig,
   };
 
-  const templateAddon =
+  const templateTemplateOrExtension =
     baseInput.category === "custom"
       ? templateInput.template
       : templates.find((template) => template.type === templateInput.template)
           ?.url;
 
-  const addons: Addon[] = [
-    templateAddon,
-    ...nextAppOptions.addons,
+  const templatesorextensions: TemplateOrExtension[] = [
+    templateTemplateOrExtension,
+    ...nextAppOptions.templatesorextensions,
     ...nextAppOptions.extend,
   ]
     .filter(Boolean)
-    .map((addon) => ({ url: addon }));
+    .map((templateorextension) => ({ url: templateorextension }));
 
-  const nextOptions = { ...nextAppOptions, addons };
+  const nextOptions = { ...nextAppOptions, templatesorextensions };
 
   if (nextAppOptions.verbose) {
     console.log(JSON.stringify(nextOptions, null, 2));
