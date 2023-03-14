@@ -135,7 +135,7 @@ const run = async ({
     console.log();
     console.log(
       chalk.yellow(
-        "No templatesOrExtensions specified to bootstrap application."
+        "No templates or extensions specified to bootstrap application."
       )
     );
     console.log();
