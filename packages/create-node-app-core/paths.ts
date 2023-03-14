@@ -50,7 +50,7 @@ const solveRepositoryPath = async ({
   const target = path.join(os.homedir(), ".cna", targetId);
   try {
     await downloadRepository({
-      git: url,
+      url,
       branch,
       target,
       targetId,
