@@ -60,7 +60,7 @@ export type CnaOptions = {
   useNpm?: boolean;
   nodeps?: boolean;
   template?: string;
-  templatesorextensions?: TemplateOrExtension[];
+  templatesOrExtensions?: TemplateOrExtension[];
 };
 
 export type CnaOptionsTransform = (options: CnaOptions) => Promise<CnaOptions>;
@@ -79,7 +79,7 @@ export type CnaOptionsTransform = (options: CnaOptions) => Promise<CnaOptions>;
  * @param options.nodeps - Generate package.json file without installing dependencies
  * @param options.template - Template to bootstrap the aplication
  * @param options.extend - Extensions to apply for the boilerplate generation
- * @param options.templatesorextensions - Official extensions to apply
+ * @param options.templatesOrExtensions - Official extensions to apply
  * @param transformOptions - Function to transform the options
  */
 export const createNodeApp = async (

@@ -34,30 +34,30 @@ const requireIfExists = (path: string) => {
 };
 
 export type LoadPackagesOptions = {
-  templatesorextensions?: TemplateOrExtension[];
+  templatesOrExtensions?: TemplateOrExtension[];
   ignorePackage?: boolean;
   [key: string]: unknown;
 };
 
 /**
- * loadPackages loads the templatesorextensions packages and merge them into a single package.json
- * @param opts.templatesorextensions - templatesorextensions to load
+ * loadPackages loads the templatesOrExtensions packages and merge them into a single package.json
+ * @param opts.templatesOrExtensions - templatesOrExtensions to load
  * @param opts.ignorePackage - ignore package.json file
- * @param opts.config - config to pass to the templatesorextensions package module
+ * @param opts.config - config to pass to the templatesOrExtensions package module
  * @returns
  */
 export const loadPackages = async ({
-  templatesorextensions = [],
+  templatesOrExtensions = [],
   ignorePackage: globalIgnorePackage = false,
   ...config
 }: LoadPackagesOptions) => {
-  const setup = await templatesorextensions.reduce(
-    async (setupPromise, { url: templateorextension, ignorePackage }) => {
+  const setup = await templatesOrExtensions.reduce(
+    async (setupPromise, { url: templateOrExtension, ignorePackage }) => {
       let packageJson = await setupPromise;
 
       try {
         const template = requireIfExists(
-          await getPackagePath(templateorextension, "template.json")
+          await getPackagePath(templateOrExtension, "template.json")
         );
         packageJson = merge(packageJson, template.package || {});
       } catch {
@@ -65,14 +65,14 @@ export const loadPackages = async ({
       }
 
       try {
-        const templateorextensionPackageJson = requireIfExists(
+        const templateOrExtensionPackageJson = requireIfExists(
           await getPackagePath(
-            templateorextension,
+            templateOrExtension,
             "package.json",
             globalIgnorePackage || ignorePackage
           )
         );
-        return merge(packageJson, templateorextensionPackageJson);
+        return merge(packageJson, templateOrExtensionPackageJson);
       } catch {
         // ignore this case since it failed executing the require of the `package.json`
       }
@@ -80,7 +80,7 @@ export const loadPackages = async ({
       try {
         // apply updates using package module
         const resolveTemplateOrExtensionPackage = requireIfExists(
-          await getPackagePath(templateorextension)
+          await getPackagePath(templateOrExtension)
         );
         packageJson = resolveTemplateOrExtensionPackage(packageJson, config);
       } catch {

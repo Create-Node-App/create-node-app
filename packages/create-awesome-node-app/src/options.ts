@@ -105,7 +105,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
     // The following prompts are placeholders for future inputs
     {
       type: null,
-      name: "templatesorextensions",
+      name: "templatesOrExtensions",
       message: "Select extensions",
       initial: 0,
     },
@@ -117,7 +117,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
     },
   ]);
 
-  appConfig.templatesorextensions = [];
+  appConfig.templatesOrExtensions = [];
   appConfig.extend = [];
 
   const extensionsGroupedByCategory = await getExtensionsGroupedByCategory(
@@ -140,8 +140,8 @@ export const getCnaOptions = async (options: CnaOptions) => {
       initial: 0,
     });
 
-    appConfig.templatesorextensions = appConfig.templatesorextensions
-      ? [...appConfig.templatesorextensions, ...selected]
+    appConfig.templatesOrExtensions = appConfig.templatesOrExtensions
+      ? [...appConfig.templatesOrExtensions, ...selected]
       : [];
   }
 
@@ -181,15 +181,15 @@ export const getCnaOptions = async (options: CnaOptions) => {
       : templates.find((template) => template.type === templateInput.template)
           ?.url;
 
-  const templatesorextensions: TemplateOrExtension[] = [
+  const templatesOrExtensions: TemplateOrExtension[] = [
     templateTemplateOrExtension,
-    ...nextAppOptions.templatesorextensions,
+    ...nextAppOptions.templatesOrExtensions,
     ...nextAppOptions.extend,
   ]
     .filter(Boolean)
-    .map((templateorextension) => ({ url: templateorextension }));
+    .map((templateOrExtension) => ({ url: templateOrExtension }));
 
-  const nextOptions = { ...nextAppOptions, templatesorextensions };
+  const nextOptions = { ...nextAppOptions, templatesOrExtensions };
 
   if (nextAppOptions.verbose) {
     console.log(JSON.stringify(nextOptions, null, 2));

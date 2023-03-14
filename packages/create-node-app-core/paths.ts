@@ -4,8 +4,8 @@ import path from "path";
 import { downloadRepository } from "./git";
 
 /**
- * solveValuesFromTemplateOrExtensionUrl solves values from templateorextension url
- * @param templateorextension - templateorextension url
+ * solveValuesFromTemplateOrExtensionUrl solves values from templateOrExtension url
+ * @param templateOrExtension - templateOrExtension url
  *
  * @example
  * solveValuesFromTemplateOrExtensionUrl("https://github.com/username/repo")
@@ -14,8 +14,8 @@ import { downloadRepository } from "./git";
  * solveValuesFromTemplateOrExtensionUrl("https://github.com/username/repo/tree/main/examples/express?ignorePackage=true")
  * // => { branch: "main", subdir: "examples/express", protocol: "https:", host: "github.com", pathname: "/username/repo", ignorePackageJson: true
  */
-const solveValuesFromTemplateOrExtensionUrl = (templateorextension: string) => {
-  const url = new URL(templateorextension);
+const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: string) => {
+  const url = new URL(templateOrExtension);
   const origin = `${url.protocol}//${url.host}`;
   const [org, repo, , branch = "", ...subdir] = url.pathname
     .slice(1)
@@ -61,10 +61,10 @@ const solveRepositoryPath = async ({
   return { dir: target, subdir };
 };
 
-const solveTemplateOrExtensionPath = async (templateorextension: string) => {
+const solveTemplateOrExtensionPath = async (templateOrExtension: string) => {
   try {
     const { url, branch, subdir, protocol, host, pathname, ignorePackage } =
-      solveValuesFromTemplateOrExtensionUrl(templateorextension);
+      solveValuesFromTemplateOrExtensionUrl(templateOrExtension);
 
     if (protocol === "file:") {
       return {
@@ -84,8 +84,8 @@ const solveTemplateOrExtensionPath = async (templateorextension: string) => {
       dir: path.resolve(
         __dirname,
         "..",
-        "templatesorextensions",
-        templateorextension
+        "templatesOrExtensions",
+        templateOrExtension
       ),
       ignorePackage: undefined,
     };
@@ -93,21 +93,21 @@ const solveTemplateOrExtensionPath = async (templateorextension: string) => {
 };
 
 export const getPackagePath = async (
-  templateorextension: string,
+  templateOrExtension: string,
   name = "package",
   ignorePackage = false
 ) => {
   const {
     dir,
     subdir,
-    ignorePackage: templateorextensionIgnorePackage,
-  } = await solveTemplateOrExtensionPath(templateorextension);
+    ignorePackage: templateOrExtensionIgnorePackage,
+  } = await solveTemplateOrExtensionPath(templateOrExtension);
   if (
     name === "package.json" &&
-    (ignorePackage || templateorextensionIgnorePackage)
+    (ignorePackage || templateOrExtensionIgnorePackage)
   ) {
     throw new Error(
-      "package.json should be ignored for file templateorextension"
+      "package.json should be ignored for file templateOrExtension"
     );
   }
   if (subdir) {
@@ -116,9 +116,9 @@ export const getPackagePath = async (
   return path.resolve(dir, name);
 };
 
-export const getTemplateDirPath = async (templateorextensionUrl: string) => {
+export const getTemplateDirPath = async (templateOrExtensionUrl: string) => {
   const { dir, subdir = "" } = await solveTemplateOrExtensionPath(
-    templateorextensionUrl
+    templateOrExtensionUrl
   );
 
   let templateDirPath = path.resolve(dir, subdir);

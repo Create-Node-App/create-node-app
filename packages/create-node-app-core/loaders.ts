@@ -189,7 +189,7 @@ export type TemplateOrExtension = { url: string; ignorePackage?: boolean };
 
 export type LoadFilesOptions = {
   root: string;
-  templatesorextensions?: TemplateOrExtension[];
+  templatesOrExtensions?: TemplateOrExtension[];
   appName: string;
   originalDirectory: string;
   alias: string;
@@ -201,7 +201,7 @@ export type LoadFilesOptions = {
 
 export const loadFiles = async ({
   root,
-  templatesorextensions = [],
+  templatesOrExtensions = [],
   appName,
   originalDirectory,
   alias,
@@ -210,8 +210,8 @@ export const loadFiles = async ({
   runCommand,
   installCommand,
 }: LoadFilesOptions) => {
-  for await (const { url: templateorextensionUrl } of templatesorextensions) {
-    const templateDir = await getTemplateDirPath(templateorextensionUrl);
+  for await (const { url: templateOrExtensionUrl } of templatesOrExtensions) {
+    const templateDir = await getTemplateDirPath(templateOrExtensionUrl);
     // if it does not exists, continue
     if (!fs.statSync(templateDir).isDirectory()) {
       continue;

@@ -80,7 +80,7 @@ export type RunOptions = {
   originalDirectory: string;
   verbose?: boolean;
   useYarn?: boolean;
-  templatesorextensions?: TemplateOrExtension[];
+  templatesOrExtensions?: TemplateOrExtension[];
   dependencies?: string[];
   devDependencies?: string[];
   alias?: string;
@@ -117,7 +117,7 @@ const run = async ({
   originalDirectory,
   verbose = false,
   useYarn = false,
-  templatesorextensions = [],
+  templatesOrExtensions = [],
   dependencies = [],
   devDependencies = [],
   alias = "",
@@ -131,11 +131,11 @@ const run = async ({
     isOnline = await checkIfOnline(useYarn);
   }
 
-  if (_.isEmpty(templatesorextensions)) {
+  if (_.isEmpty(templatesOrExtensions)) {
     console.log();
     console.log(
       chalk.yellow(
-        "No templatesorextensions specified to bootstrap application."
+        "No templatesOrExtensions specified to bootstrap application."
       )
     );
     console.log();
@@ -144,7 +144,7 @@ const run = async ({
 
   await loadFiles({
     root,
-    templatesorextensions,
+    templatesOrExtensions,
     appName,
     originalDirectory,
     alias,
@@ -244,7 +244,7 @@ export type CreateAppOptions = {
   name: string;
   verbose?: boolean;
   useNpm?: boolean;
-  templatesorextensions?: TemplateOrExtension[];
+  templatesOrExtensions?: TemplateOrExtension[];
   alias?: string;
   installDependencies?: boolean;
   ignorePackage?: boolean;
@@ -257,7 +257,7 @@ export type CreateAppOptions = {
  * @param opts.name - Project's name
  * @param opts.verbose - Specify if it is needed to use verbose mode or not
  * @param opts.useNpm - Use npm mandatorily
- * @param opts.templatesorextensions - Official extensions to apply
+ * @param opts.templatesOrExtensions - Official extensions to apply
  * @param opts.alias - Metadata to specify alias, usefull for backends using webpack
  * @param opts.installDependencies - Specify if it is needed to install dependencies
  * @param opts.ignorePackage - Specify if it is needed to ignore package.json on all templates
@@ -267,7 +267,7 @@ export const createApp = async ({
   name,
   verbose = false,
   useNpm = false,
-  templatesorextensions = [],
+  templatesOrExtensions = [],
   alias = "",
   installDependencies = true,
   ignorePackage = false,
@@ -287,7 +287,7 @@ export const createApp = async ({
   const command = useYarn ? "yarn" : "npm run";
 
   const { packageJson, dependencies, devDependencies } = await loadPackages({
-    templatesorextensions,
+    templatesOrExtensions,
     appName,
     command,
     ignorePackage,
@@ -352,7 +352,7 @@ export const createApp = async ({
     originalDirectory,
     verbose,
     useYarn,
-    templatesorextensions,
+    templatesOrExtensions,
     dependencies,
     devDependencies,
     alias,
