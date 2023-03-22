@@ -115,11 +115,8 @@ export const getAddonTemplateDirPath = async (addonUrl: string) => {
   // otherwise, return `${templateDirPath}`
   const templateDirPathWithTemplate = path.resolve(templateDirPath, "template");
 
-  return new Promise<string>((resolve, reject) => {
-    fs.stat(templateDirPathWithTemplate, (err, stats) => {
-      if (err) {
-        return reject(err);
-      }
+  return new Promise<string>((resolve) => {
+    fs.stat(templateDirPathWithTemplate, (_err, stats) => {
       if (stats.isDirectory()) {
         templateDirPath = templateDirPathWithTemplate;
       }
