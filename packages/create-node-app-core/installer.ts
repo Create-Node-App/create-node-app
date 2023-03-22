@@ -13,8 +13,8 @@ import {
   checkNpmVersion,
   checkIfOnline,
 } from "./helpers";
-import { loadAddonsPackages } from "./package";
-import { Addon, loadFiles } from "./loaders";
+import { loadPackages } from "./package";
+import { TemplateOrExtension, loadFiles } from "./loaders";
 
 const install = (
   root: string,
@@ -80,7 +80,7 @@ export type RunOptions = {
   originalDirectory: string;
   verbose?: boolean;
   useYarn?: boolean;
-  addons?: Addon[];
+  templatesOrExtensions?: TemplateOrExtension[];
   dependencies?: string[];
   devDependencies?: string[];
   alias?: string;
@@ -90,13 +90,34 @@ export type RunOptions = {
   installCommand: string;
 };
 
+export const runCommandInProjectDir = (
+  root: string,
+  command: string,
+  args: string[] = [],
+  successMessage = "Operation completed successfully.",
+  errorMessage = "Operation failed."
+) => {
+  return new Promise<void>((resolve, reject) => {
+    const child = spawn(command, args, { stdio: "inherit", cwd: root });
+    child.on("close", (code) => {
+      if (code !== 0) {
+        console.log(chalk.red(errorMessage));
+        reject(new Error(`${command} ${args.join(" ")}`));
+        return;
+      }
+      console.log(chalk.green(successMessage));
+      resolve();
+    });
+  });
+};
+
 const run = async ({
   root,
   appName,
   originalDirectory,
   verbose = false,
   useYarn = false,
-  addons = [],
+  templatesOrExtensions = [],
   dependencies = [],
   devDependencies = [],
   alias = "",
@@ -110,16 +131,20 @@ const run = async ({
     isOnline = await checkIfOnline(useYarn);
   }
 
-  if (_.isEmpty(addons)) {
+  if (_.isEmpty(templatesOrExtensions)) {
     console.log();
-    console.log(chalk.yellow("No addons specified to bootstrap application."));
+    console.log(
+      chalk.yellow(
+        "No templates or extensions specified to bootstrap application."
+      )
+    );
     console.log();
     process.exit(0);
   }
 
   await loadFiles({
     root,
-    addons,
+    templatesOrExtensions,
     appName,
     originalDirectory,
     alias,
@@ -180,15 +205,37 @@ const run = async ({
     );
   }
 
-  spawn("git", ["init"], {
+  const gitInitProcess = spawn("git", ["init"], {
     cwd: root,
   });
+  gitInitProcess.on("close", (code) => {
+    if (code !== 0) {
+      console.log(chalk.red("Failed to initialize git repository."));
+      return;
+    }
+    console.log(chalk.green("Initialized git repository."));
+  });
+
   if (installDependencies && isOnline) {
     const packageJson = JSON.parse(
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
+    if (packageJson.scripts && packageJson.scripts["format"]) {
+      await runCommandInProjectDir(
+        root,
+        runCommand,
+        ["format"],
+        "Successfully formatted code."
+      );
+    }
     if (packageJson.scripts && packageJson.scripts["lint:fix"]) {
-      spawn(runCommand, ["lint:fix"], { stdio: "inherit", cwd: root });
+      await runCommandInProjectDir(
+        root,
+        runCommand,
+        ["lint:fix"],
+        "Successfully fixed linting errors.",
+        "Failed to fix linting errors."
+      );
     }
   }
 };
@@ -197,7 +244,7 @@ export type CreateAppOptions = {
   name: string;
   verbose?: boolean;
   useNpm?: boolean;
-  addons?: Addon[];
+  templatesOrExtensions?: TemplateOrExtension[];
   alias?: string;
   installDependencies?: boolean;
   ignorePackage?: boolean;
@@ -210,7 +257,7 @@ export type CreateAppOptions = {
  * @param opts.name - Project's name
  * @param opts.verbose - Specify if it is needed to use verbose mode or not
  * @param opts.useNpm - Use npm mandatorily
- * @param opts.addons - Official extensions to apply
+ * @param opts.templatesOrExtensions - Official extensions to apply
  * @param opts.alias - Metadata to specify alias, usefull for backends using webpack
  * @param opts.installDependencies - Specify if it is needed to install dependencies
  * @param opts.ignorePackage - Specify if it is needed to ignore package.json on all templates
@@ -220,7 +267,7 @@ export const createApp = async ({
   name,
   verbose = false,
   useNpm = false,
-  addons = [],
+  templatesOrExtensions = [],
   alias = "",
   installDependencies = true,
   ignorePackage = false,
@@ -239,14 +286,13 @@ export const createApp = async ({
   const useYarn = useNpm ? false : shouldUseYarn();
   const command = useYarn ? "yarn" : "npm run";
 
-  const { packageJson, dependencies, devDependencies } =
-    await loadAddonsPackages({
-      addons,
-      appName,
-      command,
-      ignorePackage,
-      srcDir,
-    });
+  const { packageJson, dependencies, devDependencies } = await loadPackages({
+    templatesOrExtensions,
+    appName,
+    command,
+    ignorePackage,
+    srcDir,
+  });
 
   fs.writeFileSync(
     path.join(root, "package.json"),
@@ -306,7 +352,7 @@ export const createApp = async ({
     originalDirectory,
     verbose,
     useYarn,
-    addons,
+    templatesOrExtensions,
     dependencies,
     devDependencies,
     alias,

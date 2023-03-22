@@ -3,7 +3,6 @@ import childProcess from "child_process";
 import path from "path";
 import { promisify } from "util";
 import fs from "fs";
-import download from "download";
 import debug from "debug";
 
 const log = debug("cna:git");
@@ -39,12 +38,10 @@ const pull = async (cwd: string) => {
 };
 
 export type DownloadRepositoryOptions = {
-  git?: string;
+  url?: string;
   target: string;
   cacheDir?: string;
   branch?: string;
-  way?: "git" | "zip";
-  zip?: string;
   offline?: boolean;
   targetId?: string;
 };
@@ -53,100 +50,54 @@ export type DownloadRepositoryOptions = {
  * @todo add options.filter
  *
  * @param opts options
- * @param opts.git Git repository url. If it is a github repo, only
- * type '<username>/<repo>'.
+ * @param opts.url The git repository url.
  * @param opts.target The folder of generating to.
  * @param opts.cacheDir? Default `~/.cache/cna/${name}`, the folder
  * @param opts.branch? Default 'main'. Git branch.
- * @param opts.way? The way of install git, only 'git' or 'zip'.
- * to keep cache.
- * @param opts.zip? Zip downloading url. If opt.git is a github
- * repository, this option is unnecessary.
  * @param opts.offline? use cached files, and don't update.
  */
 export const downloadRepository = async ({
-  git = "",
-  zip,
+  url = "",
   offline = false,
   target = "./",
   branch = "main",
-  way = "git",
   targetId,
   cacheDir: optsCacheDir,
 }: DownloadRepositoryOptions) => {
   const absoluteTarget = path.isAbsolute(target)
     ? target
     : path.resolve(target);
-  const isGithub = /^[^/]+\/[^/]+$/.test(git);
-  const gitUrl = isGithub ? `https://github.com/${git}` : git;
-  const zipUrl = isGithub
-    ? `https://github.com/${git}/archive/${branch}.zip`
-    : zip;
-  const id = targetId || Buffer.from(`${git}@${branch}`).toString("base64");
+
+  const isGithub = /^[^/]+\/[^/]+$/.test(url);
+  const gitUrl = isGithub ? `https://github.com/${url}` : url;
+  const id = targetId || Buffer.from(`${gitUrl}@${branch}`).toString("base64");
   let cacheDir = optsCacheDir || path.join(os.homedir(), ".cache", "cna", id);
 
   cacheDir = path.isAbsolute(cacheDir) ? cacheDir : path.resolve(cacheDir);
 
   log("cache folder: %s", cacheDir);
-  log("git url: %s", gitUrl);
-  log("zip url: %s", zipUrl);
 
   const cached = fs.existsSync(cacheDir);
 
-  /**
-   * opts.way === 'git'
-   */
-  const createByGit = async () => {
-    log("git mode");
-
-    if (!cached) {
-      if (!gitUrl) {
-        throw new Error(
-          `Expect parameter opts.git when opts.way is 'git', but got ${gitUrl}`
-        );
-      }
-      await clone(gitUrl, cacheDir, branch);
-    }
-
-    if (offline) {
-      fs.cpSync(cacheDir, absoluteTarget, {
-        force: true,
-        filter: filterGit,
-        recursive: true,
-      });
-      return;
-    }
-
-    await pull(cacheDir);
-    setTimeout(() => {
-      fs.cpSync(cacheDir, absoluteTarget, {
-        force: true,
-        filter: filterGit,
-        recursive: true,
-      });
-    }, 400);
-  };
-
-  /**
-   * opts.way === 'zip'
-   * It will never use cached files, opts.cached & opts.offline will be Invalid.
-   */
-  const createByZip = async () => {
-    log("zip mode");
-    if (!zipUrl) {
-      throw new Error(
-        `Expect parameter opts.zip when opts.way is 'zip', but got ${zipUrl}`
-      );
-    }
-    await download(zipUrl, target, { extract: true });
-  };
-
-  switch (way) {
-    case "git":
-      return createByGit();
-    case "zip":
-      return createByZip();
-    default:
-      throw new Error(`Expect parameter opts.way is 'git' or 'zip'`);
+  if (!cached) {
+    await clone(gitUrl, cacheDir, branch);
   }
+
+  if (offline) {
+    fs.cpSync(cacheDir, absoluteTarget, {
+      force: true,
+      filter: filterGit,
+      recursive: true,
+    });
+    return;
+  }
+
+  await pull(cacheDir);
+  setTimeout(() => {
+    fs.cpSync(cacheDir, absoluteTarget, {
+      force: true,
+      filter: filterGit,
+      recursive: true,
+    });
+  }, 400);
 };

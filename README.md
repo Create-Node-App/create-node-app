@@ -1,14 +1,7 @@
 <!--lint disable double-link awesome-heading awesome-git-repo-age awesome-toc-->
 
 <div align="center">
-<p>
-    <img
-        style="width: 200px"
-        width="200"
-        src="https://avatars.githubusercontent.com/u/71946272?s=200&v=4"
-    >
-</p>
-<h1>TypeScript Monorepo Boilerplate</h1>
+<h1>Create Node App</h1>
 
 [Changelog](#) |
 [Contributing](./CONTRIBUTING.md)
@@ -17,11 +10,13 @@
 <div align="center">
 
 [![Continious Integration][cibadge]][ciurl]
+[![npm][npmversion]][npmurl]
+[![npm][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
 
 </div>
 
-This repository is a starter kit for a TypeScript monorepo project. It is based on TypeScript, Npm, ESLint, Prettier, Jest, Turborepo and Changesets.
+This repository contains the source code for the [`create-awesome-node-app`][npmurl] package.
 
 ## Available Scripts
 
@@ -50,6 +45,9 @@ In the project directory, you can run:
 Made with [contributors-img](https://contrib.rocks).
 
 [cibadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/ci.yml/badge.svg
+[npmversion]: https://img.shields.io/npm/v/create-awesome-node-app.svg?maxAge=2592000?style=plastic
+[npmdownloads]: https://img.shields.io/npm/dm/create-awesome-node-app.svg?maxAge=2592000?style=plastic
 [licensebadge]: https://img.shields.io/badge/License-MIT-blue.svg
 [ciurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/ci.yml
+[npmurl]: https://www.npmjs.com/package/create-awesome-node-app
 [licenseurl]: https://github.com/Create-Node-App/create-node-app/blob/main/LICENSE

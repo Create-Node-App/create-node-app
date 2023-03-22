@@ -29,9 +29,18 @@ export const isUsingYarn = () => {
 };
 
 export const shouldUseYarn = () => {
-  const { hasMinYarnPnp, hasMaxYarnPnp } = checkYarnVersion();
+  const { hasMinYarnPnp, hasMaxYarnPnp, yarnVersion } = checkYarnVersion();
 
   if (!hasMinYarnPnp) {
+    console.log(
+      chalk.yellow(
+        `You are using yarn version ${chalk.bold(
+          yarnVersion
+        )} which is not supported yet. ` +
+          `To use Yarn, install v1.12.0 or higher and lower than v2.0.0. ` +
+          `See https://yarnpkg.com for instructions on how to update.`
+      )
+    );
     return false;
   }
 
@@ -39,11 +48,14 @@ export const shouldUseYarn = () => {
     console.log(
       chalk.yellow(
         `You are using a pre-release version of Yarn which is not supported yet. ` +
-          `To use Yarn, install v1.12.0 or higher.`
+          `To use Yarn, install v1.12.0 or higher and lower than v2.0.0. ` +
+          `See https://yarnpkg.com for instructions on how to update.`
       )
     );
     return false;
   }
+
+  return true;
 };
 
 export const checkThatNpmCanReadCwd = () => {

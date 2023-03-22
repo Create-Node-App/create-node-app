@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import envinfo from "envinfo";
 import { execSync } from "child_process";
-import { Addon } from "./loaders";
+import { TemplateOrExtension } from "./loaders";
 import { createApp } from "./installer";
 
 export const checkForLatestVersion = async (packageName: string) => {
@@ -60,7 +60,7 @@ export type CnaOptions = {
   useNpm?: boolean;
   nodeps?: boolean;
   template?: string;
-  addons?: Addon[];
+  templatesOrExtensions?: TemplateOrExtension[];
 };
 
 export type CnaOptionsTransform = (options: CnaOptions) => Promise<CnaOptions>;
@@ -79,7 +79,7 @@ export type CnaOptionsTransform = (options: CnaOptions) => Promise<CnaOptions>;
  * @param options.nodeps - Generate package.json file without installing dependencies
  * @param options.template - Template to bootstrap the aplication
  * @param options.extend - Extensions to apply for the boilerplate generation
- * @param options.addons - Official extensions to apply
+ * @param options.templatesOrExtensions - Official extensions to apply
  * @param transformOptions - Function to transform the options
  */
 export const createNodeApp = async (
