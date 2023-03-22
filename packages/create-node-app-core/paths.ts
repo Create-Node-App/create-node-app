@@ -129,6 +129,10 @@ export const getTemplateDirPath = async (templateOrExtensionUrl: string) => {
 
   return new Promise<string>((resolve) => {
     fs.stat(templateDirPathWithTemplate, (_err, stats) => {
+      if (_err) {
+        resolve(templateDirPath);
+        return;
+      }
       if (stats.isDirectory()) {
         templateDirPath = templateDirPathWithTemplate;
       }
