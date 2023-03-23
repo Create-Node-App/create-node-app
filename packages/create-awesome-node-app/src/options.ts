@@ -120,9 +120,10 @@ export const getCnaOptions = async (options: CnaOptions) => {
   appConfig.templatesOrExtensions = [];
   appConfig.extend = [];
 
-  const extensionsGroupedByCategory = await getExtensionsGroupedByCategory(
-    templateInput.template
-  );
+  const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
+    templateInput.template,
+    "all",
+  ]);
 
   for (const [category, extensions] of Object.entries(
     extensionsGroupedByCategory

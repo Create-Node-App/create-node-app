@@ -1,11 +1,13 @@
 const TEMPLATE_DATA_FILE_URL =
   "https://raw.githubusercontent.com/Create-Node-App/cna-templates/main/templates.json";
 
+export type TemplateOrExtensionType = string | string[];
+
 export type TemplateOrExtensionData = {
   name: string;
   description: string;
   url: string;
-  type: string;
+  type: TemplateOrExtensionType;
   category: string;
   labels?: string[];
 };
@@ -56,12 +58,22 @@ export const getTemplatesForCategory = async (category: string) => {
   return templates;
 };
 
-export const getExtensionsGroupedByCategory = async (type: string) => {
+export const getExtensionsGroupedByCategory = async (
+  type: TemplateOrExtensionType
+) => {
+  const safeType = Array.isArray(type) ? type : [type];
+
   const templateData = await getTemplateData();
 
-  const extensions = templateData.extensions.filter(
-    (extension) => extension.type === type
-  );
+  const extensions = templateData.extensions.filter((extension) => {
+    const safeExtensionType = Array.isArray(extension.type)
+      ? extension.type
+      : [extension.type];
+
+    return safeExtensionType.some((extensionType) =>
+      safeType.includes(extensionType)
+    );
+  });
 
   const extensionsGroupedByCategory = extensions.reduce((acc, extension) => {
     const category = extension.category;
