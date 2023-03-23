@@ -1,5 +1,6 @@
 import { CnaOptions } from "@create-node-app/core";
 import { TemplateOrExtension } from "@create-node-app/core/loaders";
+import chalk from "chalk";
 import prompts from "prompts";
 import yargs from "yargs";
 prompts.override(yargs.argv);
@@ -30,6 +31,21 @@ export const getCnaOptions = async (options: CnaOptions) => {
       name: "projectName",
       message: `What's your project name?`,
       initial: options.projectName,
+    },
+    {
+      type: "select",
+      name: "language",
+      message: "What language do you want to use?",
+      choices: [
+        {
+          title: "JavaScript",
+          value: "js",
+          disabled: true,
+          description: "Wrong answer! Use TypeScript instead...",
+        },
+        { title: "TypeScript", value: "ts", description: "Correct answer! :D" },
+      ],
+      initial: 1,
     },
     {
       type: "toggle",
