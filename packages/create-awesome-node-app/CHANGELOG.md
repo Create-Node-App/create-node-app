@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.3.4
+
+### Patch Changes
+
+- Stop execution if the version is not latest
+
 ## 0.3.3
 
 ### Patch Changes
