@@ -1,6 +1,0 @@
----
-"create-awesome-node-app": patch
-"@create-node-app/core": patch
----
-
-Updated extensions schema type
