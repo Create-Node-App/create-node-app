@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.3.5
+
+### Patch Changes
+
+- Added flags for yarnpkg
+- Updated dependencies
+  - @create-node-app/core@0.2.4
+
 ## 0.3.4
 
 ### Patch Changes

@@ -31,7 +31,7 @@ const install = (
     if (useYarn) {
       command = "yarnpkg";
       // args = ['add', '--exact']
-      args = ["add"];
+      args = ["add", "--ignore-workspace-root-check"];
       if (!isOnline) {
         args.push("--offline");
       }
