@@ -96,5 +96,8 @@ export const loadPackages = async ({
     })
   );
 
-  return getInstallableSetup(setup);
+  return getInstallableSetup({
+    ...setup,
+    name: config.appName,
+  });
 };

@@ -35,6 +35,7 @@ const clone = (git: string, target: string, branch: string) => {
 const pull = async (cwd: string) => {
   await exec("git checkout -f", { cwd });
   await exec("git pull", { cwd });
+  await new Promise((resolve) => setTimeout(resolve, 400));
 };
 
 export type DownloadRepositoryOptions = {
@@ -93,11 +94,9 @@ export const downloadRepository = async ({
   }
 
   await pull(cacheDir);
-  setTimeout(() => {
-    fs.cpSync(cacheDir, absoluteTarget, {
-      force: true,
-      filter: filterGit,
-      recursive: true,
-    });
-  }, 400);
+  fs.cpSync(cacheDir, absoluteTarget, {
+    force: true,
+    filter: filterGit,
+    recursive: true,
+  });
 };
