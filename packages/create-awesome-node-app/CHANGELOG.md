@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.3.7
+
+### Patch Changes
+
+- Simple fix to check for latest version
+
 ## 0.3.6
 
 ### Patch Changes

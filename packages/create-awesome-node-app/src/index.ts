@@ -35,7 +35,7 @@ const main = async () => {
           "We recommend always using the latest version of create-awesome-node-app if possible."
       )
     );
-    // return;
+    return;
   }
 
   return createNodeApp(
