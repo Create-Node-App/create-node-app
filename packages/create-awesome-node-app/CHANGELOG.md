@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.3.6
+
+### Patch Changes
+
+- Added package managers and custom options
+- Updated dependencies
+  - @create-node-app/core@0.2.5
+
 ## 0.3.5
 
 ### Patch Changes

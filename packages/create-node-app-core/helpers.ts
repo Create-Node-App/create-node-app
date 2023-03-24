@@ -58,6 +58,25 @@ export const shouldUseYarn = () => {
   return true;
 };
 
+export const shouldUsePnpm = () => {
+  const { hasMinPnpm, pnpmVersion } = checkPnpmVersion();
+
+  if (!hasMinPnpm) {
+    console.log(
+      chalk.yellow(
+        `You are using pnpm version ${chalk.bold(
+          pnpmVersion
+        )} which is not supported yet. ` +
+          `To use pnpm, install v5.0.0 or higher. ` +
+          `See https://pnpm.js.org for instructions on how to update.`
+      )
+    );
+    return false;
+  }
+
+  return true;
+};
+
 export const checkThatNpmCanReadCwd = () => {
   const cwd = process.cwd();
   let childOutput = null;
@@ -117,6 +136,29 @@ export const checkThatNpmCanReadCwd = () => {
     );
   }
   return false;
+};
+
+export const checkPnpmVersion = () => {
+  const minPnpm = "5.0.0";
+  let hasMinPnpm = false;
+  let pnpmVersion = null;
+  try {
+    pnpmVersion = execSync("pnpm --version").toString().trim();
+    if (semver.valid(pnpmVersion)) {
+      hasMinPnpm = semver.gte(pnpmVersion, minPnpm);
+    } else {
+      // Handle non-semver compliant pnpm version strings, which pnpm currently
+      // uses for nightly builds. The regex truncates anything after the first
+      // dash. See #5362.
+      const trimmedPnpmVersionMatch = /^(.+?)[-+].+$/.exec(pnpmVersion);
+      if (trimmedPnpmVersionMatch) {
+        hasMinPnpm = semver.gte(trimmedPnpmVersionMatch[1], minPnpm);
+      }
+    }
+  } catch (e) {
+    // Ignore errors.
+  }
+  return { hasMinPnpm, pnpmVersion };
 };
 
 export const checkYarnVersion = () => {

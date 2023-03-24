@@ -1,20 +1,34 @@
+import { PromptType } from "prompts";
+
 const TEMPLATE_DATA_FILE_URL =
   "https://raw.githubusercontent.com/Create-Node-App/cna-templates/main/templates.json";
-
-export type TemplateOrExtensionType = string | string[];
 
 export type TemplateOrExtensionData = {
   name: string;
   description: string;
   url: string;
-  type: TemplateOrExtensionType;
   category: string;
   labels?: string[];
 };
 
+export type TemplateData = TemplateOrExtensionData & {
+  type: string;
+  customOptions?: {
+    name: string;
+    type: PromptType;
+    [key: string]: unknown;
+  }[];
+};
+
+export type ExtensionType = string | string[];
+
+export type ExtensionData = TemplateOrExtensionData & {
+  type: ExtensionType;
+};
+
 export type Templates = {
-  templates: TemplateOrExtensionData[];
-  extensions: TemplateOrExtensionData[];
+  templates: TemplateData[];
+  extensions: ExtensionData[];
 };
 
 const templateDataMap = new Map<string, Templates>();
@@ -58,9 +72,7 @@ export const getTemplatesForCategory = async (category: string) => {
   return templates;
 };
 
-export const getExtensionsGroupedByCategory = async (
-  type: TemplateOrExtensionType
-) => {
+export const getExtensionsGroupedByCategory = async (type: ExtensionType) => {
   const safeType = Array.isArray(type) ? type : [type];
 
   const templateData = await getTemplateData();

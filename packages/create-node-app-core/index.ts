@@ -53,14 +53,14 @@ export const printEnvInfo = async () => {
 export type CnaOptions = {
   projectName: string;
   info?: boolean;
-  alias?: string;
-  srcDir?: string;
   interactive?: boolean;
   verbose?: boolean;
-  useNpm?: boolean;
+  packageManager?: string;
   nodeps?: boolean;
   template?: string;
   templatesOrExtensions?: TemplateOrExtension[];
+} & {
+  [key: string]: unknown;
 };
 
 export type CnaOptionsTransform = (options: CnaOptions) => Promise<CnaOptions>;
@@ -70,12 +70,10 @@ export type CnaOptionsTransform = (options: CnaOptions) => Promise<CnaOptions>;
  * @param programName - Name of the program to bootstrap the Node application
  * @param options - CnaOptions to bootstrap the Node application
  * @param options.info - Print environment debug info
- * @param options.alias - Metadata to specify alias, usefull for backends using webpack
- * @param options.srcDir - Metadata to specify where to put the source code
  * @param options.interactive - Specify if it is needed to use interactive mode or not
  * @param options.verbose - Specify if it is needed to use verbose mode or not
  * @param options.projectName - Project's name
- * @param options.useNpm - Use npm mandatorily
+ * @param options.packageManager - Package manager to use
  * @param options.nodeps - Generate package.json file without installing dependencies
  * @param options.template - Template to bootstrap the aplication
  * @param options.extend - Extensions to apply for the boilerplate generation

@@ -12,6 +12,7 @@ import {
   checkThatNpmCanReadCwd,
   checkNpmVersion,
   checkIfOnline,
+  shouldUsePnpm,
 } from "./helpers";
 import { loadPackages } from "./package";
 import { TemplateOrExtension, loadFiles } from "./loaders";
@@ -19,6 +20,7 @@ import { TemplateOrExtension, loadFiles } from "./loaders";
 const install = (
   root: string,
   useYarn = false,
+  usePnpm = false,
   dependencies: string[] = [],
   verbose = false,
   isOnline = true,
@@ -47,6 +49,15 @@ const install = (
         console.log(chalk.yellow("Falling back to the local Yarn cache."));
         console.log();
       }
+    } else if (usePnpm) {
+      command = "pnpm";
+      args = ["add", "--save"];
+      if (isDevDependencies) {
+        args.push("--save-dev");
+      }
+      args.push(...dependencies);
+      args.push("--cwd");
+      args.push(root);
     } else {
       command = "npm";
       args = ["install", "--loglevel", "error"];
@@ -80,14 +91,15 @@ export type RunOptions = {
   originalDirectory: string;
   verbose?: boolean;
   useYarn?: boolean;
+  usePnpm?: boolean;
   templatesOrExtensions?: TemplateOrExtension[];
   dependencies?: string[];
   devDependencies?: string[];
-  alias?: string;
   installDependencies?: boolean;
-  srcDir?: string;
   runCommand: string;
   installCommand: string;
+} & {
+  [key: string]: unknown;
 };
 
 export const runCommandInProjectDir = (
@@ -102,7 +114,7 @@ export const runCommandInProjectDir = (
     child.on("close", (code) => {
       if (code !== 0) {
         console.log(chalk.red(errorMessage));
-        reject(new Error(`${command} ${args.join(" ")}`));
+        // reject(new Error(`${command} ${args.join(" ")}`));
         return;
       }
       console.log(chalk.green(successMessage));
@@ -117,14 +129,14 @@ const run = async ({
   originalDirectory,
   verbose = false,
   useYarn = false,
+  usePnpm = false,
   templatesOrExtensions = [],
   dependencies = [],
   devDependencies = [],
-  alias = "",
   installDependencies = true,
-  srcDir = "",
   runCommand = "",
   installCommand = "",
+  ...customOptions
 }: RunOptions) => {
   let isOnline = true;
   if (useYarn) {
@@ -142,17 +154,23 @@ const run = async ({
     process.exit(0);
   }
 
+  console.log();
+  console.log("Scaffolding project in " + root + "...");
+
   await loadFiles({
     root,
     templatesOrExtensions,
     appName,
     originalDirectory,
-    alias,
     verbose,
-    srcDir,
     runCommand,
     installCommand,
+    ...customOptions,
   });
+
+  console.log();
+  console.log(chalk.green("Successfully scaffolded project."));
+  console.log();
 
   if (installDependencies) {
     console.log(
@@ -161,18 +179,33 @@ const run = async ({
     console.log(chalk.green("Installing dependencies..."));
     console.log();
     // Install dependencies
-    await install(root, useYarn, dependencies, verbose, isOnline, false);
+    await install(
+      root,
+      useYarn,
+      usePnpm,
+      dependencies,
+      verbose,
+      isOnline,
+      false
+    );
 
     if (devDependencies.length > 0) {
       console.log();
       console.log(chalk.green("Installing devDependencies..."));
       console.log();
       // Install devDependencies
-      await install(root, useYarn, devDependencies, verbose, isOnline, true);
+      await install(
+        root,
+        useYarn,
+        usePnpm,
+        devDependencies,
+        verbose,
+        isOnline,
+        true
+      );
     }
   } else {
     console.log(chalk.yellow("Skip package installation."));
-    console.log(chalk.yellow("Run npm install/yarn in your project."));
     const packageJson = JSON.parse(
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
@@ -203,18 +236,22 @@ const run = async ({
       path.join(root, "package.json"),
       JSON.stringify(packageJson, null, 2) + os.EOL
     );
+
+    console.log();
+    console.log(chalk.green("Successfully updated package.json."));
+    console.log(chalk.yellow(`Run ${chalk.cyan(installCommand)} to install.`));
   }
 
-  const gitInitProcess = spawn("git", ["init"], {
-    cwd: root,
-  });
-  gitInitProcess.on("close", (code) => {
-    if (code !== 0) {
-      console.log(chalk.red("Failed to initialize git repository."));
-      return;
-    }
-    console.log(chalk.green("Initialized git repository."));
-  });
+  console.log();
+  console.log("Initializing git repository...");
+
+  await runCommandInProjectDir(
+    root,
+    "git",
+    ["init"],
+    "Successfully initialized git repository.",
+    "Failed to initialize git repository."
+  );
 
   if (installDependencies && isOnline) {
     const packageJson = JSON.parse(
@@ -243,12 +280,12 @@ const run = async ({
 export type CreateAppOptions = {
   name: string;
   verbose?: boolean;
-  useNpm?: boolean;
+  packageManager?: string;
   templatesOrExtensions?: TemplateOrExtension[];
-  alias?: string;
   installDependencies?: boolean;
   ignorePackage?: boolean;
-  srcDir?: string;
+} & {
+  [key: string]: unknown;
 };
 
 /**
@@ -256,22 +293,18 @@ export type CreateAppOptions = {
  *
  * @param opts.name - Project's name
  * @param opts.verbose - Specify if it is needed to use verbose mode or not
- * @param opts.useNpm - Use npm mandatorily
+ * @param opts.packageManager - Package manager to use
  * @param opts.templatesOrExtensions - Official extensions to apply
- * @param opts.alias - Metadata to specify alias, usefull for backends using webpack
  * @param opts.installDependencies - Specify if it is needed to install dependencies
  * @param opts.ignorePackage - Specify if it is needed to ignore package.json on all templates
- * @param opts.srcDir - Metadata to specify where to put the source code
  */
 export const createApp = async ({
   name,
   verbose = false,
-  useNpm = false,
   templatesOrExtensions = [],
-  alias = "",
   installDependencies = true,
   ignorePackage = false,
-  srcDir = "",
+  ...customOptions
 }: CreateAppOptions) => {
   const root = path.resolve(name);
   const appName = path.basename(root);
@@ -283,15 +316,20 @@ export const createApp = async ({
   console.log(`Creating a new Node app in ${chalk.green(root)}.`);
   console.log();
 
-  const useYarn = useNpm ? false : shouldUseYarn();
-  const command = useYarn ? "yarn" : "npm run";
+  const useYarn = customOptions.packageManager === "yarn" && shouldUseYarn();
+  const usePnpm = customOptions.packageManager === "pnpm" && shouldUsePnpm();
+  const runCommand = useYarn ? "yarn" : "npm run";
+  const installCommand = useYarn
+    ? "yarn"
+    : usePnpm
+    ? "pnpm install"
+    : "npm install";
 
   const { packageJson, dependencies, devDependencies } = await loadPackages({
     templatesOrExtensions,
     appName,
-    command,
+    runCommand,
     ignorePackage,
-    srcDir,
   });
 
   fs.writeFileSync(
@@ -352,13 +390,13 @@ export const createApp = async ({
     originalDirectory,
     verbose,
     useYarn,
+    usePnpm,
     templatesOrExtensions,
     dependencies,
     devDependencies,
-    alias,
     installDependencies,
-    srcDir,
-    runCommand: command,
-    installCommand: useYarn ? "yarn" : "npm install",
+    runCommand,
+    installCommand,
+    ...customOptions,
   });
 };

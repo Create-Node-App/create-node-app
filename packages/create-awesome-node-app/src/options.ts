@@ -1,6 +1,5 @@
 import { CnaOptions } from "@create-node-app/core";
 import { TemplateOrExtension } from "@create-node-app/core/loaders";
-import chalk from "chalk";
 import prompts from "prompts";
 import yargs from "yargs";
 prompts.override(yargs.argv);
@@ -48,12 +47,15 @@ export const getCnaOptions = async (options: CnaOptions) => {
       initial: 1,
     },
     {
-      type: "toggle",
-      name: "useNpm",
-      message: "Use `npm` mandatorily?",
-      initial: options.useNpm,
-      active: "yes",
-      inactive: "no",
+      type: "select",
+      name: "packageManager",
+      message: "What package manager do you want to use?",
+      choices: [
+        { title: "npm", value: "npm" },
+        { title: "yarn", value: "yarn" },
+        { title: "pnpm", value: "pnpm" },
+      ],
+      initial: 0,
     },
     {
       type: "select",
@@ -101,23 +103,19 @@ export const getCnaOptions = async (options: CnaOptions) => {
         ]
   );
 
-  const defaultSrcDir = options.srcDir;
+  const existingTemplate = templates.find(
+    (template) => template.type === templateInput.template
+  );
+
+  const templateTemplateOrExtension =
+    baseInput.category === "custom"
+      ? templateInput.template
+      : templates.find((template) => template.type === templateInput.template)
+          ?.url;
+
+  const customOptions = existingTemplate?.customOptions || [];
 
   const appConfig = await prompts([
-    {
-      type: "text",
-      name: "srcDir",
-      message:
-        "Sub directory to put all source content (.e.g. `src`, `app`). Leave blank to use the root directory.",
-      initial: defaultSrcDir,
-    },
-    {
-      type: "text",
-      name: "alias",
-      message: "Import alias to use for the project, e.g. `@`",
-      initial: options.alias,
-    },
-
     // The following prompts are placeholders for future inputs
     {
       type: null,
@@ -131,6 +129,9 @@ export const getCnaOptions = async (options: CnaOptions) => {
       message: "Enter extra extensions",
       initial: 0,
     },
+
+    // The following prompts are for custom options
+    ...customOptions,
   ]);
 
   appConfig.templatesOrExtensions = [];
@@ -186,22 +187,17 @@ export const getCnaOptions = async (options: CnaOptions) => {
   }
 
   const { ...nextAppOptions } = {
+    extend: [],
     ...options,
     ...baseInput,
     ...templateInput,
     ...appConfig,
   };
 
-  const templateTemplateOrExtension =
-    baseInput.category === "custom"
-      ? templateInput.template
-      : templates.find((template) => template.type === templateInput.template)
-          ?.url;
-
   const templatesOrExtensions: TemplateOrExtension[] = [
     templateTemplateOrExtension,
-    ...nextAppOptions.templatesOrExtensions,
-    ...nextAppOptions.extend,
+    ...(nextAppOptions.templatesOrExtensions || []),
+    ...(nextAppOptions.extend || []),
   ]
     .filter(Boolean)
     .map((templateOrExtension) => ({ url: templateOrExtension }));

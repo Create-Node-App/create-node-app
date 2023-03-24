@@ -79,12 +79,13 @@ type FileLoaderOptions = {
   templateDir: string;
   appName: string;
   originalDirectory: string;
-  alias: string;
   verbose: boolean;
   srcDir: string;
   mode?: string;
   runCommand: string;
   installCommand: string;
+} & {
+  [key: string]: unknown;
 };
 
 export type FileLoader = (
@@ -115,12 +116,12 @@ const templateLoader: FileLoader =
     root,
     templateDir,
     appName,
-    alias,
     verbose,
     mode = "",
     srcDir,
     runCommand,
     installCommand,
+    ...customOptions
   }) =>
   async ({ path }) => {
     const flag = mode.includes("append") ? "a+" : "w";
@@ -134,13 +135,11 @@ const templateLoader: FileLoader =
     return writeFile(
       `${root}/${newPath}`,
       newFile({
-        project: alias,
-        projectImport: alias,
-        projectImportPath: alias === "" ? "" : `${alias}/`,
         projectName: appName,
         srcDir: srcDir || ".",
         runCommand,
         installCommand,
+        ...customOptions,
       }),
       flag,
       verbose
@@ -153,11 +152,11 @@ const fileLoader: FileLoader =
     templateDir,
     appName,
     originalDirectory,
-    alias,
     verbose,
     srcDir = DEFAULT_SRC_PATH,
     runCommand,
     installCommand,
+    ...customOptions
   }) =>
   ({ path }) => {
     const mode = getModeFromPath(path);
@@ -174,12 +173,12 @@ const fileLoader: FileLoader =
       templateDir,
       appName,
       originalDirectory,
-      alias,
       verbose,
       mode,
       srcDir,
       runCommand,
       installCommand,
+      ...customOptions,
     })({
       path,
     });
@@ -192,11 +191,12 @@ export type LoadFilesOptions = {
   templatesOrExtensions?: TemplateOrExtension[];
   appName: string;
   originalDirectory: string;
-  alias: string;
   verbose: boolean;
-  srcDir: string;
+  srcDir?: string;
   runCommand: string;
   installCommand: string;
+} & {
+  [key: string]: unknown;
 };
 
 export const loadFiles = async ({
@@ -204,11 +204,11 @@ export const loadFiles = async ({
   templatesOrExtensions = [],
   appName,
   originalDirectory,
-  alias,
   verbose,
   srcDir = DEFAULT_SRC_PATH,
   runCommand,
   installCommand,
+  ...customOptions
 }: LoadFilesOptions) => {
   for await (const { url: templateOrExtensionUrl } of templatesOrExtensions) {
     const templateDir = await getTemplateDirPath(templateOrExtensionUrl);
@@ -234,11 +234,11 @@ export const loadFiles = async ({
           templateDir,
           appName,
           originalDirectory,
-          alias,
           verbose,
           srcDir,
           runCommand,
           installCommand,
+          ...customOptions,
         })(entry);
       } catch (err) {
         if (verbose) {

@@ -19,26 +19,10 @@ const main = async () => {
     })
     .option("--verbose", "print additional logs")
     .option("--info", "print environment debug info")
-    .option("--use-npm", "use npm mandatorily")
-    .option(
-      "--template <template>",
-      "specify template to use for initial setup"
-    )
-    .option(
-      "--extend <repos...>",
-      "git repositories to extend your boilerplate"
-    )
-    .option("-a, --alias <alias>", "Import alias to use for the project", "@")
-    .option(
-      "--src-dir <src-dir>",
-      "dir name to put content under [src]/",
-      "src"
-    )
     .option(
       "--nodeps",
       "generate package.json file without installing dependencies"
     )
-    .option("--inplace", "apply setup to an existing project")
     .parse(process.argv);
 
   const latest = await checkForLatestVersion("create-awesome-node-app");
@@ -51,7 +35,7 @@ const main = async () => {
           "We recommend always using the latest version of create-awesome-node-app if possible."
       )
     );
-    return;
+    // return;
   }
 
   return createNodeApp(
