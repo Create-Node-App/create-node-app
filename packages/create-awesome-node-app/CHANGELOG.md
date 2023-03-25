@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.4.1
+
+### Patch Changes
+
+- Updated documentation
+
 ## 0.4.0
 
 ### Minor Changes
