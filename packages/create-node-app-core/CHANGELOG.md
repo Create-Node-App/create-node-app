@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.0
+
+### Minor Changes
+
+- Check for correct node version on runtime
+
 ## 0.2.6
 
 ### Patch Changes

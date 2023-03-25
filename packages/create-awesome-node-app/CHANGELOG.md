@@ -1,5 +1,16 @@
 # create-awesome-node-app
 
+## 0.4.0
+
+### Minor Changes
+
+- Check for correct node version on runtime
+
+### Patch Changes
+
+- Updated dependencies
+  - @create-node-app/core@0.3.0
+
 ## 0.3.8
 
 ### Patch Changes

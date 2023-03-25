@@ -1,8 +1,25 @@
 import chalk from "chalk";
 import envinfo from "envinfo";
+import semver from "semver";
 import { execSync } from "child_process";
 import { TemplateOrExtension } from "./loaders";
 import { createApp } from "./installer";
+
+export const checkNodeVersion = (
+  requiredVersion: string,
+  packageName: string
+) => {
+  if (!semver.satisfies(process.version, requiredVersion)) {
+    console.error(
+      chalk.red(
+        `You are running Node ${process.version}.\n` +
+          `${packageName} requires Node ${requiredVersion}.\n` +
+          "Please update your version of Node."
+      )
+    );
+    process.exit(1);
+  }
+};
 
 export const checkForLatestVersion = async (packageName: string) => {
   // We first check the registry directly via the API, and if that fails, we try

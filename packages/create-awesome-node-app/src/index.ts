@@ -3,7 +3,11 @@
 import program from "commander";
 import chalk from "chalk";
 import semver from "semver";
-import { createNodeApp, checkForLatestVersion } from "@create-node-app/core";
+import {
+  createNodeApp,
+  checkForLatestVersion,
+  checkNodeVersion,
+} from "@create-node-app/core";
 import { getCnaOptions } from "./options";
 import packageJson from "../package.json";
 
@@ -24,6 +28,8 @@ const main = async () => {
       "generate package.json file without installing dependencies"
     )
     .parse(process.argv);
+
+  checkNodeVersion(packageJson.engines.node, packageJson.name);
 
   const latest = await checkForLatestVersion("create-awesome-node-app");
 
