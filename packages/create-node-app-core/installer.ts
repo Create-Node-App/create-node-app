@@ -116,7 +116,6 @@ export const runCommandInProjectDir = async (
       stdio: "ignore",
     });
 
-    console.log();
     console.log(chalk.green(successMessage));
   } catch (error) {
     console.log();
@@ -252,7 +251,7 @@ const run = async ({
     "git",
     ["init"],
     "Successfully initialized git repository.",
-    "Failed to initialize git repository."
+    "Failed to initialize git repository. Run `git init` to initialize git repository after the process is completed."
   );
 
   if (installDependencies && isOnline) {
@@ -265,7 +264,8 @@ const run = async ({
           root,
           runCommand,
           ["format"],
-          "Successfully formatted code."
+          "Successfully formatted code.",
+          `Failed to format code. Run \`${runCommand} format\` to format code after the process is completed.`
         );
       } catch {
         // ignore
@@ -278,13 +278,20 @@ const run = async ({
           runCommand,
           ["lint:fix"],
           "Successfully fixed linting errors.",
-          "Failed to fix linting errors."
+          `Failed to fix linting errors. Run \`${runCommand} lint:fix\` to fix linting errors after the process is completed.`
         );
       } catch {
         // ignore
       }
     }
   }
+
+  // Print out instructions
+  console.log();
+  console.log(chalk.green("Successfully created project " + appName + "."));
+
+  // cd to the project directory
+  process.chdir(root);
 };
 
 export type CreateAppOptions = {
