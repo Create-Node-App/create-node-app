@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.1
+
+### Patch Changes
+
+- Little fix to handle new format
+
 ## 0.3.0
 
 ### Minor Changes
