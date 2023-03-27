@@ -112,7 +112,8 @@ export const runCommandInProjectDir = async (
   try {
     execSync(`${command} ${args.join(" ")}`, {
       cwd: root,
-      stdio: "inherit",
+      // don't show output in console
+      stdio: "ignore",
     });
 
     console.log();

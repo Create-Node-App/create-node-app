@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.3
+
+### Patch Changes
+
+- Don't show content in stdout on some cases
+
 ## 0.3.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.4.4
+
+### Patch Changes
+
+- Don't show content in stdout on some cases
+- Updated dependencies
+  - @create-node-app/core@0.3.3
+
 ## 0.4.3
 
 ### Patch Changes
