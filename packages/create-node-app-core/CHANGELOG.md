@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.2
+
+### Patch Changes
+
+- Updated fomatting to pass
+
 ## 0.3.1
 
 ### Patch Changes

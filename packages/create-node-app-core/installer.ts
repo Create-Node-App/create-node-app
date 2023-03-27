@@ -102,25 +102,26 @@ export type RunOptions = {
   [key: string]: unknown;
 };
 
-export const runCommandInProjectDir = (
+export const runCommandInProjectDir = async (
   root: string,
   command: string,
   args: string[] = [],
   successMessage = "Operation completed successfully.",
   errorMessage = "Operation failed."
 ) => {
-  return new Promise<void>((resolve, reject) => {
-    const child = spawn(command, args, { stdio: "inherit", cwd: root });
-    child.on("close", (code) => {
-      if (code !== 0) {
-        console.log(chalk.red(errorMessage));
-        // reject(new Error(`${command} ${args.join(" ")}`));
-        return;
-      }
-      console.log(chalk.green(successMessage));
-      resolve();
+  try {
+    execSync(`${command} ${args.join(" ")}`, {
+      cwd: root,
+      stdio: "inherit",
     });
-  });
+
+    console.log();
+    console.log(chalk.green(successMessage));
+  } catch (error) {
+    console.log();
+    console.log(chalk.red(errorMessage));
+    console.log();
+  }
 };
 
 const run = async ({
@@ -258,21 +259,29 @@ const run = async ({
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
     if (packageJson.scripts && packageJson.scripts["format"]) {
-      await runCommandInProjectDir(
-        root,
-        runCommand,
-        ["format"],
-        "Successfully formatted code."
-      );
+      try {
+        await runCommandInProjectDir(
+          root,
+          runCommand,
+          ["format"],
+          "Successfully formatted code."
+        );
+      } catch {
+        // ignore
+      }
     }
     if (packageJson.scripts && packageJson.scripts["lint:fix"]) {
-      await runCommandInProjectDir(
-        root,
-        runCommand,
-        ["lint:fix"],
-        "Successfully fixed linting errors.",
-        "Failed to fix linting errors."
-      );
+      try {
+        await runCommandInProjectDir(
+          root,
+          runCommand,
+          ["lint:fix"],
+          "Successfully fixed linting errors.",
+          "Failed to fix linting errors."
+        );
+      } catch {
+        // ignore
+      }
     }
   }
 };
