@@ -290,8 +290,27 @@ const run = async ({
   console.log();
   console.log(chalk.green("Successfully created project " + appName + "."));
 
-  // cd to the project directory
-  process.chdir(root);
+  console.log();
+  console.log("Done! Now run:");
+  console.log();
+  console.log(chalk.cyan(`  cd ${appName}`));
+  console.log(chalk.cyan(`  ${installCommand}`));
+
+  const packageJson = JSON.parse(
+    fs.readFileSync(`${root}/package.json`, "utf8")
+  );
+
+  const lookForScripts = ["sls:offline", "dev", "start"];
+
+  for (const script of lookForScripts) {
+    if (packageJson.scripts && packageJson.scripts[script]) {
+      console.log(chalk.cyan(`  ${runCommand} ${script}`));
+      break;
+    }
+  }
+
+  console.log();
+  console.log(chalk.green("Happy hacking!"));
 };
 
 export type CreateAppOptions = {
