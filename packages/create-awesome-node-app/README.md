@@ -18,6 +18,8 @@
 
 Powerful tool to scaffold your application choosing between different templates and extensions for Web apps, Web Extensions, Monorepos and more!
 
+![cna](https://user-images.githubusercontent.com/17727170/229553510-49d0d46f-11ac-4b07-acf3-8db8ce7959ec.gif)
+
 ## Creating an app
 
 To create a new app, you may choose one of the following methods:

@@ -18,6 +18,8 @@
 
 This repository contains the source code for the [`create-awesome-node-app`][npmurl] package.
 
+![cna](https://user-images.githubusercontent.com/17727170/229553510-49d0d46f-11ac-4b07-acf3-8db8ce7959ec.gif)
+
 ## Available Scripts
 
 In the project directory, you can run:
