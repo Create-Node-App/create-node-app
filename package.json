@@ -21,15 +21,6 @@
     "test": "turbo run test",
     "typecheck": "turbo run typecheck"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "npm run lint:fix"
-    ],
-    "*.{json,css,sass,scss,less,html,md,yml,yaml}": [
-      "prettier --write"
-    ]
-  },
   "devDependencies": {
     "@changesets/cli": "^2.25.0",
     "@create-node-app/eslint-config": "*",
