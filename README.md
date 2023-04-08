@@ -38,8 +38,6 @@ In the project directory, you can run:
 - Any contributions you make are **truly appreciated**.
 - Check out our [contribution guidelines](./CONTRIBUTING.md) for more information.
 
-
-
 [cibadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/ci.yml/badge.svg
 [npmversion]: https://img.shields.io/npm/v/create-awesome-node-app.svg?maxAge=2592000?style=plastic
 [npmdownloads]: https://img.shields.io/npm/dm/create-awesome-node-app.svg?maxAge=2592000?style=plastic
