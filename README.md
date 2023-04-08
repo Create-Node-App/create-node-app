@@ -38,13 +38,7 @@ In the project directory, you can run:
 - Any contributions you make are **truly appreciated**.
 - Check out our [contribution guidelines](./CONTRIBUTING.md) for more information.
 
-## Contributors
 
-<a href="https://github.com/Create-Node-App/create-node-app/contributors">
-  <img src="https://contrib.rocks/image?repo=Create-Node-App/create-node-app"/>
-</a>
-
-Made with [contributors-img](https://contrib.rocks).
 
 [cibadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/ci.yml/badge.svg
 [npmversion]: https://img.shields.io/npm/v/create-awesome-node-app.svg?maxAge=2592000?style=plastic
