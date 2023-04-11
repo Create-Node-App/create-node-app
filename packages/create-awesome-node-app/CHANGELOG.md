@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.4.9
+
+### Patch Changes
+
+- Removed language option
+
 ## 0.4.8
 
 ### Patch Changes

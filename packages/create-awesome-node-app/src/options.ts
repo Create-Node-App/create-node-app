@@ -33,21 +33,6 @@ export const getCnaOptions = async (options: CnaOptions) => {
     },
     {
       type: "select",
-      name: "language",
-      message: "What language do you want to use?",
-      choices: [
-        {
-          title: "JavaScript",
-          value: "js",
-          disabled: true,
-          description: "Wrong answer! Use TypeScript instead...",
-        },
-        { title: "TypeScript", value: "ts", description: "Correct answer! :D" },
-      ],
-      initial: 1,
-    },
-    {
-      type: "select",
       name: "packageManager",
       message: "What package manager do you want to use?",
       choices: [
