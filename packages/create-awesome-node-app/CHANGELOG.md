@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.4.10
+
+### Patch Changes
+
+- Updated type match
+
 ## 0.4.9
 
 ### Patch Changes
