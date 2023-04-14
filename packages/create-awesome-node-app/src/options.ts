@@ -55,7 +55,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
 
   const templateOptions = templates.map((template) => ({
     title: template.name,
-    value: template.type,
+    value: template.url,
     description:
       template.description + " Keywords: " + template.labels?.join(", "),
   }));
@@ -89,14 +89,10 @@ export const getCnaOptions = async (options: CnaOptions) => {
   );
 
   const existingTemplate = templates.find(
-    (template) => template.type === templateInput.template
+    (template) => template.url === templateInput.template
   );
 
-  const templateTemplateOrExtension =
-    baseInput.category === "custom"
-      ? templateInput.template
-      : templates.find((template) => template.type === templateInput.template)
-          ?.url;
+  const templateTemplateOrExtension = templateInput.template;
 
   const customOptions = existingTemplate?.customOptions || [];
 
