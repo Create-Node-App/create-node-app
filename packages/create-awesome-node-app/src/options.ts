@@ -119,7 +119,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
   appConfig.extend = [];
 
   const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
-    templateInput.template,
+    existingTemplate?.type || "custom",
     "all",
   ]);
 
