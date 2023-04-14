@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  typecheck:
+  type-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,5 +31,5 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run typecheck validation
-        run: npm run typecheck
+      - name: Run type-check validation
+        run: npm run type-check

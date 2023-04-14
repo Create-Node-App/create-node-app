@@ -16,7 +16,7 @@
   "scripts": {
     "lint": "eslint **/*.ts*",
     "lint:fix": "eslint **/*.ts* --fix",
-    "typecheck": "tsc --noEmit",
+    "type-check": "tsc --noEmit",
     "build": "tsup ./index.ts --format esm,cjs --dts",
     "dev": "tsup ./index.ts --format esm,cjs --watch --dts"
   },

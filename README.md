@@ -30,7 +30,7 @@ In the project directory, you can run:
 | `lint`             | [Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors                    |
 | `lint:fix`         | Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix) |
 | `format`           | Formats the project using [Prettier](https://prettier.io/)                                                              |
-| `typecheck`        | Runs [TypeScript](https://www.typescriptlang.org/) type checking                                                        |
+| `type-check`       | Runs [TypeScript](https://www.typescriptlang.org/) type checking                                                        |
 
 ## Contributing
 

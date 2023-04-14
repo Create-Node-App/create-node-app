@@ -19,7 +19,7 @@
     "publish-packages": "turbo run lint && changeset version && turbo run build && changeset publish",
     "storybook": "turbo run storybook",
     "test": "turbo run test",
-    "typecheck": "turbo run typecheck"
+    "type-check": "turbo run type-check"
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.0",

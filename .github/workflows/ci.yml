@@ -26,10 +26,10 @@ jobs:
     uses: ./.github/workflows/lint.yml
     secrets: inherit
 
-  typecheck:
+  type-check:
     if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
     name: Typecheck
-    uses: ./.github/workflows/typecheck.yml
+    uses: ./.github/workflows/type-check.yml
 
   shellcheck:
     if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
