@@ -47,7 +47,7 @@
   "dependencies": {
     "@create-node-app/core": "*",
     "prompts": "^2.4.1",
-    "semver": "^7.3.8",
+    "semver": "^5.7.2",
     "yargs": "^17.0.1"
   },
   "devDependencies": {
