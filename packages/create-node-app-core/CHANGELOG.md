@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.6
+
+### Patch Changes
+
+- Added conditional installation for npm, yarn and pnpm
+
 ## 0.3.5
 
 ### Patch Changes

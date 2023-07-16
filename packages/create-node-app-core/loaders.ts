@@ -80,6 +80,8 @@ type FileLoaderOptions = {
   appName: string;
   originalDirectory: string;
   verbose: boolean;
+  useYarn?: boolean;
+  usePnp?: boolean;
   srcDir: string;
   mode?: string;
   runCommand: string;
@@ -153,6 +155,8 @@ const fileLoader: FileLoader =
     appName,
     originalDirectory,
     verbose,
+    useYarn,
+    usePnpm,
     srcDir = DEFAULT_SRC_PATH,
     runCommand,
     installCommand,
@@ -174,6 +178,8 @@ const fileLoader: FileLoader =
       appName,
       originalDirectory,
       verbose,
+      useYarn,
+      usePnpm,
       mode,
       srcDir,
       runCommand,
@@ -192,6 +198,8 @@ export type LoadFilesOptions = {
   appName: string;
   originalDirectory: string;
   verbose: boolean;
+  useYarn?: boolean;
+  usePnpm?: boolean;
   srcDir?: string;
   runCommand: string;
   installCommand: string;
@@ -205,6 +213,8 @@ export const loadFiles = async ({
   appName,
   originalDirectory,
   verbose,
+  useYarn = false,
+  usePnpm = false,
   srcDir = DEFAULT_SRC_PATH,
   runCommand,
   installCommand,
@@ -225,21 +235,37 @@ export const loadFiles = async ({
         "!template.json",
         "!yarn.lock",
         "!pnpm-lock.yaml",
+        // based on the package manager we want to ignore files containing
+        // the other package as condition.
+        // For example, if `usePnpm` is true, the we need to ignore
+        // all files with `.if-npm` or `.if-yarn` somewhere in the name.
+        ...(usePnpm
+          ? ["!*.if-npm.*", "!*.if-yarn.*"]
+          : useYarn
+          ? ["!*.if-npm.*", "!*.if-pnpm.*"]
+          : ["!*.if-yarn.*", "!*.if-pnpm.*"]),
       ],
       directoryFilter: ["!package"],
     })) {
       try {
+        const entryWithoutNodePackageManager = {
+          ...entry,
+          path: entry.path.replace(/\.if-(npm|yarn|pnpm)/, ""),
+        };
+
         await fileLoader({
           root,
           templateDir,
           appName,
           originalDirectory,
           verbose,
+          useYarn,
+          usePnpm,
           srcDir,
           runCommand,
           installCommand,
           ...customOptions,
-        })(entry);
+        })(entryWithoutNodePackageManager);
       } catch (err) {
         if (verbose) {
           console.log(err);

@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.4.12
+
+### Patch Changes
+
+- Added conditional installation for npm, yarn and pnpm
+- Updated dependencies
+  - @create-node-app/core@0.3.6
+
 ## 0.4.11
 
 ### Patch Changes
