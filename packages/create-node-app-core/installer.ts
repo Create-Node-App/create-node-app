@@ -367,6 +367,8 @@ export const createApp = async ({
   const { packageJson, dependencies, devDependencies } = await loadPackages({
     templatesOrExtensions,
     appName,
+    usePnpm,
+    useYarn,
     runCommand,
     ignorePackage,
   });

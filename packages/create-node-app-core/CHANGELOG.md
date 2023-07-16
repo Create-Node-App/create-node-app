@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.7
+
+### Patch Changes
+
+- Updated package loader
+
 ## 0.3.6
 
 ### Patch Changes
