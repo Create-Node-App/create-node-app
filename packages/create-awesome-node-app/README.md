@@ -3,12 +3,6 @@
 <div align="center">
 <h1>🌟 Create Awesome Node App 🚀</h1>
 
-[Changelog](./CHANGELOG.md) |
-[Contributing](./CONTRIBUTING.md)
-
-</div>
-<div align="center">
-
 [![Continious Integration][cibadge]][ciurl]
 [![npm][npmversion]][npmurl]
 [![npm][npmdownloads]][npmurl]

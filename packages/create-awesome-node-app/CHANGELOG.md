@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- Updated changelog\
+- Updated changelog
 
 ## 0.4.16
 
