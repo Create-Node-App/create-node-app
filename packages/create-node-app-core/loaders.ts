@@ -99,7 +99,9 @@ const copyLoader: FileLoader =
   ({ path }) => {
     return copyFile(
       `${templateDir}/${path}`,
-      `${root}/${path}`.replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir)),
+      `${root}/${path}`
+        .replace(/.if-(npm|yarn|pnpm)$/, "")
+        .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir)),
       verbose
     );
   };
@@ -109,6 +111,7 @@ const appendLoader: FileLoader =
   ({ path }) => {
     const newPath = path
       .replace(/.append$/, "")
+      .replace(/.if-(npm|yarn|pnpm)$/, "")
       .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
     return appendFile(`${templateDir}/${path}`, `${root}/${newPath}`, verbose);
   };
@@ -132,6 +135,7 @@ const templateLoader: FileLoader =
     const newPath = path
       .replace(/.template$/, "")
       .replace(/.append$/, "")
+      .replace(/.if-(npm|yarn|pnpm)$/, "")
       .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
 
     return writeFile(
@@ -248,11 +252,6 @@ export const loadFiles = async ({
       directoryFilter: ["!package"],
     })) {
       try {
-        const entryWithoutNodePackageManager = {
-          ...entry,
-          path: entry.path.replace(/\.if-(npm|yarn|pnpm)/, ""),
-        };
-
         await fileLoader({
           root,
           templateDir,
@@ -265,7 +264,7 @@ export const loadFiles = async ({
           runCommand,
           installCommand,
           ...customOptions,
-        })(entryWithoutNodePackageManager);
+        })(entry);
       } catch (err) {
         if (verbose) {
           console.log(err);
