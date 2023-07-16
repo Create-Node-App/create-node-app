@@ -3,7 +3,7 @@
 <div align="center">
 <h1>🌟 Create Awesome Node App 🚀</h1>
 
-[Changelog](#) |
+[Changelog](./packages/create-awesome-node-app/CHANGELOG.md) |
 [Contributing](./CONTRIBUTING.md)
 
 </div>
