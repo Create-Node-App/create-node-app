@@ -20,6 +20,16 @@
 
 ![cna](https://user-images.githubusercontent.com/17727170/229553510-49d0d46f-11ac-4b07-acf3-8db8ce7959ec.gif)
 
+## ⚙️ Requirements
+
+To use `create-awesome-node-app`, you need to have the following requirements:
+
+- **Node.js 18**: We recommend using [`fnm`](https://github.com/Schniz/fnm) to manage your Node.js versions. Install `fnm` and set the Node.js version to the latest 18 version:
+
+```sh
+fnm use 18
+```
+
 ## 🌟 Creating an app
 
 - With NPM:
