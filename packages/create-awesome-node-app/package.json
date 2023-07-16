@@ -1,6 +1,6 @@
 {
   "name": "create-awesome-node-app",
-  "version": "0.4.14",
+  "version": "0.4.15",
   "type": "module",
   "description": "Command line tool to create Node apps with a lot of different templates and extensions.",
   "license": "MIT",
