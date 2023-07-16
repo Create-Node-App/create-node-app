@@ -1,7 +1,7 @@
 <!--lint disable double-link awesome-heading awesome-git-repo-age awesome-toc-->
 
 <div align="center">
-<h1>Create Awesome Node App</h1>
+<h1>🌟 Create Awesome Node App 🚀</h1>
 
 [Changelog](#) |
 [Contributing](./CONTRIBUTING.md)
@@ -16,11 +16,11 @@
 
 </div>
 
-Powerful tool to scaffold your application choosing between different templates and extensions for Web apps, Web Extensions, Monorepos and more!
+🔥 Powerful tool to scaffold your application choosing between different templates and extensions for Web apps, Web Extensions, Monorepos, and more! ✨
 
 ![cna](https://user-images.githubusercontent.com/17727170/229553510-49d0d46f-11ac-4b07-acf3-8db8ce7959ec.gif)
 
-## Creating an app
+## 🌟 Creating an app
 
 - With NPM:
 
