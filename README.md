@@ -1,9 +1,9 @@
 <!--lint disable double-link awesome-heading awesome-git-repo-age awesome-toc-->
 
 <div align="center">
-<h1>Create Node App</h1>
+<h1>🌟 Create Awesome Node App 🚀</h1>
 
-[Changelog](#) |
+[Changelog](./packages/create-awesome-node-app/CHANGELOG.md) |
 [Contributing](./CONTRIBUTING.md)
 
 </div>
@@ -16,23 +16,23 @@
 
 </div>
 
-This repository contains the source code for the [`create-awesome-node-app`][npmurl] package.
+This repository contains the source code for the `create-awesome-node-app` package. ✨
 
 ![cna](https://user-images.githubusercontent.com/17727170/229553510-49d0d46f-11ac-4b07-acf3-8db8ce7959ec.gif)
 
-## Available Scripts
+## 🚀 Available Scripts
 
 In the project directory, you can run:
 
 | `npm run <script>` | Description                                                                                                             |
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
 | `test`             | Runs unit tests with Jest.                                                                                              |
-| `lint`             | [Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors                    |
+| `lint`             | 🚦 [Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors                 |
 | `lint:fix`         | Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix) |
 | `format`           | Formats the project using [Prettier](https://prettier.io/)                                                              |
 | `type-check`       | Runs [TypeScript](https://www.typescriptlang.org/) type checking                                                        |
 
-## Contributing
+## 🤝 Contributing
 
 - Contributions make the open source community such an amazing place to learn, inspire, and create.
 - Any contributions you make are **truly appreciated**.

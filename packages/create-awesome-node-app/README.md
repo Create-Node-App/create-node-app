@@ -1,13 +1,7 @@
 <!--lint disable double-link awesome-heading awesome-git-repo-age awesome-toc-->
 
 <div align="center">
-<h1>Create Awesome Node App</h1>
-
-[Changelog](#) |
-[Contributing](./CONTRIBUTING.md)
-
-</div>
-<div align="center">
+<h1>🌟 Create Awesome Node App 🚀</h1>
 
 [![Continious Integration][cibadge]][ciurl]
 [![npm][npmversion]][npmurl]
@@ -16,11 +10,21 @@
 
 </div>
 
-Powerful tool to scaffold your application choosing between different templates and extensions for Web apps, Web Extensions, Monorepos and more!
+🔥 Powerful tool to scaffold your application choosing between different templates and extensions for Web apps, Web Extensions, Monorepos, and more! ✨
 
 ![cna](https://user-images.githubusercontent.com/17727170/229553510-49d0d46f-11ac-4b07-acf3-8db8ce7959ec.gif)
 
-## Creating an app
+## ⚙️ Requirements
+
+To use `create-awesome-node-app`, you need to have the following requirements:
+
+- **Node.js 18**: We recommend using [`fnm`](https://github.com/Schniz/fnm) to manage your Node.js versions. Install `fnm` and set the Node.js version to the latest 18 version:
+
+```sh
+fnm use 18
+```
+
+## 🌟 Creating an app
 
 - With NPM:
 

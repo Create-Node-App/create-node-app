@@ -51,13 +51,19 @@ const install = (
       }
     } else if (usePnpm) {
       command = "pnpm";
-      args = ["add", "--save"];
+      args = [
+        "install",
+        "--ignore-workspace-root-check",
+        "--loglevel",
+        "error",
+      ];
       if (isDevDependencies) {
         args.push("--save-dev");
+      } else {
+        args.push("--save");
       }
+
       args.push(...dependencies);
-      args.push("--cwd");
-      args.push(root);
     } else {
       command = "npm";
       args = ["install", "--loglevel", "error"];
@@ -164,6 +170,8 @@ const run = async ({
     appName,
     originalDirectory,
     verbose,
+    useYarn,
+    usePnpm,
     runCommand,
     installCommand,
     ...customOptions,
@@ -364,6 +372,8 @@ export const createApp = async ({
   const { packageJson, dependencies, devDependencies } = await loadPackages({
     templatesOrExtensions,
     appName,
+    usePnpm,
+    useYarn,
     runCommand,
     ignorePackage,
   });

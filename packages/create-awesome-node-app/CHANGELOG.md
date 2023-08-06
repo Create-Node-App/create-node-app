@@ -1,5 +1,49 @@
 # create-awesome-node-app
 
+## 0.4.17
+
+### Patch Changes
+
+- Updated changelog
+
+## 0.4.16
+
+### Patch Changes
+
+- Updated docs
+
+## 0.4.15
+
+### Patch Changes
+
+- Small fix
+- Updated dependencies
+  - @create-node-app/core@0.3.9
+
+## 0.4.14
+
+### Patch Changes
+
+- Simple fix
+- Updated dependencies
+  - @create-node-app/core@0.3.8
+
+## 0.4.13
+
+### Patch Changes
+
+- Updated package loader
+- Updated dependencies
+  - @create-node-app/core@0.3.7
+
+## 0.4.12
+
+### Patch Changes
+
+- Added conditional installation for npm, yarn and pnpm
+- Updated dependencies
+  - @create-node-app/core@0.3.6
+
 ## 0.4.11
 
 ### Patch Changes
