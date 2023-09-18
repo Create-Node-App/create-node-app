@@ -46,8 +46,11 @@ const solveRepositoryPath = async ({
   branch,
   subdir,
 }: SolveRepositoryPathOptions) => {
-  const targetId = Buffer.from(`${url}#${branch}#${subdir}`).toString("base64");
-  const target = path.join(os.homedir(), ".cna", targetId);
+  const targetId = Buffer.from(`${url}#${branch}`).toString("base64");
+  const targetWithSubdir = Buffer.from(`${url}#${branch}#${subdir}`).toString(
+    "base64"
+  );
+  const target = path.join(os.homedir(), ".cna", targetWithSubdir);
 
   try {
     await downloadRepository({

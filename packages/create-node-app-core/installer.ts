@@ -120,6 +120,30 @@ const runCommandInProjectDir = async (
   }
 };
 
+function extractNameAndVersion(dependencyString: string) {
+  // extract the name and version from the dependency string saperaing by @
+  // e.g. @types/react@^16
+  // => name: @types/react
+  // => version: ^16
+  // e.g. react@^16
+  // => name: react
+  // => version: ^16
+
+  // Find the last "@" symbol to split the string
+  const lastIndex = dependencyString.lastIndexOf("@");
+
+  if (lastIndex !== -1) {
+    // Split the string into name and version parts
+    const name = dependencyString.substring(0, lastIndex); // Name
+    const version = dependencyString.substring(lastIndex + 1); // Version
+
+    return { name, version };
+  } else {
+    // If "@" is not present, treat the whole string as the name
+    return { name: dependencyString, version: "" };
+  }
+}
+
 const run = async ({
   root,
   appName,
@@ -210,8 +234,8 @@ const run = async ({
       return deps.reduce((dep, elem) => {
         const nextDep = dep;
         if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
-          const [name, version] = elem.split("@");
-          nextDep[name] = `${version}`;
+          const { name, version } = extractNameAndVersion(elem);
+          nextDep[name] = version;
         } else {
           nextDep[elem] = "*";
         }
