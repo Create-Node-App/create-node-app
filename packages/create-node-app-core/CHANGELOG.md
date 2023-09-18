@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.10
+
+### Patch Changes
+
+- Updated source code to be more performant
+
 ## 0.3.9
 
 ### Patch Changes
