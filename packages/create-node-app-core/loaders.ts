@@ -4,58 +4,21 @@ import chalk from "chalk";
 import readdirp from "readdirp";
 import { dirname } from "path";
 import { getTemplateDirPath } from "./paths";
+import { promisify } from "util";
+
+const writeFileAsync = promisify(fs.writeFile);
+const copyFileAsync = promisify(fs.copyFile);
 
 const SRC_PATH_PATTERN = "[src]/";
 const DEFAULT_SRC_PATH = "src/";
 
-const getSrcDirPattern = (srcDir: string) => `${srcDir === "." ? "" : srcDir}/`;
+const getSrcDirPattern = (srcDir: string) =>
+  srcDir === "." ? "" : srcDir + "/";
 
-const copyFile = async (src: string, dest: string, verbose = false) => {
-  try {
-    const parentDir = dirname(dest);
-    if (parentDir) {
-      fs.mkdirSync(parentDir, { recursive: true });
-    }
-    fs.cpSync(src, dest, { force: true, recursive: true });
-    if (verbose) {
-      console.log(chalk.green(`Added "${dest}" from "${src}" successfully`));
-    }
-  } catch (err) {
-    console.log(chalk.red(`Cannot copy file ${src} to ${dest}`));
-    if (verbose) {
-      console.log(chalk.red(err));
-    }
-    throw err;
+const makeDirectory = (dirPath: string) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
   }
-};
-
-const writeFile = async (
-  path: string,
-  content: string,
-  flag = "w",
-  verbose = false
-) => {
-  try {
-    const parentDir = dirname(path);
-    if (parentDir) {
-      fs.mkdirSync(parentDir, { recursive: true });
-    }
-    fs.writeFileSync(path, content, { flag });
-    if (verbose) {
-      console.log(chalk.green(`Added "${path}" successfully`));
-    }
-  } catch (err) {
-    console.log(chalk.red(`Cannot write file ${path}`));
-    if (verbose) {
-      console.log(chalk.red(err));
-    }
-    throw err;
-  }
-};
-
-const appendFile = async (src: string, dest: string, verbose = false) => {
-  const content = fs.readFileSync(src, "utf8");
-  return writeFile(dest, content, "a+", verbose);
 };
 
 const getModeFromPath = (path = "") => {
@@ -81,7 +44,7 @@ type FileLoaderOptions = {
   originalDirectory: string;
   verbose: boolean;
   useYarn?: boolean;
-  usePnp?: boolean;
+  usePnpm?: boolean;
   srcDir: string;
   mode?: string;
   runCommand: string;
@@ -94,26 +57,141 @@ export type FileLoader = (
   options: FileLoaderOptions
 ) => (entry: { path: string }) => Promise<void>;
 
+// Batched file copy operation
+const batchedCopyFiles = async (
+  operations: { src: string; dest: string; verbose: boolean }[]
+) => {
+  const batchedPromises = operations.map(async (operation) => {
+    try {
+      makeDirectory(dirname(operation.dest));
+      await copyFileAsync(operation.src, operation.dest);
+      if (operation.verbose) {
+        console.log(
+          chalk.green(
+            `Added "${operation.dest}" from "${operation.src}" successfully`
+          )
+        );
+      }
+    } catch (err) {
+      console.log(
+        chalk.red(`Cannot copy file ${operation.src} to ${operation.dest}`)
+      );
+      if (operation.verbose) {
+        console.log(chalk.red(err));
+      }
+      throw err;
+    }
+  });
+
+  await Promise.all(batchedPromises);
+};
+
+// Batched file write operation
+const batchedWriteFiles = async (
+  operations: {
+    path: string;
+    content: string;
+    flag: string;
+    verbose: boolean;
+  }[]
+) => {
+  const batchedPromises = operations.map(async (operation) => {
+    try {
+      makeDirectory(dirname(operation.path));
+      await writeFileAsync(operation.path, operation.content, {
+        flag: operation.flag,
+      });
+      if (operation.verbose) {
+        console.log(chalk.green(`Added "${operation.path}" successfully`));
+      }
+    } catch (err) {
+      console.log(chalk.red(`Cannot write file ${operation.path}`));
+      if (operation.verbose) {
+        console.log(chalk.red(err));
+      }
+      throw err;
+    }
+  });
+
+  await Promise.all(batchedPromises);
+};
+
+// Batched file append operation
+const batchedAppendFiles = async (
+  operations: { src: string; dest: string; verbose: boolean }[]
+) => {
+  const batchedPromises = operations.map(async (operation) => {
+    try {
+      const content = await promisify(fs.readFile)(operation.src, "utf8");
+      await batchedWriteFiles([
+        {
+          path: operation.dest,
+          content,
+          flag: "a+",
+          verbose: operation.verbose,
+        },
+      ]);
+    } catch (err) {
+      console.log(
+        chalk.red(`Cannot append file ${operation.src} to ${operation.dest}`)
+      );
+      if (operation.verbose) {
+        console.log(chalk.red(err));
+      }
+      throw err;
+    }
+  });
+
+  await Promise.all(batchedPromises);
+};
+
 const copyLoader: FileLoader =
   ({ root, templateDir, verbose, srcDir }) =>
-  ({ path }) => {
-    return copyFile(
-      `${templateDir}/${path}`,
-      `${root}/${path}`
+  async ({ path }) => {
+    const operations = [];
+    try {
+      const newPath = path
         .replace(/.if-(npm|yarn|pnpm)$/, "")
-        .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir)),
-      verbose
-    );
+        .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
+
+      operations.push({
+        src: `${templateDir}/${path}`,
+        dest: `${root}/${newPath}`,
+        verbose,
+      });
+    } catch (err) {
+      if (verbose) {
+        console.log(err);
+      }
+      throw err;
+    }
+
+    await batchedCopyFiles(operations);
   };
 
 const appendLoader: FileLoader =
   ({ root, templateDir, verbose, srcDir }) =>
-  ({ path }) => {
-    const newPath = path
-      .replace(/.append$/, "")
-      .replace(/.if-(npm|yarn|pnpm)$/, "")
-      .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
-    return appendFile(`${templateDir}/${path}`, `${root}/${newPath}`, verbose);
+  async ({ path }) => {
+    const operations = [];
+    try {
+      const newPath = path
+        .replace(/.append$/, "")
+        .replace(/.if-(npm|yarn|pnpm)$/, "")
+        .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
+
+      operations.push({
+        src: `${templateDir}/${path}`,
+        dest: `${root}/${newPath}`,
+        verbose,
+      });
+    } catch (err) {
+      if (verbose) {
+        console.log(err);
+      }
+      throw err;
+    }
+
+    await batchedAppendFiles(operations);
   };
 
 const templateLoader: FileLoader =
@@ -129,27 +207,40 @@ const templateLoader: FileLoader =
     ...customOptions
   }) =>
   async ({ path }) => {
-    const flag = mode.includes("append") ? "a+" : "w";
-    const file = fs.readFileSync(`${templateDir}/${path}`, "utf8");
-    const newFile = _.template(file);
-    const newPath = path
-      .replace(/.template$/, "")
-      .replace(/.append$/, "")
-      .replace(/.if-(npm|yarn|pnpm)$/, "")
-      .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
+    const operations = [];
+    try {
+      const flag = mode.includes("append") ? "a+" : "w";
+      const file = await promisify(fs.readFile)(
+        `${templateDir}/${path}`,
+        "utf8"
+      );
+      const newFile = _.template(file);
+      const newPath = path
+        .replace(/.template$/, "")
+        .replace(/.append$/, "")
+        .replace(/.if-(npm|yarn|pnpm)$/, "")
+        .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
 
-    return writeFile(
-      `${root}/${newPath}`,
-      newFile({
-        projectName: appName,
-        srcDir: srcDir || ".",
-        runCommand,
-        installCommand,
-        ...customOptions,
-      }),
-      flag,
-      verbose
-    );
+      operations.push({
+        path: `${root}/${newPath}`,
+        content: newFile({
+          projectName: appName,
+          srcDir: srcDir || ".",
+          runCommand,
+          installCommand,
+          ...customOptions,
+        }),
+        flag,
+        verbose,
+      });
+    } catch (err) {
+      if (verbose) {
+        console.log(err);
+      }
+      throw err;
+    }
+
+    await batchedWriteFiles(operations);
   };
 
 const fileLoader: FileLoader =
@@ -166,32 +257,39 @@ const fileLoader: FileLoader =
     installCommand,
     ...customOptions
   }) =>
-  ({ path }) => {
-    const mode = getModeFromPath(path);
+  async ({ path }) => {
+    try {
+      const mode = getModeFromPath(path);
 
-    const loaders = {
-      copy: copyLoader,
-      append: appendLoader,
-      copyTemplate: templateLoader,
-      appendTemplate: appendLoader,
-    };
+      const loaders = {
+        copy: copyLoader,
+        append: appendLoader,
+        copyTemplate: templateLoader,
+        appendTemplate: appendLoader,
+      };
 
-    return loaders[mode]({
-      root,
-      templateDir,
-      appName,
-      originalDirectory,
-      verbose,
-      useYarn,
-      usePnpm,
-      mode,
-      srcDir,
-      runCommand,
-      installCommand,
-      ...customOptions,
-    })({
-      path,
-    });
+      await loaders[mode]({
+        root,
+        templateDir,
+        appName,
+        originalDirectory,
+        verbose,
+        useYarn,
+        usePnpm,
+        mode,
+        srcDir,
+        runCommand,
+        installCommand,
+        ...customOptions,
+      })({
+        path,
+      });
+    } catch (err) {
+      if (verbose) {
+        console.log(err);
+      }
+      throw err;
+    }
   };
 
 export type TemplateOrExtension = { url: string; ignorePackage?: boolean };
@@ -224,53 +322,60 @@ export const loadFiles = async ({
   installCommand,
   ...customOptions
 }: LoadFilesOptions) => {
-  for await (const { url: templateOrExtensionUrl } of templatesOrExtensions) {
-    const templateDir = await getTemplateDirPath(templateOrExtensionUrl);
-    // if it does not exists, continue
-    if (!fs.statSync(templateDir).isDirectory()) {
-      continue;
-    }
+  try {
+    const operations = [];
+    for await (const { url: templateOrExtensionUrl } of templatesOrExtensions) {
+      const templateDir = await getTemplateDirPath(templateOrExtensionUrl);
 
-    for await (const entry of readdirp(templateDir, {
-      fileFilter: [
-        "!package.js",
-        "!package.json",
-        "!package-lock.json",
-        "!template.json",
-        "!yarn.lock",
-        "!pnpm-lock.yaml",
-        // based on the package manager we want to ignore files containing
-        // the other package as condition.
-        // For example, if `usePnpm` is true, the we need to ignore
-        // all files with `.if-npm` or `.if-yarn` somewhere in the name.
-        ...(usePnpm
-          ? ["!*.if-npm.*", "!*.if-yarn.*"]
-          : useYarn
-          ? ["!*.if-npm.*", "!*.if-pnpm.*"]
-          : ["!*.if-yarn.*", "!*.if-pnpm.*"]),
-      ],
-      directoryFilter: ["!package"],
-    })) {
-      try {
-        await fileLoader({
-          root,
-          templateDir,
-          appName,
-          originalDirectory,
-          verbose,
-          useYarn,
-          usePnpm,
-          srcDir,
-          runCommand,
-          installCommand,
-          ...customOptions,
-        })(entry);
-      } catch (err) {
-        if (verbose) {
-          console.log(err);
+      if (
+        fs.existsSync(templateDir) &&
+        fs.statSync(templateDir).isDirectory()
+      ) {
+        for await (const entry of readdirp(templateDir, {
+          fileFilter: [
+            "!package.js",
+            "!package.json",
+            "!package-lock.json",
+            "!template.json",
+            "!yarn.lock",
+            "!pnpm-lock.yaml",
+            // based on the package manager we want to ignore files containing
+            // the other package as condition.
+            // For example, if `usePnpm` is true, the we need to ignore
+            // all files with `.if-npm` or `.if-yarn` somewhere in the name.
+            ...(usePnpm
+              ? ["!*.if-npm.*", "!*.if-yarn.*"]
+              : useYarn
+              ? ["!*.if-npm.*", "!*.if-pnpm.*"]
+              : ["!*.if-yarn.*", "!*.if-pnpm.*"]),
+          ],
+          directoryFilter: ["!package"],
+        })) {
+          operations.push({
+            root,
+            templateDir,
+            appName,
+            originalDirectory,
+            verbose,
+            useYarn,
+            usePnpm,
+            srcDir,
+            runCommand,
+            installCommand,
+            entry,
+            ...customOptions,
+          });
         }
-        throw err;
       }
     }
+
+    await Promise.all(
+      operations.map((operation) => fileLoader(operation)(operation.entry))
+    );
+  } catch (err) {
+    if (verbose) {
+      console.log(err);
+    }
+    throw err;
   }
 };

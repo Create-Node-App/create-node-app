@@ -4,12 +4,14 @@ import merge from "lodash.merge";
 import { TemplateOrExtension } from "./loaders";
 import { getPackagePath } from "./paths";
 
+// Type for setup options
 type GetInstallableSetupOptions = {
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
   [key: string]: unknown;
 };
 
+// Helper function to prepare installable setup
 const getInstallableSetup = ({
   dependencies,
   devDependencies,
@@ -25,14 +27,16 @@ const getInstallableSetup = ({
   };
 };
 
+// Helper function to require a module if it exists, or throw an error
 const requireIfExists = (path: string) => {
   if (existsSync(path)) {
     return require(path);
   }
 
-  throw new Error(`file ${path} not exists`);
+  throw new Error(`File ${path} does not exist`);
 };
 
+// Options for loading packages
 export type LoadPackagesOptions = {
   templatesOrExtensions?: TemplateOrExtension[];
   ignorePackage?: boolean;
@@ -51,53 +55,74 @@ export const loadPackages = async ({
   ignorePackage: globalIgnorePackage = false,
   ...config
 }: LoadPackagesOptions) => {
-  const setup = await templatesOrExtensions.reduce(
-    async (setupPromise, { url: templateOrExtension, ignorePackage }) => {
-      let packageJson = await setupPromise;
-
+  // Load and merge template packages concurrently
+  const setup = await Promise.all(
+    templatesOrExtensions.map(async ({ url: templateOrExtension }) => {
       try {
+        // Try to load and merge template package
         const template = requireIfExists(
           await getPackagePath(templateOrExtension, "template.json")
         );
-        packageJson = merge(packageJson, template.package || {});
+        return template.package || {}; // Use an empty object if template.json is not found
       } catch {
-        // ignore this case since it failed executing the require of the `template.json`
+        return {}; // Ignore if template.json is not found
       }
+    })
+  );
 
-      try {
-        const templateOrExtensionPackageJson = requireIfExists(
-          await getPackagePath(
-            templateOrExtension,
-            "package.json",
-            globalIgnorePackage || ignorePackage
-          )
-        );
-        return merge(packageJson, templateOrExtensionPackageJson);
-      } catch {
-        // ignore this case since it failed executing the require of the `package.json`
-      }
-
-      try {
-        // apply updates using package module
-        const resolveTemplateOrExtensionPackage = requireIfExists(
-          await getPackagePath(templateOrExtension)
-        );
-        packageJson = resolveTemplateOrExtensionPackage(packageJson, config);
-      } catch {
-        // ignore this case since it failed executing `resolveTemplateOrExtensionPackage(...)`
-      }
-      return packageJson;
-    },
-    Promise.resolve({
+  // Merge all the setup results from templates
+  const mergedSetup = merge(
+    {
       name: config.appName,
       dependencies: {},
       devDependencies: {},
       scripts: {},
+    },
+    ...setup
+  );
+
+  // Load and merge package.json files concurrently
+  const finalSetup = await Promise.all(
+    templatesOrExtensions.map(
+      async ({ url: templateOrExtension, ignorePackage }) => {
+        try {
+          // Try to load and merge package.json
+          const templateOrExtensionPackageJson = requireIfExists(
+            await getPackagePath(
+              templateOrExtension,
+              "package.json",
+              globalIgnorePackage || ignorePackage
+            )
+          );
+          return templateOrExtensionPackageJson; // Use an empty object if package.json is not found
+        } catch {
+          return {}; // Ignore if package.json is not found
+        }
+      }
+    )
+  );
+
+  // Resolve package updates using package module concurrently
+  const resolvedSetup = await Promise.all(
+    templatesOrExtensions.map(async ({ url: templateOrExtension }) => {
+      try {
+        // Try to resolve package updates using package module
+        const resolveTemplateOrExtensionPackage = requireIfExists(
+          await getPackagePath(templateOrExtension)
+        );
+        return resolveTemplateOrExtensionPackage(mergedSetup, config); // Use an empty object if resolution fails
+      } catch {
+        return {}; // Ignore if the resolution function fails
+      }
     })
   );
 
+  // Merge all setup results
+  const packageJson = merge(mergedSetup, ...finalSetup, ...resolvedSetup);
+
+  // Prepare the final installable setup
   return getInstallableSetup({
-    ...setup,
+    ...packageJson,
     name: config.appName,
   });
 };

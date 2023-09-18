@@ -1,3 +1,4 @@
+import axios from "axios";
 import { PromptType } from "prompts";
 
 const TEMPLATE_DATA_FILE_URL =
@@ -31,28 +32,42 @@ export type Templates = {
   extensions: ExtensionData[];
 };
 
-const templateDataMap = new Map<string, Templates>();
+const CACHE_TTL_MS = 3600000; // Cache data for 1 hour
+
+const templateDataCache = {
+  data: null as Templates | null,
+  timestamp: 0,
+};
+
+const fetchTemplateData = async () => {
+  try {
+    const response = await axios.get<Templates>(TEMPLATE_DATA_FILE_URL);
+    return response.data;
+  } catch (error) {
+    // Handle network error, e.g., log it or show a user-friendly message.
+    throw new Error("Failed to fetch template data");
+  }
+};
 
 const getTemplateData = async () => {
-  if (templateDataMap.has(TEMPLATE_DATA_FILE_URL)) {
-    return templateDataMap.get(TEMPLATE_DATA_FILE_URL) as Templates;
+  const currentTime = Date.now();
+
+  if (
+    templateDataCache.data === null ||
+    currentTime - templateDataCache.timestamp > CACHE_TTL_MS
+  ) {
+    // Data is not in cache or has expired, fetch and cache it.
+    templateDataCache.data = await fetchTemplateData();
+    templateDataCache.timestamp = currentTime;
   }
 
-  // download template data from TEMPLATE_DATA_FILE_URL
-  // and return the template data that matches the template url
-
-  const templateDataFile = await fetch(TEMPLATE_DATA_FILE_URL);
-  const templateData: Templates = await templateDataFile.json();
-
-  templateDataMap.set(TEMPLATE_DATA_FILE_URL, templateData);
-
-  return templateData;
+  return templateDataCache.data;
 };
 
 export const getTemplateCategories = async () => {
   const templateData = await getTemplateData();
 
-  // ensure that the categories are unique
+  // Ensure that the categories are unique
   const categories = new Set<string>();
 
   templateData.templates.forEach((template) => {

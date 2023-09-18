@@ -21,7 +21,7 @@ const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: string) => {
     .slice(1)
     .split("/");
 
-  // parse ignorePackageJson from searchParams
+  // Parse ignorePackageJson from searchParams
   const ignorePackage = url.searchParams.get("ignorePackage") === "true";
 
   return {
@@ -48,6 +48,7 @@ const solveRepositoryPath = async ({
 }: SolveRepositoryPathOptions) => {
   const targetId = Buffer.from(`${url}#${branch}#${subdir}`).toString("base64");
   const target = path.join(os.homedir(), ".cna", targetId);
+
   try {
     await downloadRepository({
       url,
@@ -56,8 +57,9 @@ const solveRepositoryPath = async ({
       targetId,
     });
   } catch {
-    // ignore git error
+    // Ignore git error
   }
+
   return { dir: target, subdir };
 };
 
@@ -72,14 +74,16 @@ const solveTemplateOrExtensionPath = async (templateOrExtension: string) => {
         subdir,
       };
     }
+
     const gitData = await solveRepositoryPath({
       url,
       branch,
       subdir,
     });
+
     return { ...gitData, ignorePackage };
   } catch {
-    // failed solving file/http/ssh/... url
+    // Failed to solve file/http/ssh/... URL
     return {
       dir: path.resolve(
         __dirname,
@@ -102,6 +106,7 @@ export const getPackagePath = async (
     subdir,
     ignorePackage: templateOrExtensionIgnorePackage,
   } = await solveTemplateOrExtensionPath(templateOrExtension);
+
   if (
     name === "package.json" &&
     (ignorePackage || templateOrExtensionIgnorePackage)
@@ -110,9 +115,11 @@ export const getPackagePath = async (
       "package.json should be ignored for file templateOrExtension"
     );
   }
+
   if (subdir) {
     return path.resolve(dir, subdir, name);
   }
+
   return path.resolve(dir, name);
 };
 
@@ -120,11 +127,9 @@ export const getTemplateDirPath = async (templateOrExtensionUrl: string) => {
   const { dir, subdir = "" } = await solveTemplateOrExtensionPath(
     templateOrExtensionUrl
   );
-
   let templateDirPath = path.resolve(dir, subdir);
 
-  // if `${templateDirPath}/template` is a directory, return it
-  // otherwise, return `${templateDirPath}`
+  // If `${templateDirPath}/template` is a directory, return it. Otherwise, return `${templateDirPath}`
   const templateDirPathWithTemplate = path.resolve(templateDirPath, "template");
 
   return new Promise<string>((resolve) => {
@@ -133,9 +138,11 @@ export const getTemplateDirPath = async (templateOrExtensionUrl: string) => {
         resolve(templateDirPath);
         return;
       }
+
       if (stats.isDirectory()) {
         templateDirPath = templateDirPathWithTemplate;
       }
+
       resolve(templateDirPath);
     });
   });

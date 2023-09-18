@@ -4,8 +4,8 @@ import fs from "fs";
 import chalk from "chalk";
 import os from "os";
 import semver from "semver";
-import spawn from "cross-spawn";
 import { execSync } from "child_process";
+import simpleGit from "simple-git";
 
 import {
   shouldUseYarn,
@@ -17,7 +17,7 @@ import {
 import { loadPackages } from "./package";
 import { TemplateOrExtension, loadFiles } from "./loaders";
 
-const install = (
+const install = async (
   root: string,
   useYarn = false,
   usePnpm = false,
@@ -26,69 +26,61 @@ const install = (
   isOnline = true,
   isDevDependencies = false
 ) => {
-  return new Promise<void>((resolve, reject) => {
-    let command: string;
-    let args: string[];
+  let command: string;
+  let args: string[];
 
-    if (useYarn) {
-      command = "yarnpkg";
-      // args = ['add', '--exact']
-      args = ["add", "--ignore-workspace-root-check"];
-      if (!isOnline) {
-        args.push("--offline");
-      }
-      if (isDevDependencies) {
-        args.push("--dev");
-      }
-      args.push(...dependencies);
-      args.push("--cwd");
-      args.push(root);
+  if (useYarn) {
+    command = "yarnpkg";
+    args = ["add", "--ignore-workspace-root-check"];
+    if (!isOnline) {
+      args.push("--offline");
+    }
+    if (isDevDependencies) {
+      args.push("--dev");
+    }
+    args.push(...dependencies);
+    args.push("--cwd");
+    args.push(root);
 
-      if (!isOnline) {
-        console.log(chalk.yellow("You appear to be offline."));
-        console.log(chalk.yellow("Falling back to the local Yarn cache."));
-        console.log();
-      }
-    } else if (usePnpm) {
-      command = "pnpm";
-      args = [
-        "install",
-        "--ignore-workspace-root-check",
-        "--loglevel",
-        "error",
-      ];
-      if (isDevDependencies) {
-        args.push("--save-dev");
-      } else {
-        args.push("--save");
-      }
-
-      args.push(...dependencies);
+    if (!isOnline) {
+      console.log(chalk.yellow("You appear to be offline."));
+      console.log(chalk.yellow("Falling back to the local Yarn cache."));
+      console.log();
+    }
+  } else if (usePnpm) {
+    command = "pnpm";
+    args = ["install", "--ignore-workspace-root-check", "--loglevel", "error"];
+    if (isDevDependencies) {
+      args.push("--save-dev");
     } else {
-      command = "npm";
-      args = ["install", "--loglevel", "error"];
-      if (isDevDependencies) {
-        args.push("--save-dev");
-      } else {
-        args.push("--save");
-      }
-
-      args.push(...dependencies);
+      args.push("--save");
     }
 
-    if (verbose) {
-      args.push("--verbose");
+    args.push(...dependencies);
+  } else {
+    command = "npm";
+    args = ["install", "--loglevel", "error"];
+    if (isDevDependencies) {
+      args.push("--save-dev");
+    } else {
+      args.push("--save");
     }
 
-    const child = spawn(command, args, { stdio: "inherit", cwd: root });
-    child.on("close", (code) => {
-      if (code !== 0) {
-        reject(new Error(`${command} ${args.join(" ")}`));
-        return;
-      }
-      resolve();
+    args.push(...dependencies);
+  }
+
+  if (verbose) {
+    args.push("--verbose");
+  }
+
+  try {
+    execSync(`${command} ${args.join(" ")}`, {
+      cwd: root,
+      stdio: "inherit",
     });
-  });
+  } catch (error) {
+    throw new Error(`${command} ${args.join(" ")}`);
+  }
 };
 
 export type RunOptions = {
@@ -108,7 +100,7 @@ export type RunOptions = {
   [key: string]: unknown;
 };
 
-export const runCommandInProjectDir = async (
+const runCommandInProjectDir = async (
   root: string,
   command: string,
   args: string[] = [],
@@ -118,10 +110,8 @@ export const runCommandInProjectDir = async (
   try {
     execSync(`${command} ${args.join(" ")}`, {
       cwd: root,
-      // don't show output in console
       stdio: "ignore",
     });
-
     console.log(chalk.green(successMessage));
   } catch (error) {
     console.log();
@@ -145,10 +135,7 @@ const run = async ({
   installCommand = "",
   ...customOptions
 }: RunOptions) => {
-  let isOnline = true;
-  if (useYarn) {
-    isOnline = await checkIfOnline(useYarn);
-  }
+  const isOnline = useYarn ? await checkIfOnline(useYarn) : true;
 
   if (_.isEmpty(templatesOrExtensions)) {
     console.log();
@@ -219,27 +206,21 @@ const run = async ({
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
 
-    packageJson.dependencies = dependencies.reduce((dep, elem) => {
-      const nextDep = dep;
-      if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
-        const [name, version] = elem.split("@");
-        nextDep[name] = `${version}`;
-      } else {
-        nextDep[elem] = "*";
-      }
-      return nextDep;
-    }, {} as { [key: string]: string });
+    const updateDependencies = (deps: string[]) => {
+      return deps.reduce((dep, elem) => {
+        const nextDep = dep;
+        if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
+          const [name, version] = elem.split("@");
+          nextDep[name] = `${version}`;
+        } else {
+          nextDep[elem] = "*";
+        }
+        return nextDep;
+      }, {} as { [key: string]: string });
+    };
 
-    packageJson.devDependencies = devDependencies.reduce((dep, elem) => {
-      const nextDep = dep;
-      if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
-        const [name, version] = elem.split("@");
-        nextDep[name] = `${version}`;
-      } else {
-        nextDep[elem] = "*";
-      }
-      return nextDep;
-    }, {} as { [key: string]: string });
+    packageJson.dependencies = updateDependencies(dependencies);
+    packageJson.devDependencies = updateDependencies(devDependencies);
 
     fs.writeFileSync(
       path.join(root, "package.json"),
@@ -254,19 +235,26 @@ const run = async ({
   console.log();
   console.log("Initializing git repository...");
 
-  await runCommandInProjectDir(
-    root,
-    "git",
-    ["init"],
-    "Successfully initialized git repository.",
-    "Failed to initialize git repository. Run `git init` to initialize git repository after the process is completed."
-  );
+  try {
+    const git = simpleGit(root);
+    await git.init();
+    console.log(chalk.green("Successfully initialized git repository."));
+  } catch (error) {
+    console.log();
+    console.log(
+      chalk.red(
+        "Failed to initialize git repository. Run `git init` to initialize git repository after the process is completed."
+      )
+    );
+    console.log();
+  }
 
   if (installDependencies && isOnline) {
     const packageJson = JSON.parse(
       fs.readFileSync(`${root}/package.json`, "utf8")
     );
-    if (packageJson.scripts && packageJson.scripts["format"]) {
+
+    const runFormat = async () => {
       try {
         await runCommandInProjectDir(
           root,
@@ -278,8 +266,9 @@ const run = async ({
       } catch {
         // ignore
       }
-    }
-    if (packageJson.scripts && packageJson.scripts["lint:fix"]) {
+    };
+
+    const runLintFix = async () => {
       try {
         await runCommandInProjectDir(
           root,
@@ -291,13 +280,19 @@ const run = async ({
       } catch {
         // ignore
       }
+    };
+
+    if (packageJson.scripts && packageJson.scripts["format"]) {
+      await runFormat();
+    }
+    if (packageJson.scripts && packageJson.scripts["lint:fix"]) {
+      await runLintFix();
     }
   }
 
   // Print out instructions
   console.log();
   console.log(chalk.green("Successfully created project " + appName + "."));
-
   console.log();
   console.log("Done! Now run:");
   console.log();
@@ -332,16 +327,6 @@ export type CreateAppOptions = {
   [key: string]: unknown;
 };
 
-/**
- * createApp bootstraps the node application based on user options
- *
- * @param opts.name - Project's name
- * @param opts.verbose - Specify if it is needed to use verbose mode or not
- * @param opts.packageManager - Package manager to use
- * @param opts.templatesOrExtensions - Official extensions to apply
- * @param opts.installDependencies - Specify if it is needed to install dependencies
- * @param opts.ignorePackage - Specify if it is needed to ignore package.json on all templates
- */
 export const createApp = async ({
   name,
   verbose = false,
@@ -389,11 +374,11 @@ export const createApp = async ({
     process.exit(1);
   }
 
-  if (!semver.satisfies(process.version, ">=16.0.0")) {
+  if (!semver.satisfies(process.version, ">=18.0.0")) {
     console.log(
       chalk.yellow(
         `You are using Node ${process.version} so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
-          `Please update to Node 16 or higher for a better, fully supported experience.\n`
+          `Please update to Node 18 or higher for a better, fully supported experience.\n`
       )
     );
   }
