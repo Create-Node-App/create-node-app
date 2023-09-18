@@ -32,6 +32,28 @@ In the project directory, you can run:
 | `format`           | Formats the project using [Prettier](https://prettier.io/)                                                              |
 | `type-check`       | Runs [TypeScript](https://www.typescriptlang.org/) type checking                                                        |
 
+## Running Locally
+
+When contributing you might want to test your changes locally before opening a PR. To do so, you can use the `create-awesome-node-app` CLI to create a new project and test your changes.
+
+```sh
+# Clone the repository
+git clone https://github.com/Create-Node-App/create-node-app.git
+
+# Move into the directory
+cd create-node-app
+
+# Setup your local environment
+fnm use
+npm install
+
+# Build the CLI
+npm run build -- --filter create-awesome-node-app
+
+# Create a new project
+./packages/create-awesome-node-app/index.js my-app
+```
+
 ## 🤝 Contributing
 
 - Contributions make the open source community such an amazing place to learn, inspire, and create.
