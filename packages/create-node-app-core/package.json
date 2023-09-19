@@ -1,6 +1,6 @@
 {
   "name": "@create-node-app/core",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -41,7 +41,7 @@
     "cross-spawn": "^6.0.5",
     "debug": "^4.2.0",
     "download": "^8.0.0",
-    "envinfo": "^7.7.4",
+    "envinfo": "^7.10.0",
     "lodash.merge": "^4.6.2",
     "readdirp": "^3.4.0",
     "semver": "^5.7.2",

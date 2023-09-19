@@ -1,5 +1,6 @@
 import { CnaOptions } from "@create-node-app/core";
 import { TemplateOrExtension } from "@create-node-app/core/loaders";
+import { isCI } from "ci-info";
 import prompts from "prompts";
 import yargs from "yargs";
 prompts.override(yargs.argv);
@@ -9,7 +10,17 @@ import {
   getExtensionsGroupedByCategory,
 } from "./templates";
 
+const PACKAGE_MANAGERS = ["npm", "yarn", "pnpm"];
+
 export const getCnaOptions = async (options: CnaOptions) => {
+  if (isCI) {
+    if (options.verbose) {
+      console.log(JSON.stringify(options, null, 2));
+    }
+
+    return options;
+  }
+
   const categories = await getTemplateCategories();
 
   const categoriesOptions = [
@@ -35,12 +46,13 @@ export const getCnaOptions = async (options: CnaOptions) => {
       type: "select",
       name: "packageManager",
       message: "What package manager do you want to use?",
-      choices: [
-        { title: "npm", value: "npm" },
-        { title: "yarn", value: "yarn" },
-        { title: "pnpm", value: "pnpm" },
-      ],
-      initial: 0,
+      choices: PACKAGE_MANAGERS.map((packageManager) => ({
+        title: packageManager,
+        value: packageManager,
+      })),
+      initial: options.packageManager
+        ? PACKAGE_MANAGERS.indexOf(options.packageManager)
+        : 0,
     },
     {
       type: "select",
@@ -68,7 +80,7 @@ export const getCnaOptions = async (options: CnaOptions) => {
             name: "template",
             message:
               "Enter the URL of your template. e.g: https://github.com/username/repository/tree/main/subdir",
-            initial: "",
+            initial: options.template,
             validate: (value) => {
               if (!value) {
                 return "Template URL is required";

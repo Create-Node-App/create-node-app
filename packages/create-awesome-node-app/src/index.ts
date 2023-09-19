@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import program from "commander";
 import chalk from "chalk";
 import semver from "semver";
@@ -24,9 +22,19 @@ const main = async () => {
     .option("--verbose", "print additional logs")
     .option("--info", "print environment debug info")
     .option(
-      "--nodeps",
-      "generate package.json file without installing dependencies"
+      "--no-install",
+      "Generate package.json without installing dependencies"
     )
+    .option(
+      "--template <template>",
+      "specify a template for the created project"
+    )
+    .option(
+      "--extend [extensions...]",
+      "specify extensions to apply for the boilerplate generation"
+    )
+    .option("--use-yarn", "use yarn instead of npm or pnpm")
+    .option("--use-pnpm", "use pnpm instead of yarn or npm")
     .parse(process.argv);
 
   checkNodeVersion(packageJson.engines.node, packageJson.name);
@@ -44,9 +52,19 @@ const main = async () => {
     return;
   }
 
+  const { useYarn, usePnpm, ...opts } = program.opts();
+
+  const packageManager = useYarn ? "yarn" : usePnpm ? "pnpm" : "npm";
+  const templatesOrExtensions = [opts.template]
+    .concat(opts.extend || [])
+    .filter(Boolean)
+    .map((templateOrExtension) => ({
+      url: templateOrExtension,
+    }));
+
   return createNodeApp(
     projectName,
-    { ...program.opts(), projectName },
+    { ...opts, packageManager, templatesOrExtensions, projectName },
     getCnaOptions
   );
 };

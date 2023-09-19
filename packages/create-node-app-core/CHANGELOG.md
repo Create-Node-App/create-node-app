@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.11
+
+### Patch Changes
+
+- Added CI mode
+
 ## 0.3.10
 
 ### Patch Changes

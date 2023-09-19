@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.4.19
+
+### Patch Changes
+
+- Added CI mode
+- Updated dependencies
+  - @create-node-app/core@0.3.11
+
 ## 0.4.18
 
 ### Patch Changes

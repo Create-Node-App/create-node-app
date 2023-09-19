@@ -54,8 +54,8 @@ export const printEnvInfo = async () => {
   console.log(chalk.bold("\nEnvironment Info:"));
   const info = await envinfo.run(
     {
-      System: ["OS", "CPU"],
-      Binaries: ["Node", "npm", "Yarn"],
+      System: ["OS", "CPU", "Memory", "Shell"],
+      Binaries: ["Node", "npm", "pnpm", "Yarn", "Watchman"],
       Browsers: ["Chrome", "Edge", "Internet Explorer", "Firefox", "Safari"],
     },
     {
@@ -70,10 +70,9 @@ export const printEnvInfo = async () => {
 export type CnaOptions = {
   projectName: string;
   info?: boolean;
-  interactive?: boolean;
   verbose?: boolean;
   packageManager?: string;
-  nodeps?: boolean;
+  install?: boolean;
   template?: string;
   templatesOrExtensions?: TemplateOrExtension[];
 } & {
@@ -87,11 +86,10 @@ export type CnaOptionsTransform = (options: CnaOptions) => Promise<CnaOptions>;
  * @param programName - Name of the program to bootstrap the Node application
  * @param options - CnaOptions to bootstrap the Node application
  * @param options.info - Print environment debug info
- * @param options.interactive - Specify if it is needed to use interactive mode or not
  * @param options.verbose - Specify if it is needed to use verbose mode or not
  * @param options.projectName - Project's name
  * @param options.packageManager - Package manager to use
- * @param options.nodeps - Generate package.json file without installing dependencies
+ * @param options.install - Generate package.json file installing dependencies
  * @param options.template - Template to bootstrap the aplication
  * @param options.extend - Extensions to apply for the boilerplate generation
  * @param options.templatesOrExtensions - Official extensions to apply
@@ -126,6 +124,6 @@ export const createNodeApp = async (
   await createApp({
     ...appOptions,
     name: appOptions.projectName,
-    installDependencies: !options.nodeps,
+    installDependencies: options.install,
   });
 };
