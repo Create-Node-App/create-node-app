@@ -53,7 +53,7 @@ body:
         Please provide the version of the repository or tool you are using.
     validations:
       required: true
-  - type: input
+  - type: textarea
     id: environment
     attributes:
       label: Environment details (OS name and version, etc.)
