@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.4.20
+
+### Patch Changes
+
+- Mentioned in awesome
+
 ## 0.4.19
 
 ### Patch Changes
