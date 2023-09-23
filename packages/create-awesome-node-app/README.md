@@ -3,6 +3,7 @@
 <div align="center">
 <h1>🌟 Create Awesome Node App 🚀</h1>
 
+[![Awesome](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite#get-started)
 [![Continious Integration][cibadge]][ciurl]
 [![npm][npmversion]][npmurl]
 [![npm][npmdownloads]][npmurl]
