@@ -9,6 +9,7 @@
 </div>
 <div align="center">
 
+[![Awesome](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite#get-started)
 [![Continious Integration][cibadge]][ciurl]
 [![npm][npmversion]][npmurl]
 [![npm][npmdownloads]][npmurl]
