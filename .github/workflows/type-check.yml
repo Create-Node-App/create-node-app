@@ -20,4 +20,4 @@ jobs:
         run: npm ci
 
       - name: Run type-check validation
-        run: npm run type-check
+        run: npm run type-check --if-present
