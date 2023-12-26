@@ -49,7 +49,7 @@ const install = async (
     }
   } else if (usePnpm) {
     command = "pnpm";
-    args = ["install", "--ignore-workspace-root-check", "--loglevel", "error"];
+    args = ["install", "--ignore-workspace", "--loglevel", "error"];
     if (isDevDependencies) {
       args.push("--save-dev");
     } else {

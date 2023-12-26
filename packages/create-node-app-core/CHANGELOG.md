@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.12
+
+### Patch Changes
+
+- Updated pnpm flags
+
 ## 0.3.11
 
 ### Patch Changes
