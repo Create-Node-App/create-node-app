@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.13
+
+### Patch Changes
+
+- Keep permissions from original files when doing the scaffolding
+
 ## 0.3.12
 
 ### Patch Changes

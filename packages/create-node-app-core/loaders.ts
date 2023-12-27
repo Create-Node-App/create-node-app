@@ -93,6 +93,7 @@ const batchedWriteFiles = async (
     content: string;
     flag: string;
     verbose: boolean;
+    mode?: number;
   }[]
 ) => {
   const batchedPromises = operations.map(async (operation) => {
@@ -100,6 +101,7 @@ const batchedWriteFiles = async (
       makeDirectory(dirname(operation.path));
       await writeFileAsync(operation.path, operation.content, {
         flag: operation.flag,
+        mode: operation.mode,
       });
       if (operation.verbose) {
         console.log(chalk.green(`Added "${operation.path}" successfully`));
@@ -123,12 +125,14 @@ const batchedAppendFiles = async (
   const batchedPromises = operations.map(async (operation) => {
     try {
       const content = await promisify(fs.readFile)(operation.src, "utf8");
+      const fileMode = (await promisify(fs.stat)(operation.src)).mode;
       await batchedWriteFiles([
         {
           path: operation.dest,
           content,
           flag: "a+",
           verbose: operation.verbose,
+          mode: fileMode,
         },
       ]);
     } catch (err) {
@@ -210,10 +214,9 @@ const templateLoader: FileLoader =
     const operations = [];
     try {
       const flag = mode.includes("append") ? "a+" : "w";
-      const file = await promisify(fs.readFile)(
-        `${templateDir}/${path}`,
-        "utf8"
-      );
+      const filePath = `${templateDir}/${path}`;
+      const file = await promisify(fs.readFile)(filePath, "utf8");
+      const fileMode = (await promisify(fs.stat)(filePath)).mode;
       const newFile = _.template(file);
       const newPath = path
         .replace(/.template$/, "")
@@ -232,6 +235,7 @@ const templateLoader: FileLoader =
         }),
         flag,
         verbose,
+        mode: fileMode,
       });
     } catch (err) {
       if (verbose) {

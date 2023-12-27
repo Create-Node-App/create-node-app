@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.4.22
+
+### Patch Changes
+
+- Keep permissions from original files when doing the scaffolding
+- Updated dependencies
+  - @create-node-app/core@0.3.13
+
 ## 0.4.21
 
 ### Patch Changes
