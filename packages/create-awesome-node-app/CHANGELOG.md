@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.4.23
+
+### Patch Changes
+
+- Updated deps
+- Updated dependencies
+  - @create-node-app/core@0.3.14
+
 ## 0.4.22
 
 ### Patch Changes
