@@ -7,7 +7,7 @@
     "index.js"
   ],
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
     "eslint": "^7.23.0",
     "@create-node-app/eslint-config": "*"
   },
