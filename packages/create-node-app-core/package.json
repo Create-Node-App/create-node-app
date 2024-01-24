@@ -40,7 +40,7 @@
     "commander": "^7.0.0",
     "cross-spawn": "^6.0.5",
     "debug": "^4.2.0",
-    "download": "^8.0.0",
+    "download": "^3.3.0",
     "envinfo": "^7.10.0",
     "lodash.merge": "^4.6.2",
     "readdirp": "^3.4.0",
