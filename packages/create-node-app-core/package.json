@@ -38,7 +38,7 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "commander": "^7.0.0",
-    "cross-spawn": "^6.0.5",
+    "cross-spawn": "^7.0.3",
     "debug": "^4.2.0",
     "download": "^8.0.0",
     "envinfo": "^7.10.0",
