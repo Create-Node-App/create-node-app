@@ -31,7 +31,7 @@
     "@types/node": "^18.14.6",
     "@types/underscore": "^1.11.4",
     "eslint": "^7.32.0",
-    "simple-git": "^3.19.1",
+    "simple-git": "^3.22.0",
     "tsconfig": "*",
     "typescript": "^4.5.2"
   },
