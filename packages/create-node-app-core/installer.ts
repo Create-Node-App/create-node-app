@@ -371,7 +371,7 @@ export const createApp = async ({
 
   const useYarn = customOptions.packageManager === "yarn" && shouldUseYarn();
   const usePnpm = customOptions.packageManager === "pnpm" && shouldUsePnpm();
-  const runCommand = useYarn ? "yarn" : "npm run";
+  const runCommand = useYarn ? "yarn" : usePnpm ? "pnpm run" : "npm run";
   const installCommand = useYarn
     ? "yarn"
     : usePnpm
