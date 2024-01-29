@@ -21,7 +21,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.25.0",
     "@create-node-app/eslint-config": "*",
-    "husky": "^8.0.2",
+    "husky": "^9.0.6",
     "is-ci": "^3.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
