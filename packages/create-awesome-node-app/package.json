@@ -47,7 +47,7 @@
   "dependencies": {
     "@create-node-app/core": "*",
     "axios": "^1.6.0",
-    "ci-info": "^3.8.0",
+    "ci-info": "^4.0.0",
     "prompts": "^2.4.1",
     "semver": "^5.7.2",
     "yargs": "^17.0.1"
