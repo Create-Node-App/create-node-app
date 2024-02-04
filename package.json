@@ -23,7 +23,7 @@
     "@create-node-app/eslint-config": "*",
     "husky": "^9.0.6",
     "is-ci": "^3.0.1",
-    "lint-staged": "^13.0.3",
+    "lint-staged": "^15.2.1",
     "prettier": "^2.7.1",
     "turbo": "^1.11.3"
   },
