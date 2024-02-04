@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.15
+
+### Patch Changes
+
+- Updated run fallbacks
+
 ## 0.3.14
 
 ### Patch Changes

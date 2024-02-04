@@ -327,7 +327,7 @@ const run = async ({
     fs.readFileSync(`${root}/package.json`, "utf8")
   );
 
-  const lookForScripts = ["sls:offline", "dev", "start"];
+  const lookForScripts = ["compose:up", "sls:offline", "dev", "start"];
 
   for (const script of lookForScripts) {
     if (packageJson.scripts && packageJson.scripts[script]) {
