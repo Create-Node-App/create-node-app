@@ -9,7 +9,7 @@
   "dependencies": {
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-config-turbo": "^0.0.4"
+    "eslint-config-turbo": "^1.12.3"
   },
   "publishConfig": {
     "access": "public",
