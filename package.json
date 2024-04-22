@@ -28,7 +28,7 @@
     "turbo": "^1.11.3"
   },
   "dependencies": {
-    "tsup": "^6.2.3"
+    "tsup": "^8.0.2"
   },
   "engines": {
     "npm": ">=7.0.0",
