@@ -29,7 +29,7 @@
     "@types/fs-extra": "^11.0.2",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^18.14.6",
-    "@types/underscore": "^1.11.4",
+    "@types/underscore": "^1.11.15",
     "eslint": "^9.0.0",
     "simple-git": "^3.22.0",
     "tsconfig": "*",
