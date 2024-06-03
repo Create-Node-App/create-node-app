@@ -45,7 +45,7 @@
     "lodash.merge": "^4.6.2",
     "readdirp": "^3.4.0",
     "semver": "^7.5.2",
-    "tsup": "^6.2.3",
+    "tsup": "^8.1.0",
     "underscore": "^1.10.2"
   }
 }

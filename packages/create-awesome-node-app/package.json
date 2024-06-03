@@ -58,6 +58,6 @@
     "@types/prompts": "^2.4.9",
     "@types/yargs": "^17.0.22",
     "eslint": "^9.0.0",
-    "tsup": "^6.2.3"
+    "tsup": "^8.1.0"
   }
 }
