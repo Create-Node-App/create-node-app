@@ -1,5 +1,13 @@
 # @create-node-app/eslint-config-next
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated version
+- Updated dependencies
+  - @create-node-app/eslint-config-ts@0.0.2
+
 ## 0.0.1
 
 ### Patch Changes
