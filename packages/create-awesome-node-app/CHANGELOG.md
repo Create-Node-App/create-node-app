@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.4.25
+
+### Patch Changes
+
+- 0515e1d: Updated CLI options
+- Updated dependencies [0515e1d]
+  - @create-node-app/core@0.3.16
+
 ## 0.4.24
 
 ### Patch Changes

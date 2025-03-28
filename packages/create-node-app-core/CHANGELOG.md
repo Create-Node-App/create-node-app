@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.16
+
+### Patch Changes
+
+- 0515e1d: Updated CLI options
+
 ## 0.3.15
 
 ### Patch Changes
