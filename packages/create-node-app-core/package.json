@@ -30,7 +30,9 @@
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^18.14.6",
     "@types/underscore": "^1.11.4",
-    "eslint": "^9.0.0",
+    "eslint": "^7.23.0",
+    "eslint-config-turbo": "^0.0.4",
+    "eslint-plugin-turbo": "^0.0.4",
     "simple-git": "^3.22.0",
     "tsconfig": "*",
     "typescript": "^4.5.2"

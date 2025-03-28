@@ -58,7 +58,9 @@
     "@types/node": "^18.14.6",
     "@types/prompts": "^2.4.9",
     "@types/yargs": "^17.0.22",
-    "eslint": "^9.0.0",
-    "tsup": "^6.2.3"
+    "eslint": "^7.23.0",
+    "eslint-config-turbo": "^0.0.4",
+    "tsup": "^6.2.3",
+    "eslint-plugin-turbo": "^0.0.4"
   }
 }

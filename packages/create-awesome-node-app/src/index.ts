@@ -5,7 +5,6 @@ import {
   createNodeApp,
   checkForLatestVersion,
   checkNodeVersion,
-  CnaOptions,
 } from "@create-node-app/core";
 import { getCnaOptions } from "./options";
 import packageJson from "../package.json";
@@ -37,7 +36,7 @@ const main = async () => {
     .option("--use-yarn", "use yarn instead of npm or pnpm")
     .option("--use-pnpm", "use pnpm instead of yarn or npm")
     .option("--interactive", "run in interactive mode to select options", false)
-    .action((providedProjectName, _options) => {
+    .action((providedProjectName: string | undefined) => {
       projectName = providedProjectName || projectName;
     });
 
