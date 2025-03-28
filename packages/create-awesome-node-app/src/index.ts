@@ -1,13 +1,17 @@
-import program from "commander";
+import { Command } from "commander";
 import chalk from "chalk";
 import semver from "semver";
 import {
   createNodeApp,
   checkForLatestVersion,
   checkNodeVersion,
+  CnaOptions,
 } from "@create-node-app/core";
 import { getCnaOptions } from "./options";
 import packageJson from "../package.json";
+import { TemplateOrExtension } from "@create-node-app/core/loaders";
+
+const program = new Command();
 
 const main = async () => {
   let projectName = "my-project";
@@ -16,31 +20,33 @@ const main = async () => {
     .version(packageJson.version)
     .arguments("[project-directory]")
     .usage(`${chalk.green("[project-directory]")} [options]`)
-    .action((name) => {
-      projectName = name || projectName;
-    })
-    .option("--verbose", "print additional logs")
-    .option("--info", "print environment debug info")
+    .option("-v, --verbose", "print additional logs")
+    .option("-i, --info", "print environment debug info")
     .option(
       "--no-install",
       "Generate package.json without installing dependencies"
     )
     .option(
-      "--template <template>",
+      "-t, --template <template>",
       "specify a template for the created project"
     )
     .option(
-      "--extend [extensions...]",
+      "--addons [extensions...]",
       "specify extensions to apply for the boilerplate generation"
     )
     .option("--use-yarn", "use yarn instead of npm or pnpm")
     .option("--use-pnpm", "use pnpm instead of yarn or npm")
-    .parse(process.argv);
+    .option("--interactive", "run in interactive mode to select options", false)
+    .action((providedProjectName, _options) => {
+      projectName = providedProjectName || projectName;
+    });
 
+  program.parse(process.argv);
+
+  const opts = program.opts();
   checkNodeVersion(packageJson.engines.node, packageJson.name);
 
   const latest = await checkForLatestVersion("create-awesome-node-app");
-
   if (latest && semver.lt(packageJson.version, latest)) {
     console.log();
     console.error(
@@ -52,19 +58,26 @@ const main = async () => {
     return;
   }
 
-  const { useYarn, usePnpm, ...opts } = program.opts();
+  const options = await getCnaOptions({ ...opts, projectName });
 
+  const { useYarn, usePnpm, ...restOptions } = options;
   const packageManager = useYarn ? "yarn" : usePnpm ? "pnpm" : "npm";
-  const templatesOrExtensions = [opts.template]
-    .concat(opts.extend || [])
-    .filter(Boolean)
-    .map((templateOrExtension) => ({
-      url: templateOrExtension,
-    }));
+
+  const templatesOrExtensions: TemplateOrExtension[] = [restOptions.template]
+    .concat(Array.isArray(restOptions.addons) ? restOptions.addons : [])
+    .concat(Array.isArray(restOptions.extend) ? restOptions.extend : [])
+    .reduce((acc, templateOrExtension) => {
+      if (!templateOrExtension) {
+        return acc;
+      }
+      return acc.concat({
+        url: templateOrExtension,
+      });
+    }, [] as TemplateOrExtension[]);
 
   return createNodeApp(
     projectName,
-    { ...opts, packageManager, templatesOrExtensions, projectName },
+    { ...restOptions, packageManager, templatesOrExtensions, projectName },
     getCnaOptions
   );
 };

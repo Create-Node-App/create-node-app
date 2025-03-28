@@ -6,6 +6,7 @@ const TEMPLATE_DATA_FILE_URL =
 
 export type TemplateOrExtensionData = {
   name: string;
+  slug: string;
   description: string;
   url: string;
   category: string;
@@ -64,7 +65,13 @@ const getTemplateData = async () => {
   return templateDataCache.data;
 };
 
-export const getTemplateCategories = async () => {
+export const getTemplateCategories = async (
+  cliArgs?: Record<string, string>
+) => {
+  if (cliArgs?.category) {
+    return [cliArgs.category];
+  }
+
   const templateData = await getTemplateData();
 
   // Ensure that the categories are unique
@@ -77,18 +84,31 @@ export const getTemplateCategories = async () => {
   return Array.from(categories);
 };
 
-export const getTemplatesForCategory = async (category: string) => {
+export const getTemplatesForCategory = async (
+  category?: string,
+  cliArgs?: Record<string, string>
+) => {
+  const selectedCategory = cliArgs?.category || category;
+  if (!selectedCategory) {
+    throw new Error("Category is required in non-interactive mode.");
+  }
+
   const templateData = await getTemplateData();
 
   const templates = templateData.templates.filter(
-    (template) => template.category === category
+    (template) => template.category === selectedCategory
   );
 
   return templates;
 };
 
-export const getExtensionsGroupedByCategory = async (type: ExtensionType) => {
-  const safeType = Array.isArray(type) ? type : [type];
+export const getExtensionsGroupedByCategory = async (
+  type: ExtensionType,
+  cliArgs?: Record<string, string>
+) => {
+  const selectedType = cliArgs?.type ? cliArgs.type.split(",") : type;
+
+  const safeType = Array.isArray(selectedType) ? selectedType : [selectedType];
 
   const templateData = await getTemplateData();
 

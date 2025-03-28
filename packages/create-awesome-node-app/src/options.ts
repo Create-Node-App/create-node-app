@@ -8,20 +8,87 @@ import {
   getTemplateCategories,
   getTemplatesForCategory,
   getExtensionsGroupedByCategory,
+  TemplateData,
 } from "./templates";
 
 const PACKAGE_MANAGERS = ["npm", "yarn", "pnpm"];
 
-export const getCnaOptions = async (options: CnaOptions) => {
-  if (isCI) {
+const isValidUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const getCnaOptions = async (
+  options: CnaOptions
+): Promise<CnaOptions> => {
+  const categories = await getTemplateCategories();
+
+  if (isCI || !options.interactive) {
+    let matchedTemplate: TemplateData | undefined;
+
+    // Handle cases where templates/extensions are not valid URLs
+    if (options.template && !isValidUrl(options.template)) {
+      const allTemplates = (
+        await Promise.all(
+          categories.map((category) => getTemplatesForCategory(category))
+        )
+      ).flat();
+      matchedTemplate = allTemplates.find(
+        (template) => template.slug === options.template
+      );
+      if (matchedTemplate) {
+        options.template = matchedTemplate.url;
+
+        // Apply initial values for custom options
+        if (matchedTemplate.customOptions) {
+          matchedTemplate.customOptions.forEach((customOption) => {
+            if (customOption.name && customOption.initial !== undefined) {
+              options[customOption.name] = customOption.initial;
+            }
+          });
+        }
+      } else {
+        throw new Error(
+          `Invalid template slug: '${options.template}'. Please provide a valid template slug.`
+        );
+      }
+    }
+
+    if (options.addons && Array.isArray(options.addons)) {
+      const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
+        matchedTemplate?.type || "custom",
+        "all",
+      ]);
+
+      options.addons = options.addons.map((addon) => {
+        if (!isValidUrl(addon)) {
+          for (const extensions of Object.values(extensionsGroupedByCategory)) {
+            const matchedExtension = extensions.find(
+              (extension) => extension.slug === addon
+            );
+            if (matchedExtension) {
+              return matchedExtension.url;
+            }
+          }
+          throw new Error(
+            `Invalid extension slug: '${addon}'. Please provide a valid extension slug.`
+          );
+        }
+        return addon;
+      });
+    }
+
+    // Non-interactive mode: Use provided options directly
     if (options.verbose) {
       console.log(JSON.stringify(options, null, 2));
     }
 
     return options;
   }
-
-  const categories = await getTemplateCategories();
 
   const categoriesOptions = [
     ...categories.map((category) => ({
