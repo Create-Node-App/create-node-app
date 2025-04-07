@@ -1,5 +1,13 @@
 # @create-node-app/eslint-config-ts
 
+## 0.0.3
+
+### Patch Changes
+
+- Added new flags
+- Updated dependencies
+  - @create-node-app/eslint-config@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

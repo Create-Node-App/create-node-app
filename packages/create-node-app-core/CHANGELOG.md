@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.3.18
+
+### Patch Changes
+
+- Added new flags
+
 ## 0.3.17
 
 ### Patch Changes
