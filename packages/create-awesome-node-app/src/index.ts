@@ -9,6 +9,7 @@ import {
 import { getCnaOptions } from "./options";
 import packageJson from "../package.json";
 import { TemplateOrExtension } from "@create-node-app/core/loaders";
+import { listTemplates, listAddons } from "./list";
 
 const program = new Command();
 
@@ -36,6 +37,8 @@ const main = async () => {
     .option("--use-yarn", "use yarn instead of npm or pnpm")
     .option("--use-pnpm", "use pnpm instead of yarn or npm")
     .option("--interactive", "run in interactive mode to select options", false)
+    .option("--list-templates", "list all available templates")
+    .option("--list-addons", "list all available addons")
     .action((providedProjectName: string | undefined) => {
       projectName = providedProjectName || projectName;
     });
@@ -57,14 +60,26 @@ const main = async () => {
     return;
   }
 
-  const options = await getCnaOptions({ ...opts, projectName });
+  // Handle list templates flag
+  if (opts.listTemplates) {
+    await listTemplates();
+    return;
+  }
 
-  const { useYarn, usePnpm, ...restOptions } = options;
+  // Handle list addons flag
+  if (opts.listAddons) {
+    await listAddons({
+      templateSlug: opts.template,
+    });
+    return;
+  }
+
+  // Extract package manager options directly from opts
+  const { useYarn, usePnpm, ...restOpts } = opts;
   const packageManager = useYarn ? "yarn" : usePnpm ? "pnpm" : "npm";
 
-  const templatesOrExtensions: TemplateOrExtension[] = [restOptions.template]
-    .concat(Array.isArray(restOptions.addons) ? restOptions.addons : [])
-    .concat(Array.isArray(restOptions.extend) ? restOptions.extend : [])
+  const templatesOrExtensions: TemplateOrExtension[] = [restOpts.template]
+    .concat(Array.isArray(restOpts.extend) ? restOpts.extend : [])
     .reduce((acc, templateOrExtension) => {
       if (!templateOrExtension) {
         return acc;
@@ -76,7 +91,7 @@ const main = async () => {
 
   return createNodeApp(
     projectName,
-    { ...restOptions, packageManager, templatesOrExtensions, projectName },
+    { ...restOpts, packageManager, templatesOrExtensions, projectName },
     getCnaOptions
   );
 };

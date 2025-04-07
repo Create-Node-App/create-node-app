@@ -67,6 +67,21 @@ create-awesome-node-app --template react-vite-boilerplate --addons jotai materia
 
 This example uses the `react-vite-boilerplate` template and applies the `jotai`, `material-ui`, and `github-setup` extensions.
 
+### Listing Templates and Addons
+
+You can list all available templates and addons using the following flags:
+
+```sh
+# List all available templates
+create-awesome-node-app --list-templates
+
+# List all available addons
+create-awesome-node-app --list-addons
+
+# List addons compatible with a specific template
+create-awesome-node-app --template react-vite-boilerplate --list-addons
+```
+
 ## 🔗 Full List of Templates and Extensions
 
 You can find the full list of available templates and extensions in the [cna-templates repository](https://github.com/Create-Node-App/cna-templates).

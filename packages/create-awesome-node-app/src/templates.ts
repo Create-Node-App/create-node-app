@@ -28,9 +28,18 @@ export type ExtensionData = TemplateOrExtensionData & {
   type: ExtensionType;
 };
 
+export type CategoryData = {
+  slug: string;
+  name: string;
+  description: string;
+  details: string;
+  labels: string[];
+};
+
 export type Templates = {
   templates: TemplateData[];
   extensions: ExtensionData[];
+  categories: CategoryData[];
 };
 
 const CACHE_TTL_MS = 3600000; // Cache data for 1 hour
@@ -74,7 +83,12 @@ export const getTemplateCategories = async (
 
   const templateData = await getTemplateData();
 
-  // Ensure that the categories are unique
+  // If categories are available in the data, use them
+  if (templateData.categories && templateData.categories.length > 0) {
+    return templateData.categories.map((category) => category.slug);
+  }
+
+  // Fallback to the old method of extracting categories from templates
   const categories = new Set<string>();
 
   templateData.templates.forEach((template) => {
@@ -82,6 +96,20 @@ export const getTemplateCategories = async (
   });
 
   return Array.from(categories);
+};
+
+export const getCategoryData = async (
+  categorySlug: string
+): Promise<CategoryData | undefined> => {
+  const templateData = await getTemplateData();
+
+  if (templateData.categories && templateData.categories.length > 0) {
+    return templateData.categories.find(
+      (category) => category.slug === categorySlug
+    );
+  }
+
+  return undefined;
 };
 
 export const getTemplatesForCategory = async (

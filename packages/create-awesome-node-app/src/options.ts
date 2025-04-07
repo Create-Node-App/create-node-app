@@ -8,6 +8,7 @@ import {
   getTemplateCategories,
   getTemplatesForCategory,
   getExtensionsGroupedByCategory,
+  getCategoryData,
   TemplateData,
 } from "./templates";
 
@@ -22,49 +23,56 @@ const isValidUrl = (url: string): boolean => {
   }
 };
 
-export const getCnaOptions = async (
+/**
+ * Process template and addons in non-interactive mode
+ */
+const processNonInteractiveOptions = async (
   options: CnaOptions
 ): Promise<CnaOptions> => {
   const categories = await getTemplateCategories();
+  let matchedTemplate: TemplateData | undefined;
+  const templatesOrExtensions: TemplateOrExtension[] = [];
 
-  if (isCI || !options.interactive) {
-    let matchedTemplate: TemplateData | undefined;
+  // Handle cases where templates/extensions are not valid URLs
+  if (options.template && !isValidUrl(options.template)) {
+    const allTemplates = (
+      await Promise.all(
+        categories.map((category) => getTemplatesForCategory(category))
+      )
+    ).flat();
+    matchedTemplate = allTemplates.find(
+      (template) => template.slug === options.template
+    );
+    if (matchedTemplate) {
+      // Add the template to templatesOrExtensions
+      templatesOrExtensions.push({ url: matchedTemplate.url });
 
-    // Handle cases where templates/extensions are not valid URLs
-    if (options.template && !isValidUrl(options.template)) {
-      const allTemplates = (
-        await Promise.all(
-          categories.map((category) => getTemplatesForCategory(category))
-        )
-      ).flat();
-      matchedTemplate = allTemplates.find(
-        (template) => template.slug === options.template
-      );
-      if (matchedTemplate) {
-        options.template = matchedTemplate.url;
-
-        // Apply initial values for custom options
-        if (matchedTemplate.customOptions) {
-          matchedTemplate.customOptions.forEach((customOption) => {
-            if (customOption.name && customOption.initial !== undefined) {
-              options[customOption.name] = customOption.initial;
-            }
-          });
-        }
-      } else {
-        throw new Error(
-          `Invalid template slug: '${options.template}'. Please provide a valid template slug.`
-        );
+      // Apply initial values for custom options
+      if (matchedTemplate.customOptions) {
+        matchedTemplate.customOptions.forEach((customOption) => {
+          if (customOption.name && customOption.initial !== undefined) {
+            options[customOption.name] = customOption.initial;
+          }
+        });
       }
+    } else {
+      throw new Error(
+        `Invalid template slug: '${options.template}'. Please provide a valid template slug.`
+      );
     }
+  } else if (options.template) {
+    // If it's a valid URL, add it directly to templatesOrExtensions
+    templatesOrExtensions.push({ url: options.template });
+  }
 
-    if (options.addons && Array.isArray(options.addons)) {
-      const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
-        matchedTemplate?.type || "custom",
-        "all",
-      ]);
+  if (options.addons && Array.isArray(options.addons)) {
+    const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
+      matchedTemplate?.type || "custom",
+      "all",
+    ]);
 
-      options.addons = options.addons.map((addon) => {
+    const extensions = options.addons
+      .map((addon) => {
         if (!isValidUrl(addon)) {
           for (const extensions of Object.values(extensionsGroupedByCategory)) {
             const matchedExtension = extensions.find(
@@ -79,21 +87,56 @@ export const getCnaOptions = async (
           );
         }
         return addon;
-      });
-    }
+      })
+      .map((addon) => ({ url: addon }));
 
-    // Non-interactive mode: Use provided options directly
-    if (options.verbose) {
-      console.log(JSON.stringify(options, null, 2));
-    }
-
-    return options;
+    templatesOrExtensions.push(...extensions);
   }
 
+  // Add any additional extensions from the extend option
+  if (options.extend && Array.isArray(options.extend)) {
+    const additionalExtensions = options.extend
+      .filter(Boolean)
+      .map((extension) => ({ url: extension }));
+    templatesOrExtensions.push(...additionalExtensions);
+  }
+
+  // Set the templatesOrExtensions in the options
+  options.templatesOrExtensions = templatesOrExtensions;
+
+  // Non-interactive mode: Use provided options directly
+  if (options.verbose) {
+    console.log(JSON.stringify(options, null, 2));
+  }
+
+  return options;
+};
+
+/**
+ * Process options in interactive mode
+ */
+const processInteractiveOptions = async (
+  options: CnaOptions
+): Promise<CnaOptions> => {
+  const categories = await getTemplateCategories();
+
+  // Get category data for each category
+  const categoryDataPromises = categories.map(async (categorySlug) => {
+    const categoryData = await getCategoryData(categorySlug);
+    return {
+      slug: categorySlug,
+      name: categoryData?.name || categorySlug,
+      description: categoryData?.description || "",
+    };
+  });
+
+  const categoryDataList = await Promise.all(categoryDataPromises);
+
   const categoriesOptions = [
-    ...categories.map((category) => ({
-      title: category,
-      value: category,
+    ...categoryDataList.map((category) => ({
+      title: category.name,
+      value: category.slug,
+      description: category.description,
     })),
     {
       title: "None of the above",
@@ -202,13 +245,19 @@ export const getCnaOptions = async (
     "all",
   ]);
 
-  for (const [category, extensions] of Object.entries(
+  for (const [categorySlug, extensions] of Object.entries(
     extensionsGroupedByCategory
   )) {
+    const categoryData = await getCategoryData(categorySlug);
+    const categoryName = categoryData?.name || categorySlug;
+    const categoryDescription = categoryData?.description || "";
+
     const { selected } = await prompts({
       type: "multiselect",
       name: "selected",
-      message: `Select extensions for ${category}`,
+      message: `Select extensions for ${categoryName}${
+        categoryDescription ? `: ${categoryDescription}` : ""
+      }`,
       choices: extensions.map((extension) => ({
         title: extension.name,
         value: extension.url,
@@ -269,4 +318,22 @@ export const getCnaOptions = async (
   }
 
   return nextOptions;
+};
+
+/**
+ * Main function to get CNA options
+ * Determines whether to use interactive or non-interactive mode
+ */
+export const getCnaOptions = async (
+  options: CnaOptions
+): Promise<CnaOptions> => {
+  // Determine if we should use interactive mode
+  const shouldUseInteractiveMode = !isCI && options.interactive;
+
+  // Process options based on mode
+  if (shouldUseInteractiveMode) {
+    return processInteractiveOptions(options);
+  } else {
+    return processNonInteractiveOptions(options);
+  }
 };
