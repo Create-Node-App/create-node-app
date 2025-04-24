@@ -35,7 +35,7 @@
     "eslint-plugin-turbo": "^0.0.4",
     "simple-git": "^3.22.0",
     "tsconfig": "*",
-    "typescript": "^4.5.2"
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "chalk": "^4.1.0",
