@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.4.0
+
+### Minor Changes
+
+- Added AI support
+
 ## 0.3.18
 
 ### Patch Changes

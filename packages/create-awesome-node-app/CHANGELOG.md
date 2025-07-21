@@ -1,5 +1,16 @@
 # create-awesome-node-app
 
+## 0.5.0
+
+### Minor Changes
+
+- Added AI support
+
+### Patch Changes
+
+- Updated dependencies
+  - @create-node-app/core@0.4.0
+
 ## 0.4.27
 
 ### Patch Changes
