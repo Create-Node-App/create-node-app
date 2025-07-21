@@ -101,6 +101,15 @@ const processNonInteractiveOptions = async (
     templatesOrExtensions.push(...additionalExtensions);
   }
 
+  // Set default for aiTool if not provided
+  if (
+    options.aiTool &&
+    !["cursor", "copilot", "none"].includes(options.aiTool)
+  ) {
+    throw new Error("Invalid --ai-tool option. Use: cursor, copilot, or none");
+  }
+  options.aiTool = options.aiTool || "none";
+
   // Set the templatesOrExtensions in the options
   options.templatesOrExtensions = templatesOrExtensions;
 
@@ -163,6 +172,29 @@ const processInteractiveOptions = async (
       initial: options.packageManager
         ? PACKAGE_MANAGERS.indexOf(options.packageManager)
         : 0,
+    },
+    {
+      type: "select",
+      name: "aiTool",
+      message: "Which AI coding tool would you like to configure?",
+      choices: [
+        {
+          title: "Cursor Rules",
+          value: "cursor",
+          description: "Add .cursorrules configuration for Cursor IDE",
+        },
+        {
+          title: "GitHub Copilot Instructions",
+          value: "copilot",
+          description: "Add .github/copilot-instructions.md for GitHub Copilot",
+        },
+        {
+          title: "None",
+          value: "none",
+          description: "Don't add any AI tool configuration",
+        },
+      ],
+      initial: 2, // Default to "None"
     },
     {
       type: "select",
@@ -297,6 +329,7 @@ const processInteractiveOptions = async (
 
   const { ...nextAppOptions } = {
     extend: [],
+    aiTool: "none", // Default value
     ...options,
     ...baseInput,
     ...templateInput,

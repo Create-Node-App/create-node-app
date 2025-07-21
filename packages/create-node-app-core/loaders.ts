@@ -149,6 +149,23 @@ const batchedAppendFiles = async (
   await Promise.all(batchedPromises);
 };
 
+const getAiToolFilters = (aiTool: string) => {
+  const filters = [];
+
+  if (aiTool !== "cursor") {
+    filters.push("!.cursorrules", "!**/.cursorrules");
+  }
+
+  if (aiTool !== "copilot") {
+    filters.push(
+      "!.github/copilot-instructions.md",
+      "!**/.github/copilot-instructions.md"
+    );
+  }
+
+  return filters;
+};
+
 const copyLoader: FileLoader =
   ({ root, templateDir, verbose, srcDir }) =>
   async ({ path }) => {
@@ -335,6 +352,11 @@ export const loadFiles = async ({
         fs.existsSync(templateDir) &&
         fs.statSync(templateDir).isDirectory()
       ) {
+        // Get AI tool filters based on user choice
+        const aiToolFilters = getAiToolFilters(
+          String(customOptions.aiTool || "none")
+        );
+
         for await (const entry of readdirp(templateDir, {
           fileFilter: [
             "!package.js",
@@ -343,6 +365,8 @@ export const loadFiles = async ({
             "!template.json",
             "!yarn.lock",
             "!pnpm-lock.yaml",
+            // AI tool filters - exclude files not needed
+            ...aiToolFilters,
             // based on the package manager we want to ignore files containing
             // the other package as condition.
             // For example, if `usePnpm` is true, the we need to ignore

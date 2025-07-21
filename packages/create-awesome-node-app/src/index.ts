@@ -36,6 +36,10 @@ const main = async () => {
     )
     .option("--use-yarn", "use yarn instead of npm or pnpm")
     .option("--use-pnpm", "use pnpm instead of yarn or npm")
+    .option(
+      "--ai-tool <tool>",
+      "specify AI tool configuration (cursor, copilot, none)"
+    )
     .option("--interactive", "run in interactive mode to select options", false)
     .option("--list-templates", "list all available templates")
     .option("--list-addons", "list all available addons")
