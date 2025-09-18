@@ -17,7 +17,7 @@ jobs:
           node-version-file: .node-version
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run type-check validation
         run: npm run type-check --if-present

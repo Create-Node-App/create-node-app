@@ -17,7 +17,7 @@ jobs:
           node-version-file: .node-version
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run linter validation
         run: npm run lint
