@@ -80,6 +80,7 @@ const main = async () => {
   const packageManager = useYarn ? "yarn" : usePnpm ? "pnpm" : "npm";
 
   const templatesOrExtensions: TemplateOrExtension[] = [restOpts.template]
+    .concat(Array.isArray(restOpts.extend) ? restOpts.extend : [])
     .filter(Boolean)
     .reduce((acc, templateOrExtension) => {
       if (!templateOrExtension) return acc;

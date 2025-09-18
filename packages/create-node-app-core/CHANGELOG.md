@@ -1,5 +1,27 @@
 # @create-node-app/core
 
+## 0.5.5
+
+### Patch Changes
+
+- Fix scaffolding so full template file tree is copied instead of producing an almost empty project.
+
+  Highlights:
+  - Repair file discovery: removed broken readdirp negative-only filter that yielded 0 matches; now enumerate all files then apply internal skip rules.
+  - Correct handling of special `[src]/` token directories so template source files land in the configured `srcDir`.
+  - Add missing runtime dependency `fs-extra` (previously only implicitly relied upon) to prevent potential runtime module resolution errors.
+  - Fix `appendTemplate` mapping so templated append operations render correctly (was incorrectly using plain append loader).
+  - Add verbose debug logs (behind `--verbose`) for template directory resolution, first discovered file, and total operations count to ease future diagnostics.
+  - Strengthen smoke test to assert presence of critical scaffold artifacts (e.g. `README.md`, `tsconfig.json`, `index.html`, `eslint.config.mjs`, `src/App.tsx`, `src/main.tsx`).
+
+  Result: Running the CLI now prepares and copies ~50 operations for the React Vite starter template (previously 0), restoring expected developer experience.
+
+## 0.5.4
+
+### Patch Changes
+
+- Fix
+
 ## 0.5.2
 
 ### Patch Changes

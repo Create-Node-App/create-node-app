@@ -1,6 +1,6 @@
 {
   "name": "create-awesome-node-app",
-  "version": "0.6.2",
+  "version": "0.6.6",
   "type": "module",
   "description": "Command line tool to create Node apps with a lot of different templates and extensions.",
   "license": "MIT",
@@ -28,7 +28,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./index.js"
+      "import": "./index.js",
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
@@ -52,7 +53,7 @@
     "test": "node --test tests/**/*.test.mjs"
   },
   "dependencies": {
-    "@create-node-app/core": "*",
+    "@create-node-app/core": "^0.5.5",
     "axios": "^1.12.2",
     "ci-info": "^4.3.0",
     "commander": "^14.0.1",

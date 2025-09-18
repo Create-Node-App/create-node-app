@@ -9,6 +9,9 @@ import { promisify } from "util";
 const writeFileAsync = promisify(fs.writeFile);
 const copyFileAsync = promisify(fs.copyFile);
 
+// Token used inside templates to denote the source directory.
+// Templates name a directory literally `[src]` and files inside like `[src]/App.tsx.template`.
+// We map the prefix `[src]/` to the selected srcDir (e.g. `src/`).
 const SRC_PATH_PATTERN = "[src]/";
 const DEFAULT_SRC_PATH = "src/";
 
@@ -149,8 +152,6 @@ const batchedAppendFiles = async (
   await Promise.all(batchedPromises);
 };
 
-// AI tool specific filters removed (cursor/copilot). All files now processed uniformly.
-
 const copyLoader: FileLoader =
   ({ root, templateDir, verbose, srcDir }) =>
   async ({ path }) => {
@@ -271,8 +272,9 @@ const fileLoader: FileLoader =
         copy: copyLoader,
         append: appendLoader,
         copyTemplate: templateLoader,
-        appendTemplate: appendLoader,
-      };
+        // appendTemplate means treat as a template (interpolate) but append instead of overwrite
+        appendTemplate: templateLoader,
+      } as const;
 
       await loaders[mode]({
         root,
@@ -332,31 +334,55 @@ export const loadFiles = async ({
     const operations = [];
     for await (const { url: templateOrExtensionUrl } of templatesOrExtensions) {
       const templateDir = await getTemplateDirPath(templateOrExtensionUrl);
+      if (verbose) {
+        try {
+          const stat = fs.existsSync(templateDir)
+            ? fs.statSync(templateDir)
+            : undefined;
+          console.log(
+            pc.dim(
+              `[cna] Template dir resolved: ${templateDir} exists=${!!stat} isDir=$${stat?.isDirectory?.()}`,
+            ),
+          );
+        } catch {
+          // ignore
+        }
+      }
 
       if (
         fs.existsSync(templateDir) &&
         fs.statSync(templateDir).isDirectory()
       ) {
+        // readdirp requires at least one positive pattern when using negations; we'll include '**/*'
+        // and then filter out undesired files. This ensures templates are actually discovered.
+        let debugFirst = true;
+        // Collect all file entries without filters then skip undesired patterns manually
+        const skipGlobs = [
+          /\bpackage\.js$/,
+          /\bpackage\.json$/,
+          /\bpackage-lock\.json$/,
+          /\btemplate\.json$/,
+          /\byarn\.lock$/,
+          /\bpnpm-lock\.yaml$/,
+        ];
+        const skipManager = usePnpm
+          ? [/\.if-npm\./, /\.if-yarn\./]
+          : useYarn
+            ? [/\.if-npm\./, /\.if-pnpm\./]
+            : [/\.if-yarn\./, /\.if-pnpm\./];
+        const shouldSkip = (p: string) =>
+          [...skipGlobs, ...skipManager].some((rgx) => rgx.test(p));
+
         for await (const entry of readdirp(templateDir, {
-          fileFilter: [
-            "!package.js",
-            "!package.json",
-            "!package-lock.json",
-            "!template.json",
-            "!yarn.lock",
-            "!pnpm-lock.yaml",
-            // based on the package manager we want to ignore files containing
-            // the other package as condition.
-            // For example, if `usePnpm` is true, the we need to ignore
-            // all files with `.if-npm` or `.if-yarn` somewhere in the name.
-            ...(usePnpm
-              ? ["!*.if-npm.*", "!*.if-yarn.*"]
-              : useYarn
-                ? ["!*.if-npm.*", "!*.if-pnpm.*"]
-                : ["!*.if-yarn.*", "!*.if-pnpm.*"]),
-          ],
-          directoryFilter: ["!package"],
+          type: "files",
+          alwaysStat: false,
         })) {
+          if (shouldSkip(entry.path)) continue;
+          if (entry.path.startsWith("package/")) continue; // skip helper package dir
+          if (verbose && debugFirst) {
+            console.log(pc.dim(`[cna] First discovered file: ${entry.path}`));
+            debugFirst = false;
+          }
           operations.push({
             root,
             templateDir,
@@ -372,6 +398,21 @@ export const loadFiles = async ({
             ...customOptions,
           });
         }
+      }
+    }
+
+    if (verbose) {
+      console.log(
+        pc.dim(
+          `[cna] Prepared ${operations.length} file operations from ${templatesOrExtensions.length} template(s)`,
+        ),
+      );
+      if (operations.length === 0) {
+        console.log(
+          pc.yellow(
+            "[cna] No files discovered. Check that the template repository was cloned and fileFilter patterns are correct.",
+          ),
+        );
       }
     }
 

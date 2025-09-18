@@ -1,6 +1,6 @@
 {
   "name": "@create-node-app/core",
-  "version": "0.5.2",
+  "version": "0.5.5",
   "type": "module",
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
@@ -27,8 +27,8 @@
     "lint": "eslint '**/*.{ts,tsx,js}'",
     "lint:fix": "eslint '**/*.{ts,tsx,js}' --fix",
     "type-check": "tsc --noEmit",
-    "build": "tsup ./index.ts --format esm,cjs --dts --external simple-git,fs,path,child_process --no-splitting",
-    "dev": "tsup ./index.ts --format esm,cjs --watch --dts --external simple-git,fs,path,child_process --no-splitting"
+    "build": "tsup ./index.ts --format esm,cjs --dts --no-splitting",
+    "dev": "tsup ./index.ts --format esm,cjs --watch --dts --no-splitting"
   },
   "devDependencies": {
     "@create-node-app/eslint-config-ts": "*",
@@ -52,6 +52,7 @@
     "cross-spawn": "^7.0.6",
     "debug": "^4.4.3",
     "envinfo": "^7.14.0",
+    "fs-extra": "^11.2.0",
     "simple-git": "^3.28.0",
     "lodash.merge": "^4.6.2",
     "readdirp": "^4.1.2",

@@ -5,6 +5,7 @@ import { execSync } from "child_process";
 import type { TemplateOrExtension } from "./loaders.js";
 export type { TemplateOrExtension } from "./loaders.js";
 import { createApp } from "./installer.js";
+export { downloadRepository } from "./git.js";
 
 export const checkNodeVersion = (
   requiredVersion: string,

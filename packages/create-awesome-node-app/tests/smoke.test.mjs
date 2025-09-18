@@ -35,6 +35,19 @@ try {
   if (!existsSync(projectDir)) {
     throw new Error('Project directory was not created');
   }
+  // Assert key scaffolded files exist
+  const expectedFiles = [
+    'README.md',
+    'tsconfig.json',
+    'index.html',
+    'eslint.config.mjs',
+    'src/App.tsx',
+    'src/main.tsx'
+  ];
+  const missing = expectedFiles.filter(f => !existsSync(join(projectDir, f)));
+  if (missing.length) {
+    throw new Error('Missing expected scaffold files: ' + missing.join(', '));
+  }
   console.log('Smoke test passed');
 } catch (err) {
   console.error('Smoke test failed:', err.message);
