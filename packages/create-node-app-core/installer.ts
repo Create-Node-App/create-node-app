@@ -1,11 +1,12 @@
 import _ from "underscore";
 import path from "path";
 import fs from "fs";
-import chalk from "chalk";
+import pc from "picocolors";
 import os from "os";
 import semver from "semver";
 import { execSync } from "child_process";
-import simpleGit from "simple-git";
+// Use dynamic import for simple-git to avoid bundlers injecting unsupported dynamic requires in ESM
+import type { SimpleGit, SimpleGitOptions } from "simple-git";
 
 import {
   shouldUseYarn,
@@ -13,9 +14,10 @@ import {
   checkNpmVersion,
   checkIfOnline,
   shouldUsePnpm,
-} from "./helpers";
-import { loadPackages } from "./package";
-import { TemplateOrExtension, loadFiles } from "./loaders";
+} from "./helpers.js";
+import { loadPackages } from "./package.js";
+import type { TemplateOrExtension } from "./loaders.js";
+import { loadFiles } from "./loaders.js";
 
 const install = async (
   root: string,
@@ -24,7 +26,7 @@ const install = async (
   dependencies: string[] = [],
   verbose = false,
   isOnline = true,
-  isDevDependencies = false
+  isDevDependencies = false,
 ) => {
   let command: string;
   let args: string[];
@@ -43,8 +45,8 @@ const install = async (
     args.push(root);
 
     if (!isOnline) {
-      console.log(chalk.yellow("You appear to be offline."));
-      console.log(chalk.yellow("Falling back to the local Yarn cache."));
+      console.log(pc.yellow("You appear to be offline."));
+      console.log(pc.yellow("Falling back to the local Yarn cache."));
       console.log();
     }
   } else if (usePnpm) {
@@ -105,17 +107,17 @@ const runCommandInProjectDir = async (
   command: string,
   args: string[] = [],
   successMessage = "Operation completed successfully.",
-  errorMessage = "Operation failed."
+  errorMessage = "Operation failed.",
 ) => {
   try {
     execSync(`${command} ${args.join(" ")}`, {
       cwd: root,
       stdio: "ignore",
     });
-    console.log(chalk.green(successMessage));
+    console.log(pc.green(successMessage));
   } catch (error) {
     console.log();
-    console.log(chalk.red(errorMessage));
+    console.log(pc.red(errorMessage));
     console.log();
   }
 };
@@ -164,9 +166,9 @@ const run = async ({
   if (_.isEmpty(templatesOrExtensions)) {
     console.log();
     console.log(
-      chalk.yellow(
-        "No templates or extensions specified to bootstrap application."
-      )
+      pc.yellow(
+        "No templates or extensions specified to bootstrap application.",
+      ),
     );
     console.log();
     process.exit(0);
@@ -189,14 +191,14 @@ const run = async ({
   });
 
   console.log();
-  console.log(chalk.green("Successfully scaffolded project."));
+  console.log(pc.green("Successfully scaffolded project."));
   console.log();
 
   if (installDependencies) {
     console.log(
-      chalk.green("Installing packages. This might take a couple of minutes.")
+      pc.green("Installing packages. This might take a couple of minutes."),
     );
-    console.log(chalk.green("Installing dependencies..."));
+    console.log(pc.green("Installing dependencies..."));
     console.log();
     // Install dependencies
     await install(
@@ -206,12 +208,12 @@ const run = async ({
       dependencies,
       verbose,
       isOnline,
-      false
+      false,
     );
 
     if (devDependencies.length > 0) {
       console.log();
-      console.log(chalk.green("Installing devDependencies..."));
+      console.log(pc.green("Installing devDependencies..."));
       console.log();
       // Install devDependencies
       await install(
@@ -221,26 +223,29 @@ const run = async ({
         devDependencies,
         verbose,
         isOnline,
-        true
+        true,
       );
     }
   } else {
-    console.log(chalk.yellow("Skip package installation."));
+    console.log(pc.yellow("Skip package installation."));
     const packageJson = JSON.parse(
-      fs.readFileSync(`${root}/package.json`, "utf8")
+      fs.readFileSync(`${root}/package.json`, "utf8"),
     );
 
     const updateDependencies = (deps: string[]) => {
-      return deps.reduce((dep, elem) => {
-        const nextDep = dep;
-        if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
-          const { name, version } = extractNameAndVersion(elem);
-          nextDep[name] = version;
-        } else {
-          nextDep[elem] = "*";
-        }
-        return nextDep;
-      }, {} as { [key: string]: string });
+      return deps.reduce(
+        (dep, elem) => {
+          const nextDep = dep;
+          if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
+            const { name, version } = extractNameAndVersion(elem);
+            nextDep[name] = version;
+          } else {
+            nextDep[elem] = "*";
+          }
+          return nextDep;
+        },
+        {} as { [key: string]: string },
+      );
     };
 
     packageJson.dependencies = updateDependencies(dependencies);
@@ -248,34 +253,40 @@ const run = async ({
 
     fs.writeFileSync(
       path.join(root, "package.json"),
-      JSON.stringify(packageJson, null, 2) + os.EOL
+      JSON.stringify(packageJson, null, 2) + os.EOL,
     );
 
     console.log();
-    console.log(chalk.green("Successfully updated package.json."));
-    console.log(chalk.yellow(`Run ${chalk.cyan(installCommand)} to install.`));
+    console.log(pc.green("Successfully updated package.json."));
+    console.log(pc.yellow(`Run ${pc.cyan(installCommand)} to install.`));
   }
 
   console.log();
   console.log("Initializing git repository...");
 
   try {
+    const { simpleGit } = (await import("simple-git")) as unknown as {
+      simpleGit: (
+        baseDir?: string,
+        options?: Partial<SimpleGitOptions>,
+      ) => SimpleGit;
+    };
     const git = simpleGit(root);
     await git.init();
-    console.log(chalk.green("Successfully initialized git repository."));
+    console.log(pc.green("Successfully initialized git repository."));
   } catch (error) {
     console.log();
     console.log(
-      chalk.red(
-        "Failed to initialize git repository. Run `git init` to initialize git repository after the process is completed."
-      )
+      pc.red(
+        "Failed to initialize git repository. Run `git init` to initialize git repository after the process is completed.",
+      ),
     );
     console.log();
   }
 
   if (installDependencies && isOnline) {
     const packageJson = JSON.parse(
-      fs.readFileSync(`${root}/package.json`, "utf8")
+      fs.readFileSync(`${root}/package.json`, "utf8"),
     );
 
     const runFormat = async () => {
@@ -285,7 +296,7 @@ const run = async ({
           runCommand,
           ["format"],
           "Successfully formatted code.",
-          `Failed to format code. Run \`${runCommand} format\` to format code after the process is completed.`
+          `Failed to format code. Run \`${runCommand} format\` to format code after the process is completed.`,
         );
       } catch {
         // ignore
@@ -299,7 +310,7 @@ const run = async ({
           runCommand,
           ["lint:fix"],
           "Successfully fixed linting errors.",
-          `Failed to fix linting errors. Run \`${runCommand} lint:fix\` to fix linting errors after the process is completed.`
+          `Failed to fix linting errors. Run \`${runCommand} lint:fix\` to fix linting errors after the process is completed.`,
         );
       } catch {
         // ignore
@@ -316,28 +327,28 @@ const run = async ({
 
   // Print out instructions
   console.log();
-  console.log(chalk.green("Successfully created project " + appName + "."));
+  console.log(pc.green("Successfully created project " + appName + "."));
   console.log();
   console.log("Done! Now run:");
   console.log();
-  console.log(chalk.cyan(`  cd ${appName}`));
-  console.log(chalk.cyan(`  ${installCommand}`));
+  console.log(pc.cyan(`  cd ${appName}`));
+  console.log(pc.cyan(`  ${installCommand}`));
 
   const packageJson = JSON.parse(
-    fs.readFileSync(`${root}/package.json`, "utf8")
+    fs.readFileSync(`${root}/package.json`, "utf8"),
   );
 
   const lookForScripts = ["compose:up", "sls:offline", "dev", "start"];
 
   for (const script of lookForScripts) {
     if (packageJson.scripts && packageJson.scripts[script]) {
-      console.log(chalk.cyan(`  ${runCommand} ${script}`));
+      console.log(pc.cyan(`  ${runCommand} ${script}`));
       break;
     }
   }
 
   console.log();
-  console.log(chalk.green("Happy hacking!"));
+  console.log(pc.green("Happy hacking!"));
 };
 
 export type CreateAppOptions = {
@@ -366,7 +377,7 @@ export const createApp = async ({
     recursive: true,
   });
 
-  console.log(`Creating a new Node app in ${chalk.green(root)}.`);
+  console.log(`Creating a new Node app in ${pc.green(root)}.`);
   console.log();
 
   const useYarn = customOptions.packageManager === "yarn" && shouldUseYarn();
@@ -375,8 +386,8 @@ export const createApp = async ({
   const installCommand = useYarn
     ? "yarn"
     : usePnpm
-    ? "pnpm install"
-    : "npm install";
+      ? "pnpm install"
+      : "npm install";
 
   const { packageJson, dependencies, devDependencies } = await loadPackages({
     templatesOrExtensions,
@@ -389,7 +400,7 @@ export const createApp = async ({
 
   fs.writeFileSync(
     path.join(root, "package.json"),
-    JSON.stringify(packageJson, null, 2) + os.EOL
+    JSON.stringify(packageJson, null, 2) + os.EOL,
   );
 
   const originalDirectory = process.cwd();
@@ -400,10 +411,10 @@ export const createApp = async ({
 
   if (!semver.satisfies(process.version, ">=18.0.0")) {
     console.log(
-      chalk.yellow(
+      pc.yellow(
         `You are using Node ${process.version} so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
-          `Please update to Node 18 or higher for a better, fully supported experience.\n`
-      )
+          `Please update to Node 18 or higher for a better, fully supported experience.\n`,
+      ),
     );
   }
 
@@ -412,10 +423,10 @@ export const createApp = async ({
     if (!npmInfo.hasMinNpm) {
       if (npmInfo.npmVersion) {
         console.log(
-          chalk.yellow(
+          pc.yellow(
             `You are using npm ${npmInfo.npmVersion} so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
-              `Please update to npm 3 or higher for a better, fully supported experience.\n`
-          )
+              `Please update to npm 3 or higher for a better, fully supported experience.\n`,
+          ),
         );
       }
     }
@@ -434,7 +445,7 @@ export const createApp = async ({
       fs.cpSync(
         require.resolve("./yarn.lock.cached"),
         path.join(root, "yarn.lock"),
-        { force: true }
+        { force: true },
       );
     }
   }

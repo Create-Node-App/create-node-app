@@ -1,19 +1,19 @@
 {
   "name": "@create-node-app/eslint-config-ts",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
   "files": [
     "index.js"
   ],
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "eslint": "^7.23.0",
-    "eslint-config-turbo": "^0.0.4",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "eslint": "^9.35.0",
+    "eslint-config-turbo": "^2.5.6",
     "@create-node-app/eslint-config": "*"
   },
   "devDependencies": {
-    "typescript": "^4.7.4"
+    "typescript": "^5.9.2"
   },
   "publishConfig": {
     "access": "public",

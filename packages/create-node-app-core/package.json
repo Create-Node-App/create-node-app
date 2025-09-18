@@ -1,12 +1,22 @@
 {
   "name": "@create-node-app/core",
-  "version": "0.4.0",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
+  "version": "0.5.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "files": [
     "dist/**"
   ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "license": "MIT",
   "publishConfig": {
     "access": "public",
@@ -14,39 +24,39 @@
     "scope": "@create-node-app"
   },
   "scripts": {
-    "lint": "eslint **/*.ts*",
-    "lint:fix": "eslint **/*.ts* --fix",
+    "lint": "eslint '**/*.{ts,tsx,js}'",
+    "lint:fix": "eslint '**/*.{ts,tsx,js}' --fix",
     "type-check": "tsc --noEmit",
-    "build": "tsup ./index.ts --format esm,cjs --dts",
-    "dev": "tsup ./index.ts --format esm,cjs --watch --dts"
+    "build": "tsup ./index.ts --format esm,cjs --dts --external simple-git,fs,path,child_process --no-splitting",
+    "dev": "tsup ./index.ts --format esm,cjs --watch --dts --external simple-git,fs,path,child_process --no-splitting"
   },
   "devDependencies": {
     "@create-node-app/eslint-config-ts": "*",
-    "@types/cross-spawn": "^6.0.2",
+    "@types/cross-spawn": "^6.0.6",
     "@types/debug": "^4.1.12",
-    "@types/download": "^8.0.2",
-    "@types/envinfo": "^7.8.3",
-    "@types/fs-extra": "^11.0.2",
+    "@types/download": "^8.0.5",
+    "@types/envinfo": "^7.8.4",
+    "@types/fs-extra": "^11.0.4",
     "@types/lodash.merge": "^4.6.9",
-    "@types/node": "^18.14.6",
-    "@types/underscore": "^1.11.4",
-    "eslint": "^7.23.0",
-    "eslint-config-turbo": "^0.0.4",
-    "eslint-plugin-turbo": "^0.0.4",
-    "simple-git": "^3.22.0",
+    "@types/node": "^24.5.2",
+    "@types/underscore": "^1.13.0",
+    "@types/semver": "^7.5.8",
+    "eslint": "^9.35.0",
+    "eslint-config-turbo": "^2.5.6",
+    "eslint-plugin-turbo": "^2.5.6",
+    "simple-git": "^3.28.0",
     "tsconfig": "*",
-    "typescript": "^4.5.2"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
-    "cross-spawn": "^6.0.5",
-    "debug": "^4.2.0",
-    "download": "^3.3.0",
-    "envinfo": "^7.11.1",
+    "picocolors": "^1.0.0",
+    "cross-spawn": "^7.0.6",
+    "debug": "^4.4.3",
+    "envinfo": "^7.14.0",
     "lodash.merge": "^4.6.2",
-    "readdirp": "^3.4.0",
-    "semver": "^7.5.2",
-    "tsup": "^6.2.3",
-    "underscore": "^1.10.2"
+    "readdirp": "^4.1.2",
+    "semver": "^7.7.2",
+    "tsup": "^8.5.0",
+    "underscore": "^1.13.7"
   }
 }

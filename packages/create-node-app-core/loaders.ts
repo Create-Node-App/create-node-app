@@ -1,9 +1,9 @@
 import _ from "underscore";
 import fs from "fs";
-import chalk from "chalk";
-import readdirp from "readdirp";
+import pc from "picocolors";
+import { readdirp } from "readdirp";
 import { dirname } from "path";
-import { getTemplateDirPath } from "./paths";
+import { getTemplateDirPath } from "./paths.js";
 import { promisify } from "util";
 
 const writeFileAsync = promisify(fs.writeFile);
@@ -54,12 +54,12 @@ type FileLoaderOptions = {
 };
 
 export type FileLoader = (
-  options: FileLoaderOptions
+  options: FileLoaderOptions,
 ) => (entry: { path: string }) => Promise<void>;
 
 // Batched file copy operation
 const batchedCopyFiles = async (
-  operations: { src: string; dest: string; verbose: boolean }[]
+  operations: { src: string; dest: string; verbose: boolean }[],
 ) => {
   const batchedPromises = operations.map(async (operation) => {
     try {
@@ -67,17 +67,17 @@ const batchedCopyFiles = async (
       await copyFileAsync(operation.src, operation.dest);
       if (operation.verbose) {
         console.log(
-          chalk.green(
-            `Added "${operation.dest}" from "${operation.src}" successfully`
-          )
+          pc.green(
+            `Added "${operation.dest}" from "${operation.src}" successfully`,
+          ),
         );
       }
     } catch (err) {
       console.log(
-        chalk.red(`Cannot copy file ${operation.src} to ${operation.dest}`)
+        pc.red(`Cannot copy file ${operation.src} to ${operation.dest}`),
       );
       if (operation.verbose) {
-        console.log(chalk.red(err));
+        console.log(pc.red(String(err)));
       }
       throw err;
     }
@@ -94,7 +94,7 @@ const batchedWriteFiles = async (
     flag: string;
     verbose: boolean;
     mode?: number;
-  }[]
+  }[],
 ) => {
   const batchedPromises = operations.map(async (operation) => {
     try {
@@ -104,12 +104,12 @@ const batchedWriteFiles = async (
         mode: operation.mode,
       });
       if (operation.verbose) {
-        console.log(chalk.green(`Added "${operation.path}" successfully`));
+        console.log(pc.green(`Added "${operation.path}" successfully`));
       }
     } catch (err) {
-      console.log(chalk.red(`Cannot write file ${operation.path}`));
+      console.log(pc.red(`Cannot write file ${operation.path}`));
       if (operation.verbose) {
-        console.log(chalk.red(err));
+        console.log(pc.red(String(err)));
       }
       throw err;
     }
@@ -120,7 +120,7 @@ const batchedWriteFiles = async (
 
 // Batched file append operation
 const batchedAppendFiles = async (
-  operations: { src: string; dest: string; verbose: boolean }[]
+  operations: { src: string; dest: string; verbose: boolean }[],
 ) => {
   const batchedPromises = operations.map(async (operation) => {
     try {
@@ -137,10 +137,10 @@ const batchedAppendFiles = async (
       ]);
     } catch (err) {
       console.log(
-        chalk.red(`Cannot append file ${operation.src} to ${operation.dest}`)
+        pc.red(`Cannot append file ${operation.src} to ${operation.dest}`),
       );
       if (operation.verbose) {
-        console.log(chalk.red(err));
+        console.log(pc.red(String(err)));
       }
       throw err;
     }
@@ -149,22 +149,7 @@ const batchedAppendFiles = async (
   await Promise.all(batchedPromises);
 };
 
-const getAiToolFilters = (aiTool: string) => {
-  const filters = [];
-
-  if (aiTool !== "cursor") {
-    filters.push("!.cursorrules", "!**/.cursorrules");
-  }
-
-  if (aiTool !== "copilot") {
-    filters.push(
-      "!.github/copilot-instructions.md",
-      "!**/.github/copilot-instructions.md"
-    );
-  }
-
-  return filters;
-};
+// AI tool specific filters removed (cursor/copilot). All files now processed uniformly.
 
 const copyLoader: FileLoader =
   ({ root, templateDir, verbose, srcDir }) =>
@@ -295,8 +280,8 @@ const fileLoader: FileLoader =
         appName,
         originalDirectory,
         verbose,
-        useYarn,
-        usePnpm,
+        useYarn: !!useYarn,
+        usePnpm: !!usePnpm,
         mode,
         srcDir,
         runCommand,
@@ -352,11 +337,6 @@ export const loadFiles = async ({
         fs.existsSync(templateDir) &&
         fs.statSync(templateDir).isDirectory()
       ) {
-        // Get AI tool filters based on user choice
-        const aiToolFilters = getAiToolFilters(
-          String(customOptions.aiTool || "none")
-        );
-
         for await (const entry of readdirp(templateDir, {
           fileFilter: [
             "!package.js",
@@ -365,8 +345,6 @@ export const loadFiles = async ({
             "!template.json",
             "!yarn.lock",
             "!pnpm-lock.yaml",
-            // AI tool filters - exclude files not needed
-            ...aiToolFilters,
             // based on the package manager we want to ignore files containing
             // the other package as condition.
             // For example, if `usePnpm` is true, the we need to ignore
@@ -374,8 +352,8 @@ export const loadFiles = async ({
             ...(usePnpm
               ? ["!*.if-npm.*", "!*.if-yarn.*"]
               : useYarn
-              ? ["!*.if-npm.*", "!*.if-pnpm.*"]
-              : ["!*.if-yarn.*", "!*.if-pnpm.*"]),
+                ? ["!*.if-npm.*", "!*.if-pnpm.*"]
+                : ["!*.if-yarn.*", "!*.if-pnpm.*"]),
           ],
           directoryFilter: ["!package"],
         })) {
@@ -398,7 +376,7 @@ export const loadFiles = async ({
     }
 
     await Promise.all(
-      operations.map((operation) => fileLoader(operation)(operation.entry))
+      operations.map((operation) => fileLoader(operation)(operation.entry)),
     );
   } catch (err) {
     if (verbose) {

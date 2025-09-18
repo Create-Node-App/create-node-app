@@ -1,6 +1,6 @@
 {
   "name": "create-awesome-node-app",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "description": "Command line tool to create Node apps with a lot of different templates and extensions.",
   "license": "MIT",
@@ -22,9 +22,15 @@
     }
   ],
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "main": "index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./index.js"
+    }
+  },
   "files": [
     "index.js",
     "dist/**"
@@ -41,26 +47,28 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "tsup src/index.ts --watch --format cjs,esm --dts",
     "type-check": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "eslint 'src/**/*.{ts,tsx,js}'",
+    "lint:fix": "eslint 'src/**/*.{ts,tsx,js}' --fix",
+    "test": "node --test tests/**/*.test.mjs"
   },
   "dependencies": {
     "@create-node-app/core": "*",
-    "axios": "^1.6.0",
-    "ci-info": "^4.0.0",
-    "commander": "^13.1.0",
-    "prompts": "^2.4.1",
-    "semver": "^7.5.2",
-    "yargs": "^17.0.1"
+    "axios": "^1.12.2",
+    "ci-info": "^4.3.0",
+    "commander": "^14.0.1",
+    "prompts": "^2.4.2",
+    "semver": "^7.7.2",
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "@create-node-app/eslint-config-ts": "*",
-    "@types/node": "^18.14.6",
+    "@types/node": "^24.5.2",
     "@types/prompts": "^2.4.9",
-    "@types/yargs": "^17.0.22",
-    "eslint": "^7.23.0",
-    "eslint-config-turbo": "^0.0.4",
-    "tsup": "^6.2.3",
-    "eslint-plugin-turbo": "^0.0.4"
+    "@types/yargs": "^17.0.33",
+    "@types/semver": "^7.5.8",
+    "eslint": "^9.35.0",
+    "eslint-config-turbo": "^2.5.6",
+    "tsup": "^8.5.0",
+    "eslint-plugin-turbo": "^2.5.6"
   }
 }

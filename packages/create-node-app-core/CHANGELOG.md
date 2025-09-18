@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.5.0
+
+### Minor Changes
+
+- Great refactor
+
 ## 0.4.0
 
 ### Minor Changes

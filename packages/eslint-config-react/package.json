@@ -1,6 +1,6 @@
 {
   "name": "@create-node-app/eslint-config-react",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
   "files": [
@@ -8,11 +8,11 @@
   ],
   "dependencies": {
     "@create-node-app/eslint-config-ts": "*",
-    "eslint": "^7.23.0",
+    "eslint": "^9.35.0",
     "eslint-config-react-hooks": "^1.0.0"
   },
   "devDependencies": {
-    "typescript": "^4.7.4"
+    "typescript": "^5.9.2"
   },
   "publishConfig": {
     "access": "public",

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PromptType } from "prompts";
+import type { PromptType } from "prompts";
 
 const TEMPLATE_DATA_FILE_URL =
   "https://raw.githubusercontent.com/Create-Node-App/cna-templates/main/templates.json";
@@ -75,7 +75,7 @@ const getTemplateData = async () => {
 };
 
 export const getTemplateCategories = async (
-  cliArgs?: Record<string, string>
+  cliArgs?: Record<string, string>,
 ) => {
   if (cliArgs?.category) {
     return [cliArgs.category];
@@ -99,13 +99,13 @@ export const getTemplateCategories = async (
 };
 
 export const getCategoryData = async (
-  categorySlug: string
+  categorySlug: string,
 ): Promise<CategoryData | undefined> => {
   const templateData = await getTemplateData();
 
   if (templateData.categories && templateData.categories.length > 0) {
     return templateData.categories.find(
-      (category) => category.slug === categorySlug
+      (category) => category.slug === categorySlug,
     );
   }
 
@@ -114,7 +114,7 @@ export const getCategoryData = async (
 
 export const getTemplatesForCategory = async (
   category?: string,
-  cliArgs?: Record<string, string>
+  cliArgs?: Record<string, string>,
 ) => {
   const selectedCategory = cliArgs?.category || category;
   if (!selectedCategory) {
@@ -124,7 +124,7 @@ export const getTemplatesForCategory = async (
   const templateData = await getTemplateData();
 
   const templates = templateData.templates.filter(
-    (template) => template.category === selectedCategory
+    (template) => template.category === selectedCategory,
   );
 
   return templates;
@@ -132,7 +132,7 @@ export const getTemplatesForCategory = async (
 
 export const getExtensionsGroupedByCategory = async (
   type: ExtensionType,
-  cliArgs?: Record<string, string>
+  cliArgs?: Record<string, string>,
 ) => {
   const selectedType = cliArgs?.type ? cliArgs.type.split(",") : type;
 
@@ -146,21 +146,24 @@ export const getExtensionsGroupedByCategory = async (
       : [extension.type];
 
     return safeExtensionType.some((extensionType) =>
-      safeType.includes(extensionType)
+      safeType.includes(extensionType),
     );
   });
 
-  const extensionsGroupedByCategory = extensions.reduce((acc, extension) => {
-    const category = extension.category;
+  const extensionsGroupedByCategory = extensions.reduce(
+    (acc, extension) => {
+      const category = extension.category;
 
-    if (!acc[category]) {
-      acc[category] = [];
-    }
+      if (!acc[category]) {
+        acc[category] = [];
+      }
 
-    acc[category].push(extension);
+      acc[category].push(extension);
 
-    return acc;
-  }, {} as Record<string, TemplateOrExtensionData[]>);
+      return acc;
+    },
+    {} as Record<string, TemplateOrExtensionData[]>,
+  );
 
   return extensionsGroupedByCategory;
 };

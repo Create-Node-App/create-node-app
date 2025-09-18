@@ -48,7 +48,7 @@ const solveRepositoryPath = async ({
 }: SolveRepositoryPathOptions) => {
   const targetId = Buffer.from(`${url}#${branch}`).toString("base64");
   const targetWithSubdir = Buffer.from(`${url}#${branch}#${subdir}`).toString(
-    "base64"
+    "base64",
   );
   const target = path.join(os.homedir(), ".cna", targetWithSubdir);
 
@@ -92,7 +92,7 @@ const solveTemplateOrExtensionPath = async (templateOrExtension: string) => {
         __dirname,
         "..",
         "templatesOrExtensions",
-        templateOrExtension
+        templateOrExtension,
       ),
       ignorePackage: undefined,
     };
@@ -102,7 +102,7 @@ const solveTemplateOrExtensionPath = async (templateOrExtension: string) => {
 export const getPackagePath = async (
   templateOrExtension: string,
   name = "package",
-  ignorePackage = false
+  ignorePackage = false,
 ) => {
   const {
     dir,
@@ -115,7 +115,7 @@ export const getPackagePath = async (
     (ignorePackage || templateOrExtensionIgnorePackage)
   ) {
     throw new Error(
-      "package.json should be ignored for file templateOrExtension"
+      "package.json should be ignored for file templateOrExtension",
     );
   }
 
@@ -128,7 +128,7 @@ export const getPackagePath = async (
 
 export const getTemplateDirPath = async (templateOrExtensionUrl: string) => {
   const { dir, subdir = "" } = await solveTemplateOrExtensionPath(
-    templateOrExtensionUrl
+    templateOrExtensionUrl,
   );
   let templateDirPath = path.resolve(dir, subdir);
 

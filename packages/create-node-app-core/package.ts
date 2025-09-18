@@ -1,8 +1,8 @@
-/* eslint-disable global-require */
+// Removed unused eslint-disable (global-require) after migration to flat config
 import { existsSync } from "fs";
 import merge from "lodash.merge";
-import { TemplateOrExtension } from "./loaders";
-import { getPackagePath } from "./paths";
+import type { TemplateOrExtension } from "./loaders.js";
+import { getPackagePath } from "./paths.js";
 
 // Type for setup options
 type GetInstallableSetupOptions = {
@@ -61,13 +61,13 @@ export const loadPackages = async ({
       try {
         // Try to load and merge template package
         const template = requireIfExists(
-          await getPackagePath(templateOrExtension, "template.json")
+          await getPackagePath(templateOrExtension, "template.json"),
         );
         return template.package || {}; // Use an empty object if template.json is not found
       } catch {
         return {}; // Ignore if template.json is not found
       }
-    })
+    }),
   );
 
   // Merge all the setup results from templates
@@ -78,7 +78,7 @@ export const loadPackages = async ({
       devDependencies: {},
       scripts: {},
     },
-    ...setup
+    ...setup,
   );
 
   // Load and merge package.json files concurrently
@@ -91,15 +91,15 @@ export const loadPackages = async ({
             await getPackagePath(
               templateOrExtension,
               "package.json",
-              globalIgnorePackage || ignorePackage
-            )
+              globalIgnorePackage || ignorePackage,
+            ),
           );
           return templateOrExtensionPackageJson; // Use an empty object if package.json is not found
         } catch {
           return {}; // Ignore if package.json is not found
         }
-      }
-    )
+      },
+    ),
   );
 
   // Resolve package updates using package module concurrently
@@ -108,13 +108,13 @@ export const loadPackages = async ({
       try {
         // Try to resolve package updates using package module
         const resolveTemplateOrExtensionPackage = requireIfExists(
-          await getPackagePath(templateOrExtension)
+          await getPackagePath(templateOrExtension),
         );
         return resolveTemplateOrExtensionPackage(mergedSetup, config); // Use an empty object if resolution fails
       } catch {
         return {}; // Ignore if the resolution function fails
       }
-    })
+    }),
   );
 
   // Merge all setup results

@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import spawn from "cross-spawn";
-import chalk from "chalk";
+import pc from "picocolors";
 import semver from "semver";
 import dns from "dns";
 import { URL } from "url";
@@ -33,24 +33,24 @@ export const shouldUseYarn = () => {
 
   if (!hasMinYarnPnp) {
     console.log(
-      chalk.yellow(
-        `You are using yarn version ${chalk.bold(
-          yarnVersion
+      pc.yellow(
+        `You are using yarn version ${pc.bold(
+          yarnVersion,
         )} which is not supported yet. ` +
           `To use Yarn, install v1.12.0 or higher and lower than v2.0.0. ` +
-          `See https://yarnpkg.com for instructions on how to update.`
-      )
+          `See https://yarnpkg.com for instructions on how to update.`,
+      ),
     );
     return false;
   }
 
   if (!hasMaxYarnPnp) {
     console.log(
-      chalk.yellow(
+      pc.yellow(
         `You are using a pre-release version of Yarn which is not supported yet. ` +
           `To use Yarn, install v1.12.0 or higher and lower than v2.0.0. ` +
-          `See https://yarnpkg.com for instructions on how to update.`
-      )
+          `See https://yarnpkg.com for instructions on how to update.`,
+      ),
     );
     return false;
   }
@@ -63,13 +63,13 @@ export const shouldUsePnpm = () => {
 
   if (!hasMinPnpm) {
     console.log(
-      chalk.yellow(
-        `You are using pnpm version ${chalk.bold(
-          pnpmVersion
+      pc.yellow(
+        `You are using pnpm version ${pc.bold(
+          pnpmVersion,
         )} which is not supported yet. ` +
           `To use pnpm, install v5.0.0 or higher. ` +
-          `See https://pnpm.js.org for instructions on how to update.`
-      )
+          `See https://pnpm.js.org for instructions on how to update.`,
+      ),
     );
     return false;
   }
@@ -111,28 +111,26 @@ export const checkThatNpmCanReadCwd = () => {
     return true;
   }
   console.error(
-    chalk.red(
+    pc.red(
       `Could not start an npm process in the right directory.\n\n` +
-        `The current directory is: ${chalk.bold(cwd)}\n` +
-        `However, a newly started npm process runs in: ${chalk.bold(
-          npmCWD
-        )}\n\n` +
-        `This is probably caused by a misconfigured system terminal shell.`
-    )
+        `The current directory is: ${pc.bold(cwd)}\n` +
+        `However, a newly started npm process runs in: ${pc.bold(npmCWD)}\n\n` +
+        `This is probably caused by a misconfigured system terminal shell.`,
+    ),
   );
   if (process.platform === "win32") {
     console.error(
-      chalk.red(`On Windows, this can usually be fixed by running:\n\n`) +
-        `  ${chalk.cyan(
-          "reg"
+      pc.red(`On Windows, this can usually be fixed by running:\n\n`) +
+        `  ${pc.cyan(
+          "reg",
         )} delete "HKCU\\Software\\Microsoft\\Command Processor" /v AutoRun /f\n` +
-        `  ${chalk.cyan(
-          "reg"
+        `  ${pc.cyan(
+          "reg",
         )} delete "HKLM\\Software\\Microsoft\\Command Processor" /v AutoRun /f\n\n` +
-        chalk.red(`Try to run the above two lines in the terminal.\n`) +
-        chalk.red(
-          `To learn more about this problem, read: https://blogs.msdn.microsoft.com/oldnewthing/20071121-00/?p=24433/`
-        )
+        pc.red(`Try to run the above two lines in the terminal.\n`) +
+        pc.red(
+          `To learn more about this problem, read: https://blogs.msdn.microsoft.com/oldnewthing/20071121-00/?p=24433/`,
+        ),
     );
   }
   return false;
@@ -150,8 +148,8 @@ export const checkPnpmVersion = () => {
       // Handle non-semver compliant pnpm version strings, which pnpm currently
       // uses for nightly builds. The regex truncates anything after the first
       // dash. See #5362.
-      const trimmedPnpmVersionMatch = /^(.+?)[-+].+$/.exec(pnpmVersion);
-      if (trimmedPnpmVersionMatch) {
+      const trimmedPnpmVersionMatch = /^(.*?)[-+].+$/.exec(pnpmVersion);
+      if (trimmedPnpmVersionMatch && trimmedPnpmVersionMatch[1]) {
         hasMinPnpm = semver.gte(trimmedPnpmVersionMatch[1], minPnpm);
       }
     }

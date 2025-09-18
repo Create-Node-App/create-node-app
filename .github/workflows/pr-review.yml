@@ -22,10 +22,16 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: "v16.13.2"
+          node-version-file: .node-version
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Lint (no autofix)
+        run: npm run lint --workspaces --if-present
+
+      - name: Type Check
+        run: npm run type-check --if-present
 
       - name: Danger JS Action
         uses: danger/danger-js@9.1.8

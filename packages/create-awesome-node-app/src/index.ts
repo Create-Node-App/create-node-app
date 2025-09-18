@@ -5,11 +5,12 @@ import {
   createNodeApp,
   checkForLatestVersion,
   checkNodeVersion,
+  type TemplateOrExtension,
 } from "@create-node-app/core";
-import { getCnaOptions } from "./options";
-import packageJson from "../package.json";
-import { TemplateOrExtension } from "@create-node-app/core/loaders";
-import { listTemplates, listAddons } from "./list";
+import { getCnaOptions } from "./options.js";
+// NodeNext JSON import with import attributes
+import packageJson from "../package.json" with { type: "json" };
+import { listTemplates, listAddons } from "./list.js";
 
 const program = new Command();
 
@@ -24,22 +25,18 @@ const main = async () => {
     .option("-i, --info", "print environment debug info")
     .option(
       "--no-install",
-      "Generate package.json without installing dependencies"
+      "Generate package.json without installing dependencies",
     )
     .option(
       "-t, --template <template>",
-      "specify a template for the created project"
+      "specify a template for the created project",
     )
     .option(
       "--addons [extensions...]",
-      "specify extensions to apply for the boilerplate generation"
+      "specify extensions to apply for the boilerplate generation",
     )
     .option("--use-yarn", "use yarn instead of npm or pnpm")
     .option("--use-pnpm", "use pnpm instead of yarn or npm")
-    .option(
-      "--ai-tool <tool>",
-      "specify AI tool configuration (cursor, copilot, none)"
-    )
     .option("--interactive", "run in interactive mode to select options", false)
     .option("--list-templates", "list all available templates")
     .option("--list-addons", "list all available addons")
@@ -52,14 +49,14 @@ const main = async () => {
   const opts = program.opts();
   checkNodeVersion(packageJson.engines.node, packageJson.name);
 
-  const latest = await checkForLatestVersion("create-awesome-node-app");
-  if (latest && semver.lt(packageJson.version, latest)) {
+  const latestVersion = await checkForLatestVersion("create-awesome-node-app");
+  if (latestVersion && semver.lt(packageJson.version, latestVersion)) {
     console.log();
     console.error(
       chalk.yellow(
-        `You are running \`create-awesome-node-app\` ${packageJson.version}, which is behind the latest release (${latest}).\n\n` +
-          "We recommend always using the latest version of create-awesome-node-app if possible."
-      )
+        `You are running \`create-awesome-node-app\` ${packageJson.version}, which is behind the latest release (${latestVersion}).\n\n` +
+          "We recommend always using the latest version of create-awesome-node-app if possible.",
+      ),
     );
     return;
   }
@@ -83,20 +80,16 @@ const main = async () => {
   const packageManager = useYarn ? "yarn" : usePnpm ? "pnpm" : "npm";
 
   const templatesOrExtensions: TemplateOrExtension[] = [restOpts.template]
-    .concat(Array.isArray(restOpts.extend) ? restOpts.extend : [])
+    .filter(Boolean)
     .reduce((acc, templateOrExtension) => {
-      if (!templateOrExtension) {
-        return acc;
-      }
-      return acc.concat({
-        url: templateOrExtension,
-      });
+      if (!templateOrExtension) return acc;
+      return acc.concat({ url: templateOrExtension });
     }, [] as TemplateOrExtension[]);
 
   return createNodeApp(
     projectName,
     { ...restOpts, packageManager, templatesOrExtensions, projectName },
-    getCnaOptions
+    getCnaOptions,
   );
 };
 

@@ -1,16 +1,16 @@
-import { CnaOptions } from "@create-node-app/core";
-import { TemplateOrExtension } from "@create-node-app/core/loaders";
+import type { CnaOptions, TemplateOrExtension } from "@create-node-app/core";
 import { isCI } from "ci-info";
 import prompts from "prompts";
 import yargs from "yargs";
-prompts.override(yargs.argv);
+// Align with yargs v18: invoke yargs() to access argv
+prompts.override(yargs(process.argv.slice(2)).argv as any);
+import type { TemplateData } from "./templates.js";
 import {
   getTemplateCategories,
   getTemplatesForCategory,
   getExtensionsGroupedByCategory,
   getCategoryData,
-  TemplateData,
-} from "./templates";
+} from "./templates.js";
 
 const PACKAGE_MANAGERS = ["npm", "yarn", "pnpm"];
 
@@ -27,7 +27,7 @@ const isValidUrl = (url: string): boolean => {
  * Process template and addons in non-interactive mode
  */
 const processNonInteractiveOptions = async (
-  options: CnaOptions
+  options: CnaOptions,
 ): Promise<CnaOptions> => {
   const categories = await getTemplateCategories();
   let matchedTemplate: TemplateData | undefined;
@@ -37,11 +37,11 @@ const processNonInteractiveOptions = async (
   if (options.template && !isValidUrl(options.template)) {
     const allTemplates = (
       await Promise.all(
-        categories.map((category) => getTemplatesForCategory(category))
+        categories.map((category) => getTemplatesForCategory(category)),
       )
     ).flat();
     matchedTemplate = allTemplates.find(
-      (template) => template.slug === options.template
+      (template) => template.slug === options.template,
     );
     if (matchedTemplate) {
       // Add the template to templatesOrExtensions
@@ -57,7 +57,7 @@ const processNonInteractiveOptions = async (
       }
     } else {
       throw new Error(
-        `Invalid template slug: '${options.template}'. Please provide a valid template slug.`
+        `Invalid template slug: '${options.template}'. Please provide a valid template slug.`,
       );
     }
   } else if (options.template) {
@@ -76,14 +76,14 @@ const processNonInteractiveOptions = async (
         if (!isValidUrl(addon)) {
           for (const extensions of Object.values(extensionsGroupedByCategory)) {
             const matchedExtension = extensions.find(
-              (extension) => extension.slug === addon
+              (extension) => extension.slug === addon,
             );
             if (matchedExtension) {
               return matchedExtension.url;
             }
           }
           throw new Error(
-            `Invalid extension slug: '${addon}'. Please provide a valid extension slug.`
+            `Invalid extension slug: '${addon}'. Please provide a valid extension slug.`,
           );
         }
         return addon;
@@ -102,13 +102,10 @@ const processNonInteractiveOptions = async (
   }
 
   // Set default for aiTool if not provided
-  if (
-    options.aiTool &&
-    !["cursor", "copilot", "none"].includes(options.aiTool)
-  ) {
-    throw new Error("Invalid --ai-tool option. Use: cursor, copilot, or none");
+  // aiTool support removed; ignore any provided value for backwards compatibility
+  if (Object.prototype.hasOwnProperty.call(options as object, "aiTool")) {
+    delete (options as unknown as { aiTool?: string }).aiTool;
   }
-  options.aiTool = options.aiTool || "none";
 
   // Set the templatesOrExtensions in the options
   options.templatesOrExtensions = templatesOrExtensions;
@@ -125,7 +122,7 @@ const processNonInteractiveOptions = async (
  * Process options in interactive mode
  */
 const processInteractiveOptions = async (
-  options: CnaOptions
+  options: CnaOptions,
 ): Promise<CnaOptions> => {
   const categories = await getTemplateCategories();
 
@@ -174,27 +171,9 @@ const processInteractiveOptions = async (
         : 0,
     },
     {
-      type: "select",
-      name: "aiTool",
-      message: "Which AI coding tool would you like to configure?",
-      choices: [
-        {
-          title: "Cursor Rules",
-          value: "cursor",
-          description: "Add .cursorrules configuration for Cursor IDE",
-        },
-        {
-          title: "GitHub Copilot Instructions",
-          value: "copilot",
-          description: "Add .github/copilot-instructions.md for GitHub Copilot",
-        },
-        {
-          title: "None",
-          value: "none",
-          description: "Don't add any AI tool configuration",
-        },
-      ],
-      initial: 2, // Default to "None"
+      type: null,
+      name: "__removed_aiTool",
+      message: "(AI tool selection removed)",
     },
     {
       type: "select",
@@ -239,11 +218,11 @@ const processInteractiveOptions = async (
             choices: templateOptions,
             initial: 0,
           },
-        ]
+        ],
   );
 
   const existingTemplate = templates.find(
-    (template) => template.url === templateInput.template
+    (template) => template.url === templateInput.template,
   );
 
   const templateTemplateOrExtension = templateInput.template;
@@ -278,7 +257,7 @@ const processInteractiveOptions = async (
   ]);
 
   for (const [categorySlug, extensions] of Object.entries(
-    extensionsGroupedByCategory
+    extensionsGroupedByCategory,
   )) {
     const categoryData = await getCategoryData(categorySlug);
     const categoryName = categoryData?.name || categorySlug;
@@ -358,7 +337,7 @@ const processInteractiveOptions = async (
  * Determines whether to use interactive or non-interactive mode
  */
 export const getCnaOptions = async (
-  options: CnaOptions
+  options: CnaOptions,
 ): Promise<CnaOptions> => {
   // Determine if we should use interactive mode
   const shouldUseInteractiveMode = !isCI && options.interactive;

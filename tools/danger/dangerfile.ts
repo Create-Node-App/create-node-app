@@ -29,7 +29,7 @@ const touchedFiles = danger.git.created_files.concat(danger.git.modified_files);
 const allFiles = touchedFiles.concat(danger.git.deleted_files);
 
 const diffsList: Promise<(TextDiff | null)[]> = Promise.all(
-  allFiles.map((p) => danger.git.diffForFile(p))
+  allFiles.map((p) => danger.git.diffForFile(p)),
 );
 
 diffsList
@@ -37,16 +37,16 @@ diffsList
   .then((diffs) => ({
     removed: diffs.reduce(
       (lines, diff) => lines + diff.removed.split("\n").length,
-      0
+      0,
     ),
     added: diffs.reduce(
       (lines, diff) => lines + diff.added.split("\n").length,
-      0
+      0,
     ),
     lines: diffs.reduce(
       (lines, diff) =>
         lines + diff.added.split("\n").length + diff.removed.split("\n").length,
-      0
+      0,
     ),
     files: diffs.length,
   }))
@@ -78,7 +78,7 @@ if (docs.edited) {
 
 if (appModified) {
   message(
-    "Thanks for updating tests! Only YOU can prevent production fires. :fire::evergreen_tree::bear:"
+    "Thanks for updating tests! Only YOU can prevent production fires. :fire::evergreen_tree::bear:",
   );
 }
 

@@ -4,7 +4,9 @@ import {
   getTemplatesForCategory,
   getExtensionsGroupedByCategory,
   getCategoryData,
-} from "./templates";
+  type TemplateData,
+  type ExtensionData,
+} from "./templates.js";
 
 /**
  * List all available templates grouped by category
@@ -27,9 +29,9 @@ export const listTemplates = async () => {
       console.log(`  ${categoryData.description}`);
     }
 
-    templates.forEach((template) => {
+    templates.forEach((template: TemplateData) => {
       console.log(
-        `  ${chalk.yellow(template.name)} (${chalk.cyan(template.slug)})`
+        `  ${chalk.yellow(template.name)} (${chalk.cyan(template.slug)})`,
       );
       console.log(`    ${template.description}`);
       if (template.labels && template.labels.length > 0) {
@@ -57,20 +59,19 @@ export const listAddons = async ({
   }
 
   const types = templateType ? [templateType, "all"] : ["all"];
-  const extensionsGroupedByCategory = await getExtensionsGroupedByCategory(
-    types
-  );
+  const extensionsGroupedByCategory =
+    await getExtensionsGroupedByCategory(types);
 
   console.log(chalk.bold.blue("\nAvailable Addons:"));
 
   if (templateSlug) {
     console.log(
-      chalk.bold.green(`\nCompatible with template: ${templateSlug}`)
+      chalk.bold.green(`\nCompatible with template: ${templateSlug}`),
     );
   }
 
   for (const [categorySlug, extensions] of Object.entries(
-    extensionsGroupedByCategory
+    extensionsGroupedByCategory,
   )) {
     const categoryData = await getCategoryData(categorySlug);
 
@@ -83,9 +84,9 @@ export const listAddons = async ({
       console.log(`  ${categoryData.description}`);
     }
 
-    extensions.forEach((extension) => {
+    (extensions as ExtensionData[]).forEach((extension: ExtensionData) => {
       console.log(
-        `  ${chalk.yellow(extension.name)} (${chalk.cyan(extension.slug)})`
+        `  ${chalk.yellow(extension.name)} (${chalk.cyan(extension.slug)})`,
       );
       console.log(`    ${extension.description}`);
       if (extension.labels && extension.labels.length > 0) {
@@ -100,13 +101,15 @@ export const listAddons = async ({
  * @param templateSlug The template slug to look up
  */
 export const getTemplateTypeFromSlug = async (
-  templateSlug: string
+  templateSlug: string,
 ): Promise<string | undefined> => {
   const categories = await getTemplateCategories();
 
   for (const category of categories) {
     const templates = await getTemplatesForCategory(category);
-    const template = templates.find((t) => t.slug === templateSlug);
+    const template = templates.find(
+      (t: TemplateData) => t.slug === templateSlug,
+    );
 
     if (template) {
       return template.type;

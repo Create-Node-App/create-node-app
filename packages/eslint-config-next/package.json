@@ -1,15 +1,15 @@
 {
   "name": "@create-node-app/eslint-config-next",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
   "files": [
     "index.js"
   ],
   "dependencies": {
-    "eslint": "^7.23.0",
+    "eslint": "^9.35.0",
     "@create-node-app/eslint-config-ts": "*",
-    "eslint-config-next": "^14.1.0"
+    "eslint-config-next": "^15.5.3"
   },
   "publishConfig": {
     "access": "public",

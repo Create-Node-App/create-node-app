@@ -1,5 +1,11 @@
 # tsconfig
 
+## 0.1.0
+
+### Minor Changes
+
+- Great refactor
+
 ## 0.0.3
 
 ### Patch Changes

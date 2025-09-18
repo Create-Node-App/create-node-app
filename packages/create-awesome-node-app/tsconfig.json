@@ -3,8 +3,9 @@
   "include": ["."],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
-    "target": "es2019",
-    "moduleResolution": "node",
+    "target": "ES2022",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,

@@ -62,7 +62,7 @@ export const downloadRepository = async ({
   // Check if the targetId has already been completed (checkout done)
   if (completedTargetIds.has(id)) {
     log(
-      `Git checkout for target ID '${id}' has already been completed. Skipping.`
+      `Git checkout for target ID '${id}' has already been completed. Skipping.`,
     );
     // Use fs-extra's copy method with filter
     await fse.copy(cacheDir, absoluteTarget, {
@@ -75,7 +75,7 @@ export const downloadRepository = async ({
   // Check if there is an ongoing Git operation with the same target ID
   if (gitOperationMap.has(id)) {
     log(
-      `Git operation for target ID '${id}' is already in progress. Waiting...`
+      `Git operation for target ID '${id}' is already in progress. Waiting...`,
     );
     await gitOperationMap.get(id);
     log(`Git operation for target ID '${id}' has completed.`);

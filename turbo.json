@@ -2,7 +2,7 @@
   "$schema": "https://turborepo.org/schema.json",
   "globalEnv": ["HTTPS_PROXY", "npm_config_user_agent"],
   "globalDependencies": ["**/.env.*local"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]

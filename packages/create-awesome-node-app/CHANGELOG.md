@@ -1,5 +1,16 @@
 # create-awesome-node-app
 
+## 0.6.0
+
+### Minor Changes
+
+- Great refactor
+
+### Patch Changes
+
+- Updated dependencies
+  - @create-node-app/core@0.5.0
+
 ## 0.5.0
 
 ### Minor Changes
