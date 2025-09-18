@@ -5,7 +5,7 @@
 
 ## Requirements
 
-**You’ll need to have Node 18.14.2 or later on your local development machine** (but it’s not required on the server). You can use [fnm](https://github.com/Schniz/fnm) to easily switch Node versions between different projects.
+**You’ll need to have Node 22.16.0 or later on your local development machine** (but it’s not required on the server). You can use [fnm](https://github.com/Schniz/fnm) to easily switch Node versions between different projects.
 
 ```sh
 git clone https://github.com/Create-Node-App/create-node-app

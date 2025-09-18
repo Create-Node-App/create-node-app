@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.6.2
+
+### Patch Changes
+
+- Fix deps
+- Updated dependencies
+  - @create-node-app/core@0.5.2
+
 ## 0.6.0
 
 ### Minor Changes

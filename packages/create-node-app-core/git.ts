@@ -2,7 +2,7 @@ import os from "os";
 import path from "path";
 import fs from "fs";
 import debug from "debug";
-import simpleGit, { SimpleGit, CloneOptions } from "simple-git";
+import { simpleGit, type SimpleGit, type CloneOptions } from "simple-git";
 import * as fse from "fs-extra"; // Import fs-extra for advanced file operations
 
 const log = debug("cna:git");
@@ -18,7 +18,7 @@ export type DownloadRepositoryOptions = {
   url?: string;
   target: string;
   cacheDir?: string;
-  branch?: string;
+  branch?: string | undefined;
   offline?: boolean;
   targetId?: string;
 };

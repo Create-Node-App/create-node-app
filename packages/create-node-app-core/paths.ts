@@ -1,7 +1,7 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { downloadRepository } from "./git";
+import { downloadRepository } from "./git.js";
 
 /**
  * solveValuesFromTemplateOrExtensionUrl solves values from templateOrExtension url
@@ -55,7 +55,7 @@ const solveRepositoryPath = async ({
   try {
     await downloadRepository({
       url,
-      branch,
+      branch: branch || "",
       target,
       targetId,
     });
