@@ -36,7 +36,6 @@
     "ts-node": "^10.9.2",
     "@types/cross-spawn": "^6.0.6",
     "@types/debug": "^4.1.12",
-    "@types/download": "^8.0.5",
     "@types/envinfo": "^7.8.4",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.merge": "^4.6.9",
