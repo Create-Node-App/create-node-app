@@ -37,12 +37,13 @@
 
 ```bash
 # Interactive (recommended)
-npm create awesome-node-app@latest my-app -- --interactive
+npm create awesome-node-app@latest my-app
 
 # Direct + addons
 npx create-awesome-node-app my-app \
   --template react-vite-boilerplate \
   --addons material-ui github-setup
+  --no-interactive
 ```
 
 What you get: Modern structure, linting, TS, testing, optional AI `AGENTS.md`, extensible addons, monorepo & full‑stack ready.
