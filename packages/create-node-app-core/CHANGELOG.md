@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.5.6
+
+### Patch Changes
+
+- Updated docs
+
 ## 0.5.5
 
 ### Patch Changes

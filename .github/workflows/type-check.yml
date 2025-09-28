@@ -29,6 +29,6 @@ jobs:
           node-version-file: .node-version
           cache: npm
       - name: Install dependencies
-        run: npm ci
+        run: npm install
       - name: Run TypeScript Type Check
         run: npm run type-check --if-present
