@@ -81,14 +81,14 @@ Explore visually: **[create-awesome-node-app.vercel.app](https://create-awesome-
 
 ## 🚀 Quick Start
 
-Use via one‑shot runner (recommended – always latest):
+Use via one‑shot runner (recommended – always latest). Interactive mode runs by default (unless CI):
 
 ```bash
-npm create awesome-node-app@latest my-app -- --interactive
+npm create awesome-node-app@latest my-app
 # or
-pnpm create awesome-node-app my-app --interactive
+pnpm create awesome-node-app my-app
 # or
-yarn create awesome-node-app my-app --interactive
+yarn create awesome-node-app my-app
 ```
 
 Global install (optional):
@@ -110,7 +110,7 @@ npx create-awesome-node-app my-api \
 
 ## 🧪 Interactive Mode Walkthrough
 
-Launch with `--interactive` to:
+Interactive flow (default outside CI) lets you:
 
 1. Pick a category (Frontend, Backend, Full Stack, Monorepo, Web Extension, UAT...)
 2. Select a template with description & keywords
@@ -156,7 +156,7 @@ create-awesome-node-app --list-addons
 create-awesome-node-app --template react-vite-boilerplate --list-addons
 ```
 
-Add any extra extension by URL:
+Add any extra extension by URL (non‑interactive example shown):
 
 ```bash
 create-awesome-node-app my-app \
@@ -192,7 +192,8 @@ fnm use 22
 
 | Flag                        | Description                                    |
 | --------------------------- | ---------------------------------------------- |
-| `--interactive`             | Guided selection flow (templates + addons)     |
+| `--interactive`             | Force interactive (default outside CI)         |
+| `--no-interactive`          | Disable interactive wizard                     |
 | `--template <slug\|url>`    | Use a known template slug or remote URL        |
 | `--addons [list...]`        | Space‑separated addon slugs or URLs            |
 | `--extend [list...]`        | Extra extension URLs (advanced)                |

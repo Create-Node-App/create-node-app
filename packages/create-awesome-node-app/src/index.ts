@@ -43,7 +43,15 @@ const main = async () => {
     )
     .option("--use-yarn", "use yarn instead of npm or pnpm")
     .option("--use-pnpm", "use pnpm instead of yarn or npm")
-    .option("--interactive", "run in interactive mode to select options", false)
+    .option(
+      "--interactive",
+      "force interactive mode (default outside CI unless --no-interactive)",
+      undefined,
+    )
+    .option(
+      "--no-interactive",
+      "disable interactive mode (use only flags / non-interactive flow)",
+    )
     .option("--list-templates", "list all available templates")
     .option("--list-addons", "list all available addons")
     .action((providedProjectName: string | undefined) => {

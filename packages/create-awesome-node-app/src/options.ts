@@ -333,19 +333,28 @@ const processInteractiveOptions = async (
 };
 
 /**
- * Main function to get CNA options
- * Determines whether to use interactive or non-interactive mode
+ * Decide if interactive mode should be used.
+ * Exported for testing.
+ */
+export const resolveInteractiveMode = (
+  options: Partial<CnaOptions> & { interactive?: boolean },
+  ci: boolean = isCI,
+): boolean => {
+  const explicit = options.interactive;
+  if (explicit === true) return true;
+  if (explicit === false) return false;
+  return !ci; // default to interactive when not CI
+};
+
+/**
+ * Main function to get CNA options – decides whether to run interactive flow.
  */
 export const getCnaOptions = async (
   options: CnaOptions,
 ): Promise<CnaOptions> => {
-  // Determine if we should use interactive mode
-  const shouldUseInteractiveMode = !isCI && options.interactive;
-
-  // Process options based on mode
+  const shouldUseInteractiveMode = resolveInteractiveMode(options);
   if (shouldUseInteractiveMode) {
-    return processInteractiveOptions(options);
-  } else {
-    return processNonInteractiveOptions(options);
+    return processInteractiveOptions({ ...options, interactive: true });
   }
+  return processNonInteractiveOptions(options);
 };

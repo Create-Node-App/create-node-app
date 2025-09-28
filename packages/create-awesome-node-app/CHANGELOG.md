@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.7.0
+
+### Minor Changes
+
+- Interactive mode by default
+
 ## 0.6.7
 
 ### Patch Changes
