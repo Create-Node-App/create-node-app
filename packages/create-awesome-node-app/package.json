@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/Create-Node-App/create-node-app/issues"
   },
-  "homepage": "https://github.com/Create-Node-App/create-node-app#readme",
+  "homepage": "https://create-awesome-node-app.vercel.app",
   "keywords": [
     "code generator"
   ],

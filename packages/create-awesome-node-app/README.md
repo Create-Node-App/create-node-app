@@ -3,19 +3,27 @@
 <div align="center">
 <h1>🌟 Create Awesome Node App 🚀</h1>
 
-<strong>The one CLI to bootstrap modern Node.js, Web, Backend, Full‑Stack, Monorepo & Extension projects – in minutes.</strong>
+<!-- NPM Preview: Keep this block ultra concise (first ~5 lines shown on npm) -->
 
+<strong>Bootstrap production‑grade Node / Web / Full‑Stack / Monorepo / Extension apps in minutes.</strong><br/>
+<em>Pick a template → Add addons → Ship faster.</em>
+
+[![npm][npmversion]][npmurl]
+[![Downloads][npmdownloads]][npmurl]
+[![Commit Activity][commitactivitybadge]][commitactivityurl]
+[![Bundle Size][bundlesizebadge]][bundlesizeurl]
 [![Awesome](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite#get-started)
+[![License: MIT][licensebadge]][licenseurl]
+
+<!-- Extended badges (not all needed in npm fold) -->
+
 [![Tests][testsbadge]][testsurl]
 [![Lint][lintbadge]][linturl]
 [![Typecheck][typecheckbadge]][typecheckurl]
 [![Shellcheck][shellcheckbadge]][shellcheckurl]
 [![Markdown][markdownlintbadge]][markdownlinturl]
-[![npm][npmversion]][npmurl]
-[![npm][npmdownloads]][npmurl]
-[![License: MIT][licensebadge]][licenseurl]
 <br />
-<a href="https://create-awesome-node-app.vercel.app" target="_blank"><b>Official Website</b></a> ·
+<a href="https://create-awesome-node-app.vercel.app" target="_blank"><b>Official Site</b></a> ·
 <a href="https://create-awesome-node-app.vercel.app/templates" target="_blank">Templates</a> ·
 <a href="https://create-awesome-node-app.vercel.app/extensions" target="_blank">Extensions</a> ·
 <a href="https://create-awesome-node-app.vercel.app/docs" target="_blank">Docs</a>
@@ -23,6 +31,23 @@
 </div>
 
 > Build. Extend. Ship. Pick a production‑grade template, layer powerful addons, and get a project that follows modern conventions, automation, and DX best practices out of the box.
+
+<details>
+<summary><strong>TL;DR (60s)</strong></summary>
+
+```bash
+# Interactive (recommended)
+npm create awesome-node-app@latest my-app -- --interactive
+
+# Direct + addons
+npx create-awesome-node-app my-app \
+  --template react-vite-boilerplate \
+  --addons material-ui github-setup
+```
+
+What you get: Modern structure, linting, TS, testing, optional AI `AGENTS.md`, extensible addons, monorepo & full‑stack ready.
+
+</details>
 
 ---
 
@@ -252,6 +277,8 @@ MIT © Create Node App Contributors – see [LICENSE][licenseurl]
 
 <div align="center">
 <sub>Built with ♥ for developers who value velocity + clarity.</sub>
+<br />
+<sub><em>Spanish translation coming soon – ¿lo querés antes? Abrí un issue.</em></sub>
 </div>
 
 [testsbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/test.yml/badge.svg
@@ -269,3 +296,7 @@ MIT © Create Node App Contributors – see [LICENSE][licenseurl]
 [markdownlinturl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/markdownlint.yml
 [npmurl]: https://www.npmjs.com/package/create-awesome-node-app
 [licenseurl]: https://github.com/Create-Node-App/create-node-app/blob/main/LICENSE
+[commitactivitybadge]: https://img.shields.io/github/commit-activity/m/Create-Node-App/create-node-app?logo=github&label=commits
+[commitactivityurl]: https://github.com/Create-Node-App/create-node-app/pulse
+[bundlesizebadge]: https://img.shields.io/bundlephobia/minzip/create-awesome-node-app?label=bundlephobia
+[bundlesizeurl]: https://bundlephobia.com/package/create-awesome-node-app
