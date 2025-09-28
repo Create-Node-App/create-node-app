@@ -6,6 +6,9 @@
   "files": [
     "index.js"
   ],
+  "scripts": {
+    "test": "echo 'no tests'"
+  },
   "dependencies": {
     "eslint": "^9.35.0",
     "@create-node-app/eslint-config-ts": "*",

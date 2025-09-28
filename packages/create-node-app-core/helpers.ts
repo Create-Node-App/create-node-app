@@ -87,7 +87,7 @@ export const checkThatNpmCanReadCwd = () => {
     // to reproduce the wrong path. Just printing process.cwd()
     // in a Node process was not enough.
     childOutput = spawn.sync("npm", ["config", "list"]).output.join("");
-  } catch (err) {
+  } catch {
     // Something went wrong spawning node.
     // Not great, but it means we can't do this check.
     // We might fail later on, but let's continue.
@@ -153,7 +153,7 @@ export const checkPnpmVersion = () => {
         hasMinPnpm = semver.gte(trimmedPnpmVersionMatch[1], minPnpm);
       }
     }
-  } catch (e) {
+  } catch {
     // Ignore errors.
   }
   return { hasMinPnpm, pnpmVersion };
@@ -183,7 +183,7 @@ export const checkYarnVersion = () => {
         }
       }
     }
-  } catch (err) {
+  } catch {
     // ignore
   }
   return {
@@ -199,7 +199,7 @@ export const checkNpmVersion = () => {
   try {
     npmVersion = execSync("npm --version").toString().trim();
     hasMinNpm = semver.gte(npmVersion, "6.0.0");
-  } catch (err) {
+  } catch {
     // ignore
   }
   return {
@@ -216,7 +216,7 @@ const getProxy = () => {
     // Trying to read https-proxy from .npmrc
     const httpsProxy = execSync("npm config get https-proxy").toString().trim();
     return httpsProxy !== "null" ? httpsProxy : undefined;
-  } catch (e) {
+  } catch {
     // ignore
   }
   return "";

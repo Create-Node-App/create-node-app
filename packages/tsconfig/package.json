@@ -8,5 +8,8 @@
     "nest.json",
     "next.json",
     "react-library.json"
-  ]
+  ],
+  "scripts": {
+    "test": "echo 'no tests'"
+  }
 }

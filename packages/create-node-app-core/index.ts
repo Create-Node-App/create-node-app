@@ -5,6 +5,7 @@ import { execSync } from "child_process";
 import type { TemplateOrExtension } from "./loaders.js";
 export type { TemplateOrExtension } from "./loaders.js";
 import { createApp } from "./installer.js";
+export { getPackagePath, getTemplateDirPath } from "./paths.js";
 export { downloadRepository } from "./git.js";
 
 export const checkNodeVersion = (
@@ -36,7 +37,7 @@ export const checkForLatestVersion = async (packageName: string) => {
       return String((json as Record<string, unknown>)["latest"]);
     }
     return null;
-  } catch (error) {
+  } catch {
     try {
       return execSync(`npm view ${packageName} version`).toString().trim();
     } catch {

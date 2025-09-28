@@ -16,18 +16,42 @@
     "publish-packages": "turbo run lint && changeset version && turbo run build && changeset publish",
     "storybook": "turbo run storybook",
     "test": "turbo run test",
+    "test:all": "tsx --test \"packages/**/tests/**/*.test.mts\"",
+    "test:coverage": "COVERAGE=1 c8 --extension .ts --include 'packages/**/src/**/*.ts' --exclude 'packages/**/dist/**' --reporter=text --reporter=lcov tsx --test \"packages/**/tests/**/*.test.mts\"",
     "type-check": "turbo run type-check"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
     "@create-node-app/eslint-config": "*",
     "@eslint/eslintrc": "^3.1.0",
+    "c8": "^10.1.2",
+    "@typescript-eslint/parser": "^8.11.0",
+    "@typescript-eslint/eslint-plugin": "^8.11.0",
     "eslint-config-turbo": "^2.5.6",
     "husky": "^9.1.7",
     "is-ci": "^4.1.0",
     "lint-staged": "^16.1.6",
     "prettier": "^3.6.2",
     "turbo": "^2.5.6"
+  },
+  "c8": {
+    "reporter": [
+      "text",
+      "lcov"
+    ],
+    "branches": 60,
+    "lines": 60,
+    "functions": 60,
+    "statements": 60,
+    "exclude": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/tests/**",
+      "**/*.d.ts"
+    ],
+    "include": [
+      "packages/**/src/**/*.ts"
+    ]
   },
   "dependencies": {
     "tsup": "^8.5.0"

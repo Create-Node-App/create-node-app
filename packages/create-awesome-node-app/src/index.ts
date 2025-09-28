@@ -11,6 +11,12 @@ import { getCnaOptions } from "./options.js";
 // NodeNext JSON import with import attributes
 import packageJson from "../package.json" with { type: "json" };
 import { listTemplates, listAddons } from "./list.js";
+// Re-export template helpers for testing / programmatic use
+export {
+  getTemplateCategories,
+  getTemplatesForCategory,
+  getExtensionsGroupedByCategory,
+} from "./templates.js";
 
 const program = new Command();
 

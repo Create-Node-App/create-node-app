@@ -55,6 +55,155 @@ npm run build -- --filter create-awesome-node-app
 ./packages/create-awesome-node-app/index.js my-app
 ```
 
+### More Usage Examples
+
+Below are additional real-world examples leveraging the public templates catalog and local `file://` paths.
+
+#### 1. Use a catalog template by slug (non-interactive)
+
+Create a React + Vite project (slug: `react-vite-boilerplate`):
+
+```sh
+npx create-awesome-node-app my-react-app -t react-vite-boilerplate
+```
+
+Create a NestJS API (slug: `nestjs-boilerplate`):
+
+```sh
+npx create-awesome-node-app my-nest-api -t nestjs-boilerplate
+```
+
+Create a Next.js full‑stack app (slug: `nextjs-starter`) with a custom `srcDir` override:
+
+```sh
+npx create-awesome-node-app my-next --template nextjs-starter --srcDir app
+```
+
+#### 2. Add extensions (addons) by slug
+
+React project with Tailwind CSS + Zustand state management (extensions `tailwind-css` and `zustand`):
+
+```sh
+npx create-awesome-node-app my-react-app -t react-vite-boilerplate --addons tailwind-css zustand
+```
+
+NestJS project with Drizzle (PostgreSQL) + OpenAPI docs:
+
+```sh
+npx create-awesome-node-app my-nest-api -t nestjs-boilerplate --addons drizzle-orm-postgresql openapi
+```
+
+#### 3. Mix template + explicit extension URLs
+
+You can always pass full GitHub URLs (they can include `/tree/<branch>/<subdir>`):
+
+```sh
+npx create-awesome-node-app my-app \
+  -t https://github.com/Create-Node-App/cna-templates/tree/main/templates/react-vite-starter \
+  --addons https://github.com/Create-Node-App/cna-templates/tree/main/extensions/react-query
+```
+
+#### 4. Local development with `file://` URLs (templates & extensions)
+
+When iterating on your own template or extension locally, point the CLI to a folder on disk. This is useful while building new starters before publishing.
+
+Supported forms:
+
+```sh
+# Basic local template (directory contains a template/ or direct files)
+npx create-awesome-node-app local-app \
+  -t file:///absolute/path/to/my-template
+
+# Local template selecting a subdirectory (instead of putting /tree/<branch>/<subdir>)
+npx create-awesome-node-app local-app \
+  -t "file:///absolute/path/to/monorepo?subdir=templates/react-vite-starter"
+
+# Combine a local template with a local extension
+npx create-awesome-node-app local-app \
+  -t file:///absolute/path/to/my-template \
+  --addons file:///absolute/path/to/my-extension
+```
+
+Notes for local usage:
+
+- `file://` templates do not perform any git clone; files are read directly from disk.
+- Optional query `?subdir=relative/path` lets you target a nested directory inside a local repo.
+- You can add `?ignorePackage=true` to ignore a template's `package.json` (useful when only copying files).
+
+#### 5. Append additional extensions with `--extend`
+
+`--extend` appends more raw URLs or slugs after initial template + addons resolution (handy for layering):
+
+```sh
+npx create-awesome-node-app layered-app \
+  -t react-vite-boilerplate \
+  --addons tailwind-css \
+  --extend https://github.com/Create-Node-App/cna-templates/tree/main/extensions/react-hook-form
+```
+
+#### 6. Verbose mode for debugging
+
+Add `--verbose` to see template resolution, first discovered file, prepared operations count, and copy/append actions:
+
+```sh
+npx create-awesome-node-app debug-app -t react-vite-boilerplate --verbose
+```
+
+### Template Catalog Reference (Excerpt)
+
+Some popular template slugs available right now:
+
+| Slug                              | Description                          |
+| --------------------------------- | ------------------------------------ |
+| `react-vite-boilerplate`          | React + Vite + TypeScript + Router   |
+| `nextjs-starter`                  | Production-ready Next.js starter     |
+| `nestjs-boilerplate`              | Scalable NestJS backend              |
+| `turborepo-boilerplate`           | Monorepo with Turborepo + Changesets |
+| `web-extension-react-boilerplate` | React WebExtension with Vite         |
+| `webdriverio-boilerplate`         | WebdriverIO testing setup            |
+
+(Full catalog fetched from: `https://raw.githubusercontent.com/Create-Node-App/cna-templates/main/templates.json`.)
+
+### Extension Slug Examples (React)
+
+| Slug                                 | Purpose                               |
+| ------------------------------------ | ------------------------------------- |
+| `tailwind-css`                       | Tailwind CSS utility-first styling    |
+| `zustand`                            | Lightweight state management          |
+| `react-query` (tanstack-react-query) | Async server state management         |
+| `react-i18n`                         | Internationalization setup            |
+| `shadcn-ui`                          | Radix + Tailwind component primitives |
+| `material-ui`                        | MUI component library                 |
+
+You can combine multiple in one command via `--addons`.
+
+### Ignoring `package.json` from a template
+
+If you only want the file structure (not the template's `package.json`), append `?ignorePackage=true`:
+
+```sh
+npx create-awesome-node-app structure-only \
+  -t "https://github.com/Create-Node-App/cna-templates/tree/main/templates/react-vite-starter?ignorePackage=true"
+```
+
+### Using a Different Source Directory
+
+Most templates expose a `srcDir` custom option. Override it like this:
+
+```sh
+npx create-awesome-node-app custom-src -t react-vite-boilerplate --srcDir app
+```
+
+### Import Path Alias
+
+Likewise override the import alias (defaults often `@/`):
+
+```sh
+npx create-awesome-node-app custom-alias -t react-vite-boilerplate --projectImportPath "~/"
+```
+
+---
+
 ## 🤝 Contributing
 
 - Contributions make the open source community such an amazing place to learn, inspire, and create.

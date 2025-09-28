@@ -6,6 +6,10 @@
   "files": [
     "index.js"
   ],
+  "scripts": {
+    "test": "echo 'no tests'",
+    "test:src": "echo 'no tests'"
+  },
   "dependencies": {
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",

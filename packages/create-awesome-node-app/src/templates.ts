@@ -53,7 +53,7 @@ const fetchTemplateData = async () => {
   try {
     const response = await axios.get<Templates>(TEMPLATE_DATA_FILE_URL);
     return response.data;
-  } catch (error) {
+  } catch {
     // Handle network error, e.g., log it or show a user-friendly message.
     throw new Error("Failed to fetch template data");
   }

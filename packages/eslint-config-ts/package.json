@@ -6,6 +6,9 @@
   "files": [
     "index.js"
   ],
+  "scripts": {
+    "test": "echo 'no tests'"
+  },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "eslint": "^9.35.0",

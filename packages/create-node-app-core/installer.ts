@@ -80,7 +80,7 @@ const install = async (
       cwd: root,
       stdio: "inherit",
     });
-  } catch (error) {
+  } catch {
     throw new Error(`${command} ${args.join(" ")}`);
   }
 };
@@ -115,7 +115,7 @@ const runCommandInProjectDir = async (
       stdio: "ignore",
     });
     console.log(pc.green(successMessage));
-  } catch (error) {
+  } catch {
     console.log();
     console.log(pc.red(errorMessage));
     console.log();
@@ -274,7 +274,7 @@ const run = async ({
     const git = simpleGit(root);
     await git.init();
     console.log(pc.green("Successfully initialized git repository."));
-  } catch (error) {
+  } catch {
     console.log();
     console.log(
       pc.red(
@@ -438,7 +438,7 @@ export const createApp = async ({
       yarnUsesDefaultRegistry =
         execSync("yarnpkg config get registry").toString().trim() ===
         "https://registry.yarnpkg.com";
-    } catch (e) {
+    } catch {
       // ignore
     }
     if (false && yarnUsesDefaultRegistry) {

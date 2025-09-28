@@ -27,11 +27,13 @@
     "lint": "eslint '**/*.{ts,tsx,js}'",
     "lint:fix": "eslint '**/*.{ts,tsx,js}' --fix",
     "type-check": "tsc --noEmit",
-    "build": "tsup ./index.ts --format esm,cjs --dts --no-splitting",
-    "dev": "tsup ./index.ts --format esm,cjs --watch --dts --no-splitting"
+    "build": "tsup ./index.ts --format esm,cjs --dts --no-splitting --sourcemap",
+    "dev": "tsup ./index.ts --format esm,cjs --watch --dts --no-splitting --sourcemap",
+    "test": "tsx --test tests/**/*.test.mts"
   },
   "devDependencies": {
     "@create-node-app/eslint-config-ts": "*",
+    "ts-node": "^10.9.2",
     "@types/cross-spawn": "^6.0.6",
     "@types/debug": "^4.1.12",
     "@types/download": "^8.0.5",
@@ -45,7 +47,8 @@
     "eslint-config-turbo": "^2.5.6",
     "eslint-plugin-turbo": "^2.5.6",
     "tsconfig": "*",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "tsx": "^4.19.0"
   },
   "dependencies": {
     "picocolors": "^1.0.0",
