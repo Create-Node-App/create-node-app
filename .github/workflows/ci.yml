@@ -84,7 +84,10 @@ jobs:
       - name: Install
         run: npm ci
       - name: Run coverage
-        run: CNA_SKIP_GIT=1 npm run test:coverage
+        env:
+          CNA_SKIP_GIT: 1
+          SKIP_SMOKE: 1
+        run: npm run test:coverage
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:

@@ -8,6 +8,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const packageRoot = join(__dirname, '..');
 const cliBin = join(packageRoot, 'index.js');
 
+// Allow CI coverage runs to skip the smoke test when real git/template downloads are disabled
+if (process.env.CNA_SKIP_GIT === '1' || process.env.SKIP_SMOKE === '1') {
+  console.log('[smoke] Skipping smoke test because CNA_SKIP_GIT or SKIP_SMOKE is set');
+  process.exit(0);
+}
+
 try {
   if (!existsSync(join(packageRoot, 'dist', 'index.cjs'))) {
     execSync('npm run build', { cwd: packageRoot, stdio: 'inherit' });
