@@ -10,10 +10,11 @@
 <div align="center">
 
 [![Awesome](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite#get-started)
-[![Continious Integration][cibadge]][ciurl]
+[![Continuous Integration][cibadge]][ciurl]
 [![npm][npmversion]][npmurl]
 [![npm][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
+[![Coverage](./.github/badges/coverage.svg)](#-available-scripts)
 
 </div>
 
@@ -217,3 +218,5 @@ npx create-awesome-node-app custom-alias -t react-vite-boilerplate --projectImpo
 [ciurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/ci.yml
 [npmurl]: https://www.npmjs.com/package/create-awesome-node-app
 [licenseurl]: https://github.com/Create-Node-App/create-node-app/blob/main/LICENSE
+
+> Coverage badge is generated locally (c8 + lcov) and updated when running `npm run test:coverage`. For external reporting (Codecov/Coveralls) a future enhancement can publish the lcov report.

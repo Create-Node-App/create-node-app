@@ -116,7 +116,33 @@ test('github style URL with tree but empty branch segment handled gracefully', a
 test('github clone path executes try/catch when CNA_SKIP_GIT not set', async () => {
   delete process.env.CNA_SKIP_GIT;
   const url = 'https://github.com/definitely-not-a-real-org-xyz123/definitely-not-a-real-repo-xyz123';
+  // Silence expected git clone errors/noise
+  const originalError = console.error;
+  const originalWarn = console.warn;
+  console.error = () => {};
+  console.warn = () => {};
   const dir = await getTemplateDirPath(url);
+  console.error = originalError;
+  console.warn = originalWarn;
   // Even on failure we should still get a cache directory path
+  assert.ok(dir.includes('.cna'));
+});
+
+test('file:// subdir without template directory triggers fs.stat error branch and returns subdir path', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'cna-paths-no-template-'));
+  const nested = path.join(dir, 'plain', 'folder');
+  mkdirSync(nested, { recursive: true });
+  try {
+    const fileUrl = pathToFileURL(dir).toString() + `?subdir=${encodeURIComponent(path.relative(dir, nested))}`;
+    const templateDir = await getTemplateDirPath(fileUrl);
+    // Since no 'template' entry exists, we should get the nested folder path back
+    assert.equal(templateDir, path.resolve(nested));
+  } finally { safeRm(dir); }
+});
+
+test('github style URL with only org segment handled without throwing', async () => {
+  process.env.CNA_SKIP_GIT = '1';
+  const url = 'https://github.com/some-only-org';
+  const dir = await getTemplateDirPath(url);
   assert.ok(dir.includes('.cna'));
 });

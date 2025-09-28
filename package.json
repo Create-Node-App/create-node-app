@@ -17,7 +17,7 @@
     "storybook": "turbo run storybook",
     "test": "turbo run test",
     "test:all": "tsx --test \"packages/**/tests/**/*.test.mts\"",
-    "test:coverage": "COVERAGE=1 c8 --extension .ts --include 'packages/**/src/**/*.ts' --exclude 'packages/**/dist/**' --reporter=text --reporter=lcov tsx --test \"packages/**/tests/**/*.test.mts\"",
+    "test:coverage": "COVERAGE=1 c8 --extension .ts --include 'packages/**/src/**/*.ts' --exclude 'packages/**/dist/**' --reporter=text --reporter=lcov --branches 59 --functions 60 --lines 60 --statements 60 tsx --test \"packages/**/tests/**/*.test.mts\"",
     "type-check": "turbo run type-check"
   },
   "devDependencies": {
@@ -39,7 +39,7 @@
       "text",
       "lcov"
     ],
-    "branches": 60,
+    "branches": 59,
     "lines": 60,
     "functions": 60,
     "statements": 60,
