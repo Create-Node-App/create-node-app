@@ -1,16 +1,26 @@
 name: Todo Checker
 
 on:
-  workflow_call:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "31 1,12 * * *" # periodic sync of TODO comments
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: todo-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   todo:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Begin CI...
-        uses: actions/checkout@v3
-
+      - name: Checkout
+        uses: actions/checkout@v5
       - name: TODO to Issue
         uses: alstr/todo-to-issue-action@v4
         id: todo

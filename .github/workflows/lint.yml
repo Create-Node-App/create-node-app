@@ -1,23 +1,34 @@
 name: Linter
 
 on:
-  workflow_call:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "31 1,12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: linter-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   linter:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-
     steps:
-      - name: Begin CI...
-        uses: actions/checkout@v3
-
-      - name: Use Node
-        uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-
+          cache: npm
       - name: Install dependencies
-        run: npm install
-
-      - name: Run linter validation
+        run: npm ci
+      - name: Run ESLint
         run: npm run lint

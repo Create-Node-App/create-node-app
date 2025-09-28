@@ -10,7 +10,11 @@
 <div align="center">
 
 [![Awesome](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite#get-started)
-[![Continuous Integration][cibadge]][ciurl]
+[![Tests][testsbadge]][testsurl]
+[![Lint][lintbadge]][linturl]
+[![Typecheck][typecheckbadge]][typecheckurl]
+[![Shellcheck][shellcheckbadge]][shellcheckurl]
+[![Markdown][markdownlintbadge]][markdownlinturl]
 [![npm][npmversion]][npmurl]
 [![npm][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
@@ -211,11 +215,19 @@ npx create-awesome-node-app custom-alias -t react-vite-boilerplate --projectImpo
 - Any contributions you make are **truly appreciated**.
 - Check out our [contribution guidelines](./CONTRIBUTING.md) for more information.
 
-[cibadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/ci.yml/badge.svg
+[testsbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/test.yml/badge.svg
+[lintbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/lint.yml/badge.svg
+[typecheckbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/type-check.yml/badge.svg
+[shellcheckbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/shellcheck.yml/badge.svg
+[markdownlintbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/markdownlint.yml/badge.svg
 [npmversion]: https://img.shields.io/npm/v/create-awesome-node-app.svg?maxAge=2592000?style=plastic
 [npmdownloads]: https://img.shields.io/npm/dm/create-awesome-node-app.svg?maxAge=2592000?style=plastic
 [licensebadge]: https://img.shields.io/badge/License-MIT-blue.svg
-[ciurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/ci.yml
+[testsurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/test.yml
+[linturl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/lint.yml
+[typecheckurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/type-check.yml
+[shellcheckurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/shellcheck.yml
+[markdownlinturl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/markdownlint.yml
 [npmurl]: https://www.npmjs.com/package/create-awesome-node-app
 [licenseurl]: https://github.com/Create-Node-App/create-node-app/blob/main/LICENSE
 

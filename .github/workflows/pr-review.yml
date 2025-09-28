@@ -1,40 +1,45 @@
 name: Pull Request Validation
 
-concurrency:
-  group: pull_request_${{ github.event.number }}
-  cancel-in-progress: true
-
 on:
-  workflow_call:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-${{ github.event.number }}
+  cancel-in-progress: true
 
 jobs:
   pr-review:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-
     steps:
-      - name: Begin CI...
-        uses: actions/checkout@v3
-
+      - name: Checkout
+        uses: actions/checkout@v5
       - name: Setup Danger Files
         run: |
-          echo "Setting up Danger files..."
+          echo "Setting up Danger files...";
           mv tools/danger/* .
-
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-
+          cache: npm
       - name: Install dependencies
-        run: npm install
-
+        run: npm ci
       - name: Lint (no autofix)
         run: npm run lint --workspaces --if-present
-
       - name: Type Check
         run: npm run type-check --if-present
-
       - name: Danger JS Action
-        uses: danger/danger-js@9.1.8
+        uses: actions/github-script@v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
+        with:
+          script: |
+            const { execSync } = require('node:child_process');
+            execSync('npx danger ci', { stdio: 'inherit' });

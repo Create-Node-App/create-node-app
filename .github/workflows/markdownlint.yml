@@ -1,14 +1,28 @@
 name: Markdown Lint
 
 on:
-  workflow_call:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "31 1,12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: markdownlint-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   markdownlint:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     name: Markdown Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Begin CI...
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v5
       - name: Markdown Lint
         uses: articulate/actions-markdownlint@v1

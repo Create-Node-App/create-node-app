@@ -1,15 +1,29 @@
 name: Shellcheck
 
 on:
-  workflow_call:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "31 1,12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shellcheck-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   shellcheck:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-      - name: Begin CI...
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v5
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@1.1.0
         with:

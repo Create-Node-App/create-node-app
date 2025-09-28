@@ -5,42 +5,48 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: "31 1,12 * * *"
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   unit-tests:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node 22
+        uses: actions/checkout@v5
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: "npm"
-
-      - name: Install
+          node-version-file: .node-version
+          cache: npm
+      - name: Install dependencies
         run: npm ci
-
-      - name: Build
+      - name: Build (if required)
         run: npm run build --if-present
-
-      - name: Run tests
+      - name: Run unit tests
         run: npm test
-
   coverage:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     needs: unit-tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Node 22
+        uses: actions/checkout@v5
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: npm
-      - name: Install
+      - name: Install dependencies
         run: npm ci
       - name: Run coverage
         env:
