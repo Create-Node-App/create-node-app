@@ -33,33 +33,33 @@
   },
   "devDependencies": {
     "@create-node-app/eslint-config-ts": "*",
-    "ts-node": "^10.9.2",
     "@types/cross-spawn": "^6.0.6",
     "@types/debug": "^4.1.12",
     "@types/envinfo": "^7.8.4",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^24.5.2",
-    "@types/underscore": "^1.13.0",
     "@types/semver": "^7.5.8",
+    "@types/underscore": "^1.13.0",
     "eslint": "^9.35.0",
     "eslint-config-turbo": "^2.5.6",
     "eslint-plugin-turbo": "^2.5.6",
+    "ts-node": "^10.9.2",
     "tsconfig": "*",
-    "typescript": "^5.9.2",
-    "tsx": "^4.19.0"
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    "picocolors": "^1.0.0",
     "cross-spawn": "^7.0.6",
     "debug": "^4.4.3",
     "envinfo": "^7.14.0",
     "fs-extra": "^11.2.0",
-    "simple-git": "^3.28.0",
     "lodash.merge": "^4.6.2",
+    "picocolors": "^1.0.0",
     "readdirp": "^4.1.2",
     "semver": "^7.7.2",
+    "simple-git": "^3.28.0",
     "tsup": "^8.5.0",
-    "underscore": "^1.13.7"
+    "underscore": "^1.13.8"
   }
 }

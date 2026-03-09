@@ -2,8 +2,12 @@ import type { CnaOptions, TemplateOrExtension } from "@create-node-app/core";
 import { isCI } from "ci-info";
 import prompts from "prompts";
 import yargs from "yargs";
-// Align with yargs v18: invoke yargs() to access argv
-prompts.override(yargs(process.argv.slice(2)).argv as any);
+// Align with yargs v18: invoke yargs() to access argv.
+// Disable yargs' built-in --help and --version handlers so Commander can
+// handle those flags instead (otherwise yargs intercepts them at import time).
+prompts.override(
+  yargs(process.argv.slice(2)).help(false).version(false).argv as any,
+);
 import type { TemplateData } from "./templates.js";
 import {
   getTemplateCategories,

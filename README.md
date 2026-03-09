@@ -1,13 +1,11 @@
 <!--lint disable double-link awesome-heading awesome-git-repo-age awesome-toc-->
 
 <div align="center">
-<h1>🌟 Create Awesome Node App 🚀</h1>
 
-[Changelog](./packages/create-awesome-node-app/CHANGELOG.md) |
-[Contributing](./CONTRIBUTING.md)
+<h1>🌟 Create Awesome Node App</h1>
 
-</div>
-<div align="center">
+<p><strong>A composable scaffolding CLI for Node, Web, Full-Stack, and Monorepo projects.</strong><br/>
+Pick a template. Layer addons. Ship production-ready code in minutes.</p>
 
 [![Awesome](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite#get-started)
 [![Tests][testsbadge]][testsurl]
@@ -20,87 +18,100 @@
 [![License: MIT][licensebadge]][licenseurl]
 [![Coverage](./.github/badges/coverage.svg)](#-available-scripts)
 
+[Changelog](./packages/create-awesome-node-app/CHANGELOG.md) · [Contributing](./CONTRIBUTING.md) · [**🌐 Official Site**](https://create-awesome-node-app.vercel.app)
+
 </div>
 
-This repository contains the source code for the `create-awesome-node-app` package. ✨
+---
 
-![cna](https://user-images.githubusercontent.com/17727170/229553510-49d0d46f-11ac-4b07-acf3-8db8ce7959ec.gif)
+This repository contains the source code for the [`create-awesome-node-app`](https://www.npmjs.com/package/create-awesome-node-app) CLI — a composable scaffolding tool that generates production-grade Node/Web/Full-Stack projects by combining curated templates with modular extensions.
 
-## 🚀 Available Scripts
+> **End users:** See the [package README](./packages/create-awesome-node-app/README.md) or visit **[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)** for the full feature tour, template catalog, and docs.
 
-In the project directory, you can run:
+![cna demo](https://user-images.githubusercontent.com/17727170/229553510-49d0d46f-11ac-4b07-acf3-8db8ce7959ec.gif)
 
-| `npm run <script>` | Description                                                                                                             |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| `test`             | Runs unit tests with Jest.                                                                                              |
-| `lint`             | 🚦 [Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors                 |
-| `lint:fix`         | Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix) |
-| `format`           | Formats the project using [Prettier](https://prettier.io/)                                                              |
-| `type-check`       | Runs [TypeScript](https://www.typescriptlang.org/) type checking                                                        |
+---
 
-## Running Locally
+## 🗂 Repository Structure
 
-When contributing you might want to test your changes locally before opening a PR. To do so, you can use the `create-awesome-node-app` CLI to create a new project and test your changes.
+This is a **monorepo** managed with npm workspaces and [Turborepo](https://turbo.build/):
+
+| Package                                                         | Description                                                  |
+| --------------------------------------------------------------- | ------------------------------------------------------------ |
+| [`create-awesome-node-app`](./packages/create-awesome-node-app) | The main CLI — Commander-based, interactive + CI-friendly    |
+| [`@create-node-app/core`](./packages/create-node-app-core)      | Core generation logic (template loading, git, package merge) |
+| `@create-node-app/eslint-config*`                               | Shared ESLint presets (base, TypeScript, React, Next.js)     |
+| `tsconfig`                                                      | Shared TypeScript base configurations                        |
+
+---
+
+## 🚀 Quick Start (for users)
+
+```bash
+npm create awesome-node-app@latest my-app
+```
+
+Or non-interactive:
+
+```bash
+npx create-awesome-node-app my-app \
+  --template react-vite-boilerplate \
+  --addons material-ui github-setup \
+  --no-interactive
+```
+
+→ Full documentation at **[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)**
+
+---
+
+## 🛠 Running Locally (for contributors)
 
 ```sh
 # Clone the repository
 git clone https://github.com/Create-Node-App/create-node-app.git
-
-# Move into the directory
 cd create-node-app
 
-# Setup your local environment
+# Set up Node version and install dependencies
 fnm use
 npm install
 
 # Build the CLI
 npm run build -- --filter create-awesome-node-app
 
-# Create a new project
+# Run it locally
 ./packages/create-awesome-node-app/index.js my-app
 ```
 
-### More Usage Examples
+### Usage Examples
 
-Below are additional real-world examples leveraging the public templates catalog and local `file://` paths.
-
-#### 1. Use a catalog template by slug (non-interactive)
-
-Create a React + Vite project (slug: `react-vite-boilerplate`):
+#### Catalog template by slug
 
 ```sh
+# React + Vite
 npx create-awesome-node-app my-react-app -t react-vite-boilerplate
+
+# NestJS API
+npx create-awesome-node-app my-api -t nestjs-boilerplate
+
+# Next.js full-stack
+npx create-awesome-node-app my-next -t nextjs-starter
 ```
 
-Create a NestJS API (slug: `nestjs-boilerplate`):
+#### Template + addons
 
 ```sh
-npx create-awesome-node-app my-nest-api -t nestjs-boilerplate
+# React + Tailwind + Zustand
+npx create-awesome-node-app my-app \
+  -t react-vite-boilerplate \
+  --addons tailwind-css zustand
+
+# NestJS + Drizzle + OpenAPI
+npx create-awesome-node-app my-api \
+  -t nestjs-boilerplate \
+  --addons drizzle-orm-postgresql openapi
 ```
 
-Create a Next.js full‑stack app (slug: `nextjs-starter`) with a custom `srcDir` override:
-
-```sh
-npx create-awesome-node-app my-next --template nextjs-starter --srcDir app
-```
-
-#### 2. Add extensions (addons) by slug
-
-React project with Tailwind CSS + Zustand state management (extensions `tailwind-css` and `zustand`):
-
-```sh
-npx create-awesome-node-app my-react-app -t react-vite-boilerplate --addons tailwind-css zustand
-```
-
-NestJS project with Drizzle (PostgreSQL) + OpenAPI docs:
-
-```sh
-npx create-awesome-node-app my-nest-api -t nestjs-boilerplate --addons drizzle-orm-postgresql openapi
-```
-
-#### 3. Mix template + explicit extension URLs
-
-You can always pass full GitHub URLs (they can include `/tree/<branch>/<subdir>`):
+#### Remote GitHub URLs
 
 ```sh
 npx create-awesome-node-app my-app \
@@ -108,36 +119,24 @@ npx create-awesome-node-app my-app \
   --addons https://github.com/Create-Node-App/cna-templates/tree/main/extensions/react-query
 ```
 
-#### 4. Local development with `file://` URLs (templates & extensions)
-
-When iterating on your own template or extension locally, point the CLI to a folder on disk. This is useful while building new starters before publishing.
-
-Supported forms:
+#### Local `file://` templates (useful when developing new templates)
 
 ```sh
-# Basic local template (directory contains a template/ or direct files)
+# Basic local template
 npx create-awesome-node-app local-app \
   -t file:///absolute/path/to/my-template
 
-# Local template selecting a subdirectory (instead of putting /tree/<branch>/<subdir>)
+# Local template with subdirectory
 npx create-awesome-node-app local-app \
-  -t "file:///absolute/path/to/monorepo?subdir=templates/react-vite-starter"
+  -t "file:///absolute/path/to/monorepo?subdir=templates/my-starter"
 
-# Combine a local template with a local extension
+# Combine local template + local extension
 npx create-awesome-node-app local-app \
   -t file:///absolute/path/to/my-template \
   --addons file:///absolute/path/to/my-extension
 ```
 
-Notes for local usage:
-
-- `file://` templates do not perform any git clone; files are read directly from disk.
-- Optional query `?subdir=relative/path` lets you target a nested directory inside a local repo.
-- You can add `?ignorePackage=true` to ignore a template's `package.json` (useful when only copying files).
-
-#### 5. Append additional extensions with `--extend`
-
-`--extend` appends more raw URLs or slugs after initial template + addons resolution (handy for layering):
+#### Layer extra extensions with `--extend`
 
 ```sh
 npx create-awesome-node-app layered-app \
@@ -146,17 +145,15 @@ npx create-awesome-node-app layered-app \
   --extend https://github.com/Create-Node-App/cna-templates/tree/main/extensions/react-hook-form
 ```
 
-#### 6. Verbose mode for debugging
-
-Add `--verbose` to see template resolution, first discovered file, prepared operations count, and copy/append actions:
+#### Debug with `--verbose`
 
 ```sh
 npx create-awesome-node-app debug-app -t react-vite-boilerplate --verbose
 ```
 
-### Template Catalog Reference (Excerpt)
+---
 
-Some popular template slugs available right now:
+### Template Catalog Reference (Excerpt)
 
 | Slug                              | Description                          |
 | --------------------------------- | ------------------------------------ |
@@ -165,64 +162,66 @@ Some popular template slugs available right now:
 | `nestjs-boilerplate`              | Scalable NestJS backend              |
 | `turborepo-boilerplate`           | Monorepo with Turborepo + Changesets |
 | `web-extension-react-boilerplate` | React WebExtension with Vite         |
-| `webdriverio-boilerplate`         | WebdriverIO testing setup            |
+| `webdriverio-boilerplate`         | WebdriverIO E2E testing setup        |
 
-(Full catalog fetched from: `https://raw.githubusercontent.com/Create-Node-App/cna-templates/main/templates.json`.)
+Full catalog: **[create-awesome-node-app.vercel.app/templates](https://create-awesome-node-app.vercel.app/templates)**
 
-### Extension Slug Examples (React)
+---
 
-| Slug                                 | Purpose                               |
-| ------------------------------------ | ------------------------------------- |
-| `tailwind-css`                       | Tailwind CSS utility-first styling    |
-| `zustand`                            | Lightweight state management          |
-| `react-query` (tanstack-react-query) | Async server state management         |
-| `react-i18n`                         | Internationalization setup            |
-| `shadcn-ui`                          | Radix + Tailwind component primitives |
-| `material-ui`                        | MUI component library                 |
+### Popular Extensions (React)
 
-You can combine multiple in one command via `--addons`.
+| Slug           | Purpose                               |
+| -------------- | ------------------------------------- |
+| `tailwind-css` | Tailwind CSS utility-first styling    |
+| `zustand`      | Lightweight state management          |
+| `react-query`  | Async server state (TanStack Query)   |
+| `shadcn-ui`    | Radix + Tailwind component primitives |
+| `material-ui`  | MUI component library                 |
+| `react-i18n`   | Internationalization setup            |
 
-### Ignoring `package.json` from a template
+---
 
-If you only want the file structure (not the template's `package.json`), append `?ignorePackage=true`:
+## 📋 Available Scripts
 
-```sh
-npx create-awesome-node-app structure-only \
-  -t "https://github.com/Create-Node-App/cna-templates/tree/main/templates/react-vite-starter?ignorePackage=true"
-```
+| `npm run <script>` | Description                                   |
+| ------------------ | --------------------------------------------- |
+| `test`             | Run unit tests with Node's native test runner |
+| `lint`             | Lint the project with ESLint                  |
+| `lint:fix`         | Lint and auto-fix correctable errors          |
+| `format`           | Format with Prettier                          |
+| `type-check`       | TypeScript type checking across all packages  |
+| `build`            | Build all packages with Turborepo             |
 
-### Using a Different Source Directory
-
-Most templates expose a `srcDir` custom option. Override it like this:
-
-```sh
-npx create-awesome-node-app custom-src -t react-vite-boilerplate --srcDir app
-```
-
-### Import Path Alias
-
-Likewise override the import alias (defaults often `@/`):
-
-```sh
-npx create-awesome-node-app custom-alias -t react-vite-boilerplate --projectImportPath "~/"
-```
+> Coverage badge is generated locally via c8 + lcov when running `npm run test:coverage`.
 
 ---
 
 ## 🤝 Contributing
 
-- Contributions make the open source community such an amazing place to learn, inspire, and create.
-- Any contributions you make are **truly appreciated**.
-- Check out our [contribution guidelines](./CONTRIBUTING.md) for more information.
+Contributions make the open-source community an amazing place to learn, inspire, and create. Any contributions are **truly appreciated**!
+
+- Check out the [contribution guidelines](./CONTRIBUTING.md) for how to get started
+- Browse [open issues](https://github.com/Create-Node-App/create-node-app/issues) for things to work on
+- For template and extension contributions, see [cna-templates](https://github.com/Create-Node-App/cna-templates)
+
+---
+
+<div align="center">
+
+**[🌐 create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)**
+
+</div>
+
+<!-- Reference links -->
 
 [testsbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/test.yml/badge.svg
 [lintbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/lint.yml/badge.svg
 [typecheckbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/type-check.yml/badge.svg
 [shellcheckbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/shellcheck.yml/badge.svg
 [markdownlintbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/markdownlint.yml/badge.svg
-[npmversion]: https://img.shields.io/npm/v/create-awesome-node-app.svg?maxAge=2592000?style=plastic
-[npmdownloads]: https://img.shields.io/npm/dm/create-awesome-node-app.svg?maxAge=2592000?style=plastic
-[licensebadge]: https://img.shields.io/badge/License-MIT-blue.svg
+[npmversion]: https://img.shields.io/npm/v/create-awesome-node-app.svg?style=flat-square&color=cb3837
+[npmdownloads]: https://img.shields.io/npm/dm/create-awesome-node-app.svg?style=flat-square&color=cb3837
+[licensebadge]: https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square
 [testsurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/test.yml
 [linturl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/lint.yml
 [typecheckurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/type-check.yml
@@ -230,5 +229,3 @@ npx create-awesome-node-app custom-alias -t react-vite-boilerplate --projectImpo
 [markdownlinturl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/markdownlint.yml
 [npmurl]: https://www.npmjs.com/package/create-awesome-node-app
 [licenseurl]: https://github.com/Create-Node-App/create-node-app/blob/main/LICENSE
-
-> Coverage badge is generated locally (c8 + lcov) and updated when running `npm run test:coverage`. For external reporting (Codecov/Coveralls) a future enhancement can publish the lcov report.

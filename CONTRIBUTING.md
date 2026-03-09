@@ -1,55 +1,95 @@
-# Contributing guide
+# Contributing to Create Awesome Node App
 
-When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
+First off, **thank you for taking the time to contribute!** 🎉
 
-Please note we have a [code of conduct](./.github/CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
+Whether you're fixing a bug, improving documentation, adding a template, or suggesting a feature — every contribution helps make CNA better for the whole community.
 
-You can help contribute to this project in many ways, including:
+> **New here?** Start by checking the [official site](https://create-awesome-node-app.vercel.app) to understand what CNA does, then come back here to dive in.
 
-## Reporting Bugs/Feature Requests
+Please note we have a [Code of Conduct](./.github/CODE_OF_CONDUCT.md) — follow it in all your interactions with the project.
 
-We welcome you to use the GitHub issue tracker to report bugs or suggest features.
+---
 
-When filing an issue, please check existing open, or recently closed, issues to make sure somebody else hasn't already
-reported the issue. Please try to include as much information as you can. Details like these are incredibly useful:
+## 🐛 Reporting Bugs
 
-- A reproducible test case or series of steps
-- The version of our code being used
-- Any modifications you've made relevant to the bug
-- Anything unusual about your environment or deployment
+Use the [GitHub issue tracker](https://github.com/Create-Node-App/create-node-app/issues) to report bugs.
 
-### Reporting Bugs
+Before filing, please:
 
-This section guides you through submitting a bug report for this project. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
+- Check open/recently closed issues to avoid duplicates
+- Use the [bug report template](./.github/ISSUE_TEMPLATE/bug_report.md)
 
-When creating bug reports please fill out [the required template](./.github/ISSUE_TEMPLATE/bug_report.md), the information it asks for helps us resolve issues faster.
+Include as much detail as possible:
 
-### Suggesting Enhancements
+- A **reproducible test case** or steps to reproduce
+- The **version** of the CLI you're running (`create-awesome-node-app --version`)
+- Your **Node.js version** (`node --version`) and OS
+- Any relevant modifications or unusual environment details
 
-This section guides you through submitting an enhancement suggestion for this project, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
+---
 
-When creating enhancement suggestions, please fill in [the template](./.github/ISSUE_TEMPLATE/feature_request.md), including the steps that you imagine you would take if the feature you're requesting existed.
+## 💡 Suggesting Features
 
-## Contributing via Pull Requests
+We love good ideas! Use the [feature request template](./.github/ISSUE_TEMPLATE/feature_request.md) on GitHub Issues.
 
-Contributions via pull requests are much appreciated. Before sending us a pull request, please ensure that:
+Describe the problem you're solving and the solution you have in mind — the more context, the better.
 
-1. You are working against the latest source on the _main_ branch.
-2. You check existing open, and recently merged, pull requests to make sure someone else hasn't addressed the problem already.
-3. You open an issue to discuss any significant work - we would hate for your time to be wasted.
+---
 
-To send us a pull request, please:
+## 🔀 Contributing via Pull Requests
 
-1. Fork the repository.
-2. Modify the source; please focus on the specific change you are contributing. If you also reformat all the code, it will be hard for us to focus on your change.
-3. Ensure local tests pass (_if applicable_).
-4. Commit to your fork using clear commit messages.
-5. Send us a pull request, answering any default questions in the pull request template.
-6. Pay attention to any automated CI failures reported in the pull request, and stay involved in the conversation.
+Pull requests are the best way to propose changes. Before opening one:
 
-GitHub provides additional document on [forking a repository](https://help.github.com/articles/fork-a-repo/) and
-[creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
+1. **Work against the latest `main` branch** — make sure your fork is up to date
+2. **Check existing PRs** — someone may already be working on the same thing
+3. **Open an issue first** for significant changes — we'd hate for your time to be wasted on something that doesn't align with the roadmap
 
-## Finding contributions to work on
+### Steps
 
-Looking at the existing issues is a great way to find something to contribute on. As our projects, by default, use the default GitHub issue labels (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any 'help wanted' issues is a great place to start.
+1. **Fork** the repository and create a branch from `main`
+2. **Make your changes** — focus on the specific fix or feature; avoid reformatting unrelated code
+3. **Ensure tests pass** — run `npm test` from the root
+4. **Write clear commit messages** — follow [Conventional Commits](https://www.conventionalcommits.org/) if possible
+5. **Open a Pull Request** — fill out the template and link the related issue
+6. **Stay engaged** — respond to review comments and CI failures
+
+GitHub docs: [Forking a repo](https://help.github.com/articles/fork-a-repo/) · [Creating a pull request](https://help.github.com/articles/creating-a-pull-request/)
+
+---
+
+## 🧱 Contributing Templates or Extensions
+
+Template and extension data lives in a separate repository:
+**[github.com/Create-Node-App/cna-templates](https://github.com/Create-Node-App/cna-templates)**
+
+To add or update a template/extension, open a PR there following the conventions described in that repo's README.
+
+---
+
+## 🔍 Finding Something to Work On
+
+- Look for issues labelled **`help wanted`** or **`good first issue`**
+- Browse the [open issues](https://github.com/Create-Node-App/create-node-app/issues) for bugs or feature requests that interest you
+- Check the [Roadmap](./packages/create-awesome-node-app/README.md#-roadmap) section in the CLI README
+
+---
+
+## 🛠 Local Development
+
+```sh
+# Clone and set up
+git clone https://github.com/Create-Node-App/create-node-app.git
+cd create-node-app
+fnm use
+npm install
+
+# Build the CLI
+npm run build -- --filter create-awesome-node-app
+
+# Test your changes
+./packages/create-awesome-node-app/index.js my-test-app
+```
+
+---
+
+Again, **thank you** for helping make Create Awesome Node App better! 🚀

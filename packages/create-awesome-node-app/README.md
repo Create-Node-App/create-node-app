@@ -1,296 +1,321 @@
 <!--lint disable double-link awesome-heading awesome-git-repo-age awesome-toc-->
 
 <div align="center">
-<h1>🌟 Create Awesome Node App 🚀</h1>
 
-<!-- NPM Preview: Keep this block ultra concise (first ~5 lines shown on npm) -->
+<h1>🌟 Create Awesome Node App</h1>
 
-<strong>Bootstrap production‑grade Node / Web / Full‑Stack / Monorepo / Extension apps in minutes.</strong><br/>
-<em>Pick a template → Add addons → Ship faster.</em>
+<p><strong>The scaffolding CLI that gets out of your way.</strong><br/>
+Pick a production-grade template, layer powerful addons, and ship a fully wired project in under a minute.</p>
 
 [![npm][npmversion]][npmurl]
 [![Downloads][npmdownloads]][npmurl]
+[![Stars][starsbadge]][starsurl]
 [![Commit Activity][commitactivitybadge]][commitactivityurl]
 [![Bundle Size][bundlesizebadge]][bundlesizeurl]
 [![Awesome](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite#get-started)
 [![License: MIT][licensebadge]][licenseurl]
-
-<!-- Extended badges (not all needed in npm fold) -->
 
 [![Tests][testsbadge]][testsurl]
 [![Lint][lintbadge]][linturl]
 [![Typecheck][typecheckbadge]][typecheckurl]
 [![Shellcheck][shellcheckbadge]][shellcheckurl]
 [![Markdown][markdownlintbadge]][markdownlinturl]
+
 <br />
-<a href="https://create-awesome-node-app.vercel.app" target="_blank"><b>Official Site</b></a> ·
-<a href="https://create-awesome-node-app.vercel.app/templates" target="_blank">Templates</a> ·
-<a href="https://create-awesome-node-app.vercel.app/extensions" target="_blank">Extensions</a> ·
-<a href="https://create-awesome-node-app.vercel.app/docs" target="_blank">Docs</a>
+
+**[🌐 Official Site](https://create-awesome-node-app.vercel.app)** · [Templates](https://create-awesome-node-app.vercel.app/templates) · [Extensions](https://create-awesome-node-app.vercel.app/extensions) · [Docs](https://create-awesome-node-app.vercel.app/docs) · [GitHub](https://github.com/Create-Node-App/create-node-app)
 
 </div>
 
-> Build. Extend. Ship. Pick a production‑grade template, layer powerful addons, and get a project that follows modern conventions, automation, and DX best practices out of the box.
+---
 
-<details>
-<summary><strong>TL;DR (60s)</strong></summary>
+## ⚡ Get started in 30 seconds
 
 ```bash
-# Interactive (recommended)
 npm create awesome-node-app@latest my-app
-
-# Direct + addons
-npx create-awesome-node-app my-app \
-  --template react-vite-boilerplate \
-  --addons material-ui github-setup
-  --no-interactive
 ```
 
-What you get: Modern structure, linting, TS, testing, optional AI `AGENTS.md`, extensible addons, monorepo & full‑stack ready.
+That's it. The interactive wizard walks you through picking a template, addons, and package manager — you're done before your coffee gets cold.
 
-</details>
+> **Want to go fully non-interactive?** Specify everything up front:
+>
+> ```bash
+> npx create-awesome-node-app my-app \
+>   --template react-vite-boilerplate \
+>   --addons material-ui github-setup \
+>   --no-interactive
+> ```
 
 ---
 
 ## ✨ Why Create Awesome Node App?
 
-`create-awesome-node-app` (CNA) is a batteries‑included scaffolding CLI that lets you:
+Most scaffolding tools lock you into a single opinionated stack. **CNA is different** — it's a _composable_ scaffolding engine built around the idea that your stack should be yours.
 
-- 🔌 Mix & match **templates + addons** (React, Next.js, NestJS, Turborepo, Web Extensions, UAT, Monorepos, and more)
-- 🧩 Add **extensions** (UI libraries, GitHub setup, auth, testing, tooling) at creation time
-- 🧪 Ship with **testing & linting** pre‑wired (ESLint, TypeScript, formatting, markdown lint, shellcheck, etc.)
-- 🧭 Use **interactive mode** to discover categories, templates, and compatible addons
-- 🚀 Start fast with **production‑ready structure** and opinionated defaults
-- 🤖 Get an automatic **`AGENTS.md` contract** in supported templates for AI assistant alignment
-- 🌐 Pull **remote templates / extensions by URL** – bring your own blueprints
-- 🧵 Keep everything **Node 22 ready** and future‑proof
+|                               | CNA | Traditional scaffolders |
+| ----------------------------- | --- | ----------------------- |
+| Mix templates + addons        | ✅  | ❌                      |
+| Bring your own template URL   | ✅  | ❌                      |
+| Interactive _and_ CI-friendly | ✅  | Partial                 |
+| AGENTS.md for AI assistants   | ✅  | ❌                      |
+| Extension ecosystem           | ✅  | ❌                      |
+| Node 22 native                | ✅  | Varies                  |
 
-> On the Awesome List? ✅ Yes – we proudly display the [Awesome Vite Mention](https://github.com/vitejs/awesome-vite#get-started).
-
----
-
-## 🔗 Official Site
-
-Explore visually: **[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)**
-
-- Browse all templates & categories
-- Filter by stack type (frontend, backend, full‑stack, monorepo, web extension, UAT, etc.)
-- Discover extensions to enrich your base
-- Learn how the generation pipeline works
+**One CLI. Any stack.**
 
 ---
 
-## 🚀 Quick Start
+## 🚀 What you get out of the box
 
-Use via one‑shot runner (recommended – always latest). Interactive mode runs by default (unless CI):
+Every project bootstrapped with CNA includes:
+
+- 🧱 **Production-ready structure** — no empty folders or placeholder files
+- 🔷 **TypeScript** — strict mode, ready to go
+- 🧹 **ESLint + Prettier** — framework-specific rules pre-configured
+- 🧪 **Testing setup** — vitest, jest, playwright, or cypress (depends on template)
+- 🤖 **`AGENTS.md`** — a contract file so your AI coding assistant understands your project conventions
+- 🔄 **GitHub Actions workflows** — CI, linting, and releases via addons
+- 📦 **Your choice of package manager** — npm, yarn, or pnpm
+
+---
+
+## 🌐 Explore the Catalog
+
+Visit **[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)** to visually browse the full ecosystem:
+
+- 🗂 Templates organized by category (Frontend, Backend, Full Stack, Monorepo, Web Extension, UAT)
+- 🧩 Extensions filterable by compatibility
+- 📖 Guides on how the generation pipeline works
+
+Or discover everything from your terminal:
 
 ```bash
-npm create awesome-node-app@latest my-app
-# or
-pnpm create awesome-node-app my-app
-# or
-yarn create awesome-node-app my-app
-```
+# List all available templates
+create-awesome-node-app --list-templates
 
-Global install (optional):
-
-```bash
-npm install -g create-awesome-node-app
-create-awesome-node-app my-app --template react-vite-boilerplate --addons material-ui github-setup
-```
-
-Minimal non‑interactive example:
-
-```bash
-npx create-awesome-node-app my-api \
-  --template nestjs-boilerplate \
-  --addons github-setup commitlint prettier
+# List addons compatible with a specific template
+create-awesome-node-app --template react-vite-boilerplate --list-addons
 ```
 
 ---
 
-## 🧪 Interactive Mode Walkthrough
+## 🧱 Template Ecosystem
 
-Interactive flow (default outside CI) lets you:
+| Category         | Example Templates                                                 |
+| ---------------- | ----------------------------------------------------------------- |
+| 🖥 Frontend      | `react-vite-boilerplate` — React 18 + Vite + TS + ESLint + Vitest |
+| 🔧 Backend       | `nestjs-boilerplate` — NestJS + TS + ESLint + Jest                |
+| 🌐 Full Stack    | `nextjs-starter` — Next.js + SSR + TS + Prettier                  |
+| 🗂 Monorepo      | `turborepo-boilerplate` — Turborepo + Changesets + TS             |
+| 🧩 Web Extension | `web-extension-react-boilerplate` — Cross-browser + React         |
+| 🧪 UAT / Testing | `webdriverio-boilerplate` — E2E automation scaffold               |
 
-1. Pick a category (Frontend, Backend, Full Stack, Monorepo, Web Extension, UAT...)
-2. Select a template with description & keywords
-3. Choose compatible extensions grouped by purpose
-4. Optionally extend with custom URLs
-
-The CLI builds a tailored `templatesOrExtensions` pipeline and generates the workspace accordingly.
-
----
-
-## 🧱 Template Ecosystem (Highlights)
-
-| Category      | Example Templates                                 |
-| ------------- | ------------------------------------------------- |
-| Frontend      | React Vite Boilerplate, Vue (via community), etc. |
-| Backend       | NestJS Boilerplate, Express variants              |
-| Full Stack    | NextJS Starter (SSR + TS + ESLint + Prettier)     |
-| Monorepo      | Turborepo Boilerplate (TypeScript + Changesets)   |
-| Web Extension | Cross‑browser modern extension bases              |
-| UAT / Testing | Playwright / Cypress ready setups                 |
-
-Full catalog: <https://create-awesome-node-app.vercel.app/templates>
+→ Full catalog at **[create-awesome-node-app.vercel.app/templates](https://create-awesome-node-app.vercel.app/templates)**
 
 ---
 
 ## 🧩 Addons / Extensions
 
-Enhance your template with modular capabilities (examples):
+Think of addons as _lego bricks_ — snap them onto any template to add exactly what you need:
 
-- UI: Material UI, Tailwind, component libraries
-- State / Data: jotai, tRPC, React Query
-- Tooling: GitHub workflows, commit linting, changesets, release automation
-- Quality: ESLint configs, Prettier, TypeScript strictness
-- Testing: Playwright / Cypress scaffolds, vitest
-- DX: Environment setup, conventional commits, docs helpers
+| Category        | Examples                                                 |
+| --------------- | -------------------------------------------------------- |
+| 🎨 UI Libraries | Material UI, Tailwind CSS, component libraries           |
+| 📊 State & Data | Jotai, tRPC, React Query, Zustand                        |
+| 🔧 Tooling      | GitHub Actions workflows, changesets, release automation |
+| ✅ Code Quality | ESLint configs, Prettier, TypeScript strictness          |
+| 🧪 Testing      | Playwright, Cypress, Vitest setups                       |
+| 🛠 DX           | Commit linting, conventional commits, environment setup  |
 
-List what’s available:
-
-```bash
-create-awesome-node-app --list-templates
-create-awesome-node-app --list-addons
-# Filter addons compatible with a template
-create-awesome-node-app --template react-vite-boilerplate --list-addons
-```
-
-Add any extra extension by URL (non‑interactive example shown):
+Add any extension by slug or URL:
 
 ```bash
-create-awesome-node-app my-app \
+npx create-awesome-node-app my-app \
   --template react-vite-boilerplate \
-  --addons material-ui github-setup \
-  --extend https://github.com/your-org/your-extension
+  --addons material-ui github-setup commitlint \
+  --extend https://github.com/your-org/your-custom-extension
 ```
 
 ---
 
-## 🤖 AGENTS.md: Built-in AI Assistant Contract
+## 🤖 AI-Ready with `AGENTS.md`
 
-Many templates ship with an auto‑generated `AGENTS.md` – a structured guide for AI coding assistants to understand project intent, conventions, and constraints. This improves code suggestion relevance and onboarding speed for hybrid human+AI teams.
+CNA generates an **`AGENTS.md`** file in supported templates — a structured document that tells AI coding assistants (GitHub Copilot, Cursor, Claude, etc.) about:
 
-Learn more: <https://create-awesome-node-app.vercel.app/docs/agents-md>
+- Project purpose and conventions
+- Directory layout and naming rules
+- Scripts and how to use them
+- Testing strategy and linting rules
+
+This dramatically improves AI suggestion quality and speeds up onboarding for hybrid human+AI teams.
+
+→ Learn more at **[create-awesome-node-app.vercel.app/docs/agents-md](https://create-awesome-node-app.vercel.app/docs/agents-md)**
+
+---
+
+## 🧪 Interactive Mode Walkthrough
+
+When you run CNA without flags (or with `--interactive`), the wizard guides you through:
+
+1. **Project name** — set or confirm your app's name
+2. **Package manager** — npm, yarn, or pnpm
+3. **Category** — Frontend, Backend, Full Stack, Monorepo, Web Extension, UAT, or Custom
+4. **Template** — pick from curated options with descriptions and keywords
+5. **Extensions** — multi-select compatible addons grouped by purpose
+6. **Custom extensions** — optionally extend with any additional URLs
+
+The CLI composes a `templatesOrExtensions` pipeline and generates your workspace in one shot.
 
 ---
 
 ## ⚙️ Requirements
 
-- **Node.js ≥ 22** (enforced via engine check)
-- Any of: npm / yarn / pnpm
+- **Node.js >= 22** (enforced at startup — no silent failures)
+- npm >= 7, yarn, or pnpm
 
-We recommend fast version switching with [`fnm`](https://github.com/Schniz/fnm):
+We recommend [`fnm`](https://github.com/Schniz/fnm) for fast Node version switching:
 
 ```bash
 fnm use 22
+npm create awesome-node-app@latest my-app
 ```
 
 ---
 
-## 🔍 CLI Options (Core)
+## 🔍 CLI Reference
 
-| Flag                        | Description                                    |
-| --------------------------- | ---------------------------------------------- |
-| `--interactive`             | Force interactive (default outside CI)         |
-| `--no-interactive`          | Disable interactive wizard                     |
-| `--template <slug\|url>`    | Use a known template slug or remote URL        |
-| `--addons [list...]`        | Space‑separated addon slugs or URLs            |
-| `--extend [list...]`        | Extra extension URLs (advanced)                |
-| `--no-install`              | Skip dependency installation                   |
-| `--use-yarn` / `--use-pnpm` | Force package manager                          |
-| `--list-templates`          | Print templates grouped by category            |
-| `--list-addons`             | Print addons (optionally filtered by template) |
-| `--verbose`                 | Output resolved generation config              |
-| `--info`                    | Print environment diagnostics                  |
+```
+Usage: create-awesome-node-app [project-directory] [options]
+```
+
+| Flag                         | Description                                        |
+| ---------------------------- | -------------------------------------------------- |
+| `--interactive`              | Force interactive wizard (default outside CI)      |
+| `--no-interactive`           | Disable wizard — use flags only                    |
+| `-t, --template <slug\|url>` | Template slug from catalog or remote GitHub URL    |
+| `--addons [slugs...]`        | Space-separated addon slugs or URLs                |
+| `--extend [urls...]`         | Extra extension URLs to layer on top               |
+| `--no-install`               | Generate files without installing dependencies     |
+| `--use-yarn`                 | Use yarn instead of npm                            |
+| `--use-pnpm`                 | Use pnpm instead of npm                            |
+| `--list-templates`           | Print all templates grouped by category            |
+| `--list-addons`              | Print addons (optionally filtered by `--template`) |
+| `-v, --verbose`              | Output resolved generation config as JSON          |
+| `-i, --info`                 | Print Node, npm, OS environment diagnostics        |
+| `-V, --version`              | Print CLI version                                  |
+| `-h, --help`                 | Show help                                          |
 
 ---
 
-## 🛠 Programmatic Usage (Experimental)
+## 🛠 Programmatic Usage
 
-You can import helpers from the core package for custom tooling:
+Need to integrate CNA into your own tooling? The core is importable:
 
 ```ts
 import { createNodeApp, getTemplateDirPath } from "@create-node-app/core";
 ```
 
----
-
-## 🧪 Quality & Toolchain
-
-Every generated project leans on modern, maintainable defaults:
-
-- TypeScript strict mode
-- ESLint (framework‑specific presets + consistency rules)
-- Prettier formatting (where applicable)
-- Testing support (varies by template: vitest, jest, e2e tooling)
-- GitHub Actions friendly
-- Conventional structure for CI/CD & release automation
+> Note: The programmatic API is experimental and subject to change. Prefer the CLI for stable usage.
 
 ---
 
 ## ❓ FAQ
 
-**Why another scaffolder?**
-Because most CLIs lock you into one stack. CNA lets you compose _your_ stack from curated templates + pluggable extensions.
+<details>
+<summary><strong>Why another scaffolder?</strong></summary>
 
-**Can I bring my own template?**
-Yes – pass a GitHub (or any) URL pointing to a repository (optionally with subdirectory path) via `--template`.
+Because most CLIs lock you into one stack. CNA lets you _compose_ your stack: pick a curated template, add modular extensions, and bring your own blueprints via URL. No vendor lock-in.
 
-**Are addons order‑sensitive?**
-They’re applied sequentially; conflicting changes should be resolved by your VCS if you customize heavily.
+</details>
 
-**Does it support monorepos?**
-Yes. The Turborepo boilerplate + addons give you multi‑package orchestration fast.
+<details>
+<summary><strong>Can I use my own template?</strong></summary>
 
-**What about AI integration?**
-`AGENTS.md` provides a structured spec for AI tools to align with your conventions.
+Yes. Pass a GitHub URL (with optional subdirectory path) via `--template`:
 
-**Is Node 22 required?**
-Yes – we target the latest stable modern runtime for performance & language features.
+```bash
+npx create-awesome-node-app my-app \
+  --template https://github.com/your-org/your-repo/tree/main/template
+```
+
+</details>
+
+<details>
+<summary><strong>Are addons order-sensitive?</strong></summary>
+
+They're applied sequentially in the order you specify. If two addons touch the same file, later ones win — just like a git merge.
+
+</details>
+
+<details>
+<summary><strong>Does it support monorepos?</strong></summary>
+
+Yes. Use the `turborepo-boilerplate` template for a multi-package workspace with Turborepo, Changesets, and shared TypeScript/ESLint configs ready to go.
+
+</details>
+
+<details>
+<summary><strong>What about CI environments?</strong></summary>
+
+CNA auto-detects CI and disables interactive mode. All options can be passed via flags for fully scripted generation — perfect for bootstrapping in automation pipelines.
+
+</details>
+
+<details>
+<summary><strong>Is Node 22 really required?</strong></summary>
+
+Yes — we target the latest LTS runtime for native ESM support, performance, and modern language features. Use `fnm` or `nvm` to switch quickly if needed.
+
+</details>
+
+---
+
+## 🗺 Roadmap
+
+- Remix and SvelteKit template variants
+- Additional testing packs (contract, performance, load testing)
+- Template version pinning and diff-based upgrade paths
+- Rich template analytics and usage metrics
+
+→ Track progress in [Issues](https://github.com/Create-Node-App/create-node-app/issues) and [Discussions](https://github.com/Create-Node-App/create-node-app/discussions).
 
 ---
 
 ## 🤝 Contributing
 
-We welcome templates, addons, fixes, and ideas! See the root repository guidelines: <https://github.com/Create-Node-App/create-node-app/blob/main/CONTRIBUTING.md>
+Contributions are what make CNA better — templates, addons, bug fixes, docs, ideas. All welcome!
 
-For template & extension data visit: <https://github.com/Create-Node-App/cna-templates>
-
----
-
-## Roadmap (Short List)
-
-- More framework integrations (Remix, SvelteKit variants)
-- Additional testing packs (contract / performance harnesses)
-- Rich analytics for generation metrics
-- Template version pinning & diff upgrade paths
-
-Follow progress in Issues & Discussions.
+- **Main repo:** [github.com/Create-Node-App/create-node-app](https://github.com/Create-Node-App/create-node-app)
+- **Template & extension data:** [github.com/Create-Node-App/cna-templates](https://github.com/Create-Node-App/cna-templates)
+- **Contributing guide:** [CONTRIBUTING.md](https://github.com/Create-Node-App/create-node-app/blob/main/CONTRIBUTING.md)
 
 ---
 
 ## 📜 License
 
-MIT © Create Node App Contributors – see [LICENSE][licenseurl]
+MIT © [Create Node App Contributors](https://github.com/Create-Node-App/create-node-app/graphs/contributors)
 
 ---
 
 <div align="center">
-<sub>Built with ♥ for developers who value velocity + clarity.</sub>
-<br />
-<sub><em>Spanish translation coming soon – ¿lo querés antes? Abrí un issue.</em></sub>
+
+**[🌐 create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)**
+
+_Built with ♥ for developers who value speed, clarity, and composability._
+
 </div>
+
+<!-- Reference links -->
 
 [testsbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/test.yml/badge.svg
 [lintbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/lint.yml/badge.svg
 [typecheckbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/type-check.yml/badge.svg
 [shellcheckbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/shellcheck.yml/badge.svg
 [markdownlintbadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/markdownlint.yml/badge.svg
-[npmversion]: https://img.shields.io/npm/v/create-awesome-node-app.svg?maxAge=2592000?style=plastic
-[npmdownloads]: https://img.shields.io/npm/dm/create-awesome-node-app.svg?maxAge=2592000?style=plastic
-[licensebadge]: https://img.shields.io/badge/License-MIT-blue.svg
+[npmversion]: https://img.shields.io/npm/v/create-awesome-node-app.svg?style=flat-square&color=cb3837
+[npmdownloads]: https://img.shields.io/npm/dm/create-awesome-node-app.svg?style=flat-square&color=cb3837
+[starsbadge]: https://img.shields.io/github/stars/Create-Node-App/create-node-app?style=flat-square&color=yellow
+[licensebadge]: https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square
 [testsurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/test.yml
 [linturl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/lint.yml
 [typecheckurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/type-check.yml
@@ -298,7 +323,8 @@ MIT © Create Node App Contributors – see [LICENSE][licenseurl]
 [markdownlinturl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/markdownlint.yml
 [npmurl]: https://www.npmjs.com/package/create-awesome-node-app
 [licenseurl]: https://github.com/Create-Node-App/create-node-app/blob/main/LICENSE
-[commitactivitybadge]: https://img.shields.io/github/commit-activity/m/Create-Node-App/create-node-app?logo=github&label=commits
+[starsurl]: https://github.com/Create-Node-App/create-node-app/stargazers
+[commitactivitybadge]: https://img.shields.io/github/commit-activity/m/Create-Node-App/create-node-app?style=flat-square&logo=github&label=commits
 [commitactivityurl]: https://github.com/Create-Node-App/create-node-app/pulse
-[bundlesizebadge]: https://img.shields.io/bundlephobia/minzip/create-awesome-node-app?label=bundlephobia
+[bundlesizebadge]: https://img.shields.io/bundlephobia/minzip/create-awesome-node-app?style=flat-square&label=size
 [bundlesizeurl]: https://bundlephobia.com/package/create-awesome-node-app
