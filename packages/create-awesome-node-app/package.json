@@ -1,6 +1,6 @@
 {
   "name": "create-awesome-node-app",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "type": "module",
   "description": "Command line tool to create Node apps with a lot of different templates and extensions.",
   "license": "MIT",
@@ -54,7 +54,7 @@
     "test:src": "npm run test"
   },
   "dependencies": {
-    "@create-node-app/core": "^0.5.7",
+    "@create-node-app/core": "^0.6.0",
     "axios": "^1.13.6",
     "ci-info": "^4.3.0",
     "commander": "^14.0.1",
@@ -62,7 +62,7 @@
     "semver": "^7.7.2"
   },
   "devDependencies": {
-    "@create-node-app/core": "^0.5.7",
+    "@create-node-app/core": "^0.6.0",
     "@create-node-app/eslint-config-ts": "*",
     "@types/node": "^24.5.2",
     "@types/prompts": "^2.4.9",

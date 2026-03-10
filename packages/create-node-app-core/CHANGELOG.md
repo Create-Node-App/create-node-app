@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.6.0
+
+### Minor Changes
+
+- Local first flags for testing
+
 ## 0.5.7
 
 ### Patch Changes

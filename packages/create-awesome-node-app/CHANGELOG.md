@@ -1,5 +1,16 @@
 # create-awesome-node-app
 
+## 0.8.0
+
+### Minor Changes
+
+- Local first flags for testing
+
+### Patch Changes
+
+- Updated dependencies
+  - @create-node-app/core@0.6.0
+
 ## 0.7.1
 
 ### Patch Changes
