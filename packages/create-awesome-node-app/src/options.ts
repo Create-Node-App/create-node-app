@@ -1,13 +1,7 @@
 import type { CnaOptions, TemplateOrExtension } from "@create-node-app/core";
+import { loadTemplateCnaConfig } from "@create-node-app/core";
 import { isCI } from "ci-info";
 import prompts from "prompts";
-import yargs from "yargs";
-// Align with yargs v18: invoke yargs() to access argv.
-// Disable yargs' built-in --help and --version handlers so Commander can
-// handle those flags instead (otherwise yargs intercepts them at import time).
-prompts.override(
-  yargs(process.argv.slice(2)).help(false).version(false).argv as any,
-);
 import type { TemplateData } from "./templates.js";
 import {
   getTemplateCategories,
@@ -33,9 +27,15 @@ const isValidUrl = (url: string): boolean => {
 const processNonInteractiveOptions = async (
   options: CnaOptions,
 ): Promise<CnaOptions> => {
+  // Extract --set overrides early so they don't leak into EJS template context
+  const setOverrides =
+    (options.setOverrides as Record<string, string> | undefined) ?? {};
+  delete (options as Record<string, unknown>).setOverrides;
+
   const categories = await getTemplateCategories();
   let matchedTemplate: TemplateData | undefined;
   const templatesOrExtensions: TemplateOrExtension[] = [];
+  let resolvedTemplateUrl: string | undefined;
 
   // Handle cases where templates/extensions are not valid URLs
   if (options.template && !isValidUrl(options.template)) {
@@ -50,8 +50,10 @@ const processNonInteractiveOptions = async (
     if (matchedTemplate) {
       // Add the template to templatesOrExtensions
       templatesOrExtensions.push({ url: matchedTemplate.url });
+      resolvedTemplateUrl = matchedTemplate.url;
 
-      // Apply initial values for custom options
+      // Apply registry customOptions initial values (lowest priority — may be
+      // overridden by cna.config.json or --set below)
       if (matchedTemplate.customOptions) {
         matchedTemplate.customOptions.forEach((customOption) => {
           if (customOption.name && customOption.initial !== undefined) {
@@ -67,7 +69,25 @@ const processNonInteractiveOptions = async (
   } else if (options.template) {
     // If it's a valid URL, add it directly to templatesOrExtensions
     templatesOrExtensions.push({ url: options.template });
+    resolvedTemplateUrl = options.template;
   }
+
+  // Load cna.config.json from the resolved template directory.
+  // Its initial values take priority over registry customOptions but are
+  // overridden by explicit --set flags.
+  if (resolvedTemplateUrl) {
+    const cnaConfig = await loadTemplateCnaConfig(resolvedTemplateUrl);
+    if (cnaConfig?.customOptions) {
+      for (const opt of cnaConfig.customOptions) {
+        if (opt.name && opt.initial !== undefined) {
+          options[opt.name as string] = opt.initial;
+        }
+      }
+    }
+  }
+
+  // Apply --set overrides — highest priority, wins over everything above
+  Object.assign(options, setOverrides);
 
   if (options.addons && Array.isArray(options.addons)) {
     const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
@@ -128,6 +148,15 @@ const processNonInteractiveOptions = async (
 const processInteractiveOptions = async (
   options: CnaOptions,
 ): Promise<CnaOptions> => {
+  // Extract --set overrides and strip from options so they don't leak into EJS context
+  const { setOverrides = {}, ...restOptions } = options as CnaOptions & {
+    setOverrides?: Record<string, string>;
+  };
+  options = restOptions as CnaOptions;
+
+  // Pre-fill interactive prompts with CLI-provided values (replaces yargs argv override)
+  prompts.override({ ...options, ...setOverrides });
+
   const categories = await getTemplateCategories();
 
   // Get category data for each category
@@ -231,7 +260,25 @@ const processInteractiveOptions = async (
 
   const templateTemplateOrExtension = templateInput.template;
 
-  const customOptions = existingTemplate?.customOptions || [];
+  // Load cna.config.json from the selected template — takes priority over registry
+  // customOptions. Falls back to registry if not found (backward compat).
+  const cnaConfig = templateTemplateOrExtension
+    ? await loadTemplateCnaConfig(templateTemplateOrExtension)
+    : null;
+
+  // Extract --set overrides to pre-fill prompts; removed from options before returning
+  // (already extracted at function start, reuse the variable from above)
+
+  const rawCustomOptions =
+    cnaConfig?.customOptions ?? existingTemplate?.customOptions ?? [];
+
+  // Apply --set values as initial overrides for custom option prompts
+  const customOptions = rawCustomOptions.map((opt) =>
+    opt.name &&
+    Object.prototype.hasOwnProperty.call(setOverrides, opt.name as string)
+      ? { ...opt, initial: setOverrides[opt.name as string] }
+      : opt,
+  );
 
   const appConfig = await prompts([
     // The following prompts are placeholders for future inputs
@@ -249,7 +296,7 @@ const processInteractiveOptions = async (
     },
 
     // The following prompts are for custom options
-    ...customOptions,
+    ...(customOptions as prompts.PromptObject[]),
   ]);
 
   appConfig.templatesOrExtensions = [];
@@ -328,6 +375,11 @@ const processInteractiveOptions = async (
     .map((templateOrExtension) => ({ url: templateOrExtension }));
 
   const nextOptions = { ...nextAppOptions, templatesOrExtensions };
+
+  // Apply --set overrides (highest priority) and strip the setOverrides key
+  // so it doesn't leak into the EJS template context.
+  Object.assign(nextOptions, setOverrides);
+  delete (nextOptions as Record<string, unknown>).setOverrides;
 
   if (nextAppOptions.verbose) {
     console.log(JSON.stringify(nextOptions, null, 2));

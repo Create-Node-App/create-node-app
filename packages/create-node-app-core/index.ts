@@ -5,8 +5,14 @@ import { execSync } from "child_process";
 import type { TemplateOrExtension } from "./loaders.js";
 export type { TemplateOrExtension } from "./loaders.js";
 import { createApp } from "./installer.js";
-export { getPackagePath, getTemplateDirPath } from "./paths.js";
+export {
+  getPackagePath,
+  getTemplateDirPath,
+  getTemplateBaseDirPath,
+} from "./paths.js";
 export { downloadRepository } from "./git.js";
+export { loadTemplateCnaConfig } from "./config.js";
+export type { CnaConfig, CnaCustomOption } from "./config.js";
 
 export const checkNodeVersion = (
   requiredVersion: string,

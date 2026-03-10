@@ -59,8 +59,7 @@
     "ci-info": "^4.3.0",
     "commander": "^14.0.1",
     "prompts": "^2.4.2",
-    "semver": "^7.7.2",
-    "yargs": "^18.0.0"
+    "semver": "^7.7.2"
   },
   "devDependencies": {
     "@create-node-app/core": "^0.5.7",
@@ -68,7 +67,6 @@
     "@types/node": "^24.5.2",
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.5.8",
-    "@types/yargs": "^17.0.33",
     "eslint": "^9.35.0",
     "eslint-config-turbo": "^2.5.6",
     "eslint-plugin-turbo": "^2.5.6",

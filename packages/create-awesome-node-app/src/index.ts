@@ -54,6 +54,10 @@ const main = async () => {
     )
     .option("--list-templates", "list all available templates")
     .option("--list-addons", "list all available addons")
+    .option(
+      "--set <assignments...>",
+      "set a custom template option (format: key=value, repeatable)",
+    )
     .action((providedProjectName: string | undefined) => {
       projectName = providedProjectName || projectName;
     });
@@ -90,8 +94,21 @@ const main = async () => {
   }
 
   // Extract package manager options directly from opts
-  const { useYarn, usePnpm, ...restOpts } = opts;
+  const { useYarn, usePnpm, set, ...restOpts } = opts;
   const packageManager = useYarn ? "yarn" : usePnpm ? "pnpm" : "npm";
+
+  // Parse --set key=value assignments into an overrides map
+  const setOverrides: Record<string, string> = {};
+  if (Array.isArray(set)) {
+    for (const assignment of set as string[]) {
+      const eqIdx = assignment.indexOf("=");
+      if (eqIdx > 0) {
+        setOverrides[assignment.slice(0, eqIdx).trim()] = assignment.slice(
+          eqIdx + 1,
+        );
+      }
+    }
+  }
 
   const templatesOrExtensions: TemplateOrExtension[] = [restOpts.template]
     .concat(Array.isArray(restOpts.extend) ? restOpts.extend : [])
@@ -103,7 +120,13 @@ const main = async () => {
 
   return createNodeApp(
     projectName,
-    { ...restOpts, packageManager, templatesOrExtensions, projectName },
+    {
+      ...restOpts,
+      packageManager,
+      templatesOrExtensions,
+      projectName,
+      setOverrides,
+    },
     getCnaOptions,
   );
 };

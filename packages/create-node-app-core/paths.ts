@@ -159,6 +159,24 @@ export const getPackagePath = async (
   return path.resolve(dir, name);
 };
 
+/**
+ * Returns the base directory for a template URL — i.e. the directory that
+ * CONTAINS the optional `template/` subdirectory. This is where cna.config.json
+ * should be placed by template authors.
+ */
+export const getTemplateBaseDirPath = async (
+  templateOrExtensionUrl: string,
+): Promise<string> => {
+  try {
+    const { dir, subdir = "" } = await solveTemplateOrExtensionPath(
+      templateOrExtensionUrl,
+    );
+    return path.resolve(dir, subdir);
+  } catch {
+    return "";
+  }
+};
+
 export const getTemplateDirPath = async (templateOrExtensionUrl: string) => {
   const { dir, subdir = "" } = await solveTemplateOrExtensionPath(
     templateOrExtensionUrl,
