@@ -1,5 +1,11 @@
 # @create-node-app/eslint-config
 
+## 0.1.1
+
+### Patch Changes
+
+- Some improvements and fixes
+
 ## 0.1.0
 
 ### Minor Changes

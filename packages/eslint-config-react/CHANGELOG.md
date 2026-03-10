@@ -1,5 +1,13 @@
 # @create-node-app/eslint-config-react
 
+## 0.1.1
+
+### Patch Changes
+
+- Some improvements and fixes
+- Updated dependencies
+  - @create-node-app/eslint-config-ts@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes
