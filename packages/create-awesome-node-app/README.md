@@ -101,8 +101,8 @@ create-awesome-node-app --template react-vite-boilerplate --list-addons
 
 ## 🧱 Template Ecosystem
 
-| Category         | Example Templates                                                 |
-| ---------------- | ----------------------------------------------------------------- |
+| Category        | Example Templates                                                 |
+| --------------- | ----------------------------------------------------------------- |
 | 🖥 Frontend      | `react-vite-boilerplate` — React 18 + Vite + TS + ESLint + Vitest |
 | 🔧 Backend       | `nestjs-boilerplate` — NestJS + TS + ESLint + Jest                |
 | 🌐 Full Stack    | `nextjs-starter` — Next.js + SSR + TS + Prettier                  |
@@ -118,8 +118,8 @@ create-awesome-node-app --template react-vite-boilerplate --list-addons
 
 Think of addons as _lego bricks_ — snap them onto any template to add exactly what you need:
 
-| Category        | Examples                                                 |
-| --------------- | -------------------------------------------------------- |
+| Category       | Examples                                                 |
+| -------------- | -------------------------------------------------------- |
 | 🎨 UI Libraries | Material UI, Tailwind CSS, component libraries           |
 | 📊 State & Data | Jotai, tRPC, React Query, Zustand                        |
 | 🔧 Tooling      | GitHub Actions workflows, changesets, release automation |
@@ -184,7 +184,7 @@ npm create awesome-node-app@latest my-app
 
 ## 🔍 CLI Reference
 
-```
+```text
 Usage: create-awesome-node-app [project-directory] [options]
 ```
 

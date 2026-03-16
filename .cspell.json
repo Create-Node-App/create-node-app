@@ -23,7 +23,9 @@
     "Turborepo",
     "stefanzweifel",
     "venv",
-    "scaffold"
+    "scaffold",
+    "scaffolder",
+    "scaffolders"
   ],
   "version": "0.2"
 }

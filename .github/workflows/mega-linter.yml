@@ -89,11 +89,13 @@ jobs:
           LLM_ADVISOR_ENABLED: >-
             ${{
               github.event_name != 'pull_request' ||
-              (github.event.pull_request.user.login != 'dependabot[bot]' &&
-               github.event.pull_request.user.login != 'renovate[bot]' &&
-               github.event.pull_request.user.login != 'github-actions[bot]' &&
-               !startsWith(github.event.pull_request.user.login, 'dependabot') &&
-               !startsWith(github.event.pull_request.user.login, 'renovate'))
+              (
+                github.event.pull_request.user.login != 'dependabot[bot]' &&
+                github.event.pull_request.user.login != 'renovate[bot]' &&
+                github.event.pull_request.user.login != 'github-actions[bot]' &&
+                !startsWith(github.event.pull_request.user.login, 'dependabot') &&
+                !startsWith(github.event.pull_request.user.login, 'renovate')
+              )
             }}
 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

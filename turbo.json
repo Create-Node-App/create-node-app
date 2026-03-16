@@ -31,6 +31,7 @@
       "outputs": ["dist/**"]
     },
     "test": {
+      "dependsOn": ["^build"],
       "cache": false
     }
   }

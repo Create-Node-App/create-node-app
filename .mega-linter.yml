@@ -14,6 +14,13 @@ APPLY_FIXES: all
 # default
 # ENABLE_LINTERS:
 
+DISABLE_LINTERS:
+  - COPYPASTE_JSCPD
+  - REPOSITORY_CHECKOV
+  - REPOSITORY_GRYPE
+  - REPOSITORY_TRIVY
+  - SPELL_LYCHEE
+
 # DISABLE:
 # - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
 # - SPELL # Uncomment to disable checks of spelling mistakes
