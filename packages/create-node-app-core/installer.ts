@@ -1,4 +1,4 @@
-import _ from "underscore";
+import { isEmpty } from "lodash";
 import path from "path";
 import fs from "fs";
 import pc from "picocolors";
@@ -163,7 +163,7 @@ const run = async ({
 }: RunOptions) => {
   const isOnline = useYarn ? await checkIfOnline(useYarn) : true;
 
-  if (_.isEmpty(templatesOrExtensions)) {
+  if (isEmpty(templatesOrExtensions)) {
     console.log();
     console.log(
       pc.yellow(

@@ -39,7 +39,6 @@
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^24.5.2",
     "@types/semver": "^7.5.8",
-    "@types/underscore": "^1.13.0",
     "eslint": "^9.35.0",
     "tsconfig": "*",
     "tsup": "^8.5.0",
@@ -51,11 +50,8 @@
     "debug": "^4.4.3",
     "envinfo": "^7.14.0",
     "fs-extra": "^11.2.0",
+    "lodash": "^4.6.2",
     "lodash.merge": "^4.6.2",
-    "picocolors": "^1.0.0",
-    "readdirp": "^4.1.2",
-    "semver": "^7.7.2",
-    "simple-git": "^3.32.3",
-    "underscore": "^1.13.8"
+    "picocolors": "^1.0.0"
   }
 }

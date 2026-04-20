@@ -1,10 +1,10 @@
-import _ from "underscore";
 import fs from "fs";
 import pc from "picocolors";
 import { readdirp } from "readdirp";
 import { dirname } from "path";
 import { getTemplateDirPath } from "./paths.js";
 import { promisify } from "util";
+import { template } from "lodash";
 
 const writeFileAsync = promisify(fs.writeFile);
 const copyFileAsync = promisify(fs.copyFile);
@@ -220,7 +220,7 @@ const templateLoader: FileLoader =
       const filePath = `${templateDir}/${path}`;
       const file = await promisify(fs.readFile)(filePath, "utf8");
       const fileMode = (await promisify(fs.stat)(filePath)).mode;
-      const newFile = _.template(file);
+      const newFile = template(file);
       const newPath = path
         .replace(/.template$/, "")
         .replace(/.append$/, "")
