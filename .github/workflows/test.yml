@@ -34,6 +34,74 @@ jobs:
         run: npm run build --if-present
       - name: Run unit tests
         run: npm test
+
+  # Cross-platform scaffolding tests (Windows & macOS)
+  cross-platform-scaffold:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test scaffold on ${{ matrix.os }}
+        run: |
+          # Create a temp directory for the test project
+          TEMP_DIR=$(mktemp -d)
+          cd "$TEMP_DIR"
+
+          # Test scaffold command (skip git to avoid prompts)
+          echo "Testing scaffold on ${{ matrix.os }}..."
+          pnpm dlx create-node-app@latest test-project --template react-vite --skip-git --skip-install --yes
+
+          # Verify the project was created
+          if [ -d "test-project" ]; then
+            echo "✅ Project created successfully on ${{ matrix.os }}"
+          else
+            echo "❌ Project creation failed on ${{ matrix.os }}"
+            exit 1
+          fi
+
+          # Cleanup
+          cd /
+          rm -rf "$TEMP_DIR"
+        env:
+          CNA_SKIP_GIT: 1
+          SKIP_SMOKE: 1
+          CI: true
+
   coverage:
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     needs: unit-tests
