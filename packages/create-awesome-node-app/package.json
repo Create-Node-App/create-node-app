@@ -59,7 +59,7 @@
     "ci-info": "^4.3.0",
     "commander": "^14.0.1",
     "prompts": "^2.4.2",
-    "semver": "^7.7.2"
+    "semver": "^7.7.4"
   },
   "devDependencies": {
     "@create-node-app/core": "^0.6.0",
