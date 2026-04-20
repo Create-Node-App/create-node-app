@@ -4,7 +4,9 @@ import { readdirp } from "readdirp";
 import { dirname } from "path";
 import { getTemplateDirPath } from "./paths.js";
 import { promisify } from "util";
-import { template } from "lodash";
+import lodash from "lodash";
+
+const { template } = lodash;
 
 const writeFileAsync = promisify(fs.writeFile);
 const copyFileAsync = promisify(fs.copyFile);

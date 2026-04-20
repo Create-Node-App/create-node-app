@@ -1,4 +1,6 @@
-import { isEmpty } from "lodash";
+import lodash from "lodash";
+
+const { isEmpty } = lodash;
 import path from "path";
 import fs from "fs";
 import pc from "picocolors";
