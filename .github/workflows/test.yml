@@ -51,40 +51,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          cache: npm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Build
-        run: pnpm build
+        run: npm run build
 
       - name: Test scaffold on ${{ matrix.os }}
+        shell: bash
         run: |
-          # Create a temp directory for the test project
-          TEMP_DIR=$(mktemp -d)
+          TEMP_DIR="${RUNNER_TEMP}/scaffold-test"
+          mkdir -p "$TEMP_DIR"
           cd "$TEMP_DIR"
 
-          # Test scaffold command (skip git to avoid prompts)
+          # Test scaffold command using locally built CLI
           echo "Testing scaffold on ${{ matrix.os }}..."
-          pnpm dlx create-node-app@latest test-project --template react-vite --skip-git --skip-install --yes
+          CI=true node "$GITHUB_WORKSPACE/packages/create-awesome-node-app/index.js" test-project \
+            -t "nextjs-starter" \
+            --no-install
 
           # Verify the project was created
           if [ -d "test-project" ]; then
@@ -93,13 +79,8 @@ jobs:
             echo "❌ Project creation failed on ${{ matrix.os }}"
             exit 1
           fi
-
-          # Cleanup
-          cd /
-          rm -rf "$TEMP_DIR"
         env:
           CNA_SKIP_GIT: 1
-          SKIP_SMOKE: 1
           CI: true
 
   coverage:
