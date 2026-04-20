@@ -44,8 +44,8 @@
     "eslint": "^9.35.0",
     "eslint-config-turbo": "^2.5.6",
     "eslint-plugin-turbo": "^2.5.6",
-    "ts-node": "^10.9.2",
     "tsconfig": "*",
+    "tsup": "^8.5.0",
     "tsx": "^4.19.0",
     "typescript": "^5.9.2"
   },
@@ -59,7 +59,6 @@
     "readdirp": "^4.1.2",
     "semver": "^7.7.2",
     "simple-git": "^3.32.3",
-    "tsup": "^8.5.0",
     "underscore": "^1.13.8"
   }
 }
