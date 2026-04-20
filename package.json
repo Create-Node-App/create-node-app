@@ -32,6 +32,7 @@
     "is-ci": "^4.1.0",
     "lint-staged": "^16.1.6",
     "prettier": "^3.8.1",
+    "tsup": "^8.5.0",
     "turbo": "^2.5.6"
   },
   "c8": {
@@ -52,9 +53,6 @@
     "include": [
       "packages/**/src/**/*.ts"
     ]
-  },
-  "dependencies": {
-    "tsup": "^8.5.0"
   },
   "engines": {
     "npm": ">=7.0.0",
