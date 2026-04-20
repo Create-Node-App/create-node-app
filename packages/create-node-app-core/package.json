@@ -53,6 +53,6 @@
     "lodash": "^4.6.2",
     "lodash.merge": "^4.6.2",
     "picocolors": "^1.0.0",
-    "semver": "^7.7.2"
+    "semver": "^7.7.4"
   }
 }
