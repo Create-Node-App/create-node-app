@@ -25,7 +25,12 @@
     "venv",
     "scaffold",
     "scaffolder",
-    "scaffolders"
+    "scaffolders",
+    "Cornejo",
+    "Fandos",
+    "Jeremias",
+    "readdirp",
+    "Ulises"
   ],
   "version": "0.2"
 }

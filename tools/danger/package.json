@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/Create-Node-App/create-node-app#readme",
   "devDependencies": {
-    "danger": "^13.4.0"
+    "danger": "^13.0.8"
   }
 }

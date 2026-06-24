@@ -1,10 +1,11 @@
 import pc from "picocolors";
 import envinfo from "envinfo";
 import semver from "semver";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import type { TemplateOrExtension } from "./loaders.js";
 export type { TemplateOrExtension } from "./loaders.js";
 import { createApp } from "./installer.js";
+import { resolveExecutable } from "./executable.js";
 export {
   getPackagePath,
   getTemplateDirPath,
@@ -45,7 +46,13 @@ export const checkForLatestVersion = async (packageName: string) => {
     return null;
   } catch {
     try {
-      return execSync(`npm view ${packageName} version`).toString().trim();
+      return execFileSync(resolveExecutable("npm"), [
+        "view",
+        packageName,
+        "version",
+      ])
+        .toString()
+        .trim();
     } catch {
       // ignore
     }

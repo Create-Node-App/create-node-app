@@ -6,7 +6,7 @@ import fs from "fs";
 import pc from "picocolors";
 import os from "os";
 import semver from "semver";
-import { execSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
 // Use dynamic import for simple-git to avoid bundlers injecting unsupported dynamic requires in ESM
 import type { SimpleGit, SimpleGitOptions } from "simple-git";
 
@@ -20,6 +20,7 @@ import {
 import { loadPackages } from "./package.js";
 import type { TemplateOrExtension } from "./loaders.js";
 import { loadFiles } from "./loaders.js";
+import { resolveExecutable } from "./executable.js";
 
 const install = async (
   root: string,
@@ -78,7 +79,7 @@ const install = async (
   }
 
   try {
-    execSync(`${command} ${args.join(" ")}`, {
+    execFileSync(resolveExecutable(command), args, {
       cwd: root,
       stdio: "inherit",
     });
@@ -111,8 +112,15 @@ const runCommandInProjectDir = async (
   successMessage = "Operation completed successfully.",
   errorMessage = "Operation failed.",
 ) => {
+  const [executable, ...baseArgs] =
+    command === "npm run"
+      ? ["npm", "run"]
+      : command === "pnpm run"
+        ? ["pnpm", "run"]
+        : [command];
+
   try {
-    execSync(`${command} ${args.join(" ")}`, {
+    execFileSync(resolveExecutable(executable), [...baseArgs, ...args], {
       cwd: root,
       stdio: "ignore",
     });
