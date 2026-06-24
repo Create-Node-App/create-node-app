@@ -50,6 +50,7 @@ export const downloadRepository = async ({
   const absoluteTarget = path.isAbsolute(target)
     ? target
     : path.resolve(target);
+  const targetExistedBefore = fs.existsSync(absoluteTarget);
 
   const isGithub = /^[^/]+\/[^/]+$/.test(url);
   const gitUrl = isGithub ? `https://github.com/${url}` : url;
@@ -175,7 +176,7 @@ export const downloadRepository = async ({
       }
 
       // Clean up partially created target directory on failure
-      if (fs.existsSync(absoluteTarget)) {
+      if (!targetExistedBefore && fs.existsSync(absoluteTarget)) {
         try {
           fse.removeSync(absoluteTarget);
           log("Cleaned up partially created directory: %s", absoluteTarget);
