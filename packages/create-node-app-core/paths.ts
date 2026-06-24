@@ -1,7 +1,13 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
+import { fileURLToPath } from "url";
 import { downloadRepository } from "./git.js";
+
+const moduleDir =
+  typeof __dirname !== "undefined"
+    ? __dirname
+    : path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Parse a template / extension URL (supports GitHub style and file:// URLs).
@@ -81,16 +87,12 @@ const solveRepositoryPath = async ({
     return { dir: target, subdir };
   }
 
-  try {
-    await downloadRepository({
-      url,
-      branch: branch || "",
-      target,
-      targetId,
-    });
-  } catch {
-    // Ignore git error
-  }
+  await downloadRepository({
+    url,
+    branch: branch || "",
+    target,
+    targetId,
+  });
 
   return { dir: target, subdir };
 };
@@ -105,23 +107,14 @@ type SolvedTemplatePath = {
 const solveTemplateOrExtensionPath = async (
   templateOrExtension: string,
 ): Promise<SolvedTemplatePath> => {
+  let parsed: ReturnType<typeof solveValuesFromTemplateOrExtensionUrl>;
   try {
-    const { url, branch, subdir, protocol, pathname, ignorePackage } =
-      solveValuesFromTemplateOrExtensionUrl(templateOrExtension);
-
-    if (protocol === "file:") {
-      // Already parsed absolute path in pathname
-      const baseDir = pathname;
-      return { dir: baseDir, subdir, ignorePackage };
-    }
-
-    const gitData = await solveRepositoryPath({ url, branch, subdir });
-    return { dir: gitData.dir, subdir: gitData.subdir, ignorePackage };
+    parsed = solveValuesFromTemplateOrExtensionUrl(templateOrExtension);
   } catch {
     // Fallback to an internal templatesOrExtensions directory (legacy behaviour)
     return {
       dir: path.resolve(
-        __dirname,
+        moduleDir,
         "..",
         "templatesOrExtensions",
         templateOrExtension,
@@ -130,6 +123,15 @@ const solveTemplateOrExtensionPath = async (
       ignorePackage: undefined,
     };
   }
+
+  const { url, branch, subdir, protocol, pathname, ignorePackage } = parsed;
+
+  if (protocol === "file:") {
+    return { dir: pathname, subdir, ignorePackage };
+  }
+
+  const gitData = await solveRepositoryPath({ url, branch, subdir });
+  return { dir: gitData.dir, subdir: gitData.subdir, ignorePackage };
 };
 
 export const getPackagePath = async (

@@ -43,8 +43,10 @@ test('ignorePackage=true throws when requesting package.json', async () => {
   }
 });
 
-test('invalid template slug triggers fallback error when accessing package.json', async () => {
-  await assert.rejects(() => getPackagePath('non-existent-template', 'package.json'));
+test('invalid template slug falls back to legacy templatesOrExtensions path', async () => {
+  const pkgPath = await getPackagePath('non-existent-template', 'package.json');
+  assert.ok(pkgPath.includes('templatesOrExtensions'));
+  assert.ok(pkgPath.endsWith('package.json'));
 });
 
 test('github style URL with branch and subdir parses without throwing', async () => {
@@ -113,19 +115,13 @@ test('github style URL with tree but empty branch segment handled gracefully', a
   assert.ok(dir.includes('.cna'));
 });
 
-test('github clone path executes try/catch when CNA_SKIP_GIT not set', async () => {
+test('github clone path rejects when repository does not exist and CNA_SKIP_GIT not set', async () => {
   delete process.env.CNA_SKIP_GIT;
   const url = 'https://github.com/definitely-not-a-real-org-xyz123/definitely-not-a-real-repo-xyz123';
-  // Silence expected git clone errors/noise
-  const originalError = console.error;
-  const originalWarn = console.warn;
-  console.error = () => {};
-  console.warn = () => {};
-  const dir = await getTemplateDirPath(url);
-  console.error = originalError;
-  console.warn = originalWarn;
-  // Even on failure we should still get a cache directory path
-  assert.ok(dir.includes('.cna'));
+  await assert.rejects(
+    () => getTemplateDirPath(url),
+    /Could not fetch template/,
+  );
 });
 
 test('file:// subdir without template directory triggers fs.stat error branch and returns subdir path', async () => {
