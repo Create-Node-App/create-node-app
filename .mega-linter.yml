@@ -28,6 +28,10 @@ DISABLE_LINTERS:
 # - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
 # - SPELL # Uncomment to disable checks of spelling mistakes
 
+# Allow zizmor to authenticate when checking referenced GitHub Actions metadata.
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
+  - GITHUB_TOKEN
+
 SHOW_ELAPSED_TIME: true
 # Uncomment if you want MegaLinter to detect errors but not block CI to pass
 # DISABLE_ERRORS: true
