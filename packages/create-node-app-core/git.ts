@@ -1,6 +1,7 @@
 import os from "os";
 import path from "path";
 import fs from "fs";
+import pc from "picocolors";
 import debug from "debug";
 import { simpleGit, type SimpleGit, type CloneOptions } from "simple-git";
 import * as fse from "fs-extra"; // Import fs-extra for advanced file operations
@@ -117,7 +118,74 @@ export const downloadRepository = async ({
       // Mark the targetId as completed
       completedTargetIds.set(id, true);
     } catch (error) {
-      console.error("Error during repository download:", error);
+      const errMsg = String(error);
+
+      // Provide user-friendly error messages for common failure scenarios
+      if (
+        errMsg.includes("not found") ||
+        errMsg.includes("404") ||
+        errMsg.includes("Repository not found") ||
+        errMsg.includes("does not exist")
+      ) {
+        console.error(
+          pc.red(`\nError: Could not fetch template from '${gitUrl}'.`),
+        );
+        console.error(
+          pc.red(
+            `  \u2192 The repository was not found. Please verify the URL is correct.`,
+          ),
+        );
+        console.error(
+          pc.gray(
+            `  \u2192 Run 'npx create-awesome-node-app --list-templates' to see available templates.`,
+          ),
+        );
+      } else if (
+        errMsg.includes("403") ||
+        errMsg.includes("forbidden") ||
+        errMsg.includes("Permission denied")
+      ) {
+        console.error(
+          pc.red(`\nError: Access denied when fetching template from '${gitUrl}'.`),
+        );
+        console.error(
+          pc.red(
+            `  \u2192 The repository exists but may be private.`,
+          ),
+        );
+      } else if (
+        errMsg.includes("ECONNREFUSED") ||
+        errMsg.includes("ENOTFOUND") ||
+        errMsg.includes("ETIMEDOUT") ||
+        errMsg.includes("network")
+      ) {
+        console.error(
+          pc.red(`\nError: Network error when fetching template from '${gitUrl}'.`),
+        );
+        console.error(
+          pc.red(
+            `  \u2192 Could not reach the repository. Please check your internet connection.`,
+          ),
+        );
+      } else {
+        console.error(
+          pc.red("Error during repository download:"),
+          error,
+        );
+      }
+
+      // Clean up partially created target directory on failure
+      if (fs.existsSync(absoluteTarget)) {
+        try {
+          fse.removeSync(absoluteTarget);
+          log("Cleaned up partially created directory: %s", absoluteTarget);
+        } catch (cleanupErr) {
+          log("Failed to clean up directory: %s", cleanupErr);
+        }
+      }
+
+      // Re-throw so callers know the operation failed
+      throw error;
     } finally {
       // Remove the promise from the map when the operation is complete
       gitOperationMap.delete(id);

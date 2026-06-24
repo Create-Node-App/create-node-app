@@ -1,7 +1,10 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
+import debug from "debug";
 import { downloadRepository } from "./git.js";
+
+const log = debug("cna:paths");
 
 /**
  * Parse a template / extension URL (supports GitHub style and file:// URLs).
@@ -88,8 +91,10 @@ const solveRepositoryPath = async ({
       target,
       targetId,
     });
-  } catch {
-    // Ignore git error
+  } catch (err) {
+    // downloadRepository already printed a user-friendly error message.
+    // Re-throw so the caller can decide how to handle the fallback.
+    throw err;
   }
 
   return { dir: target, subdir };
@@ -119,6 +124,7 @@ const solveTemplateOrExtensionPath = async (
     return { dir: gitData.dir, subdir: gitData.subdir, ignorePackage };
   } catch {
     // Fallback to an internal templatesOrExtensions directory (legacy behaviour)
+    log("Falling back to legacy template path for: %s", templateOrExtension);
     return {
       dir: path.resolve(
         __dirname,
