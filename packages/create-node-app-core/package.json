@@ -33,17 +33,17 @@
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
-    "@types/debug": "^4.1.12",
+    "@types/debug": "^4.1.13",
     "@types/envinfo": "^7.8.4",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.merge": "^4.6.9",
-    "@types/node": "^24.5.2",
+    "@types/node": "^26.0.1",
     "@types/semver": "^7.5.8",
     "eslint": "^9.35.0",
     "tsconfig": "*",
-    "tsup": "^8.5.0",
-    "tsx": "^4.19.0",
-    "typescript": "^5.9.2"
+    "tsup": "^8.5.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "cross-spawn": "^7.0.6",
