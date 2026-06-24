@@ -58,6 +58,10 @@ jobs:
           # improve performance
           fetch-depth: 0
 
+      # Configure git safe directories for betterleaks in container
+      - name: Configure git safe directories
+        run: git config --global --add safe.directory /github/workspace && git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       # MegaLinter
       - name: MegaLinter
 

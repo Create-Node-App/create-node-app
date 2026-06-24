@@ -17,9 +17,12 @@ APPLY_FIXES: all
 DISABLE_LINTERS:
   - COPYPASTE_JSCPD
   - REPOSITORY_CHECKOV
+  - REPOSITORY_GITLEAKS
   - REPOSITORY_GRYPE
+  - REPOSITORY_OSV_SCANNER # Handled by scheduled workflow in .github/workflows/osv-scanner.yml
   - REPOSITORY_TRIVY
   - SPELL_LYCHEE
+  - TYPESCRIPT_STANDARD # eslint is the configured linter (eslint.config.cjs)
 
 # DISABLE:
 # - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
