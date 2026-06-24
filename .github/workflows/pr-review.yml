@@ -20,10 +20,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Setup Danger Files
-        run: |
-          echo "Setting up Danger files...";
-          mv tools/danger/* .
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -35,6 +31,9 @@ jobs:
         run: npm run lint --workspaces --if-present
       - name: Type Check
         run: npm run type-check --if-present
+      - name: Install Danger
+        run: npm ci
+        working-directory: tools/danger
       - name: Danger JS Action
         uses: actions/github-script@v7
         env:
@@ -42,4 +41,4 @@ jobs:
         with:
           script: |
             const { execSync } = require('node:child_process');
-            execSync('npx danger ci', { stdio: 'inherit' });
+            execSync('npx danger ci --dangerfile tools/danger/dangerfile.ts', { stdio: 'inherit' });
