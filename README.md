@@ -16,9 +16,10 @@ Pick a template. Layer addons. Ship production-ready code in minutes.</p>
 [![npm][npmversion]][npmurl]
 [![npm][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/ulises-jeremias?style=flat&logo=github)](https://github.com/sponsors/ulises-jeremias)
 [![Coverage](./.github/badges/coverage.svg)](#-available-scripts)
 
-[Changelog](./packages/create-awesome-node-app/CHANGELOG.md) · [Contributing](./CONTRIBUTING.md) · [**🌐 Official Site**](https://create-awesome-node-app.vercel.app)
+[Changelog](./packages/create-awesome-node-app/CHANGELOG.md) · [Contributing](./CONTRIBUTING.md) · [Troubleshooting](./docs/TROUBLESHOOTING.md) · [Migration](./docs/MIGRATION.md) · [**🌐 Official Site**](https://create-awesome-node-app.vercel.app)
 
 </div>
 
@@ -37,7 +38,7 @@ This repository contains the source code for the [`create-awesome-node-app`](htt
 This is a **monorepo** managed with npm workspaces and [Turborepo](https://turbo.build/):
 
 | Package                                                         | Description                                                  |
-| --------------------------------------------------------------- | ------------------------------------------------------------ |
+|-----------------------------------------------------------------|--------------------------------------------------------------|
 | [`create-awesome-node-app`](./packages/create-awesome-node-app) | The main CLI — Commander-based, interactive + CI-friendly    |
 | [`@create-node-app/core`](./packages/create-node-app-core)      | Core generation logic (template loading, git, package merge) |
 | `@create-node-app/eslint-config*`                               | Shared ESLint presets (base, TypeScript, React, Next.js)     |
@@ -156,7 +157,7 @@ npx create-awesome-node-app debug-app -t react-vite-boilerplate --verbose
 ### Template Catalog Reference (Excerpt)
 
 | Slug                              | Description                          |
-| --------------------------------- | ------------------------------------ |
+|-----------------------------------|--------------------------------------|
 | `react-vite-boilerplate`          | React + Vite + TypeScript + Router   |
 | `nextjs-starter`                  | Production-ready Next.js starter     |
 | `nestjs-boilerplate`              | Scalable NestJS backend              |
@@ -171,7 +172,7 @@ Full catalog: **[create-awesome-node-app.vercel.app/templates](https://create-aw
 ### Popular Extensions (React)
 
 | Slug           | Purpose                               |
-| -------------- | ------------------------------------- |
+|----------------|---------------------------------------|
 | `tailwind-css` | Tailwind CSS utility-first styling    |
 | `zustand`      | Lightweight state management          |
 | `react-query`  | Async server state (TanStack Query)   |
@@ -184,7 +185,7 @@ Full catalog: **[create-awesome-node-app.vercel.app/templates](https://create-aw
 ## 📋 Available Scripts
 
 | `npm run <script>` | Description                                   |
-| ------------------ | --------------------------------------------- |
+|--------------------|-----------------------------------------------|
 | `test`             | Run unit tests with Node's native test runner |
 | `lint`             | Lint the project with ESLint                  |
 | `lint:fix`         | Lint and auto-fix correctable errors          |
