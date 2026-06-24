@@ -20,6 +20,7 @@ import {
 import { loadPackages } from "./package.js";
 import type { TemplateOrExtension } from "./loaders.js";
 import { loadFiles } from "./loaders.js";
+import { resolveExecutable } from "./executable.js";
 
 const install = async (
   root: string,
@@ -78,7 +79,7 @@ const install = async (
   }
 
   try {
-    execFileSync(command, args, {
+    execFileSync(resolveExecutable(command), args, {
       cwd: root,
       stdio: "inherit",
     });
@@ -119,7 +120,7 @@ const runCommandInProjectDir = async (
         : [command];
 
   try {
-    execFileSync(executable, [...baseArgs, ...args], {
+    execFileSync(resolveExecutable(executable), [...baseArgs, ...args], {
       cwd: root,
       stdio: "ignore",
     });

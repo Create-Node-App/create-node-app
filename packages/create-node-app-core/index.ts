@@ -5,6 +5,7 @@ import { execFileSync } from "child_process";
 import type { TemplateOrExtension } from "./loaders.js";
 export type { TemplateOrExtension } from "./loaders.js";
 import { createApp } from "./installer.js";
+import { resolveExecutable } from "./executable.js";
 export {
   getPackagePath,
   getTemplateDirPath,
@@ -45,7 +46,11 @@ export const checkForLatestVersion = async (packageName: string) => {
     return null;
   } catch {
     try {
-      return execFileSync("npm", ["view", packageName, "version"])
+      return execFileSync(resolveExecutable("npm"), [
+        "view",
+        packageName,
+        "version",
+      ])
         .toString()
         .trim();
     } catch {
