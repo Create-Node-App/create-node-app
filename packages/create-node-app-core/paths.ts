@@ -111,7 +111,7 @@ const solveTemplateOrExtensionPath = async (
   try {
     parsed = solveValuesFromTemplateOrExtensionUrl(templateOrExtension);
   } catch {
-    // Fallback to an internal templatesOrExtensions directory (legacy behaviour)
+    // Fallback to an internal templatesOrExtensions directory (legacy behavior)
     return {
       dir: path.resolve(
         moduleDir,
