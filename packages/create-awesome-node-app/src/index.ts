@@ -8,6 +8,7 @@ import {
   type TemplateOrExtension,
 } from "@create-node-app/core";
 import { getCnaOptions } from "./options.js";
+import { parseSetOverrides } from "./set-overrides.js";
 // NodeNext JSON import with import attributes
 import packageJson from "../package.json" with { type: "json" };
 import { listTemplates, listAddons } from "./list.js";
@@ -56,7 +57,7 @@ const main = async () => {
     .option("--list-addons", "list all available addons")
     .option(
       "--set <assignments...>",
-      "set a custom template option (format: key=value, repeatable)",
+      "set a custom template option (format: key=value; quote values with spaces: --set 'name=My App')",
     )
     .action((providedProjectName: string | undefined) => {
       projectName = providedProjectName || projectName;
@@ -97,18 +98,8 @@ const main = async () => {
   const { useYarn, usePnpm, set, ...restOpts } = opts;
   const packageManager = useYarn ? "yarn" : usePnpm ? "pnpm" : "npm";
 
-  // Parse --set key=value assignments into an overrides map
-  const setOverrides: Record<string, string> = {};
-  if (Array.isArray(set)) {
-    for (const assignment of set as string[]) {
-      const eqIdx = assignment.indexOf("=");
-      if (eqIdx > 0) {
-        setOverrides[assignment.slice(0, eqIdx).trim()] = assignment.slice(
-          eqIdx + 1,
-        );
-      }
-    }
-  }
+  // Parse --set key=value assignments into an overrides map.
+  const setOverrides = parseSetOverrides(set as string[] | undefined);
 
   const templatesOrExtensions: TemplateOrExtension[] = [restOpts.template]
     .concat(Array.isArray(restOpts.extend) ? restOpts.extend : [])

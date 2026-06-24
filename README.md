@@ -16,9 +16,10 @@ Pick a template. Layer addons. Ship production-ready code in minutes.</p>
 [![npm][npmversion]][npmurl]
 [![npm][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/ulises-jeremias?style=flat&logo=github)](https://github.com/sponsors/ulises-jeremias)
 [![Coverage](./.github/badges/coverage.svg)](#-available-scripts)
 
-[Changelog](./packages/create-awesome-node-app/CHANGELOG.md) · [Contributing](./CONTRIBUTING.md) · [**🌐 Official Site**](https://create-awesome-node-app.vercel.app)
+[Changelog](./packages/create-awesome-node-app/CHANGELOG.md) · [Contributing](./CONTRIBUTING.md) · [Troubleshooting](./docs/TROUBLESHOOTING.md) · [Migration](./docs/MIGRATION.md) · [**🌐 Official Site**](https://create-awesome-node-app.vercel.app)
 
 </div>
 

@@ -7,6 +7,32 @@ import * as fse from "fs-extra"; // Import fs-extra for advanced file operations
 
 const log = debug("cna:git");
 
+const formatRepositoryDownloadError = (error: unknown, url: string): string => {
+  const message = error instanceof Error ? error.message : String(error);
+
+  if (/not found|404|repository not found/i.test(message)) {
+    return [
+      `Error: Could not fetch template from '${url}'.`,
+      "  → The URL returned HTTP 404 or the repository was not found. Please verify the URL is correct.",
+      "  → Run 'npx create-awesome-node-app --list-templates' to see available templates.",
+    ].join("\n");
+  }
+
+  if (/403|authentication|permission denied|access denied/i.test(message)) {
+    return [
+      `Error: Could not fetch template from '${url}'.`,
+      "  → Access denied (HTTP 403). Check that the repository is public or you have access.",
+      "  → Run 'npx create-awesome-node-app --list-templates' to see available templates.",
+    ].join("\n");
+  }
+
+  return [
+    `Error: Could not fetch template from '${url}'.`,
+    `  → ${message}`,
+    "  → Run 'npx create-awesome-node-app --list-templates' to see available templates.",
+  ].join("\n");
+};
+
 /**
  * filter .git folder
  */
@@ -117,7 +143,7 @@ export const downloadRepository = async ({
       // Mark the targetId as completed
       completedTargetIds.set(id, true);
     } catch (error) {
-      console.error("Error during repository download:", error);
+      throw new Error(formatRepositoryDownloadError(error, gitUrl));
     } finally {
       // Remove the promise from the map when the operation is complete
       gitOperationMap.delete(id);
