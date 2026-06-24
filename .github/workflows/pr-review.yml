@@ -34,11 +34,8 @@ jobs:
       - name: Install Danger
         run: npm ci
         working-directory: tools/danger
-      - name: Danger JS Action
-        uses: actions/github-script@v7
+      - name: Danger
+        run: npx danger ci
+        working-directory: tools/danger
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          script: |
-            const { execSync } = require('node:child_process');
-            execSync('npx danger ci --dangerfile tools/danger/dangerfile.ts', { stdio: 'inherit' });
