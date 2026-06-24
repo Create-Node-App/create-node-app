@@ -35,14 +35,20 @@ jobs:
       - name: Run unit tests
         run: npm test
 
-  # Cross-platform scaffolding tests (Windows & macOS)
+  # Cross-platform scaffolding tests (Node on Windows/macOS, Bun on Ubuntu)
   cross-platform-scaffold:
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            runtime: bun
+          - os: windows-latest
+            runtime: node
+          - os: macos-latest
+            runtime: node
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -53,30 +59,41 @@ jobs:
           node-version-file: .node-version
           cache: npm
 
+      - name: Setup Bun
+        if: matrix.runtime == 'bun'
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: latest
+
       - name: Install dependencies
         run: npm ci
 
       - name: Build
         run: npm run build
 
-      - name: Test scaffold on ${{ matrix.os }}
+      - name: Test scaffold on ${{ matrix.os }} (${{ matrix.runtime }})
         shell: bash
         run: |
           TEMP_DIR="${RUNNER_TEMP}/scaffold-test"
           mkdir -p "$TEMP_DIR"
           cd "$TEMP_DIR"
 
-          # Test scaffold command using locally built CLI
-          echo "Testing scaffold on ${{ matrix.os }}..."
-          CI=true node "$GITHUB_WORKSPACE/packages/create-awesome-node-app/index.js" test-project \
-            -t "nextjs-starter" \
-            --no-install
-
-          # Verify the project was created
-          if [ -d "test-project" ]; then
-            echo "✅ Project created successfully on ${{ matrix.os }}"
+          CLI="$GITHUB_WORKSPACE/packages/create-awesome-node-app/index.js"
+          echo "Testing scaffold on ${{ matrix.os }} with ${{ matrix.runtime }}..."
+          if [ "${{ matrix.runtime }}" = "bun" ]; then
+            CI=true bun run "$CLI" test-project \
+              -t "nextjs-starter" \
+              --no-install
           else
-            echo "❌ Project creation failed on ${{ matrix.os }}"
+            CI=true node "$CLI" test-project \
+              -t "nextjs-starter" \
+              --no-install
+          fi
+
+          if [ -d "test-project" ]; then
+            echo "✅ Project created successfully on ${{ matrix.os }} (${{ matrix.runtime }})"
+          else
+            echo "❌ Project creation failed on ${{ matrix.os }} (${{ matrix.runtime }})"
             exit 1
           fi
         env:
