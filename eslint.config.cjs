@@ -16,7 +16,8 @@ module.exports = [
       '**/coverage/**',
       '.turbo/**',
       'packages/**/dist/**',
-      '**/*.d.ts'
+      '**/*.d.ts',
+      'tools/danger/**',
     ],
   },
   {
