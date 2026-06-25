@@ -22,6 +22,8 @@
     "Shellcheck",
     "turborepo",
     "Turborepo",
+    "zizmor",
+    "ZIZMOR",
     "stefanzweifel",
     "venv",
     "scaffold",
@@ -29,6 +31,7 @@
     "scaffolders",
     "Cornejo",
     "Fandos",
+    "dangerfile",
     "Jeremias",
     "readdirp",
     "Ulises"
