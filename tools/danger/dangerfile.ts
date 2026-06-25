@@ -83,7 +83,7 @@ if (appModified) {
 }
 
 // Warns if there are changes to package.json, and tags the team.
-const packageJSON = danger.git.fileMatch("package.json");
+const packageJSON = danger.git.fileMatch("**/package.json");
 const yarnLockfile = danger.git.fileMatch("yarn.lock");
 const npmLockfile = danger.git.fileMatch("package-lock.json");
 
