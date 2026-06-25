@@ -2,7 +2,10 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
+import debug from "debug";
 import { downloadRepository } from "./git.js";
+
+const log = debug("cna:paths");
 
 const moduleDir =
   typeof __dirname !== "undefined"
@@ -112,6 +115,7 @@ const solveTemplateOrExtensionPath = async (
     parsed = solveValuesFromTemplateOrExtensionUrl(templateOrExtension);
   } catch {
     // Fallback to an internal templatesOrExtensions directory (legacy behavior)
+    log("Falling back to legacy template path for: %s", templateOrExtension);
     return {
       dir: path.resolve(
         moduleDir,

@@ -26,6 +26,14 @@ const formatRepositoryDownloadError = (error: unknown, url: string): string => {
     ].join("\n");
   }
 
+  if (/ECONNREFUSED|ENOTFOUND|ETIMEDOUT|network/i.test(message)) {
+    return [
+      `Error: Could not fetch template from '${url}'.`,
+      "  → Could not reach the repository. Please check your internet connection.",
+      "  → Run 'npx create-awesome-node-app --list-templates' to see available templates.",
+    ].join("\n");
+  }
+
   return [
     `Error: Could not fetch template from '${url}'.`,
     `  → ${message}`,
@@ -75,6 +83,7 @@ export const downloadRepository = async ({
   const absoluteTarget = path.isAbsolute(target)
     ? target
     : path.resolve(target);
+  const targetExistedBefore = fs.existsSync(absoluteTarget);
 
   const isGithub = /^[^/]+\/[^/]+$/.test(url);
   const gitUrl = isGithub ? `https://github.com/${url}` : url;
@@ -143,6 +152,15 @@ export const downloadRepository = async ({
       // Mark the targetId as completed
       completedTargetIds.set(id, true);
     } catch (error) {
+      if (!targetExistedBefore && fs.existsSync(absoluteTarget)) {
+        try {
+          fse.removeSync(absoluteTarget);
+          log("Cleaned up partially created directory: %s", absoluteTarget);
+        } catch (cleanupErr) {
+          log("Failed to clean up directory: %s", cleanupErr);
+        }
+      }
+
       throw new Error(formatRepositoryDownloadError(error, gitUrl));
     } finally {
       // Remove the promise from the map when the operation is complete
