@@ -70,6 +70,13 @@ const batchedCopyFiles = async (
     try {
       makeDirectory(dirname(operation.dest));
       await copyFileAsync(operation.src, operation.dest);
+      // Preserve original file permissions (e.g. executable bit on husky hooks)
+      try {
+        const srcStat = await promisify(fs.stat)(operation.src);
+        await promisify(fs.chmod)(operation.dest, srcStat.mode);
+      } catch {
+        // Non-critical: file was already copied
+      }
       if (operation.verbose) {
         console.log(
           pc.green(
