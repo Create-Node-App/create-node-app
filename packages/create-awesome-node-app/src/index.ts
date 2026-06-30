@@ -57,7 +57,7 @@ const main = async () => {
     .option("--list-addons", "list all available addons")
     .option(
       "--set <assignments...>",
-      "set a custom template option (format: key=value; quote values with spaces: --set 'name=My App')",
+      "set a custom template option (format: key=value; quote values with spaces: --set 'projectName=My App' or --set 'projectName=My App' --set 'author=Jane Doe')",
     )
     .action((providedProjectName: string | undefined) => {
       projectName = providedProjectName || projectName;
