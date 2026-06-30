@@ -6,7 +6,7 @@ import fs from "fs";
 import pc from "picocolors";
 import os from "os";
 import semver from "semver";
-import { execFileSync, execSync } from "child_process";
+import { execFileSync } from "child_process";
 // Use dynamic import for simple-git to avoid bundlers injecting unsupported dynamic requires in ESM
 import type { SimpleGit, SimpleGitOptions } from "simple-git";
 
@@ -446,8 +446,13 @@ export const createApp = async ({
     let yarnUsesDefaultRegistry = true;
     try {
       yarnUsesDefaultRegistry =
-        execSync("yarnpkg config get registry").toString().trim() ===
-        "https://registry.yarnpkg.com";
+        execFileSync(resolveExecutable("yarnpkg"), [
+          "config",
+          "get",
+          "registry",
+        ])
+          .toString()
+          .trim() === "https://registry.yarnpkg.com";
     } catch {
       // ignore
     }
