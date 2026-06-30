@@ -10,7 +10,7 @@ import {
   getCategoryData,
 } from "./templates.js";
 
-const PACKAGE_MANAGERS = ["npm", "yarn", "pnpm"];
+const PACKAGE_MANAGERS = ["npm", "yarn", "pnpm", "bun"];
 
 const isValidUrl = (url: string): boolean => {
   try {

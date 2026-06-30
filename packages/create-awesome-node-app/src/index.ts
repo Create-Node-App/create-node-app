@@ -42,8 +42,9 @@ const main = async () => {
       "--addons [extensions...]",
       "specify extensions to apply for the boilerplate generation",
     )
-    .option("--use-yarn", "use yarn instead of npm or pnpm")
-    .option("--use-pnpm", "use pnpm instead of yarn or npm")
+    .option("--use-yarn", "use yarn instead of npm or pnpm or bun")
+    .option("--use-pnpm", "use pnpm instead of yarn, npm, or bun")
+    .option("--use-bun", "use bun instead of npm, yarn, or pnpm")
     .option(
       "--interactive",
       "force interactive mode (default outside CI unless --no-interactive)",
@@ -95,8 +96,14 @@ const main = async () => {
   }
 
   // Extract package manager options directly from opts
-  const { useYarn, usePnpm, set, ...restOpts } = opts;
-  const packageManager = useYarn ? "yarn" : usePnpm ? "pnpm" : "npm";
+  const { useYarn, usePnpm, useBun, set, ...restOpts } = opts;
+  const packageManager = useYarn
+    ? "yarn"
+    : usePnpm
+      ? "pnpm"
+      : useBun
+        ? "bun"
+        : "npm";
 
   // Parse --set key=value assignments into an overrides map.
   const setOverrides = parseSetOverrides(set as string[] | undefined);
