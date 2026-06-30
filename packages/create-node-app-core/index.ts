@@ -65,7 +65,7 @@ export const printEnvInfo = async () => {
   const info = await envinfo.run(
     {
       System: ["OS", "CPU", "Memory", "Shell"],
-      Binaries: ["Node", "npm", "pnpm", "Yarn", "Watchman"],
+      Binaries: ["Node", "npm", "pnpm", "Yarn", "Bun", "Watchman"],
       Browsers: ["Chrome", "Edge", "Internet Explorer", "Firefox", "Safari"],
     },
     {

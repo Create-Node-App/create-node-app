@@ -50,6 +50,7 @@ type FileLoaderOptions = {
   verbose: boolean;
   useYarn?: boolean;
   usePnpm?: boolean;
+  useBun?: boolean;
   srcDir: string;
   mode?: string;
   runCommand: string;
@@ -167,7 +168,7 @@ const copyLoader: FileLoader =
     const operations = [];
     try {
       const newPath = path
-        .replace(/.if-(npm|yarn|pnpm)$/, "")
+        .replace(/.if-(npm|yarn|pnpm|bun)$/, "")
         .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
 
       operations.push({
@@ -192,7 +193,7 @@ const appendLoader: FileLoader =
     try {
       const newPath = path
         .replace(/.append$/, "")
-        .replace(/.if-(npm|yarn|pnpm)$/, "")
+        .replace(/.if-(npm|yarn|pnpm|bun)$/, "")
         .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
 
       operations.push({
@@ -233,7 +234,7 @@ const templateLoader: FileLoader =
       const newPath = path
         .replace(/.template$/, "")
         .replace(/.append$/, "")
-        .replace(/.if-(npm|yarn|pnpm)$/, "")
+        .replace(/.if-(npm|yarn|pnpm|bun)$/, "")
         .replace(SRC_PATH_PATTERN, getSrcDirPattern(srcDir));
 
       operations.push({
@@ -268,6 +269,7 @@ const fileLoader: FileLoader =
     verbose,
     useYarn,
     usePnpm,
+    useBun,
     srcDir = DEFAULT_SRC_PATH,
     runCommand,
     installCommand,
@@ -293,6 +295,7 @@ const fileLoader: FileLoader =
         verbose,
         useYarn: !!useYarn,
         usePnpm: !!usePnpm,
+        useBun: !!useBun,
         mode,
         srcDir,
         runCommand,
@@ -319,6 +322,7 @@ export type LoadFilesOptions = {
   verbose: boolean;
   useYarn?: boolean;
   usePnpm?: boolean;
+  useBun?: boolean;
   srcDir?: string;
   runCommand: string;
   installCommand: string;
@@ -334,6 +338,7 @@ export const loadFiles = async ({
   verbose,
   useYarn = false,
   usePnpm = false,
+  useBun = false,
   srcDir = DEFAULT_SRC_PATH,
   runCommand,
   installCommand,
@@ -375,10 +380,12 @@ export const loadFiles = async ({
           /\bpnpm-lock\.yaml$/,
         ];
         const skipManager = usePnpm
-          ? [/\.if-npm\./, /\.if-yarn\./]
+          ? [/\.if-npm\./, /\.if-yarn\./, /\.if-bun\./]
           : useYarn
-            ? [/\.if-npm\./, /\.if-pnpm\./]
-            : [/\.if-yarn\./, /\.if-pnpm\./];
+            ? [/\.if-npm\./, /\.if-pnpm\./, /\.if-bun\./]
+            : useBun
+              ? [/\.if-yarn\./, /\.if-pnpm\./]
+              : [/\.if-yarn\./, /\.if-pnpm\./, /\.if-bun\./];
         const shouldSkip = (p: string) =>
           [...skipGlobs, ...skipManager].some((rgx) => rgx.test(p));
 
@@ -400,6 +407,7 @@ export const loadFiles = async ({
             verbose,
             useYarn,
             usePnpm,
+            useBun,
             srcDir,
             runCommand,
             installCommand,

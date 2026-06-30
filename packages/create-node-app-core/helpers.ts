@@ -78,6 +78,25 @@ export const shouldUsePnpm = () => {
   return true;
 };
 
+export const shouldUseBun = () => {
+  const { hasMinBun, bunVersion } = checkBunVersion();
+
+  if (!hasMinBun) {
+    console.log(
+      pc.yellow(
+        `You are using bun version ${pc.bold(
+          bunVersion,
+        )} which is not supported yet. ` +
+          `To use bun, install v1.0.0 or higher. ` +
+          `See https://bun.sh for instructions on how to install.`,
+      ),
+    );
+    return false;
+  }
+
+  return true;
+};
+
 export const checkThatNpmCanReadCwd = () => {
   const cwd = process.cwd();
   let childOutput = null;
@@ -160,6 +179,23 @@ export const checkPnpmVersion = () => {
     // Ignore errors.
   }
   return { hasMinPnpm, pnpmVersion };
+};
+
+export const checkBunVersion = () => {
+  const minBun = "1.0.0";
+  let hasMinBun = false;
+  let bunVersion = null;
+  try {
+    bunVersion = execFileSync(resolveExecutable("bun"), ["--version"])
+      .toString()
+      .trim();
+    if (semver.valid(bunVersion)) {
+      hasMinBun = semver.gte(bunVersion, minBun);
+    }
+  } catch {
+    // ignore
+  }
+  return { hasMinBun, bunVersion };
 };
 
 export const checkYarnVersion = () => {

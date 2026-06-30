@@ -16,6 +16,7 @@ import {
   checkNpmVersion,
   checkIfOnline,
   shouldUsePnpm,
+  shouldUseBun,
 } from "./helpers.js";
 import { loadPackages } from "./package.js";
 import type { TemplateOrExtension } from "./loaders.js";
@@ -26,6 +27,7 @@ const install = async (
   root: string,
   useYarn = false,
   usePnpm = false,
+  useBun = false,
   dependencies: string[] = [],
   verbose = false,
   isOnline = true,
@@ -62,6 +64,17 @@ const install = async (
     }
 
     args.push(...dependencies);
+  } else if (useBun) {
+    command = "bun";
+    if (dependencies.length > 0) {
+      args = ["add"];
+      if (isDevDependencies) {
+        args.push("--dev");
+      }
+      args.push(...dependencies);
+    } else {
+      args = ["install"];
+    }
   } else {
     command = "npm";
     args = ["install", "--loglevel", "error"];
@@ -95,6 +108,7 @@ export type RunOptions = {
   verbose?: boolean;
   useYarn?: boolean;
   usePnpm?: boolean;
+  useBun?: boolean;
   templatesOrExtensions?: TemplateOrExtension[];
   dependencies?: string[];
   devDependencies?: string[];
@@ -117,7 +131,9 @@ const runCommandInProjectDir = async (
       ? ["npm", "run"]
       : command === "pnpm run"
         ? ["pnpm", "run"]
-        : [command];
+        : command === "bun run"
+          ? ["bun", "run"]
+          : [command];
 
   try {
     execFileSync(resolveExecutable(executable), [...baseArgs, ...args], {
@@ -163,6 +179,7 @@ const run = async ({
   verbose = false,
   useYarn = false,
   usePnpm = false,
+  useBun = false,
   templatesOrExtensions = [],
   dependencies = [],
   devDependencies = [],
@@ -195,6 +212,7 @@ const run = async ({
     verbose,
     useYarn,
     usePnpm,
+    useBun,
     runCommand,
     installCommand,
     ...customOptions,
@@ -215,6 +233,7 @@ const run = async ({
       root,
       useYarn,
       usePnpm,
+      useBun,
       dependencies,
       verbose,
       isOnline,
@@ -230,6 +249,7 @@ const run = async ({
         root,
         useYarn,
         usePnpm,
+        useBun,
         devDependencies,
         verbose,
         isOnline,
@@ -392,18 +412,28 @@ export const createApp = async ({
 
   const useYarn = customOptions.packageManager === "yarn" && shouldUseYarn();
   const usePnpm = customOptions.packageManager === "pnpm" && shouldUsePnpm();
-  const runCommand = useYarn ? "yarn" : usePnpm ? "pnpm run" : "npm run";
+  const useBun = customOptions.packageManager === "bun" && shouldUseBun();
+  const runCommand = useYarn
+    ? "yarn"
+    : usePnpm
+      ? "pnpm run"
+      : useBun
+        ? "bun run"
+        : "npm run";
   const installCommand = useYarn
     ? "yarn"
     : usePnpm
       ? "pnpm install"
-      : "npm install";
+      : useBun
+        ? "bun install"
+        : "npm install";
 
   const { packageJson, dependencies, devDependencies } = await loadPackages({
     templatesOrExtensions,
     appName,
     usePnpm,
     useYarn,
+    useBun,
     runCommand,
     ignorePackage,
   });
@@ -415,7 +445,7 @@ export const createApp = async ({
 
   const originalDirectory = process.cwd();
   process.chdir(root);
-  if (!useYarn && !checkThatNpmCanReadCwd()) {
+  if (!useYarn && !useBun && !checkThatNpmCanReadCwd()) {
     process.exit(1);
   }
 
@@ -428,7 +458,7 @@ export const createApp = async ({
     );
   }
 
-  if (!useYarn) {
+  if (!useYarn && !useBun) {
     const npmInfo = checkNpmVersion();
     if (!npmInfo.hasMinNpm) {
       if (npmInfo.npmVersion) {
@@ -472,6 +502,7 @@ export const createApp = async ({
     verbose,
     useYarn,
     usePnpm,
+    useBun,
     templatesOrExtensions,
     dependencies,
     devDependencies,
