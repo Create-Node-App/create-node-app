@@ -23,6 +23,13 @@ test("parseSetOverrides strips surrounding quotes", () => {
   });
 });
 
+test("parseSetOverrides handles single-token value with spaces (unquoted)", () => {
+  assert.deepEqual(
+    parseSetOverrides(["projectName=My Awesome Project"]),
+    { projectName: "My Awesome Project" },
+  );
+});
+
 test("parseSetOverrides returns empty object for undefined input", () => {
   assert.deepEqual(parseSetOverrides(undefined), {});
 });
