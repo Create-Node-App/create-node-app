@@ -1,9 +1,10 @@
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import spawn from "cross-spawn";
 import pc from "picocolors";
 import semver from "semver";
 import dns from "dns";
 import { URL } from "url";
+import { resolveExecutable } from "./executable.js";
 
 export const toCamelCase = (str: string) => {
   // Lower cases the string
@@ -141,7 +142,9 @@ export const checkPnpmVersion = () => {
   let hasMinPnpm = false;
   let pnpmVersion = null;
   try {
-    pnpmVersion = execSync("pnpm --version").toString().trim();
+    pnpmVersion = execFileSync(resolveExecutable("pnpm"), ["--version"])
+      .toString()
+      .trim();
     if (semver.valid(pnpmVersion)) {
       hasMinPnpm = semver.gte(pnpmVersion, minPnpm);
     } else {
@@ -166,7 +169,9 @@ export const checkYarnVersion = () => {
   let hasMaxYarnPnp = false;
   let yarnVersion = null;
   try {
-    yarnVersion = execSync("yarnpkg --version").toString().trim();
+    yarnVersion = execFileSync(resolveExecutable("yarnpkg"), ["--version"])
+      .toString()
+      .trim();
     if (semver.valid(yarnVersion)) {
       hasMinYarnPnp = semver.gte(yarnVersion, minYarnPnp);
       hasMaxYarnPnp = semver.lt(yarnVersion, maxYarnPnp);
@@ -197,7 +202,9 @@ export const checkNpmVersion = () => {
   let hasMinNpm = false;
   let npmVersion = null;
   try {
-    npmVersion = execSync("npm --version").toString().trim();
+    npmVersion = execFileSync(resolveExecutable("npm"), ["--version"])
+      .toString()
+      .trim();
     hasMinNpm = semver.gte(npmVersion, "6.0.0");
   } catch {
     // ignore
@@ -214,7 +221,13 @@ const getProxy = () => {
   }
   try {
     // Trying to read https-proxy from .npmrc
-    const httpsProxy = execSync("npm config get https-proxy").toString().trim();
+    const httpsProxy = execFileSync(resolveExecutable("npm"), [
+      "config",
+      "get",
+      "https-proxy",
+    ])
+      .toString()
+      .trim();
     return httpsProxy !== "null" ? httpsProxy : undefined;
   } catch {
     // ignore
