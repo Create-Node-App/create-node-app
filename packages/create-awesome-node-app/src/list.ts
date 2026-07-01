@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import pc from "picocolors";
 import {
   getTemplateCategories,
   getTemplatesForCategory,
@@ -14,7 +14,7 @@ import {
 export const listTemplates = async () => {
   const categories = await getTemplateCategories();
 
-  console.log(chalk.bold.blue("\nAvailable Templates:"));
+  console.log(pc.bold(pc.blue("\nAvailable Templates:")));
 
   for (const categorySlug of categories) {
     const categoryData = await getCategoryData(categorySlug);
@@ -22,7 +22,7 @@ export const listTemplates = async () => {
 
     // Display category name if available, otherwise use the slug
     const categoryName = categoryData?.name || categorySlug;
-    console.log(chalk.bold.green(`\n${categoryName}:`));
+    console.log(pc.bold(pc.green(`\n${categoryName}:`)));
 
     // Display category description if available
     if (categoryData?.description) {
@@ -30,9 +30,7 @@ export const listTemplates = async () => {
     }
 
     templates.forEach((template: TemplateData) => {
-      console.log(
-        `  ${chalk.yellow(template.name)} (${chalk.cyan(template.slug)})`,
-      );
+      console.log(`  ${pc.yellow(template.name)} (${pc.cyan(template.slug)})`);
       console.log(`    ${template.description}`);
       if (template.labels && template.labels.length > 0) {
         console.log(`    Keywords: ${template.labels.join(", ")}`);
@@ -62,11 +60,11 @@ export const listAddons = async ({
   const extensionsGroupedByCategory =
     await getExtensionsGroupedByCategory(types);
 
-  console.log(chalk.bold.blue("\nAvailable Addons:"));
+  console.log(pc.bold(pc.blue("\nAvailable Addons:")));
 
   if (templateSlug) {
     console.log(
-      chalk.bold.green(`\nCompatible with template: ${templateSlug}`),
+      pc.bold(pc.green(`\nCompatible with template: ${templateSlug}`)),
     );
   }
 
@@ -77,7 +75,7 @@ export const listAddons = async ({
 
     // Display category name if available, otherwise use the slug
     const categoryName = categoryData?.name || categorySlug;
-    console.log(chalk.bold.green(`\n${categoryName}:`));
+    console.log(pc.bold(pc.green(`\n${categoryName}:`)));
 
     // Display category description if available
     if (categoryData?.description) {
@@ -86,7 +84,7 @@ export const listAddons = async ({
 
     (extensions as ExtensionData[]).forEach((extension: ExtensionData) => {
       console.log(
-        `  ${chalk.yellow(extension.name)} (${chalk.cyan(extension.slug)})`,
+        `  ${pc.yellow(extension.name)} (${pc.cyan(extension.slug)})`,
       );
       console.log(`    ${extension.description}`);
       if (extension.labels && extension.labels.length > 0) {

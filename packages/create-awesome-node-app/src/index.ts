@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import chalk from "chalk";
+import pc from "picocolors";
 import semver from "semver";
 import {
   createNodeApp,
@@ -27,7 +27,7 @@ const main = async () => {
   program
     .version(packageJson.version)
     .arguments("[project-directory]")
-    .usage(`${chalk.green("[project-directory]")} [options]`)
+    .usage(`${pc.green("[project-directory]")} [options]`)
     .option("-v, --verbose", "print additional logs")
     .option("-i, --info", "print environment debug info")
     .option(
@@ -76,13 +76,12 @@ const main = async () => {
   const latestVersion = await checkForLatestVersion("create-awesome-node-app");
   if (latestVersion && semver.lt(packageJson.version, latestVersion)) {
     console.log();
-    console.error(
-      chalk.yellow(
+    console.warn(
+      pc.yellow(
         `You are running \`create-awesome-node-app\` ${packageJson.version}, which is behind the latest release (${latestVersion}).\n\n` +
-          "We recommend always using the latest version of create-awesome-node-app if possible.",
+          "We recommend always using the latest version of create-awesome-node-app if possible.\n",
       ),
     );
-    return;
   }
 
   // Handle list templates flag
