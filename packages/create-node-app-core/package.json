@@ -27,7 +27,7 @@
     "lint": "eslint '**/*.{ts,tsx,js}'",
     "lint:fix": "eslint '**/*.{ts,tsx,js}' --fix",
     "type-check": "tsc --noEmit",
-    "build": "tsup ./index.ts --format esm,cjs --dts --no-splitting --sourcemap",
+    "build": "tsup ./index.ts --format esm,cjs --dts --no-splitting --sourcemap --platform node --shims",
     "dev": "tsup ./index.ts --format esm,cjs --watch --dts --no-splitting --sourcemap",
     "test": "tsx --test tests/**/*.test.mts"
   },
