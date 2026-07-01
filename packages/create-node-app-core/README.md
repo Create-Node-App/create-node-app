@@ -94,7 +94,7 @@ All exports from `@create-node-app/core`:
 
 ## How It Works
 
-```
+```text
 createNodeApp()
   ├── checkNodeVersion()
   ├── printEnvInfo() if info flag

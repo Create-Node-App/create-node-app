@@ -2,7 +2,7 @@
   "name": "create-awesome-node-app",
   "version": "0.9.1",
   "type": "module",
-  "description": "Command line tool to create Node apps with a lot of different templates and extensions.",
+  "description": "Composable scaffolding CLI for production-ready Node, Web, Full-Stack, Monorepo, and AI-ready projects.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -13,7 +13,26 @@
   },
   "homepage": "https://create-awesome-node-app.vercel.app",
   "keywords": [
-    "code generator"
+    "create",
+    "scaffold",
+    "scaffolding",
+    "starter",
+    "template",
+    "node",
+    "nodejs",
+    "typescript",
+    "react",
+    "nextjs",
+    "nestjs",
+    "vite",
+    "monorepo",
+    "turborepo",
+    "cli",
+    "code-generator",
+    "project-generator",
+    "boilerplate",
+    "ai-ready",
+    "agents-md"
   ],
   "authors": [
     {
@@ -34,7 +53,9 @@
   },
   "files": [
     "index.js",
-    "dist/**"
+    "dist/**",
+    "assets/**",
+    "README.md"
   ],
   "bin": {
     "create-awesome-node-app": "index.js"

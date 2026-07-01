@@ -1,12 +1,16 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
+import { fileURLToPath } from "url";
 import debug from "debug";
 import { downloadRepository } from "./git.js";
 
 const log = debug("cna:paths");
 
-const moduleDir = __dirname;
+const moduleDir =
+  typeof __dirname !== "undefined"
+    ? __dirname
+    : path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Parse a template / extension URL (supports GitHub style and file:// URLs).

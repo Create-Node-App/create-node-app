@@ -42,6 +42,10 @@ const main = async () => {
       "--addons [extensions...]",
       "specify extensions to apply for the boilerplate generation",
     )
+    .option(
+      "--extend [extensions...]",
+      "specify extra extension URLs to layer on top of the selected template and addons",
+    )
     .option("--use-yarn", "use yarn instead of npm or pnpm or bun")
     .option("--use-pnpm", "use pnpm instead of yarn, npm, or bun")
     .option("--use-bun", "use bun instead of npm, yarn, or pnpm")

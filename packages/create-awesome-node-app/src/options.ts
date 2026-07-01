@@ -300,7 +300,7 @@ const processInteractiveOptions = async (
   ]);
 
   appConfig.templatesOrExtensions = [];
-  appConfig.extend = [];
+  appConfig.extend = Array.isArray(options.extend) ? options.extend : [];
 
   const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
     existingTemplate?.type || "custom",
@@ -334,28 +334,34 @@ const processInteractiveOptions = async (
       : [];
   }
 
-  const askForExtend = await prompts([
-    {
-      type: "confirm",
-      name: "extend",
-      message: "Do you want to extend the app with more extensions?",
-      initial: false,
-    },
-  ]);
-
-  if (askForExtend.extend) {
-    const { extend } = await prompts([
+  if (appConfig.extend.length === 0) {
+    const askForExtend = await prompts([
       {
-        type: "list",
+        type: "confirm",
         name: "extend",
-        message:
-          "Enter extra extensions separater by comma. e.g: https://github.com/username/repository/tree/main/extension1,https://github.com/username/repository/tree/main/extension2",
-        initial: "",
-        separator: ",",
+        message: "Do you want to extend the app with more extensions?",
+        initial: false,
       },
     ]);
-    appConfig.extend = extend;
+
+    if (askForExtend.extend) {
+      const { extend } = await prompts([
+        {
+          type: "list",
+          name: "extend",
+          message:
+            "Enter extra extensions separated by comma. e.g: https://github.com/username/repository/tree/main/extension1,https://github.com/username/repository/tree/main/extension2",
+          initial: "",
+          separator: ",",
+        },
+      ]);
+      appConfig.extend = extend;
+    }
   }
+
+  appConfig.extend = Array.isArray(appConfig.extend)
+    ? appConfig.extend.filter(Boolean)
+    : [];
 
   const { ...nextAppOptions } = {
     extend: [],
