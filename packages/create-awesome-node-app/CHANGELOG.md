@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.9.0
+
+### Minor Changes
+
+- docs: add comprehensive READMEs for all workspace packages
+
 ## 0.8.0
 
 ### Minor Changes
