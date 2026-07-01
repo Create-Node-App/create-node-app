@@ -67,7 +67,7 @@ jobs:
 
           CLI="$GITHUB_WORKSPACE/packages/create-awesome-node-app/index.js"
           echo "Testing scaffold with Bun using react-vite-boilerplate..."
-          CI=true bunx "$CLI" test-project \
+          CI=true bun run "$CLI" test-project \
             --template react-vite-boilerplate \
             --no-interactive
 
