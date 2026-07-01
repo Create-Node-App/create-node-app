@@ -1,5 +1,13 @@
 # @create-node-app/eslint-config-ts
 
+## 0.2.2
+
+### Patch Changes
+
+- Fixed warnings in create-node-app core
+- Updated dependencies
+  - @create-node-app/eslint-config@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

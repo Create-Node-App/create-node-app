@@ -1,5 +1,11 @@
 # tsconfig
 
+## 0.2.1
+
+### Patch Changes
+
+- Fixed warnings in create-node-app core
+
 ## 0.2.0
 
 ### Minor Changes

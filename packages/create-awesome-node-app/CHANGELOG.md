@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.9.1
+
+### Patch Changes
+
+- Fixed warnings in create-node-app core
+- Updated dependencies
+  - @create-node-app/core@0.6.2
+
 ## 0.9.0
 
 ### Minor Changes

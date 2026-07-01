@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.6.2
+
+### Patch Changes
+
+- Fixed warnings in create-node-app core
+
 ## 0.6.1
 
 ### Patch Changes
