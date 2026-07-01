@@ -10,12 +10,15 @@
 
 ## Packages
 
-| Package                                                | Description                                              |
-| ------------------------------------------------------ | -------------------------------------------------------- |
-| [`create-awesome-node-app`](./create-awesome-node-app) | Main CLI — the tool end users run                        |
-| [`create-node-app-core`](./create-node-app-core)       | Core generation logic (templates, git, package merge)    |
-| `eslint-config*`                                       | Shared ESLint presets (base, TypeScript, React, Next.js) |
-| `tsconfig`                                             | Shared TypeScript base configurations                    |
+| Package                                                         | Description                                                |
+| --------------------------------------------------------------- | ---------------------------------------------------------- |
+| [`create-awesome-node-app`](./create-awesome-node-app)          | Main CLI — the tool end users run                          |
+| [`@create-node-app/core`](./create-node-app-core)               | Programmatic scaffolding engine (templates, git, packages) |
+| [`@create-node-app/eslint-config`](./eslint-config-base)        | Base ESLint preset (Turborepo + Prettier)                  |
+| [`@create-node-app/eslint-config-ts`](./eslint-config-ts)       | TypeScript ESLint preset (extends base)                    |
+| [`@create-node-app/eslint-config-react`](./eslint-config-react) | React ESLint preset (extends TS)                           |
+| [`@create-node-app/eslint-config-next`](./eslint-config-next)   | Next.js ESLint preset (extends TS)                         |
+| [`tsconfig`](./tsconfig)                                        | Shared TypeScript base configurations                      |
 
 ---
 

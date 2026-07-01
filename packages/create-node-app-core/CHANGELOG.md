@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.6.1
+
+### Patch Changes
+
+- docs: add comprehensive READMEs for all workspace packages
+
 ## 0.6.0
 
 ### Minor Changes

@@ -37,12 +37,15 @@ This repository contains the source code for the [`create-awesome-node-app`](htt
 
 This is a **monorepo** managed with npm workspaces and [Turborepo](https://turbo.build/):
 
-| Package                                                         | Description                                                  |
-|-----------------------------------------------------------------|--------------------------------------------------------------|
-| [`create-awesome-node-app`](./packages/create-awesome-node-app) | The main CLI — Commander-based, interactive + CI-friendly    |
-| [`@create-node-app/core`](./packages/create-node-app-core)      | Core generation logic (template loading, git, package merge) |
-| `@create-node-app/eslint-config*`                               | Shared ESLint presets (base, TypeScript, React, Next.js)     |
-| `tsconfig`                                                      | Shared TypeScript base configurations                        |
+| Package                                                                  | Description                                                |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| [`create-awesome-node-app`](./packages/create-awesome-node-app)          | The main CLI — Commander-based, interactive + CI-friendly  |
+| [`@create-node-app/core`](./packages/create-node-app-core)               | Programmatic scaffolding engine (templates, git, packages) |
+| [`@create-node-app/eslint-config`](./packages/eslint-config-base)        | Base ESLint preset (Turborepo + Prettier)                  |
+| [`@create-node-app/eslint-config-ts`](./packages/eslint-config-ts)       | TypeScript ESLint preset (extends base)                    |
+| [`@create-node-app/eslint-config-react`](./packages/eslint-config-react) | React ESLint preset (extends TS)                           |
+| [`@create-node-app/eslint-config-next`](./packages/eslint-config-next)   | Next.js ESLint preset (extends TS)                         |
+| [`tsconfig`](./packages/tsconfig)                                        | Shared TypeScript base configurations                      |
 
 ---
 
@@ -157,7 +160,7 @@ npx create-awesome-node-app debug-app -t react-vite-boilerplate --verbose
 ### Template Catalog Reference (Excerpt)
 
 | Slug                              | Description                          |
-|-----------------------------------|--------------------------------------|
+| --------------------------------- | ------------------------------------ |
 | `react-vite-boilerplate`          | React + Vite + TypeScript + Router   |
 | `nextjs-starter`                  | Production-ready Next.js starter     |
 | `nestjs-boilerplate`              | Scalable NestJS backend              |
@@ -172,7 +175,7 @@ Full catalog: **[create-awesome-node-app.vercel.app/templates](https://create-aw
 ### Popular Extensions (React)
 
 | Slug           | Purpose                               |
-|----------------|---------------------------------------|
+| -------------- | ------------------------------------- |
 | `tailwind-css` | Tailwind CSS utility-first styling    |
 | `zustand`      | Lightweight state management          |
 | `react-query`  | Async server state (TanStack Query)   |
@@ -185,7 +188,7 @@ Full catalog: **[create-awesome-node-app.vercel.app/templates](https://create-aw
 ## 📋 Available Scripts
 
 | `npm run <script>` | Description                                   |
-|--------------------|-----------------------------------------------|
+| ------------------ | --------------------------------------------- |
 | `test`             | Run unit tests with Node's native test runner |
 | `lint`             | Lint the project with ESLint                  |
 | `lint:fix`         | Lint and auto-fix correctable errors          |

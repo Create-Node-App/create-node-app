@@ -1,5 +1,13 @@
 # @create-node-app/eslint-config-next
 
+## 0.2.1
+
+### Patch Changes
+
+- docs: add comprehensive READMEs for all workspace packages
+- Updated dependencies
+  - @create-node-app/eslint-config-ts@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

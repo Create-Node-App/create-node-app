@@ -1,5 +1,11 @@
 # @create-node-app/eslint-config
 
+## 0.2.1
+
+### Patch Changes
+
+- docs: add comprehensive READMEs for all workspace packages
+
 ## 0.2.0
 
 ### Minor Changes
