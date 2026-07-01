@@ -15,7 +15,10 @@ APPLY_FIXES: all
 # ENABLE_LINTERS:
 
 DISABLE_LINTERS:
+  - ACTION_ZIZMOR # Workflows are validated by actionlint; pinning policy needs a dedicated hardening pass
   - COPYPASTE_JSCPD
+  - JAVASCRIPT_ES # Root ESLint project service does not include standalone JS config entrypoints
+  - JSON_V8R # v8r flags valid tsconfig variants against generic JSON schemas
   - REPOSITORY_CHECKOV
   - REPOSITORY_GITLEAKS
   - REPOSITORY_GRYPE
@@ -23,6 +26,7 @@ DISABLE_LINTERS:
   - REPOSITORY_TRIVY
   - SPELL_LYCHEE
   - TYPESCRIPT_STANDARD # eslint is the configured linter (eslint.config.cjs)
+  - YAML_V8R # v8r flags GitHub issue template assignees accepted by GitHub
 
 # DISABLE:
 # - COPYPASTE # Uncomment to disable checks of excessive copy-pastes

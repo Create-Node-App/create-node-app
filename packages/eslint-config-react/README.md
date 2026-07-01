@@ -49,7 +49,7 @@ This config extends `@create-node-app/eslint-config-ts` and layers on:
 ```text
 @create-node-app/eslint-config (base)
   └── @create-node-app/eslint-config-ts
-       └── @create-node-app/eslint-config-react
+      └── @create-node-app/eslint-config-react
 ```
 
 ---

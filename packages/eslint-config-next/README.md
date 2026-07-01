@@ -51,7 +51,7 @@ This config extends `@create-node-app/eslint-config-ts` and the official `eslint
 ```text
 @create-node-app/eslint-config (base)
   └── @create-node-app/eslint-config-ts
-       └── @create-node-app/eslint-config-next
+      └── @create-node-app/eslint-config-next
 ```
 
 ---
