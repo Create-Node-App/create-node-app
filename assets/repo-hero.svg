@@ -57,7 +57,7 @@
 
   <g font-family="JetBrains Mono, SFMono-Regular, Consolas, monospace">
     <rect x="184" y="450" width="382" height="42" rx="13" fill="#0B1226" stroke="#22D3EE" stroke-opacity="0.58"/>
-    <text x="206" y="477" fill="#67E8F9" font-size="16" font-weight="700">npm install && npm run build</text>
+    <text x="206" y="477" fill="#67E8F9" font-size="16" font-weight="700">npm install &amp;&amp; npm run build</text>
   </g>
 
   <g filter="url(#repo-shadow)">
