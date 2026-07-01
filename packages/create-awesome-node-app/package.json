@@ -1,6 +1,6 @@
 {
   "name": "create-awesome-node-app",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "type": "module",
   "description": "Composable scaffolding CLI for production-ready Node, Web, Full-Stack, Monorepo, and AI-ready projects.",
   "license": "MIT",
@@ -75,7 +75,7 @@
     "test:src": "npm run test"
   },
   "dependencies": {
-    "@create-node-app/core": "^0.6.2",
+    "@create-node-app/core": "^0.6.3",
     "axios": "^1.16.0",
     "ci-info": "^4.3.0",
     "picocolors": "^1.1.1",
@@ -84,7 +84,7 @@
     "semver": "^7.7.4"
   },
   "devDependencies": {
-    "@create-node-app/core": "^0.6.2",
+    "@create-node-app/core": "^0.6.3",
     "@types/node": "^26.0.1",
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.5.8",

@@ -2,13 +2,13 @@
 
 <div align="center">
 
-<img src="./assets/hero.svg" alt="Create Awesome Node App CNA Orbit Console banner" width="100%" />
+<img src="https://raw.githubusercontent.com/Create-Node-App/create-node-app/main/packages/create-awesome-node-app/assets/hero.svg" alt="Create Awesome Node App banner" width="100%" />
 
 # Create Awesome Node App
 
-**Generate production-ready apps by composing templates, addons, and AI-ready conventions.**
+**🚀 Generate production-ready apps by composing templates, addons, and AI-ready conventions.**
 
-One command gets you from blank folder to a working Node/Web project with modern tooling and team-friendly defaults.
+From blank folder to working Node/Web project with modern tooling, clean defaults, and team-friendly automation.
 
 [![npm][npmversion]][npmurl]
 [![Downloads][npmdownloads]][npmurl]
@@ -29,7 +29,7 @@ One command gets you from blank folder to a working Node/Web project with modern
 
 ---
 
-## Start In 30 Seconds
+## ⚡ Start In 30 Seconds
 
 ```bash
 npm create awesome-node-app@latest my-app
@@ -45,20 +45,27 @@ npx create-awesome-node-app my-app \
   --no-interactive
 ```
 
----
-
-## Why CNA?
-
-| Capability                            | Value                                                                                                 |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| **Composable by design**              | Start with a template, then layer only the addons your project actually needs.                        |
-| **Production-ready defaults**         | TypeScript, linting, scripts, testing paths, and practical DX defaults out of the box.                |
-| **AI-ready from day one**             | Supported templates generate `AGENTS.md` so coding agents understand the project context.             |
-| **CI and internal-platform friendly** | Use `--no-interactive`, `--set`, `--template <url>`, and `--extend <url>` for repeatable scaffolding. |
+| If you want...                | Start here                                        |
+| ----------------------------- | ------------------------------------------------- |
+| A guided local setup          | `npm create awesome-node-app@latest my-app`       |
+| A repeatable CI/platform flow | `--no-interactive` with explicit flags            |
+| Your company starter          | `--template <github-url>` or `--template file://` |
+| Private standards layered in  | `--extend <url>`                                  |
 
 ---
 
-## Composition Model
+## ✨ Why CNA?
+
+| Capability                       | Value                                                                                                 |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 🧩 **Composable by design**      | Start with a template, then layer only the addons your project actually needs.                        |
+| 🛡️ **Production-ready defaults** | TypeScript, linting, scripts, testing paths, and practical DX defaults out of the box.                |
+| 🤖 **AI-ready from day one**     | Supported templates generate `AGENTS.md` so coding agents understand the project context.             |
+| 🏗️ **CI and platform friendly**  | Use `--no-interactive`, `--set`, `--template <url>`, and `--extend <url>` for repeatable scaffolding. |
+
+---
+
+## 🧬 Composition Model
 
 ```text
 template -> addons -> custom options -> install -> git init -> AI-ready project
@@ -68,9 +75,9 @@ You can mix catalog templates and addons with your own GitHub or `file://` sourc
 
 ---
 
-## What You Can Generate
+## 🎛️ What You Can Generate
 
-### Template Families
+### 🧱 Template Families
 
 | Category      | Example templates                                           |
 | ------------- | ----------------------------------------------------------- |
@@ -81,7 +88,7 @@ You can mix catalog templates and addons with your own GitHub or `file://` sourc
 | Web Extension | `web-extension-react-boilerplate`                           |
 | UAT / Testing | `webdriverio-boilerplate`                                   |
 
-### Addon Families
+### 🧰 Addon Families
 
 | Category                  | Examples                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -94,9 +101,9 @@ You can mix catalog templates and addons with your own GitHub or `file://` sourc
 
 ---
 
-## Popular Recipes
+## 🍱 Popular Recipes
 
-### React + Tailwind + Zustand
+### ⚛️ React + Tailwind + Zustand
 
 ```bash
 npx create-awesome-node-app my-dashboard \
@@ -105,7 +112,7 @@ npx create-awesome-node-app my-dashboard \
   --no-interactive
 ```
 
-### Next.js + shadcn/ui + Auth + tRPC
+### ▲ Next.js + shadcn/ui + Auth + tRPC
 
 ```bash
 npx create-awesome-node-app my-saas \
@@ -115,7 +122,7 @@ npx create-awesome-node-app my-saas \
   --no-interactive
 ```
 
-### NestJS + Drizzle PostgreSQL + OpenAPI
+### 🐈 NestJS + Drizzle PostgreSQL + OpenAPI
 
 ```bash
 npx create-awesome-node-app my-api \
@@ -124,7 +131,7 @@ npx create-awesome-node-app my-api \
   --no-interactive
 ```
 
-### Next.js SaaS AI Starter
+### 🤖 Next.js SaaS AI Starter
 
 ```bash
 npx create-awesome-node-app my-ai-saas \
@@ -133,7 +140,7 @@ npx create-awesome-node-app my-ai-saas \
   --no-interactive
 ```
 
-### Internal Platform Template (GitHub URL)
+### 🏢 Internal Platform Template (GitHub URL)
 
 ```bash
 npx create-awesome-node-app my-internal-app \
@@ -141,7 +148,7 @@ npx create-awesome-node-app my-internal-app \
   --no-interactive
 ```
 
-### Local Template Development (`file://`)
+### 🧪 Local Template Development (`file://`)
 
 ```bash
 npx create-awesome-node-app my-local-app \
@@ -151,7 +158,7 @@ npx create-awesome-node-app my-local-app \
 
 > `file://` template URLs should be absolute paths (for example `file:///Users/...` or `file:///C:/...`).
 
-### Layer A Private Extension
+### 🔒 Layer A Private Extension
 
 ```bash
 npx create-awesome-node-app my-app \
@@ -160,7 +167,7 @@ npx create-awesome-node-app my-app \
   --extend https://github.com/your-org/platform-starters/tree/main/extensions/company-ci
 ```
 
-### Pass Custom Template Values
+### 🎚️ Pass Custom Template Values
 
 ```bash
 npx create-awesome-node-app my-app \
@@ -172,19 +179,19 @@ npx create-awesome-node-app my-app \
 
 ---
 
-## Built For Modern Teams
+## 🏗️ Built For Modern Teams
 
-- Node 22+ runtime support.
-- npm, yarn, pnpm, and Bun package managers.
-- Interactive wizard for local workflows.
-- `--no-interactive` mode for CI, scripts, and platform automation.
-- GitHub URL and local `file://` template inputs.
-- `--extend` support for private addon layering.
-- `--set key=value` overrides for deterministic custom options.
+- 🟢 Node 22+ runtime support.
+- 📦 npm, yarn, pnpm, and Bun package managers.
+- 🧙 Interactive wizard for local workflows.
+- 🔁 `--no-interactive` mode for CI, scripts, and platform automation.
+- 🌐 GitHub URL and local `file://` template inputs.
+- 🔐 `--extend` support for private addon layering.
+- 🎯 `--set key=value` overrides for deterministic custom options.
 
 ---
 
-## Explore The Catalog
+## 🔎 Explore The Catalog
 
 Browse visually at **[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)** or discover from the terminal:
 
@@ -203,7 +210,7 @@ Full catalog:
 
 ---
 
-## AI-Ready With `AGENTS.md`
+## 🤖 AI-Ready With `AGENTS.md`
 
 Supported templates can generate an `AGENTS.md` file so coding assistants understand project context before editing:
 
@@ -218,7 +225,7 @@ Learn more: **[AGENTS.md guide](https://create-awesome-node-app.vercel.app/docs/
 
 ---
 
-## Interactive Wizard
+## 🧙 Interactive Wizard
 
 Run the CLI without flags and CNA guides you through:
 
@@ -233,7 +240,7 @@ Run the CLI without flags and CNA guides you through:
 
 ---
 
-## Requirements
+## ✅ Requirements
 
 - **Node.js >= 22**
 - npm >= 7, yarn, pnpm, or Bun
@@ -247,7 +254,7 @@ npm create awesome-node-app@latest my-app
 
 ---
 
-## CLI Reference
+## 🧭 CLI Reference
 
 ```text
 Usage: create-awesome-node-app [project-directory] [options]
@@ -274,7 +281,7 @@ Usage: create-awesome-node-app [project-directory] [options]
 
 ---
 
-## Programmatic Usage
+## 🧩 Programmatic Usage
 
 Need to integrate CNA into your own tooling? The core is importable:
 
@@ -286,59 +293,59 @@ import { createNodeApp, getTemplateDirPath } from "@create-node-app/core";
 
 ---
 
-## FAQ
+## ❓ FAQ
 
 <details>
-<summary><strong>Why another scaffolder?</strong></summary>
+<summary><strong>🤔 Why another scaffolder?</strong></summary>
 
 Most scaffolders lock you into one stack. CNA is composable: choose a template, layer focused addons, and plug in your own GitHub/local blueprints.
 
 </details>
 
 <details>
-<summary><strong>Can I use my own template?</strong></summary>
+<summary><strong>🏗️ Can I use my own template?</strong></summary>
 
 Yes. Pass a GitHub URL or local `file://` URL with `--template`.
 
 </details>
 
 <details>
-<summary><strong>Can I use private/internal extensions?</strong></summary>
+<summary><strong>🔒 Can I use private/internal extensions?</strong></summary>
 
 Yes. Use `--extend <url>` to layer private extensions on top of a template and addon set.
 
 </details>
 
 <details>
-<summary><strong>Are addons order-sensitive?</strong></summary>
+<summary><strong>🧱 Are addons order-sensitive?</strong></summary>
 
 Yes. Addons are applied in sequence. If two addons modify the same file, later addons win.
 
 </details>
 
 <details>
-<summary><strong>Does it support monorepos?</strong></summary>
+<summary><strong>📦 Does it support monorepos?</strong></summary>
 
 Yes. Use `turborepo-boilerplate` to bootstrap a multi-package workspace with shared tooling.
 
 </details>
 
 <details>
-<summary><strong>Can I use it in CI?</strong></summary>
+<summary><strong>🔁 Can I use it in CI?</strong></summary>
 
 Yes. Pass all required flags and use `--no-interactive` for deterministic automation.
 
 </details>
 
 <details>
-<summary><strong>Is Node 22 required?</strong></summary>
+<summary><strong>🟢 Is Node 22 required?</strong></summary>
 
 Yes. CNA targets Node 22+ to keep runtime behavior modern and predictable.
 
 </details>
 
 <details>
-<summary><strong>Does CNA work with AI coding assistants?</strong></summary>
+<summary><strong>🤖 Does CNA work with AI coding assistants?</strong></summary>
 
 Yes. Supported templates can generate `AGENTS.md`, helping assistants understand project layout, scripts, and conventions.
 
@@ -346,18 +353,18 @@ Yes. Supported templates can generate `AGENTS.md`, helping assistants understand
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap
 
-- More framework templates and vertical starters.
-- Additional testing packs for contracts, performance, and load testing.
-- Template version pinning and diff-based upgrade paths.
-- Rich template analytics and usage insights.
+- 🚀 More framework templates and vertical starters.
+- 🧪 Additional testing packs for contracts, performance, and load testing.
+- 📌 Template version pinning and diff-based upgrade paths.
+- 📊 Rich template analytics and usage insights.
 
 Track progress in [Issues](https://github.com/Create-Node-App/create-node-app/issues) and [Discussions](https://github.com/Create-Node-App/create-node-app/discussions).
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 Templates, addons, bug fixes, docs, recipes, and ideas are all welcome.
 
@@ -367,7 +374,7 @@ Templates, addons, bug fixes, docs, recipes, and ideas are all welcome.
 
 ---
 
-## License
+## 📄 License
 
 MIT © [Create Node App Contributors](https://github.com/Create-Node-App/create-node-app/graphs/contributors)
 
@@ -377,7 +384,7 @@ MIT © [Create Node App Contributors](https://github.com/Create-Node-App/create-
 
 **[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)**
 
-_Built for developers who value speed, composability, and AI-ready workflows._
+_Built for developers who value speed, composability, color, and AI-ready workflows._
 
 </div>
 
