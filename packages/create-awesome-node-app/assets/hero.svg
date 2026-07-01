@@ -1,102 +1,114 @@
 <svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Create Awesome Node App</title>
-  <desc id="desc">A futuristic terminal interface showing the Create Awesome Node App workflow from templates and addons to an AI-ready production project.</desc>
+  <title id="title">Create Awesome Node App - CNA Orbit Console</title>
+  <desc id="desc">Futuristic command center banner for Create Awesome Node App showing templates, addons, and agents flowing into a production-ready app.</desc>
+
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="640" gradientUnits="userSpaceOnUse">
       <stop stop-color="#050816"/>
-      <stop offset="0.45" stop-color="#101332"/>
-      <stop offset="1" stop-color="#021B2D"/>
+      <stop offset="0.5" stop-color="#0C122B"/>
+      <stop offset="1" stop-color="#042036"/>
     </linearGradient>
-    <linearGradient id="neon" x1="132" y1="100" x2="1130" y2="546" gradientUnits="userSpaceOnUse">
+    <linearGradient id="neon" x1="170" y1="120" x2="1110" y2="520" gradientUnits="userSpaceOnUse">
       <stop stop-color="#7C3AED"/>
-      <stop offset="0.48" stop-color="#06B6D4"/>
+      <stop offset="0.5" stop-color="#06B6D4"/>
       <stop offset="1" stop-color="#22C55E"/>
     </linearGradient>
-    <linearGradient id="panel" x1="188" y1="132" x2="1048" y2="510" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#111827" stop-opacity="0.92"/>
-      <stop offset="1" stop-color="#020617" stop-opacity="0.95"/>
+    <linearGradient id="panel" x1="130" y1="86" x2="1150" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A" stop-opacity="0.94"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0.96"/>
     </linearGradient>
-    <radialGradient id="pulseA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(278 178) rotate(45) scale(420 260)">
-      <stop stop-color="#8B5CF6" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/>
+    <radialGradient id="violetPulse" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(230 150) rotate(45) scale(520 300)">
+      <stop stop-color="#7C3AED" stop-opacity="0.52"/>
+      <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="pulseB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1006 438) rotate(135) scale(460 280)">
-      <stop stop-color="#22D3EE" stop-opacity="0.5"/>
+    <radialGradient id="cyanPulse" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(980 420) rotate(135) scale(540 320)">
+      <stop stop-color="#06B6D4" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#06B6D4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="reactorGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(806 332) scale(170)">
+      <stop stop-color="#22D3EE" stop-opacity="0.65"/>
       <stop offset="1" stop-color="#22D3EE" stop-opacity="0"/>
     </radialGradient>
     <filter id="softGlow" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB">
-      <feGaussianBlur stdDeviation="22" result="blur"/>
-      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.12 0 0 0 0 0.85 0 0 0 0 1 0 0 0 0.75 0"/>
+      <feGaussianBlur stdDeviation="20" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.12 0 0 0 0 0.82 0 0 0 0 1 0 0 0 0.76 0"/>
       <feBlend in="SourceGraphic"/>
     </filter>
-    <filter id="cardShadow" x="-20%" y="-25%" width="140%" height="150%" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="24" stdDeviation="26" flood-color="#000" flood-opacity="0.38"/>
+    <filter id="cardShadow" x="-22%" y="-24%" width="144%" height="148%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#000" flood-opacity="0.4"/>
     </filter>
-    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
-      <path d="M44 0H0V44" stroke="#94A3B8" stroke-opacity="0.08"/>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" stroke="#94A3B8" stroke-opacity="0.08"/>
     </pattern>
   </defs>
 
   <rect width="1280" height="640" rx="36" fill="url(#bg)"/>
   <rect width="1280" height="640" rx="36" fill="url(#grid)"/>
-  <rect width="1280" height="640" rx="36" fill="url(#pulseA)"/>
-  <rect width="1280" height="640" rx="36" fill="url(#pulseB)"/>
+  <rect width="1280" height="640" rx="36" fill="url(#violetPulse)"/>
+  <rect width="1280" height="640" rx="36" fill="url(#cyanPulse)"/>
 
-  <path d="M134 486C278 366 372 385 516 458C696 550 790 522 950 356C1034 269 1108 236 1180 254" stroke="url(#neon)" stroke-width="2" stroke-opacity="0.45"/>
-  <path d="M90 206C230 108 384 110 516 194C692 306 826 276 992 154C1063 102 1132 88 1202 104" stroke="url(#neon)" stroke-width="2" stroke-opacity="0.32"/>
-
-  <g filter="url(#softGlow)">
-    <circle cx="1022" cy="154" r="6" fill="#22D3EE"/>
-    <circle cx="262" cy="492" r="5" fill="#A78BFA"/>
-    <circle cx="1138" cy="418" r="4" fill="#22C55E"/>
-  </g>
+  <path d="M104 470C276 332 396 366 548 455C700 545 826 494 996 320C1060 254 1128 218 1190 232" stroke="url(#neon)" stroke-opacity="0.42" stroke-width="2"/>
+  <path d="M88 214C268 96 420 112 566 204C710 292 842 286 1020 166C1082 124 1142 108 1200 116" stroke="url(#neon)" stroke-opacity="0.32" stroke-width="2"/>
 
   <g filter="url(#cardShadow)">
-    <rect x="160" y="96" width="960" height="448" rx="28" fill="url(#panel)" stroke="url(#neon)" stroke-opacity="0.72"/>
-    <rect x="160" y="96" width="960" height="70" rx="28" fill="#0F172A" fill-opacity="0.78"/>
-    <circle cx="204" cy="132" r="8" fill="#EF4444"/>
-    <circle cx="232" cy="132" r="8" fill="#F59E0B"/>
-    <circle cx="260" cy="132" r="8" fill="#22C55E"/>
-    <text x="640" y="139" text-anchor="middle" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="18" font-weight="700">create-awesome-node-app</text>
+    <rect x="128" y="86" width="1024" height="468" rx="30" fill="url(#panel)" stroke="url(#neon)" stroke-opacity="0.72"/>
+    <rect x="128" y="86" width="1024" height="76" rx="30" fill="#0B1226" fill-opacity="0.84"/>
+    <circle cx="176" cy="124" r="8" fill="#EF4444"/>
+    <circle cx="206" cy="124" r="8" fill="#F59E0B"/>
+    <circle cx="236" cy="124" r="8" fill="#22C55E"/>
+    <text x="640" y="131" text-anchor="middle" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="18" font-weight="700">create-awesome-node-app</text>
   </g>
 
   <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif">
-    <text x="210" y="226" fill="#F8FAFC" font-size="46" font-weight="800" letter-spacing="-1.8">One command.</text>
-    <text x="210" y="278" fill="#F8FAFC" font-size="46" font-weight="800" letter-spacing="-1.8">Your stack.</text>
-    <text x="210" y="330" fill="url(#neon)" font-size="46" font-weight="900" letter-spacing="-1.8">Ready to ship.</text>
-    <text x="212" y="374" fill="#94A3B8" font-size="21" font-weight="500">Composable scaffolding for Node, Web, Full-Stack,</text>
-    <text x="212" y="404" fill="#94A3B8" font-size="21" font-weight="500">Monorepos, WebExtensions, and AI-assisted teams.</text>
+    <rect x="180" y="188" width="112" height="44" rx="22" fill="#7C3AED" fill-opacity="0.18" stroke="#A78BFA" stroke-opacity="0.54"/>
+    <text x="236" y="217" text-anchor="middle" fill="#DDD6FE" font-size="16" font-weight="800" letter-spacing="1">CNA</text>
 
-    <rect x="210" y="438" width="454" height="56" rx="16" fill="#020617" stroke="#22D3EE" stroke-opacity="0.46"/>
-    <text x="238" y="473" fill="#22D3EE" font-family="JetBrains Mono, SFMono-Regular, Consolas, monospace" font-size="20" font-weight="700">$ npm create awesome-node-app@latest</text>
+    <text x="180" y="280" fill="#F8FAFC" font-size="56" font-weight="900" letter-spacing="-1.8">One command.</text>
+    <text x="180" y="338" fill="url(#neon)" font-size="56" font-weight="900" letter-spacing="-1.8">Any stack.</text>
+    <text x="180" y="390" fill="#CBD5E1" font-size="30" font-weight="700" letter-spacing="-0.6">Production-ready.</text>
+    <text x="180" y="430" fill="#94A3B8" font-size="22" font-weight="500">Templates + addons + AI-ready conventions in under a minute.</text>
   </g>
 
-  <g filter="url(#cardShadow)" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif">
-    <rect x="724" y="206" width="334" height="72" rx="18" fill="#0B1226" stroke="#8B5CF6" stroke-opacity="0.55"/>
-    <circle cx="760" cy="242" r="16" fill="#8B5CF6" fill-opacity="0.18" stroke="#A78BFA"/>
-    <path d="M753 242H767M760 235V249" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round"/>
-    <text x="790" y="238" fill="#F8FAFC" font-size="19" font-weight="800">Pick a template</text>
-    <text x="790" y="263" fill="#94A3B8" font-size="15">React, Next.js, NestJS, Turborepo...</text>
-
-    <rect x="774" y="300" width="334" height="72" rx="18" fill="#0B1226" stroke="#06B6D4" stroke-opacity="0.55"/>
-    <circle cx="810" cy="336" r="16" fill="#06B6D4" fill-opacity="0.18" stroke="#67E8F9"/>
-    <path d="M804 336H816M810 330V342" stroke="#A5F3FC" stroke-width="2" stroke-linecap="round"/>
-    <text x="840" y="332" fill="#F8FAFC" font-size="19" font-weight="800">Layer addons</text>
-    <text x="840" y="357" fill="#94A3B8" font-size="15">Tailwind, CI, auth, data, testing...</text>
-
-    <rect x="724" y="394" width="334" height="72" rx="18" fill="#0B1226" stroke="#22C55E" stroke-opacity="0.55"/>
-    <circle cx="760" cy="430" r="16" fill="#22C55E" fill-opacity="0.18" stroke="#86EFAC"/>
-    <path d="M752 430L758 436L769 424" stroke="#BBF7D0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="790" y="426" fill="#F8FAFC" font-size="19" font-weight="800">Ship AI-ready code</text>
-    <text x="790" y="451" fill="#94A3B8" font-size="15">AGENTS.md, scripts, CI, conventions.</text>
+  <g font-family="JetBrains Mono, SFMono-Regular, Consolas, monospace">
+    <rect x="180" y="462" width="520" height="56" rx="16" fill="#020617" stroke="#22D3EE" stroke-opacity="0.56"/>
+    <text x="208" y="497" fill="#67E8F9" font-size="20" font-weight="700">npm create awesome-node-app@latest</text>
   </g>
 
-  <g opacity="0.88" font-family="JetBrains Mono, SFMono-Regular, Consolas, monospace" font-size="14" font-weight="700">
-    <rect x="746" y="132" width="96" height="26" rx="13" fill="#8B5CF6" fill-opacity="0.18" stroke="#A78BFA" stroke-opacity="0.5"/>
-    <text x="794" y="151" text-anchor="middle" fill="#C4B5FD">TEMPLATE</text>
-    <rect x="858" y="132" width="86" height="26" rx="13" fill="#06B6D4" fill-opacity="0.18" stroke="#67E8F9" stroke-opacity="0.5"/>
-    <text x="901" y="151" text-anchor="middle" fill="#A5F3FC">ADDONS</text>
-    <rect x="960" y="132" width="100" height="26" rx="13" fill="#22C55E" fill-opacity="0.18" stroke="#86EFAC" stroke-opacity="0.5"/>
-    <text x="1010" y="151" text-anchor="middle" fill="#BBF7D0">AI READY</text>
+  <g>
+    <circle cx="806" cy="332" r="150" fill="url(#reactorGlow)"/>
+    <circle cx="806" cy="332" r="116" stroke="#06B6D4" stroke-opacity="0.48" stroke-width="2"/>
+    <circle cx="806" cy="332" r="84" stroke="#7C3AED" stroke-opacity="0.56" stroke-width="2"/>
+    <circle cx="806" cy="332" r="54" fill="#0F172A" stroke="#22C55E" stroke-opacity="0.7"/>
+    <circle cx="806" cy="332" r="10" fill="#22D3EE"/>
+    <path d="M760 332H852M806 286V378" stroke="#BAE6FD" stroke-opacity="0.72" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#softGlow)" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="800">
+    <rect x="706" y="196" width="120" height="34" rx="17" fill="#7C3AED" fill-opacity="0.16" stroke="#A78BFA" stroke-opacity="0.6"/>
+    <text x="766" y="218" text-anchor="middle" fill="#DDD6FE">TEMPLATE</text>
+
+    <rect x="900" y="314" width="110" height="34" rx="17" fill="#06B6D4" fill-opacity="0.16" stroke="#67E8F9" stroke-opacity="0.6"/>
+    <text x="955" y="336" text-anchor="middle" fill="#CFFAFE">ADDONS</text>
+
+    <rect x="706" y="430" width="104" height="34" rx="17" fill="#22C55E" fill-opacity="0.16" stroke="#86EFAC" stroke-opacity="0.62"/>
+    <text x="758" y="452" text-anchor="middle" fill="#DCFCE7">AGENTS</text>
+
+    <rect x="926" y="198" width="164" height="38" rx="19" fill="#22C55E" fill-opacity="0.12" stroke="#86EFAC" stroke-opacity="0.64"/>
+    <text x="1008" y="223" text-anchor="middle" fill="#BBF7D0" font-size="15">PRODUCTION APP</text>
+  </g>
+
+  <g stroke="url(#neon)" stroke-width="2" stroke-opacity="0.5" stroke-linecap="round">
+    <path d="M824 230L860 286"/>
+    <path d="M900 332H860"/>
+    <path d="M810 414L846 366"/>
+    <path d="M852 256L940 218"/>
+  </g>
+
+  <g filter="url(#softGlow)">
+    <circle cx="998" cy="132" r="4" fill="#22C55E"/>
+    <circle cx="1028" cy="156" r="3" fill="#67E8F9"/>
+    <circle cx="1082" cy="144" r="3" fill="#C4B5FD"/>
+    <circle cx="1112" cy="448" r="4" fill="#22D3EE"/>
+    <circle cx="1028" cy="508" r="3" fill="#A78BFA"/>
   </g>
 </svg>

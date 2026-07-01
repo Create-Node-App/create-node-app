@@ -2,10 +2,11 @@
 
 <div align="center">
 
-<h1>🌟 Create Awesome Node App</h1>
+<img src="./assets/repo-hero.svg" alt="Create Node App monorepo hero banner" width="100%" />
 
-<p><strong>A composable scaffolding CLI for Node, Web, Full-Stack, and Monorepo projects.</strong><br/>
-Pick a template. Layer addons. Ship production-ready code in minutes.</p>
+# Create Awesome Node App
+
+**The open-source monorepo behind `create-awesome-node-app`: a composable scaffolding CLI for production-ready Node, Web, Full-Stack, Monorepo, and AI-ready projects.**
 
 [![Awesome](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite#get-started)
 [![Tests][testsbadge]][testsurl]
@@ -14,205 +15,299 @@ Pick a template. Layer addons. Ship production-ready code in minutes.</p>
 [![Shellcheck][shellcheckbadge]][shellcheckurl]
 [![Markdown][markdownlintbadge]][markdownlinturl]
 [![npm][npmversion]][npmurl]
-[![npm][npmdownloads]][npmurl]
+[![Downloads][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ulises-jeremias?style=flat&logo=github)](https://github.com/sponsors/ulises-jeremias)
-[![Coverage](./.github/badges/coverage.svg)](#-available-scripts)
 
-[Changelog](./packages/create-awesome-node-app/CHANGELOG.md) · [Contributing](./CONTRIBUTING.md) · [Troubleshooting](./docs/TROUBLESHOOTING.md) · [Migration](./docs/MIGRATION.md) · [**🌐 Official Site**](https://create-awesome-node-app.vercel.app)
+[Package README](./packages/create-awesome-node-app/README.md) · [Official Site](https://create-awesome-node-app.vercel.app) · [Templates](https://create-awesome-node-app.vercel.app/templates) · [Extensions](https://create-awesome-node-app.vercel.app/extensions) · [Contributing](./CONTRIBUTING.md) · [Troubleshooting](./docs/TROUBLESHOOTING.md)
 
 </div>
 
 ---
 
-This repository contains the source code for the [`create-awesome-node-app`](https://www.npmjs.com/package/create-awesome-node-app) CLI — a composable scaffolding tool that generates production-grade Node/Web/Full-Stack projects by combining curated templates with modular extensions.
+## What This Repo Contains
 
-> **End users:** See the [package README](./packages/create-awesome-node-app/README.md) or visit **[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)** for the full feature tour, template catalog, and docs.
+This repository contains the source code for [`create-awesome-node-app`](https://www.npmjs.com/package/create-awesome-node-app), the CLI that composes curated templates, addons, custom options, and AI-ready conventions into working projects.
 
-![cna demo](https://user-images.githubusercontent.com/17727170/229553510-49d0d46f-11ac-4b07-acf3-8db8ce7959ec.gif)
-
----
-
-## 🗂 Repository Structure
-
-This is a **monorepo** managed with npm workspaces and [Turborepo](https://turbo.build/):
-
-| Package                                                                  | Description                                                |
-| ------------------------------------------------------------------------ | ---------------------------------------------------------- |
-| [`create-awesome-node-app`](./packages/create-awesome-node-app)          | The main CLI — Commander-based, interactive + CI-friendly  |
-| [`@create-node-app/core`](./packages/create-node-app-core)               | Programmatic scaffolding engine (templates, git, packages) |
-| [`@create-node-app/eslint-config`](./packages/eslint-config-base)        | Base ESLint preset (Turborepo + Prettier)                  |
-| [`@create-node-app/eslint-config-ts`](./packages/eslint-config-ts)       | TypeScript ESLint preset (extends base)                    |
-| [`@create-node-app/eslint-config-react`](./packages/eslint-config-react) | React ESLint preset (extends TS)                           |
-| [`@create-node-app/eslint-config-next`](./packages/eslint-config-next)   | Next.js ESLint preset (extends TS)                         |
-| [`tsconfig`](./packages/tsconfig)                                        | Shared TypeScript base configurations                      |
+Use this README if you want to understand the codebase, run it locally, contribute a fix, improve documentation, or work on the CLI packages. If you only want to generate an app, start with the [package README](./packages/create-awesome-node-app/README.md).
 
 ---
 
-## 🚀 Quick Start (for users)
+## Quick Start For Users
 
 ```bash
 npm create awesome-node-app@latest my-app
 ```
 
-Or non-interactive:
+Run headlessly for scripts, CI, or platform automation:
 
 ```bash
 npx create-awesome-node-app my-app \
   --template react-vite-boilerplate \
-  --addons material-ui github-setup \
+  --addons tailwind-css zustand github-setup \
   --no-interactive
 ```
 
-→ Full documentation at **[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)**
+More examples live in the [CLI package README](./packages/create-awesome-node-app/README.md).
 
 ---
 
-## 🛠 Running Locally (for contributors)
+## Repository Map
 
-```sh
-# Clone the repository
+This is a Node 22+ monorepo managed with npm workspaces and [Turborepo](https://turbo.build/).
+
+| Path                                                                     | Purpose                                                                                                                                |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [`packages/create-awesome-node-app`](./packages/create-awesome-node-app) | Main CLI package, Commander entrypoint, interactive wizard, catalog listing, and package metadata.                                     |
+| [`packages/create-node-app-core`](./packages/create-node-app-core)       | Scaffolding engine: resolves templates/extensions, copies files, applies template options, installs dependencies, and initializes git. |
+| [`packages/eslint-config-base`](./packages/eslint-config-base)           | Shared base ESLint flat config.                                                                                                        |
+| [`packages/eslint-config-ts`](./packages/eslint-config-ts)               | TypeScript ESLint config extending the base preset.                                                                                    |
+| [`packages/eslint-config-react`](./packages/eslint-config-react)         | React ESLint config extending the TypeScript preset.                                                                                   |
+| [`packages/eslint-config-next`](./packages/eslint-config-next)           | Next.js ESLint config extending the TypeScript preset.                                                                                 |
+| [`packages/tsconfig`](./packages/tsconfig)                               | Shared TypeScript base configurations.                                                                                                 |
+| [`docs/`](./docs)                                                        | Troubleshooting and migration notes.                                                                                                   |
+| [`.github/workflows`](./.github/workflows)                               | CI for tests, lint, typecheck, shellcheck, markdown, and release automation.                                                           |
+
+Template and extension data is maintained in [`Create-Node-App/cna-templates`](https://github.com/Create-Node-App/cna-templates). This repo consumes that catalog remotely.
+
+---
+
+## Local Development
+
+```bash
 git clone https://github.com/Create-Node-App/create-node-app.git
 cd create-node-app
-
-# Set up Node version and install dependencies
 fnm use
 npm install
+npm run build
+```
 
-# Build the CLI
-npm run build -- --filter create-awesome-node-app
+Run the local CLI after building:
 
-# Run it locally
+```bash
 ./packages/create-awesome-node-app/index.js my-app
 ```
 
-### Usage Examples
+Run a non-interactive local smoke test:
 
-#### Catalog template by slug
-
-```sh
-# React + Vite
-npx create-awesome-node-app my-react-app -t react-vite-boilerplate
-
-# NestJS API
-npx create-awesome-node-app my-api -t nestjs-boilerplate
-
-# Next.js full-stack
-npx create-awesome-node-app my-next -t nextjs-starter
+```bash
+./packages/create-awesome-node-app/index.js smoke-app \
+  --template react-vite-boilerplate \
+  --addons tailwind-css \
+  --no-interactive \
+  --no-install
 ```
 
-#### Template + addons
+---
 
-```sh
-# React + Tailwind + Zustand
+## Development Workflow
+
+1. Read the relevant package README before changing code.
+2. Make the smallest correct change.
+3. Add or update tests when behavior changes.
+4. Run the targeted package checks first.
+5. Run broader repo checks before opening a PR.
+6. Update docs when commands, behavior, package metadata, or contribution paths change.
+
+For contribution requirements and project expectations, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+---
+
+## Common Tasks
+
+### Work On The CLI
+
+```bash
+npm run build -- --filter create-awesome-node-app
+npm run test -- --filter create-awesome-node-app
+npm run lint -- --filter create-awesome-node-app
+```
+
+Important files:
+
+- [`packages/create-awesome-node-app/src/index.ts`](./packages/create-awesome-node-app/src/index.ts) for CLI flags and execution flow.
+- [`packages/create-awesome-node-app/src/options.ts`](./packages/create-awesome-node-app/src/options.ts) for interactive and non-interactive option resolution.
+- [`packages/create-awesome-node-app/src/templates.ts`](./packages/create-awesome-node-app/src/templates.ts) for remote catalog loading.
+- [`packages/create-awesome-node-app/src/list.ts`](./packages/create-awesome-node-app/src/list.ts) for `--list-templates` and `--list-addons` output.
+
+### Work On The Scaffolding Core
+
+```bash
+npm run build -- --filter @create-node-app/core
+npm run test -- --filter @create-node-app/core
+npm run lint -- --filter @create-node-app/core
+```
+
+Important files:
+
+- [`packages/create-node-app-core/index.ts`](./packages/create-node-app-core/index.ts) for the main `createNodeApp` workflow.
+- [`packages/create-node-app-core/loaders.ts`](./packages/create-node-app-core/loaders.ts) for template file discovery and rendering.
+- [`packages/create-node-app-core/paths.ts`](./packages/create-node-app-core/paths.ts) for local, GitHub, and package path handling.
+- [`packages/create-node-app-core/installer.ts`](./packages/create-node-app-core/installer.ts) for install command behavior.
+
+### Work On Templates Or Addons
+
+Template and extension implementations live in [`Create-Node-App/cna-templates`](https://github.com/Create-Node-App/cna-templates), not in this monorepo.
+
+Use local `file://` URLs when developing templates or extensions before publishing them to the catalog:
+
+```bash
+npx create-awesome-node-app local-app \
+  --template file:///absolute/path/to/my-template \
+  --addons file:///absolute/path/to/my-extension \
+  --no-interactive
+```
+
+For a template inside a monorepo subdirectory:
+
+```bash
+npx create-awesome-node-app local-app \
+  --template "file:///absolute/path/to/catalog-repo?subdir=templates/my-starter" \
+  --no-interactive
+```
+
+---
+
+## Quality Checks
+
+| Command                 | What it validates                                          |
+| ----------------------- | ---------------------------------------------------------- |
+| `npm run build`         | Builds all packages through Turborepo.                     |
+| `npm run test`          | Runs package test tasks.                                   |
+| `npm run test:all`      | Runs all Node native test files under `packages/**/tests`. |
+| `npm run test:coverage` | Builds and runs coverage with c8.                          |
+| `npm run lint`          | Runs ESLint across packages.                               |
+| `npm run type-check`    | Runs TypeScript checks across packages.                    |
+| `npm run format`        | Formats supported files with Prettier.                     |
+
+Run targeted checks while iterating, then run the broader checks before requesting review.
+
+---
+
+## CLI Examples For Debugging
+
+### Catalog Template By Slug
+
+```bash
+npx create-awesome-node-app my-react-app --template react-vite-boilerplate
+npx create-awesome-node-app my-api --template nestjs-boilerplate
+npx create-awesome-node-app my-next --template nextjs-starter
+```
+
+### Template + Addons
+
+```bash
 npx create-awesome-node-app my-app \
-  -t react-vite-boilerplate \
+  --template react-vite-boilerplate \
   --addons tailwind-css zustand
 
-# NestJS + Drizzle + OpenAPI
 npx create-awesome-node-app my-api \
-  -t nestjs-boilerplate \
+  --template nestjs-boilerplate \
   --addons drizzle-orm-postgresql openapi
 ```
 
-#### Remote GitHub URLs
+### Remote GitHub URLs
 
-```sh
+```bash
 npx create-awesome-node-app my-app \
-  -t https://github.com/Create-Node-App/cna-templates/tree/main/templates/react-vite-starter \
+  --template https://github.com/Create-Node-App/cna-templates/tree/main/templates/react-vite-starter \
   --addons https://github.com/Create-Node-App/cna-templates/tree/main/extensions/react-query
 ```
 
-#### Local `file://` templates (useful when developing new templates)
+### Layer Extra Extensions With `--extend`
 
-```sh
-# Basic local template
-npx create-awesome-node-app local-app \
-  -t file:///absolute/path/to/my-template
-
-# Local template with subdirectory
-npx create-awesome-node-app local-app \
-  -t "file:///absolute/path/to/monorepo?subdir=templates/my-starter"
-
-# Combine local template + local extension
-npx create-awesome-node-app local-app \
-  -t file:///absolute/path/to/my-template \
-  --addons file:///absolute/path/to/my-extension
-```
-
-#### Layer extra extensions with `--extend`
-
-```sh
+```bash
 npx create-awesome-node-app layered-app \
-  -t react-vite-boilerplate \
+  --template react-vite-boilerplate \
   --addons tailwind-css \
   --extend https://github.com/Create-Node-App/cna-templates/tree/main/extensions/react-hook-form
 ```
 
-#### Debug with `--verbose`
+### Inspect Runtime Configuration
 
-```sh
-npx create-awesome-node-app debug-app -t react-vite-boilerplate --verbose
+```bash
+npx create-awesome-node-app debug-app \
+  --template react-vite-boilerplate \
+  --verbose
 ```
 
 ---
 
-### Template Catalog Reference (Excerpt)
+## Catalog Snapshot
 
-| Slug                              | Description                          |
-| --------------------------------- | ------------------------------------ |
-| `react-vite-boilerplate`          | React + Vite + TypeScript + Router   |
-| `nextjs-starter`                  | Production-ready Next.js starter     |
-| `nestjs-boilerplate`              | Scalable NestJS backend              |
-| `turborepo-boilerplate`           | Monorepo with Turborepo + Changesets |
-| `web-extension-react-boilerplate` | React WebExtension with Vite         |
-| `webdriverio-boilerplate`         | WebdriverIO E2E testing setup        |
+The live catalog changes over time. Use the website or CLI listing commands for the current source of truth.
 
-Full catalog: **[create-awesome-node-app.vercel.app/templates](https://create-awesome-node-app.vercel.app/templates)**
+```bash
+npx create-awesome-node-app --list-templates
+npx create-awesome-node-app --template react-vite-boilerplate --list-addons
+```
 
----
+Common template slugs:
 
-### Popular Extensions (React)
+| Slug                              | Description                                                                                           |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `react-vite-boilerplate`          | React + Vite + TypeScript starter.                                                                    |
+| `nextjs-starter`                  | Production-ready Next.js starter.                                                                     |
+| `nextjs-saas-ai-starter`          | Multi-tenant SaaS starter with AI, Auth.js, Drizzle, PostgreSQL, Tailwind, shadcn/ui, RBAC, and i18n. |
+| `nestjs-boilerplate`              | Scalable NestJS backend.                                                                              |
+| `hono-starter`                    | Lightweight Hono API starter.                                                                         |
+| `astro-starter`                   | Astro site starter for content-focused apps.                                                          |
+| `remix-starter`                   | React Router v7 / Remix-style full-stack starter.                                                     |
+| `turborepo-boilerplate`           | Monorepo with Turborepo and Changesets.                                                               |
+| `web-extension-react-boilerplate` | React WebExtension with Vite.                                                                         |
+| `webdriverio-boilerplate`         | WebdriverIO E2E testing setup.                                                                        |
 
-| Slug           | Purpose                               |
-| -------------- | ------------------------------------- |
-| `tailwind-css` | Tailwind CSS utility-first styling    |
-| `zustand`      | Lightweight state management          |
-| `react-query`  | Async server state (TanStack Query)   |
-| `shadcn-ui`    | Radix + Tailwind component primitives |
-| `material-ui`  | MUI component library                 |
-| `react-i18n`   | Internationalization setup            |
+Common addon slugs:
 
----
-
-## 📋 Available Scripts
-
-| `npm run <script>` | Description                                   |
-| ------------------ | --------------------------------------------- |
-| `test`             | Run unit tests with Node's native test runner |
-| `lint`             | Lint the project with ESLint                  |
-| `lint:fix`         | Lint and auto-fix correctable errors          |
-| `format`           | Format with Prettier                          |
-| `type-check`       | TypeScript type checking across all packages  |
-| `build`            | Build all packages with Turborepo             |
-
-> Coverage badge is generated locally via c8 + lcov when running `npm run test:coverage`.
+| Category       | Examples                                                                         |
+| -------------- | -------------------------------------------------------------------------------- |
+| UI             | `tailwind-css`, `material-ui`, `shadcn-ui`, `nextjs-shadcn`                      |
+| State and data | `zustand`, `jotai`, `tanstack-react-query`, `apollo-client`                      |
+| Backend and DB | `drizzle-orm-postgresql`, `drizzle-orm-sqlite`, `mongoose-orm-mongodb`           |
+| Testing        | `react-playwright`, `vitest-react-testing-library`, `jest-react-testing-library` |
+| Tooling        | `github-setup`, `husky-lint-staged`, `development-container`, `storybook`        |
 
 ---
 
-## 🤝 Contributing
+## Release And Publishing Notes
 
-Contributions make the open-source community an amazing place to learn, inspire, and create. Any contributions are **truly appreciated**!
+Packages are published from this monorepo. Before publishing, make sure package-level READMEs, changelogs, builds, tests, and package metadata are aligned.
 
-- Check out the [contribution guidelines](./CONTRIBUTING.md) for how to get started
-- Browse [open issues](https://github.com/Create-Node-App/create-node-app/issues) for things to work on
-- For template and extension contributions, see [cna-templates](https://github.com/Create-Node-App/cna-templates)
+Useful package docs:
+
+- [`packages/create-awesome-node-app/README.md`](./packages/create-awesome-node-app/README.md)
+- [`packages/create-node-app-core/README.md`](./packages/create-node-app-core/README.md)
+- [`packages/README.md`](./packages/README.md)
+- [`packages/create-awesome-node-app/CHANGELOG.md`](./packages/create-awesome-node-app/CHANGELOG.md)
+
+---
+
+## Contributing
+
+Contributions are welcome across docs, CLI behavior, tests, package configuration, shared configs, and developer experience.
+
+Good first steps:
+
+- Read [CONTRIBUTING.md](./CONTRIBUTING.md).
+- Check [open issues](https://github.com/Create-Node-App/create-node-app/issues).
+- Use [Troubleshooting](./docs/TROUBLESHOOTING.md) when local generation fails.
+- Open template or addon changes in [`Create-Node-App/cna-templates`](https://github.com/Create-Node-App/cna-templates).
+
+When opening a PR, include what changed, how you validated it, and whether docs/package metadata were updated.
+
+---
+
+## License
+
+MIT © [Create Node App Contributors](https://github.com/Create-Node-App/create-node-app/graphs/contributors)
 
 ---
 
 <div align="center">
 
-**[🌐 create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)**
+**[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)**
+
+_Build starters quickly. Understand the repo quickly. Contribute confidently._
 
 </div>
 
