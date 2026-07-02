@@ -85,11 +85,11 @@
   },
   "devDependencies": {
     "@create-node-app/core": "^0.6.4",
-    "@types/node": "^26.0.1",
+    "@types/node": "^26.1.0",
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.5.8",
     "eslint": "^9.35.0",
-    "nock": "^14.0.15",
+    "nock": "^14.0.16",
     "tsup": "^8.5.1",
     "tsx": "^4.22.4"
   }
