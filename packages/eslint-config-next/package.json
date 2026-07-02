@@ -10,9 +10,9 @@
     "test": "echo 'no tests'"
   },
   "dependencies": {
-    "eslint": "^9.35.0",
+    "eslint": "^10.6.0",
     "@create-node-app/eslint-config-ts": "*",
-    "eslint-config-next": "^15.5.3"
+    "eslint-config-next": "^16.2.10"
   },
   "publishConfig": {
     "access": "public",
