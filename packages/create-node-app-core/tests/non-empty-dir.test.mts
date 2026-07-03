@@ -25,6 +25,18 @@ test("assertDirectoryIsEmpty allows empty directory", () => {
   rmSync(tmp, { recursive: true, force: true });
 });
 
+test("assertDirectoryIsEmpty ignores noise files", () => {
+  const tmp = mkdtempSync(path.join(tmpdir(), "cna-noise-"));
+  const noiseDir = path.join(tmp, "noise");
+  mkdirSync(noiseDir, { recursive: true });
+  writeFileSync(path.join(noiseDir, ".DS_Store"), "");
+  writeFileSync(path.join(noiseDir, "Thumbs.db"), "");
+
+  assert.doesNotThrow(() => assertDirectoryIsEmpty(noiseDir));
+
+  rmSync(tmp, { recursive: true, force: true });
+});
+
 test("assertDirectoryIsEmpty throws on non-empty directory", () => {
   const tmp = mkdtempSync(path.join(tmpdir(), "cna-non-empty-"));
   const nonEmptyDir = path.join(tmp, "target");
