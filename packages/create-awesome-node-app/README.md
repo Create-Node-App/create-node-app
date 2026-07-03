@@ -269,6 +269,7 @@ Usage: create-awesome-node-app [project-directory] [options]
 | `--extend [urls...]`         | Extra extension URLs layered on top                   |
 | `--set <key=value...>`       | Set custom template options; quote values with spaces |
 | `--no-install`               | Generate files without installing dependencies        |
+| `-f, --force`                | Allow scaffolding into a non-empty target directory   |
 | `--use-yarn`                 | Use yarn instead of npm, pnpm, or Bun                 |
 | `--use-pnpm`                 | Use pnpm instead of npm, yarn, or Bun                 |
 | `--use-bun`                  | Use Bun instead of npm, yarn, or pnpm                 |
