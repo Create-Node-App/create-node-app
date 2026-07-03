@@ -17,7 +17,7 @@ Use the [GitHub issue tracker](https://github.com/Create-Node-App/create-node-ap
 Before filing, please:
 
 - Check open/recently closed issues to avoid duplicates
-- Use the [bug report template](./.github/ISSUE_TEMPLATE/bug_report.md)
+- Use the [bug report template](./.github/ISSUE_TEMPLATE/bug-report.yml)
 
 Include as much detail as possible:
 
@@ -30,7 +30,7 @@ Include as much detail as possible:
 
 ## 💡 Suggesting Features
 
-We love good ideas! Use the [feature request template](./.github/ISSUE_TEMPLATE/feature_request.md) on GitHub Issues.
+We love good ideas! Use the [feature request template](./.github/ISSUE_TEMPLATE/feature-request.yml) on GitHub Issues.
 
 Describe the problem you're solving and the solution you have in mind — the more context, the better.
 
