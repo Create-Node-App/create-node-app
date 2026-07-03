@@ -14,6 +14,33 @@ export type CnaConfig = {
   customOptions?: CnaCustomOption[];
 };
 
+export const NON_EMPTY_DIR_ERROR_CODE = "CNA_NON_EMPTY_TARGET_DIR";
+
+export class NonEmptyTargetDirectoryError extends Error {
+  readonly code = NON_EMPTY_DIR_ERROR_CODE;
+
+  constructor(readonly targetPath: string) {
+    super(
+      `Target directory is not empty: ${targetPath}. Use --force to continue.`,
+    );
+    this.name = "NonEmptyTargetDirectoryError";
+  }
+}
+
+export const assertDirectoryIsEmpty = (dirPath: string) => {
+  if (!fs.existsSync(dirPath)) {
+    return;
+  }
+
+  const entries = fs
+    .readdirSync(dirPath)
+    .filter((entry) => entry !== ".DS_Store" && entry !== "Thumbs.db");
+
+  if (entries.length > 0) {
+    throw new NonEmptyTargetDirectoryError(dirPath);
+  }
+};
+
 /**
  * Load cna.config.json from the base directory of a template.
  *

@@ -14,6 +14,11 @@ export {
 export { downloadRepository } from "./git.js";
 export { loadTemplateCnaConfig } from "./config.js";
 export type { CnaConfig, CnaCustomOption } from "./config.js";
+export {
+  assertDirectoryIsEmpty,
+  NonEmptyTargetDirectoryError,
+  NON_EMPTY_DIR_ERROR_CODE,
+} from "./config.js";
 
 export const checkNodeVersion = (
   requiredVersion: string,
@@ -81,6 +86,7 @@ export type CnaOptions = {
   projectName: string;
   info?: boolean;
   verbose?: boolean;
+  force?: boolean;
   packageManager?: string;
   install?: boolean;
   template?: string;

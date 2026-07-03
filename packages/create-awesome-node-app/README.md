@@ -46,7 +46,7 @@ npx create-awesome-node-app my-app \
 ```
 
 | If you want...                | Start here                                        |
-| ----------------------------- | ------------------------------------------------- |
+|-------------------------------|---------------------------------------------------|
 | A guided local setup          | `npm create awesome-node-app@latest my-app`       |
 | A repeatable CI/platform flow | `--no-interactive` with explicit flags            |
 | Your company starter          | `--template <github-url>` or `--template file://` |
@@ -56,11 +56,11 @@ npx create-awesome-node-app my-app \
 
 ## ✨ Why CNA?
 
-| Capability                       | Value                                                                                                 |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| 🧩 **Composable by design**      | Start with a template, then layer only the addons your project actually needs.                        |
+| Capability                        | Value                                                                                                 |
+|-----------------------------------|-------------------------------------------------------------------------------------------------------|
+| 🧩 **Composable by design**       | Start with a template, then layer only the addons your project actually needs.                        |
 | 🛡️ **Production-ready defaults** | TypeScript, linting, scripts, testing paths, and practical DX defaults out of the box.                |
-| 🤖 **AI-ready from day one**     | Supported templates generate `AGENTS.md` so coding agents understand the project context.             |
+| 🤖 **AI-ready from day one**      | Supported templates generate `AGENTS.md` so coding agents understand the project context.             |
 | 🏗️ **CI and platform friendly**  | Use `--no-interactive`, `--set`, `--template <url>`, and `--extend <url>` for repeatable scaffolding. |
 
 ---
@@ -80,7 +80,7 @@ You can mix catalog templates and addons with your own GitHub or `file://` sourc
 ### 🧱 Template Families
 
 | Category      | Example templates                                           |
-| ------------- | ----------------------------------------------------------- |
+|---------------|-------------------------------------------------------------|
 | Frontend      | `react-vite-boilerplate`, `astro-starter`                   |
 | Backend       | `nestjs-boilerplate`, `hono-starter`                        |
 | Full Stack    | `nextjs-starter`, `nextjs-saas-ai-starter`, `remix-starter` |
@@ -91,7 +91,7 @@ You can mix catalog templates and addons with your own GitHub or `file://` sourc
 ### 🧰 Addon Families
 
 | Category                  | Examples                                                                  |
-| ------------------------- | ------------------------------------------------------------------------- |
+|---------------------------|---------------------------------------------------------------------------|
 | UI                        | `tailwind-css`, `material-ui`, `shadcn-ui`, `nextjs-shadcn`               |
 | State and data            | `zustand`, `jotai`, `tanstack-react-query`, `apollo-client`               |
 | Backend and DB            | `drizzle-orm-postgresql`, `drizzle-orm-sqlite`, `mongoose-orm-mongodb`    |
@@ -215,7 +215,7 @@ Full catalog:
 Supported templates can generate an `AGENTS.md` file so coding assistants understand project context before editing:
 
 | Context                | Why it matters                                              |
-| ---------------------- | ----------------------------------------------------------- |
+|------------------------|-------------------------------------------------------------|
 | Project purpose        | Agents understand what the app is for before changing code. |
 | Directory layout       | Suggestions align with the real structure.                  |
 | Scripts and validation | Agents know how to lint, test, build, and verify changes.   |
@@ -230,7 +230,7 @@ Learn more: **[AGENTS.md guide](https://create-awesome-node-app.vercel.app/docs/
 Run the CLI without flags and CNA guides you through:
 
 | Step              | What you choose                                                            |
-| ----------------- | -------------------------------------------------------------------------- |
+|-------------------|----------------------------------------------------------------------------|
 | Project name      | Confirm or set the target directory                                        |
 | Package manager   | npm, yarn, pnpm, or Bun                                                    |
 | Category          | Frontend, Backend, Full Stack, Monorepo, Web Extension, UAT, or custom URL |
@@ -261,7 +261,7 @@ Usage: create-awesome-node-app [project-directory] [options]
 ```
 
 | Flag                         | Description                                           |
-| ---------------------------- | ----------------------------------------------------- |
+|------------------------------|-------------------------------------------------------|
 | `--interactive`              | Force interactive wizard (default outside CI)         |
 | `--no-interactive`           | Disable wizard and use flags only                     |
 | `-t, --template <slug\|url>` | Template slug from catalog or remote/local URL        |
@@ -269,6 +269,7 @@ Usage: create-awesome-node-app [project-directory] [options]
 | `--extend [urls...]`         | Extra extension URLs layered on top                   |
 | `--set <key=value...>`       | Set custom template options; quote values with spaces |
 | `--no-install`               | Generate files without installing dependencies        |
+| `-f, --force`                | Allow scaffolding into a non-empty target directory   |
 | `--use-yarn`                 | Use yarn instead of npm, pnpm, or Bun                 |
 | `--use-pnpm`                 | Use pnpm instead of npm, yarn, or Bun                 |
 | `--use-bun`                  | Use Bun instead of npm, yarn, or pnpm                 |

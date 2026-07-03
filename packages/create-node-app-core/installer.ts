@@ -22,6 +22,7 @@ import { loadPackages } from "./package.js";
 import type { TemplateOrExtension } from "./loaders.js";
 import { loadFiles } from "./loaders.js";
 import { resolveExecutable } from "./executable.js";
+import { assertDirectoryIsEmpty } from "./config.js";
 
 const install = async (
   root: string,
@@ -399,6 +400,7 @@ const run = async ({
 export type CreateAppOptions = {
   name: string;
   verbose?: boolean;
+  force?: boolean;
   packageManager?: string;
   templatesOrExtensions?: TemplateOrExtension[];
   installDependencies?: boolean;
@@ -410,6 +412,7 @@ export type CreateAppOptions = {
 export const createApp = async ({
   name,
   verbose = false,
+  force = false,
   templatesOrExtensions = [],
   installDependencies = true,
   ignorePackage = false,
@@ -421,6 +424,10 @@ export const createApp = async ({
   fs.mkdirSync(name, {
     recursive: true,
   });
+
+  if (!force) {
+    assertDirectoryIsEmpty(root);
+  }
 
   console.log(`Creating a new Node app in ${pc.green(root)}.`);
   console.log();

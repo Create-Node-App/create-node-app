@@ -5,6 +5,7 @@ import {
   createNodeApp,
   checkForLatestVersion,
   checkNodeVersion,
+  NON_EMPTY_DIR_ERROR_CODE,
   type TemplateOrExtension,
 } from "@create-node-app/core";
 import { getCnaOptions } from "./options.js";
@@ -49,6 +50,7 @@ const main = async () => {
     .option("--use-yarn", "use yarn instead of npm or pnpm or bun")
     .option("--use-pnpm", "use pnpm instead of yarn, npm, or bun")
     .option("--use-bun", "use bun instead of npm, yarn, or pnpm")
+    .option("-f, --force", "allow scaffolding into a non-empty directory")
     .option(
       "--interactive",
       "force interactive mode (default outside CI unless --no-interactive)",
@@ -134,6 +136,17 @@ const main = async () => {
 
 main().catch((err) => {
   const verbose = Boolean(program.opts()?.verbose);
+
+  if (
+    typeof err === "object" &&
+    err !== null &&
+    "code" in err &&
+    (err as { code?: string }).code === NON_EMPTY_DIR_ERROR_CODE
+  ) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(pc.red(message));
+    process.exit(1);
+  }
 
   if (err instanceof Error) {
     console.error(pc.red(err.message));
