@@ -97,8 +97,23 @@ const install = async (
       stdio: "inherit",
     });
   } catch {
-    throw new Error(`${command} ${args.join(" ")}`);
+    throw new Error(buildInstallFailureMessage(command, args, usePnpm));
   }
+};
+
+export const buildInstallFailureMessage = (
+  command: string,
+  args: string[],
+  usePnpm = false,
+) => {
+  if (usePnpm) {
+    return (
+      `${command} ${args.join(" ")}\n` +
+      "If pnpm reports ERR_PNPM_IGNORED_BUILDS, run `pnpm approve-builds` inside the generated project and retry your install command."
+    );
+  }
+
+  return `${command} ${args.join(" ")}`;
 };
 
 export type RunOptions = {
