@@ -133,6 +133,15 @@ const main = async () => {
 };
 
 main().catch((err) => {
-  console.error(err);
+  const verbose = Boolean(program.opts()?.verbose);
+
+  if (err instanceof Error) {
+    console.error(pc.red(err.message));
+    if (verbose && err.stack) {
+      console.error(err.stack);
+    }
+  } else {
+    console.error(err);
+  }
   process.exit(1);
 });
