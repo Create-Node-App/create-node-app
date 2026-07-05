@@ -38,7 +38,7 @@
 
 - d00fa9f: fix(ci): enable npm Trusted Publishing with provenance
 
-  Configures the publish workflow to use npm Trusted Publishing (OIDC) by removing the legacy registry-url setup and enabling `--provenance` on `changeset publish`. Also switches `.changeset/config.json` access from `restricted` to `public` soscoped packages can be published via OIDC.
+  Configures the publish workflow to use npm Trusted Publishing (OIDC) by removing the legacy registry-url setup and enabling `--provenance` on `changeset publish`. Also switches `.changeset/config.json` access from `restricted` to `public` so scoped packages can be published via OIDC.
 
 ## 0.6.5
 
