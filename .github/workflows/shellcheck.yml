@@ -25,6 +25,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@1.1.0
+        uses: ludeeus/action-shellcheck@2.0.0
         with:
           severity: error
