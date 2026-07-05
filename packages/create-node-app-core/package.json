@@ -18,6 +18,10 @@
     "node": ">=22.0.0"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Create-Node-App/create-node-app.git"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/",

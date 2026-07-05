@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Create-Node-App/create-node-app.git"
+    "url": "https://github.com/Create-Node-App/create-node-app.git"
   },
   "bugs": {
     "url": "https://github.com/Create-Node-App/create-node-app/issues"

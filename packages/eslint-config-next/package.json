@@ -3,6 +3,10 @@
   "version": "0.2.7",
   "main": "index.js",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Create-Node-App/create-node-app.git"
+  },
   "files": [
     "index.js"
   ],
