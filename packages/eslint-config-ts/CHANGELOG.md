@@ -1,5 +1,16 @@
 # @create-node-app/eslint-config-ts
 
+## 0.2.8
+
+### Patch Changes
+
+- 8264781: fix(packages): add repository.url to all publishable package.json files
+
+  The npm Trusted Publishing provenance check requires package.json repository.url to match the GitHub repository exactly. Adds the missing repository field to all scoped packages and normalizes create-awesome-node-app's URL to the bare HTTPS form.
+
+- Updated dependencies [8264781]
+  - @create-node-app/eslint-config@0.2.8
+
 ## 0.2.7
 
 ### Patch Changes
