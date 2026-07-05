@@ -1,5 +1,16 @@
 # create-awesome-node-app
 
+## 0.9.9
+
+### Patch Changes
+
+- 8264781: fix(packages): add repository.url to all publishable package.json files
+
+  The npm Trusted Publishing provenance check requires package.json repository.url to match the GitHub repository exactly. Adds the missing repository field to all scoped packages and normalizes create-awesome-node-app's URL to the bare HTTPS form.
+
+- Updated dependencies [8264781]
+  - @create-node-app/core@0.6.10
+
 ## 0.9.8
 
 ### Patch Changes
