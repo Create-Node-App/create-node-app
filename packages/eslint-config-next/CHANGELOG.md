@@ -1,5 +1,16 @@
 # @create-node-app/eslint-config-next
 
+## 0.2.5
+
+### Patch Changes
+
+- 8f5de37: fix(ci): exchange GitHub OIDC token for npm access token
+
+  Adds the explicit OIDC-to-npm token exchange required by npm Trusted Publishing. npm does not perform this exchange automatically from `NPM_CONFIG_PROVENANCE` alone; we call the npm `/security/oidc-token` endpoint with the GitHub id-token and use the returned short-lived access token for publish.
+
+- Updated dependencies [8f5de37]
+  - @create-node-app/eslint-config-ts@0.2.5
+
 ## 0.2.4
 
 ### Patch Changes
