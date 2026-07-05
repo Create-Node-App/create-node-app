@@ -1,5 +1,13 @@
 # create-awesome-node-app
 
+## 0.9.4
+
+### Patch Changes
+
+- 7783da4: fix(ci): switch to npm trusted publishing via OIDC with protected npm-publish environment
+- Updated dependencies [7783da4]
+  - @create-node-app/core@0.6.5
+
 ## 0.9.3
 
 ### Patch Changes

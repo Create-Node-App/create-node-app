@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.6.5
+
+### Patch Changes
+
+- 7783da4: fix(ci): switch to npm trusted publishing via OIDC with protected npm-publish environment
+
 ## 0.6.4
 
 ### Patch Changes

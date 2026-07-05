@@ -1,5 +1,11 @@
 # @create-node-app/eslint-config
 
+## 0.2.3
+
+### Patch Changes
+
+- 7783da4: fix(ci): switch to npm trusted publishing via OIDC with protected npm-publish environment
+
 ## 0.2.2
 
 ### Patch Changes
