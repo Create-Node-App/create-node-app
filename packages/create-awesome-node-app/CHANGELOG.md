@@ -1,5 +1,16 @@
 # create-awesome-node-app
 
+## 0.9.7
+
+### Patch Changes
+
+- f03b4c5: fix(ci): use correct OIDC audience and add exchange diagnostics
+
+  Adds `audience=registry.npmjs.org` to the GitHub id-token request, validates the npm access token is non-empty, and prints the npm error response on failure instead of silently falling through with an empty token.
+
+- Updated dependencies [f03b4c5]
+  - @create-node-app/core@0.6.8
+
 ## 0.9.6
 
 ### Patch Changes
