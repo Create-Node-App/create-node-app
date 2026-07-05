@@ -1,5 +1,16 @@
 # @create-node-app/eslint-config-ts
 
+## 0.2.4
+
+### Patch Changes
+
+- d00fa9f: fix(ci): enable npm Trusted Publishing with provenance
+
+  Configures the publish workflow to use npm Trusted Publishing (OIDC) by removing the legacy registry-url setup and enabling `--provenance` on `changeset publish`. Also switches `.changeset/config.json` access from `restricted` to `public` soscoped packages can be published via OIDC.
+
+- Updated dependencies [d00fa9f]
+  - @create-node-app/eslint-config@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes
