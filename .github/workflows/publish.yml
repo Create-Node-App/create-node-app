@@ -60,8 +60,15 @@ jobs:
       - name: Exchange GitHub OIDC token for npm access token
         id: npm-token
         run: |
-          GH_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value')
-          NPM_TOKEN=$(curl -sS -X POST -H "Content-Type: application/json" -d "{\"token\":\"$GH_TOKEN\"}" https://registry.npmjs.org/-/npm/v1/security/oidc-token | jq -r '.token')
+          set -euo pipefail
+          GH_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=registry.npmjs.org" | jq -r '.value')
+          NPM_RESPONSE=$(curl -sS -X POST -H "Content-Type: application/json" -d "{\"token\":\"$GH_TOKEN\"}" https://registry.npmjs.org/-/npm/v1/security/oidc-token)
+          NPM_TOKEN=$(echo "$NPM_RESPONSE" | jq -r '.token // empty')
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "OIDC token exchange failed" >&2
+            echo "$NPM_RESPONSE" | jq -c . >&2 || echo "$NPM_RESPONSE" >&2
+            exit 1
+          fi
           echo "::add-mask::$NPM_TOKEN"
           echo "npm-token=$NPM_TOKEN" >> "$GITHUB_OUTPUT"
 
