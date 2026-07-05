@@ -13,7 +13,7 @@
     "lint:fix": "turbo run lint:fix",
     "lint-staged": "lint-staged",
     "prepare": "is-ci || husky",
-    "publish-packages": "turbo run lint && changeset version && turbo run build && changeset publish --provenance",
+    "publish-packages": "turbo run lint && changeset version && turbo run build && changeset publish",
     "storybook": "turbo run storybook",
     "test": "turbo run test",
     "test:all": "tsx --test \"packages/**/tests/**/*.test.mts\"",
