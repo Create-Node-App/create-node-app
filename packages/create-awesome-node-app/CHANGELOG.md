@@ -1,5 +1,16 @@
 # create-awesome-node-app
 
+## 0.9.8
+
+### Patch Changes
+
+- 226af9c: fix(ci): rely on npm CLI OIDC auto-detection for trusted publishing
+
+  Removes the manual OIDC token exchange because npm CLI >= 11.5.1 automatically detects GitHub Actions OIDC and authenticates during `npm publish`. Drops `NODE_AUTH_TOKEN` and `NPM_CONFIG_PROVENANCE` overrides so the CLI can manage both auth and provenance by itself.
+
+- Updated dependencies [226af9c]
+  - @create-node-app/core@0.6.9
+
 ## 0.9.7
 
 ### Patch Changes
