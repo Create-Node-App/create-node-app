@@ -5,21 +5,46 @@ on:
     branches:
       - main
 
-permissions:
-  id-token: write
-  contents: write
-  packages: write
-  pull-requests: write
-  issues: read
-
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  release:
-    name: Release
+  release-pr:
+    name: Create Release Pull Request
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: read
+    outputs:
+      hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Create Release Pull Request
+        id: changesets
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish:
+    name: Publish to npm
+    needs: release-pr
+    if: needs.release-pr.outputs.hasChangesets == 'false'
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    permissions:
+      id-token: write # Required for OIDC trusted publishing
+      contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -30,18 +55,7 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
           scope: "@create-node-app"
           cache: npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Install dependencies
         run: npm ci
-      - name: Create Release Pull Request
-        id: changesets
-        uses: changesets/action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish
-        if: steps.changesets.outputs.hasChangesets == 'false'
+      - name: Publish packages
         run: npm run publish-packages
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
