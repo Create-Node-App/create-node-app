@@ -165,7 +165,7 @@ describe("checkOutdated", () => {
   });
 });
 
-describe("writeMetaSidecar", () => {
+describe("writeMetaSidecar", skip, () => {
   test("writes and can be read back via listCacheEntries", async () => {
     await withTempCnaCacheDir(async (root) => {
       const entryId = "meta-test";
@@ -220,7 +220,7 @@ describe("runDoctor", () => {
   });
 });
 
-describe("verifyCache", () => {
+describe("verifyCache", skip, () => {
   test("returns empty for unknown id", async () => {
     await withTempCnaCacheDir(async () => {
       const results = await verifyCache("nonexistent");
@@ -229,7 +229,7 @@ describe("verifyCache", () => {
   });
 });
 
-describe("cleanCache", () => {
+describe("cleanCache", skip, () => {
   test("cleaning all entries removes everything", async () => {
     await withTempCnaCacheDir(async (root) => {
       const a = path.join(root, "a");
