@@ -55,12 +55,12 @@ ls <cache>/<template-id>/
 
 The CLI makes the following outbound HTTP calls:
 
-| Call | Purpose | Timeout | User-Agent |
-|------|---------|---------|------------|
-| `registry.npmjs.org` | Version check (`dist-tags`) | 10 s | `create-node-app-core/<version>` |
-| `raw.githubusercontent.com` | Template catalog `templates.json` | 10 s | `create-awesome-node-app/<version>` |
-| `github.com` | Template clone (via `git`) | (git default) | `git/` (system `user-agent`) |
-| Various (via `npm install`) | Dependency install | (npm default) | `npm/` (system `user-agent`) |
+| Call                        | Purpose                           | Timeout       | User-Agent                          |
+|-----------------------------|-----------------------------------|---------------|-------------------------------------|
+| `registry.npmjs.org`        | Version check (`dist-tags`)       | 10 s          | `create-node-app-core/<version>`    |
+| `raw.githubusercontent.com` | Template catalog `templates.json` | 10 s          | `create-awesome-node-app/<version>` |
+| `github.com`                | Template clone (via `git`)        | (git default) | `git/` (system `user-agent`)        |
+| Various (via `npm install`) | Dependency install                | (npm default) | `npm/` (system `user-agent`)        |
 
 ## Reporting a Vulnerability
 
