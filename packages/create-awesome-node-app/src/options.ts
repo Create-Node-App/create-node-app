@@ -1,5 +1,6 @@
 import type { CnaOptions, TemplateOrExtension } from "@create-node-app/core";
-import { loadTemplateCnaConfig } from "@create-node-app/core";
+import { loadTemplateCnaConfig, ConfigParseError } from "@create-node-app/core";
+import pc from "picocolors";
 import { isCI } from "ci-info";
 import prompts from "prompts";
 import type { TemplateData } from "./templates.js";
@@ -76,12 +77,20 @@ const processNonInteractiveOptions = async (
   // Its initial values take priority over registry customOptions but are
   // overridden by explicit --set flags.
   if (resolvedTemplateUrl) {
-    const cnaConfig = await loadTemplateCnaConfig(resolvedTemplateUrl);
-    if (cnaConfig?.customOptions) {
-      for (const opt of cnaConfig.customOptions) {
-        if (opt.name && opt.initial !== undefined) {
-          options[opt.name as string] = opt.initial;
+    try {
+      const cnaConfig = await loadTemplateCnaConfig(resolvedTemplateUrl);
+      if (cnaConfig?.customOptions) {
+        for (const opt of cnaConfig.customOptions) {
+          if (opt.name && opt.initial !== undefined) {
+            options[opt.name as string] = opt.initial;
+          }
         }
+      }
+    } catch (err) {
+      if (err instanceof ConfigParseError) {
+        console.warn(pc.yellow(`Warning: ${err.message}`));
+      } else {
+        throw err;
       }
     }
   }
@@ -258,7 +267,15 @@ const processInteractiveOptions = async (
   // Load cna.config.json from the selected template — takes priority over registry
   // customOptions. Falls back to registry if not found (backward compat).
   const cnaConfig = templateTemplateOrExtension
-    ? await loadTemplateCnaConfig(templateTemplateOrExtension)
+    ? await loadTemplateCnaConfig(templateTemplateOrExtension).catch(
+        (err: unknown) => {
+          if (err instanceof ConfigParseError) {
+            console.warn(pc.yellow(`Warning: ${err.message}`));
+            return null;
+          }
+          throw err;
+        },
+      )
     : null;
 
   // Extract --set overrides to pre-fill prompts; removed from options before returning

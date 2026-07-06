@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { getTemplateBaseDirPath } from "./paths.js";
+import { ConfigParseError } from "./errors.js";
 
 export type CnaCustomOption = {
   name: string;
@@ -58,16 +59,16 @@ export const assertDirectoryIsEmpty = (dirPath: string) => {
 export const loadTemplateCnaConfig = async (
   templateUrl: string,
 ): Promise<CnaConfig | null> => {
+  const basePath = await getTemplateBaseDirPath(templateUrl);
+  if (!basePath) return null;
+
+  const configPath = path.join(basePath, "cna.config.json");
+  if (!fs.existsSync(configPath)) return null;
+
+  const content = fs.readFileSync(configPath, "utf8");
   try {
-    const basePath = await getTemplateBaseDirPath(templateUrl);
-    if (!basePath) return null;
-
-    const configPath = path.join(basePath, "cna.config.json");
-    if (!fs.existsSync(configPath)) return null;
-
-    const content = fs.readFileSync(configPath, "utf8");
     return JSON.parse(content) as CnaConfig;
-  } catch {
-    return null;
+  } catch (err) {
+    throw new ConfigParseError(configPath, err);
   }
 };
