@@ -1,11 +1,16 @@
 import pc from "picocolors";
 import {
+  checkOutdated,
   cleanCache,
   getCacheRoot,
   listCacheEntries,
+  runDoctor,
   verifyCache,
+  writeMetaSidecar,
+  type RemoteTipResult,
 } from "./cache.js";
 import { getCatalogCacheFilePath } from "./templates.js";
+import { simpleGit } from "simple-git";
 import { existsSync, rmSync } from "fs";
 
 const formatBytes = (bytes: number): string => {
@@ -134,4 +139,93 @@ export const cacheVerify = async (id?: string): Promise<number> => {
     return 1;
   }
   return 0;
+};
+
+const renderOutdatedRow = (r: RemoteTipResult, idWidth: number): void => {
+  if (r.error) {
+    console.log(
+      `${pc.dim("?")} ${pc.cyan(r.id.padEnd(idWidth))}  ${pc.dim(r.error)}`,
+    );
+    return;
+  }
+  const icon = r.behind ? pc.yellow("▼") : pc.green("✓");
+  const local = r.localSha ? r.localSha.slice(0, 7) : pc.dim("—");
+  const remote = r.remoteSha ? r.remoteSha.slice(0, 7) : pc.dim("—");
+  console.log(
+    `${icon} ${pc.cyan(r.id.padEnd(idWidth))}  local=${local}  remote=${remote}`,
+  );
+};
+
+export const cacheOutdated = async (): Promise<void> => {
+  const results = await checkOutdated();
+  if (results.length === 0) {
+    console.log(pc.dim("No cached entries to check."));
+    return;
+  }
+  const idWidth = Math.max(2, ...results.map((r) => r.id.length));
+  for (const r of results) {
+    renderOutdatedRow(r, idWidth);
+  }
+  const behind = results.filter((r) => r.behind).length;
+  if (behind > 0) {
+    console.log(
+      pc.yellow(`\n${behind} entr${behind === 1 ? "y is" : "ies are"} behind remote. Run 'cna cache update [id]' to refresh.`),
+    );
+  }
+};
+
+export const cacheUpdate = async (id?: string): Promise<number> => {
+  const entries = await listCacheEntries();
+  const target = id ? entries.filter((e) => e.id === id) : entries;
+  if (target.length === 0) {
+    console.log(pc.dim(`No cached entr${id ? `y matching '${id}'` : "ies"} found.`));
+    return 0;
+  }
+  let ok = true;
+  for (const entry of target) {
+    if (!entry.url || !entry.branch) {
+      console.log(
+        `${pc.red("✗")} ${pc.cyan(entry.id)}  ${pc.dim("missing url or branch in meta")}`,
+      );
+      ok = false;
+      continue;
+    }
+    try {
+      const git = simpleGit(entry.path);
+      await git.fetch();
+      const branchRef = entry.branch.startsWith("refs/")
+        ? entry.branch
+        : `origin/${entry.branch}`;
+      const mergeResult = await git.merge([branchRef]);
+      console.log(
+        `${pc.green("✓")} ${pc.cyan(entry.id)}  ${pc.dim(entry.url)}  [${mergeResult.summary.changes ?? 0} changes]`,
+      );
+      // Update meta sidecar
+      const sha = (await git.revparse(["HEAD"])).trim();
+      await writeMetaSidecar(entry.path, {
+        lastFetchedAt: new Date().toISOString(),
+        lastCommitSha: sha,
+        lastRefreshReason: "manual-pull",
+        branch: entry.branch,
+        url: entry.url,
+      });
+    } catch (err) {
+      console.log(
+        `${pc.red("✗")} ${pc.cyan(entry.id)}  ${pc.dim(err instanceof Error ? err.message : String(err))}`,
+      );
+      ok = false;
+    }
+  }
+  return ok ? 0 : 1;
+};
+
+export const cacheDoctor = async (): Promise<number> => {
+  const results = await runDoctor();
+  let allOk = true;
+  for (const r of results) {
+    const icon = r.ok ? pc.green("✓") : pc.red("✗");
+    console.log(`${icon} ${r.check}: ${r.detail ?? ""}`);
+    if (!r.ok) allOk = false;
+  }
+  return allOk ? 0 : 1;
 };

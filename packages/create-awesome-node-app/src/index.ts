@@ -13,7 +13,15 @@ import { parseSetOverrides } from "./set-overrides.js";
 // NodeNext JSON import with import attributes
 import packageJson from "../package.json" with { type: "json" };
 import { listTemplates, listAddons } from "./list.js";
-import { cacheClean, cacheDir, cacheList, cacheVerify } from "./cache-cli.js";
+import {
+  cacheClean,
+  cacheDir,
+  cacheList,
+  cacheVerify,
+  cacheOutdated,
+  cacheUpdate,
+  cacheDoctor,
+} from "./cache-cli.js";
 // Re-export template helpers for testing / programmatic use
 export {
   getTemplateCategories,
@@ -65,6 +73,28 @@ const main = async () => {
     .action((id: string | undefined) => {
       cacheSubcommand = "verify";
       cacheSubcommandArg = id;
+    });
+
+  cacheCommand
+    .command("outdated")
+    .description("List cached entries that are behind their remote tip")
+    .action(() => {
+      cacheSubcommand = "outdated";
+    });
+
+  cacheCommand
+    .command("update [id]")
+    .description("Refresh one or all cached entries from their remote")
+    .action((id: string | undefined) => {
+      cacheSubcommand = "update";
+      cacheSubcommandArg = id;
+    });
+
+  cacheCommand
+    .command("doctor")
+    .description("Diagnose cache health: git, network, permissions")
+    .action(() => {
+      cacheSubcommand = "doctor";
     });
 
   program
@@ -129,6 +159,10 @@ const main = async () => {
       "override the cache root (defaults to ~/.cache/cna; also CNA_CACHE_DIR)",
     )
     .option(
+      "--pin <ref>",
+      "pin the template to a specific commit SHA, tag, or branch (appends ?ref=<ref> to URLs)",
+    )
+    .option(
       "--refresh <mode>",
       "when to refresh the cached template: always | stale | manual (default: stale)",
       (value: string) => {
@@ -160,6 +194,19 @@ const main = async () => {
         return;
       case "verify": {
         const code = await cacheVerify(cacheSubcommandArg);
+        if (code !== 0) process.exit(code);
+        return;
+      }
+      case "outdated":
+        await cacheOutdated();
+        return;
+      case "update": {
+        const code = await cacheUpdate(cacheSubcommandArg);
+        if (code !== 0) process.exit(code);
+        return;
+      }
+      case "doctor": {
+        const code = await cacheDoctor();
         if (code !== 0) process.exit(code);
         return;
       }
@@ -210,7 +257,7 @@ const main = async () => {
   }
 
   // Extract package manager options directly from opts
-  const { useYarn, usePnpm, useBun, set, noCache, ...restOpts } = opts;
+  const { useYarn, usePnpm, useBun, set, noCache, pin, ...restOpts } = opts;
   const packageManager = useYarn
     ? "yarn"
     : usePnpm
@@ -222,18 +269,26 @@ const main = async () => {
   // Parse --set key=value assignments into an overrides map.
   const setOverrides = parseSetOverrides(set as string[] | undefined);
 
+  const pinRef = pin as string | undefined;
+
   const templatesOrExtensions: TemplateOrExtension[] = [restOpts.template]
     .concat(Array.isArray(restOpts.extend) ? restOpts.extend : [])
     .filter(Boolean)
     .reduce((acc, templateOrExtension) => {
       if (!templateOrExtension) return acc;
-      return acc.concat({ url: templateOrExtension });
+      let url = templateOrExtension;
+      // Apply --pin <ref> to URLs that don't already have a ?ref= parameter.
+      if (pinRef && !url.includes("?ref=") && !url.startsWith("file://")) {
+        const separator = url.includes("?") ? "&" : "?";
+        url = `${url}${separator}ref=${encodeURIComponent(pinRef)}`;
+      }
+      return acc.concat({ url });
     }, [] as TemplateOrExtension[]);
 
   // `noCache` is consumed above (translates to env + refresh=always);
   // `cacheDir` similarly. Strip both from the rest spread so they don't
   // leak into the EJS context via the catch-all object.
-  const { cacheDir: _cacheDirFlag, strictVersion: _strictVersionFlag, ...scaffoldOpts } = restOpts;
+  const { cacheDir: _cacheDirFlag, strictVersion: _strictVersionFlag, pin: _pinFlag, ...scaffoldOpts } = restOpts;
   void noCache;
   void _cacheDirFlag;
   void _strictVersionFlag;

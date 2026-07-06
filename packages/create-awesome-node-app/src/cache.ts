@@ -191,3 +191,176 @@ export const writeCatalogToCache = async (
 export const removeCatalogCache = async (cacheFile: string): Promise<void> => {
   await rm(cacheFile, { force: true });
 };
+
+export type WriteMetaOptions = {
+  lastFetchedAt: string;
+  lastCommitSha?: string;
+  lastRefreshReason: string;
+  branch?: string;
+  url?: string;
+};
+
+/**
+ * Write a .cna-meta.json sidecar for a cache entry.
+ */
+export const writeMetaSidecar = async (
+  entryPath: string,
+  meta: WriteMetaOptions,
+): Promise<void> => {
+  const metaPath = path.join(entryPath, ".cna-meta.json");
+  await writeFile(metaPath, JSON.stringify(meta, null, 2), "utf8");
+};
+
+export type RemoteTipResult = {
+  id: string;
+  url?: string;
+  branch?: string;
+  localSha?: string;
+  remoteSha?: string;
+  behind: boolean;
+  error?: string;
+};
+
+/**
+ * Fetch the remote tip SHA for a cached entry via `git ls-remote`.
+ * Returns the SHA on success, or undefined if the remote is unreachable.
+ */
+const getRemoteTipSha = (gitUrl: string, ref: string): string | undefined => {
+  try {
+    const out = execFileSync(
+      "git",
+      ["ls-remote", gitUrl, ref],
+      { stdio: ["ignore", "pipe", "ignore"], timeout: 15_000 },
+    );
+    const firstLine = out.toString().trim().split("\n")[0];
+    return firstLine ? firstLine.split(/\s+/)[0] : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+/**
+ * For each cached entry, compare local tip against the remote.
+ */
+export const checkOutdated = async (): Promise<RemoteTipResult[]> => {
+  const entries = await listCacheEntries();
+  const results: RemoteTipResult[] = [];
+
+  for (const entry of entries) {
+    if (!entry.url || !entry.branch) {
+      results.push({
+        id: entry.id,
+        behind: false,
+        error: !entry.url ? "no remote URL in meta" : "no branch in meta",
+      } as RemoteTipResult);
+      continue;
+    }
+    const remoteSha = getRemoteTipSha(entry.url, entry.branch);
+    if (!remoteSha) {
+      results.push({
+        id: entry.id,
+        behind: false,
+        error: "unable to fetch remote tip",
+      } as RemoteTipResult);
+      continue;
+    }
+    results.push({
+      id: entry.id,
+      localSha: entry.lastCommitSha,
+      remoteSha,
+      behind: Boolean(
+        entry.lastCommitSha &&
+          remoteSha !== entry.lastCommitSha,
+      ),
+    } as RemoteTipResult);
+  }
+
+  return results;
+};
+
+/**
+ * Results from `cache doctor`.
+ */
+export type DoctorResult = {
+  check: string;
+  ok: boolean;
+  detail?: string;
+};
+
+/**
+ * Run health checks: git availability, network, cache dir, registry.
+ */
+export const runDoctor = async (): Promise<DoctorResult[]> => {
+  const results: DoctorResult[] = [];
+
+  // 1) git availability
+  try {
+    const out = execFileSync("git", ["--version"], {
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    results.push({
+      check: "git",
+      ok: true,
+      detail: out.toString().trim(),
+    });
+  } catch {
+    results.push({
+      check: "git",
+      ok: false,
+      detail: "git not found on PATH",
+    });
+  }
+
+  // 2) Network
+  try {
+    const resp = await fetch("https://registry.npmjs.org/", {
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (resp.ok) {
+      results.push({ check: "network", ok: true, detail: "npm registry reachable" });
+    } else {
+      results.push({ check: "network", ok: false, detail: `HTTP ${resp.status}` });
+    }
+  } catch (err) {
+    results.push({
+      check: "network",
+      ok: false,
+      detail: err instanceof Error ? err.message : String(err),
+    });
+  }
+
+  // 3) Cache dir writability
+  const root = getCacheRoot();
+  try {
+    await mkdir(root, { recursive: true });
+    const probe = path.join(root, ".doctor-probe");
+    await writeFile(probe, "ok", "utf8");
+    await rm(probe, { force: true });
+    results.push({ check: "cache-dir", ok: true, detail: root });
+  } catch (err) {
+    results.push({
+      check: "cache-dir",
+      ok: false,
+      detail: err instanceof Error ? err.message : String(err),
+    });
+  }
+
+  // 4) Cache entries integrity
+  const entries = await listCacheEntries();
+  const corrupt = entries.filter((e) => !runGitFsck(e.path));
+  if (corrupt.length === 0) {
+    results.push({
+      check: "cache-integrity",
+      ok: true,
+      detail: `${entries.length} entries, all clean`,
+    });
+  } else {
+    results.push({
+      check: "cache-integrity",
+      ok: false,
+      detail: `${corrupt.length}/${entries.length} entries failed git fsck: ${corrupt.map((e) => e.id).join(", ")}`,
+    });
+  }
+
+  return results;
+};

@@ -22,6 +22,9 @@ npm run test:all
 
 # Lint
 npm run lint
+
+# Type-check
+npm run type-check
 ```
 
 ## Code Style

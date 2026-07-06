@@ -279,6 +279,7 @@ Usage: create-awesome-node-app [project-directory] [options]
 | `--no-cache`                 | Disable the catalog cache; force a refresh each run   |
 | `--cache-dir <path>`         | Override the cache root (default: `~/.cache/cna`)     |
 | `--refresh <mode>`           | When to refresh: `always` \| `stale` \| `manual`      |
+| `--pin <ref>`                | Pin template to a specific commit SHA, tag, or branch |
 | `-v, --verbose`              | Output resolved generation config as JSON             |
 | `-i, --info`                 | Print Node, npm, and OS diagnostics                   |
 | `-V, --version`              | Print CLI version                                     |
@@ -294,6 +295,9 @@ Commands:
   list                  List cached templates and extensions
   clean [id]            Remove one or all entries; --catalog also clears the catalog cache
   verify [id]           Run `git fsck` on one or all entries
+  outdated              List cached entries that are behind their remote tip
+  update [id]           Refresh one or all cached entries from their remote
+  doctor                Diagnose cache health (git, network, permissions)
 ```
 
 Inspect and manage the on-disk cache:
@@ -316,6 +320,15 @@ npx create-awesome-node-app cache clean --catalog
 
 # Clear a single entry by its base64 ID
 npx create-awesome-node-app cache clean <id>
+
+# Check for outdated entries
+npx create-awesome-node-app cache outdated
+
+# Refresh a specific entry
+npx create-awesome-node-app cache update <base64-id>
+
+# Diagnose cache health
+npx create-awesome-node-app cache doctor
 ```
 
 ---
@@ -341,6 +354,32 @@ cache lives at `~/.cache/cna` by default; override with `--cache-dir
 
 Each cache entry has a `.cna-meta.json` sidecar with `lastFetchedAt`,
 `lastCommitSha`, `lastRefreshReason`, `branch`, and `url`.
+
+### Pinning templates
+
+Pin a template to a specific commit SHA, tag, or branch:
+
+```bash
+npx create-awesome-node-app my-app \
+  --template react-vite-boilerplate \
+  --pin abc123def456abc123def456abc123def456abc1
+```
+
+The `--pin` flag is equivalent to appending `?ref=<ref>` to the template URL. Combine with `CNA_STRICT_REPRO=1` to enforce full 40-character SHAs.
+
+### Cache diagnostics
+
+```bash
+# Check which cached entries are behind their remote tip
+npx create-awesome-node-app cache outdated
+
+# Refresh a specific entry (or all entries)
+npx create-awesome-node-app cache update
+npx create-awesome-node-app cache update <base64-id>
+
+# Full health check: git, network, permissions, cache integrity
+npx create-awesome-node-app cache doctor
+```
 
 ### CI and offline usage
 
@@ -370,6 +409,12 @@ import { createNodeApp, getTemplateDirPath } from "@create-node-app/core";
 ```
 
 > The programmatic API is experimental and subject to change. Prefer the CLI for stable usage.
+
+---
+
+## 🛡️ Security
+
+CNA downloads and executes templates from remote sources. See [`SECURITY.md`](https://github.com/Create-Node-App/create-node-app/blob/main/SECURITY.md) for the threat model, recommended practices (hash-pinned URLs, template auditing), and the vulnerability reporting process.
 
 ---
 
@@ -437,7 +482,7 @@ Yes. Supported templates can generate `AGENTS.md`, helping assistants understand
 
 - 🚀 More framework templates and vertical starters.
 - 🧪 Additional testing packs for contracts, performance, and load testing.
-- 📌 [Template version pinning](https://github.com/Create-Node-App/create-node-app/issues/186) and diff-based upgrade paths.
+- 📌 Diff-based upgrade paths for pinned templates.
 - 📊 Rich template analytics and usage insights.
 
 Track progress in [Issues](https://github.com/Create-Node-App/create-node-app/issues) and [Discussions](https://github.com/Create-Node-App/create-node-app/discussions).
