@@ -1,5 +1,33 @@
 # create-awesome-node-app
 
+## 0.11.0
+
+### Minor Changes
+
+- 79c992c: Remaining features from epic #179: `--pin`, `cache outdated`, `cache update`, `cache doctor`, docs update (closes #188)
+
+  - **`--pin <ref>`**: new CLI flag to pin templates to a specific commit SHA, tag, or branch. Equivalent to `?ref=<ref>` on the template URL.
+  - **`cna cache outdated`**: new subcommand that compares local commit SHAs against remote tips via `git ls-remote`. Shows which cached entries are behind.
+  - **`cna cache update [id]`**: new subcommand that force-refreshes one or all cached entries via `git fetch && git merge`.
+  - **`cna cache doctor`**: new subcommand that diagnoses cache health — checks git availability, network reachability, cache directory permissions, and entry integrity.
+  - **Docs**: added Security section linking to `SECURITY.md`, `--pin` flag reference, cache subcommand docs for outdated/update/doctor, pinning examples, and cache diagnostics examples.
+  - **Root AGENTS.md**: added `type-check` to key commands.
+
+### Patch Changes
+
+- b9e0e77: Windows compatibility fixes (closes #184)
+
+  - **executable.ts**: Pass bare command name without `.cmd` suffix — lets Node.js resolve via PATH + PATHEXT, fixing `bun` and `node` on Windows.
+  - **paths.ts**: Broaden file URL normalization to handle UNC paths (`file:////server/share`), drive-relative paths (`file:///C:path`), plus existing `file:///C:/path`.
+  - **paths.ts**: Export `solveValuesFromTemplateOrExtensionUrl` for testing.
+  - **installer.ts**: Prepend `\\?\` prefix when project path exceeds 200 chars to bypass MAX_PATH on Windows.
+  - **loaders.ts**: Case-insensitive file skip matching (`toLowerCase()`) to handle Windows case-insensitive filesystem.
+  - **README.md**: Add "Platform Notes" section documenting Windows behaviors.
+  - **CI**: Add `unit-tests-windows` job; add `windows-latest` + `bun` to cross-platform scaffold matrix.
+
+- Updated dependencies [b9e0e77]
+  - @create-node-app/core@0.7.1
+
 ## 0.10.0
 
 ### Minor Changes
