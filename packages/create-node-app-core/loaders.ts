@@ -446,9 +446,21 @@ export const loadFiles = async ({
       }
     }
 
-    await Promise.all(
+    const results = await Promise.allSettled(
       operations.map((operation) => fileLoader(operation)(operation.entry)),
     );
+
+    const rejected = results.filter(
+      (r): r is PromiseRejectedResult => r.status === "rejected",
+    );
+    if (rejected.length > 0) {
+      const errorMessages = rejected
+        .map((r, i) => `  ${i + 1}. ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`)
+        .join("\n");
+      throw new Error(
+        `Failed to copy ${rejected.length} of ${results.length} file(s):\n${errorMessages}`,
+      );
+    }
   } catch (err) {
     if (verbose) {
       console.log(err);
