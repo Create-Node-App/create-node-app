@@ -25,7 +25,7 @@ const moduleDir =
  *   - subdir=<relativePath> (only for file://) -> pick subdirectory
  *   - ref=<sha>           -> pin to a specific commit SHA (overrides branch)
  */
-const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: string) => {
+export const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: string) => {
   const url = new URL(templateOrExtension);
   const ignorePackage = url.searchParams.get("ignorePackage") === "true";
   const refParam = url.searchParams.get("ref") || "";
@@ -40,9 +40,17 @@ const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: string) => {
   if (url.protocol === "file:") {
     // Handle platform specific absolute paths
     let pathname = decodeURIComponent(url.pathname);
-    // On Windows a file URL looks like file:///C:/path -> pathname /C:/path
-    if (process.platform === "win32" && /^\/[A-Za-z]:\//.test(pathname)) {
-      pathname = pathname.slice(1); // drop leading slash
+    if (process.platform === "win32") {
+      // file:///C:/path => C:/path
+      if (/^\/[A-Za-z]:[\\/]/.test(pathname)) {
+        pathname = pathname.slice(1);
+      // file:///C:path => C:path (drive-relative, no separator after colon)
+      } else if (/^\/[A-Za-z]:[^\\/]/.test(pathname)) {
+        pathname = pathname.slice(1);
+      // file:////server/share => \\server\share (UNC path)
+      } else if (pathname.startsWith("//")) {
+        pathname = "\\\\" + pathname.slice(2).replace(/\//g, "\\");
+      }
     }
     const subdirParam = url.searchParams.get("subdir") || "";
     return {

@@ -400,7 +400,7 @@ export const loadFiles = async ({
               ? [/\.if-yarn\./, /\.if-pnpm\./]
               : [/\.if-yarn\./, /\.if-pnpm\./, /\.if-bun\./];
         const shouldSkip = (p: string) =>
-          [...skipGlobs, ...skipManager].some((rgx) => rgx.test(p));
+          [...skipGlobs, ...skipManager].some((rgx) => rgx.test(p.toLowerCase()));
 
         for await (const entry of readdirp(templateDir, {
           type: "files",

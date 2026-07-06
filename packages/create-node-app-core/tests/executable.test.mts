@@ -3,11 +3,13 @@ import { test } from 'node:test';
 
 import { resolveExecutable } from '../executable.js';
 
-test('resolveExecutable appends .cmd on Windows', () => {
+test('resolveExecutable passes bare name on all platforms', () => {
   const realPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
   try {
     Object.defineProperty(process, 'platform', { value: 'win32' });
-    assert.equal(resolveExecutable('npm'), 'npm.cmd');
+    assert.equal(resolveExecutable('npm'), 'npm');
+    assert.equal(resolveExecutable('bun'), 'bun');
+    assert.equal(resolveExecutable('node'), 'node');
   } finally {
     if (realPlatform) Object.defineProperty(process, 'platform', realPlatform);
   }

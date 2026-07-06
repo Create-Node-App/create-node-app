@@ -502,7 +502,12 @@ export const createApp = async ({
   );
 
   const originalDirectory = process.cwd();
-  process.chdir(root);
+  // Prepend \\?\ to bypass MAX_PATH (260 char) limit on Windows
+  const chdirTarget =
+    process.platform === "win32" && root.length > 200 && !root.startsWith("\\\\?\\")
+      ? "\\\\?\\" + root
+      : root;
+  process.chdir(chdirTarget);
   try {
     if (!useYarn && !useBun && !checkThatNpmCanReadCwd()) {
       process.exit(1);

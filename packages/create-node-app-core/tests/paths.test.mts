@@ -95,6 +95,32 @@ test('file:// windows style path normalization drops leading slash on win32 (sim
   }
 });
 
+test('file:// windows drive-relative path normalized on win32 (simulated)', async () => {
+  const realPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+  try {
+    Object.defineProperty(process, 'platform', { value: 'win32' });
+    // file:///C:path (no slash after colon)
+    const { solveValuesFromTemplateOrExtensionUrl } = await import('../paths.js');
+    const result = solveValuesFromTemplateOrExtensionUrl('file:///C:Users/test');
+    assert.equal(result.pathname, 'C:Users/test');
+  } finally {
+    if (realPlatform) Object.defineProperty(process, 'platform', realPlatform);
+  }
+});
+
+test('file:// windows UNC path normalized on win32 (simulated)', async () => {
+  const realPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+  try {
+    Object.defineProperty(process, 'platform', { value: 'win32' });
+    const { solveValuesFromTemplateOrExtensionUrl } = await import('../paths.js');
+    // file:////server/share -> \\server\share
+    const result = solveValuesFromTemplateOrExtensionUrl('file:////server/share');
+    assert.equal(result.pathname, '\\\\server\\share');
+  } finally {
+    if (realPlatform) Object.defineProperty(process, 'platform', realPlatform);
+  }
+});
+
 test('file:// subdir where template is a file not a directory', async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'cna-paths-file-tpl-'));
   const nested = path.join(dir, 'some', 'nested');

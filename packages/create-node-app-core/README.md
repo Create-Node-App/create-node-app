@@ -110,6 +110,19 @@ createNodeApp()
 
 ---
 
+## Platform Notes
+
+### Windows compatibility
+
+The core engine supports Windows, but some behaviors differ from Linux/macOS:
+
+- **Executable resolution** — On Windows, `execFileSync` uses `CreateProcess` internally, which consults `PATHEXT` (`.com;.exe;.bat;.cmd;...`). The bare command name (e.g., `npm`, `bun`) is passed without extension; Node.js resolves the correct binary via PATH + PATHEXT.
+- **File permissions** — `fs.chmod` for the executable bit (`0o111`) is silently ignored on Windows, where POSIX permission semantics don't apply. Template files retain their original mode as a best-effort operation.
+- **Long paths** — Scaffolding a project with a path longer than ~200 characters on Windows automatically uses the `\\?\` prefix to bypass the MAX_PATH (260 char) limit.
+- **File URLs** — The engine normalizes `file:///C:/path`, `file:///C:path` (drive-relative), and `file:////server/share` (UNC) to native Windows paths.
+- **Case-insensitive skip list** — The internal file-filter skips `package.json`, `package-lock.json`, etc. using case-insensitive matching to account for the Windows filesystem.
+- **Recommended shell** — Use **Git Bash** or **WSL** when working with templates that rely on POSIX permission bits (e.g., husky hooks, shell scripts). Running via `cmd.exe` or PowerShell works for basic scaffolding but may not preserve executable bits.
+
 ## Architecture
 
 The package is organized into these modules:
