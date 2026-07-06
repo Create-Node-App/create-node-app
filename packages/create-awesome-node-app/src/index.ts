@@ -13,6 +13,7 @@ import { parseSetOverrides } from "./set-overrides.js";
 // NodeNext JSON import with import attributes
 import packageJson from "../package.json" with { type: "json" };
 import { listTemplates, listAddons } from "./list.js";
+import { cacheClean, cacheDir, cacheList, cacheVerify } from "./cache-cli.js";
 // Re-export template helpers for testing / programmatic use
 export {
   getTemplateCategories,
@@ -24,6 +25,47 @@ const program = new Command();
 
 const main = async () => {
   let projectName = "my-project";
+  let cacheSubcommand: string | undefined;
+  let cacheSubcommandArg: string | undefined;
+  let cacheCatalogFlag = false;
+
+  const cacheCommand = program
+    .command("cache")
+    .description("Inspect and manage the local template/extension cache");
+
+  cacheCommand
+    .command("dir")
+    .description("Print the cache root directory")
+    .action(() => {
+      cacheSubcommand = "dir";
+    });
+
+  cacheCommand
+    .command("list")
+    .description("List cached templates and extensions")
+    .action(() => {
+      cacheSubcommand = "list";
+    });
+
+  cacheCommand
+    .command("clean [id]")
+    .description(
+      "Remove one or all cached entries (pass --catalog to also clear the template catalog cache)",
+    )
+    .option("--catalog", "Also clear the on-disk template catalog cache")
+    .action((id: string | undefined, options: { catalog?: boolean }) => {
+      cacheSubcommand = "clean";
+      cacheSubcommandArg = id;
+      cacheCatalogFlag = Boolean(options.catalog);
+    });
+
+  cacheCommand
+    .command("verify [id]")
+    .description("Run git fsck on one or all cached entries")
+    .action((id: string | undefined) => {
+      cacheSubcommand = "verify";
+      cacheSubcommandArg = id;
+    });
 
   program
     .version(packageJson.version)
@@ -66,11 +108,55 @@ const main = async () => {
       "--set <assignments...>",
       "set a custom template option (format: key=value; quote values with spaces: --set 'projectName=My App' or --set 'projectName=My App' --set 'author=Jane Doe')",
     )
+    .option(
+      "--offline",
+      "use the local cache only; do not refresh templates from the network",
+    )
+    .option(
+      "--no-cache",
+      "disable the on-disk cache and always re-download templates (sets CNA_NO_CATALOG_CACHE=1 and forces refresh=always)",
+    )
+    .option(
+      "--cache-dir <path>",
+      "override the cache root (defaults to ~/.cache/cna; also CNA_CACHE_DIR)",
+    )
+    .option(
+      "--refresh <mode>",
+      "when to refresh the cached template: always | stale | manual (default: stale)",
+      (value: string) => {
+        if (!["always", "stale", "manual"].includes(value)) {
+          throw new Error(
+            `Invalid --refresh mode: '${value}'. Use one of: always, stale, manual.`,
+          );
+        }
+        return value as "always" | "stale" | "manual";
+      },
+    )
     .action((providedProjectName: string | undefined) => {
       projectName = providedProjectName || projectName;
     });
 
   program.parse(process.argv);
+
+  // Handle cache subcommands before the regular flow.
+  if (cacheSubcommand) {
+    switch (cacheSubcommand) {
+      case "dir":
+        cacheDir();
+        return;
+      case "list":
+        await cacheList();
+        return;
+      case "clean":
+        await cacheClean(cacheSubcommandArg, { catalog: cacheCatalogFlag });
+        return;
+      case "verify": {
+        const code = await cacheVerify(cacheSubcommandArg);
+        if (code !== 0) process.exit(code);
+        return;
+      }
+    }
+  }
 
   const opts = program.opts();
   checkNodeVersion(packageJson.engines.node, packageJson.name);
@@ -100,8 +186,19 @@ const main = async () => {
     return;
   }
 
+  // Translate --no-cache into the two env vars that downstream code reads.
+  if (opts.noCache) {
+    process.env.CNA_NO_CATALOG_CACHE = "1";
+    if (!opts.refresh) {
+      opts.refresh = "always";
+    }
+  }
+  if (opts.cacheDir) {
+    process.env.CNA_CACHE_DIR = opts.cacheDir;
+  }
+
   // Extract package manager options directly from opts
-  const { useYarn, usePnpm, useBun, set, ...restOpts } = opts;
+  const { useYarn, usePnpm, useBun, set, noCache, ...restOpts } = opts;
   const packageManager = useYarn
     ? "yarn"
     : usePnpm
@@ -121,10 +218,17 @@ const main = async () => {
       return acc.concat({ url: templateOrExtension });
     }, [] as TemplateOrExtension[]);
 
+  // `noCache` is consumed above (translates to env + refresh=always);
+  // `cacheDir` similarly. Strip both from the rest spread so they don't
+  // leak into the EJS context via the catch-all object.
+  const { cacheDir: _cacheDirFlag, ...scaffoldOpts } = restOpts;
+  void noCache;
+  void _cacheDirFlag;
+
   return createNodeApp(
     projectName,
     {
-      ...restOpts,
+      ...scaffoldOpts,
       packageManager,
       templatesOrExtensions,
       projectName,

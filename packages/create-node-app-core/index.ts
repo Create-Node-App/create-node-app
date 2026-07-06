@@ -11,7 +11,13 @@ export {
   getTemplateDirPath,
   getTemplateBaseDirPath,
 } from "./paths.js";
-export { downloadRepository } from "./git.js";
+export {
+  downloadRepository,
+  writeCacheMeta,
+  readCacheMeta,
+  resolveCacheDir,
+} from "./git.js";
+export type { CacheMeta, RefreshMode } from "./git.js";
 export { loadTemplateCnaConfig } from "./config.js";
 export type { CnaConfig, CnaCustomOption } from "./config.js";
 export {
@@ -91,6 +97,10 @@ export type CnaOptions = {
   install?: boolean;
   template?: string;
   templatesOrExtensions?: TemplateOrExtension[];
+  offline?: boolean;
+  cacheDir?: string;
+  refresh?: import("./git.js").RefreshMode;
+  refreshAfterHours?: number;
 } & {
   [key: string]: unknown;
 };

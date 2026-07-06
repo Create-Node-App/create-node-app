@@ -40,6 +40,10 @@ const requireIfExists = (path: string) => {
 export type LoadPackagesOptions = {
   templatesOrExtensions?: TemplateOrExtension[];
   ignorePackage?: boolean;
+  offline?: boolean;
+  cacheDir?: string;
+  refresh?: import("./git.js").RefreshMode;
+  refreshAfterHours?: number;
   [key: string]: unknown;
 };
 
@@ -53,15 +57,31 @@ export type LoadPackagesOptions = {
 export const loadPackages = async ({
   templatesOrExtensions = [],
   ignorePackage: globalIgnorePackage = false,
+  offline,
+  cacheDir,
+  refresh,
+  refreshAfterHours,
   ...config
 }: LoadPackagesOptions) => {
+  const pathOpts = {
+    ...(offline !== undefined ? { offline } : {}),
+    ...(cacheDir !== undefined ? { cacheDir } : {}),
+    ...(refresh !== undefined ? { refresh } : {}),
+    ...(refreshAfterHours !== undefined ? { refreshAfterHours } : {}),
+  };
+
   // Load and merge template packages concurrently
   const setup = await Promise.all(
     templatesOrExtensions.map(async ({ url: templateOrExtension }) => {
       try {
         // Try to load and merge template package
         const template = requireIfExists(
-          await getPackagePath(templateOrExtension, "template.json"),
+          await getPackagePath(
+            templateOrExtension,
+            "template.json",
+            false,
+            pathOpts,
+          ),
         );
         return template.package || {}; // Use an empty object if template.json is not found
       } catch {
@@ -92,6 +112,7 @@ export const loadPackages = async ({
               templateOrExtension,
               "package.json",
               globalIgnorePackage || ignorePackage,
+              pathOpts,
             ),
           );
           return templateOrExtensionPackageJson; // Use an empty object if package.json is not found
@@ -108,7 +129,7 @@ export const loadPackages = async ({
       try {
         // Try to resolve package updates using package module
         const resolveTemplateOrExtensionPackage = requireIfExists(
-          await getPackagePath(templateOrExtension),
+          await getPackagePath(templateOrExtension, "package", false, pathOpts),
         );
         return resolveTemplateOrExtensionPackage(mergedSetup, config); // Use an empty object if resolution fails
       } catch {

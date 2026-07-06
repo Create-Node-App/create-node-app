@@ -60,7 +60,11 @@
     "Jeremias",
     "readdirp",
     "Ulises",
-    "npmjs"
+    "npmjs",
+    "reflink",
+    "reflinks",
+    "hardlink",
+    "hardlinks"
   ],
   "version": "0.2"
 }
