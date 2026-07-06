@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.7.4
+
+### Patch Changes
+
+- 055cbc2: Fix `--cache-dir` / `CNA_CACHE_DIR` not scoping the working dir at all — the working copy was always written to `~/.cna/`. The CLI only sets the env var, not the opt, so `paths.ts` now also reads `CNA_CACHE_DIR` as a fallback when computing the working dir.
+
 ## 0.7.3
 
 ### Patch Changes
