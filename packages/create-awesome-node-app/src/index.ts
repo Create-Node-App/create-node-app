@@ -109,6 +109,10 @@ const main = async () => {
       "set a custom template option (format: key=value; quote values with spaces: --set 'projectName=My App' or --set 'projectName=My App' --set 'author=Jane Doe')",
     )
     .option(
+      "--keep-on-failure",
+      "debug: keep partially-scaffolded files when a copy operation fails (default: clean up)",
+    )
+    .option(
       "--offline",
       "use the local cache only; do not refresh templates from the network",
     )

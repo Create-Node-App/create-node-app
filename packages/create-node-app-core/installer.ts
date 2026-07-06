@@ -503,56 +503,60 @@ export const createApp = async ({
 
   const originalDirectory = process.cwd();
   process.chdir(root);
-  if (!useYarn && !useBun && !checkThatNpmCanReadCwd()) {
-    process.exit(1);
-  }
+  try {
+    if (!useYarn && !useBun && !checkThatNpmCanReadCwd()) {
+      process.exit(1);
+    }
 
-  if (!semver.satisfies(process.version, ">=18.0.0")) {
-    console.log(
-      pc.yellow(
-        `You are using Node ${process.version} so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
-          `Please update to Node 18 or higher for a better, fully supported experience.\n`,
-      ),
-    );
-  }
+    if (!semver.satisfies(process.version, ">=18.0.0")) {
+      console.log(
+        pc.yellow(
+          `You are using Node ${process.version} so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
+            `Please update to Node 18 or higher for a better, fully supported experience.\n`,
+        ),
+      );
+    }
 
-  if (!useYarn && !useBun) {
-    const npmInfo = checkNpmVersion();
-    if (!npmInfo.hasMinNpm) {
-      if (npmInfo.npmVersion) {
-        console.log(
-          pc.yellow(
-            `You are using npm ${npmInfo.npmVersion} so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
-              `Please update to npm 3 or higher for a better, fully supported experience.\n`,
-          ),
-        );
+    if (!useYarn && !useBun) {
+      const npmInfo = checkNpmVersion();
+      if (!npmInfo.hasMinNpm) {
+        if (npmInfo.npmVersion) {
+          console.log(
+            pc.yellow(
+              `You are using npm ${npmInfo.npmVersion} so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
+                `Please update to npm 3 or higher for a better, fully supported experience.\n`,
+            ),
+          );
+        }
       }
     }
+
+    // Note: yarn registry detection used to live here. The cached
+    // `yarn.lock.cached` file was never shipped and the
+    // `yarnUsesDefaultRegistry` check was guarded by `if (false)`,
+    // so the block was effectively dead. Removed in #189.
+
+    return await run({
+      root,
+      appName,
+      originalDirectory,
+      verbose,
+      useYarn,
+      usePnpm,
+      useBun,
+      templatesOrExtensions,
+      dependencies,
+      devDependencies,
+      installDependencies,
+      runCommand,
+      installCommand,
+      ...(offline !== undefined ? { offline } : {}),
+      ...(cacheDir !== undefined ? { cacheDir } : {}),
+      ...(refresh !== undefined ? { refresh } : {}),
+      ...(refreshAfterHours !== undefined ? { refreshAfterHours } : {}),
+      ...customOptions,
+    });
+  } finally {
+    process.chdir(originalDirectory);
   }
-
-  // Note: yarn registry detection used to live here. The cached
-  // `yarn.lock.cached` file was never shipped and the
-  // `yarnUsesDefaultRegistry` check was guarded by `if (false)`,
-  // so the block was effectively dead. Removed in #189.
-
-  return run({
-    root,
-    appName,
-    originalDirectory,
-    verbose,
-    useYarn,
-    usePnpm,
-    useBun,
-    templatesOrExtensions,
-    dependencies,
-    devDependencies,
-    installDependencies,
-    runCommand,
-    installCommand,
-    ...(offline !== undefined ? { offline } : {}),
-    ...(cacheDir !== undefined ? { cacheDir } : {}),
-    ...(refresh !== undefined ? { refresh } : {}),
-    ...(refreshAfterHours !== undefined ? { refreshAfterHours } : {}),
-    ...customOptions,
-  });
 };
