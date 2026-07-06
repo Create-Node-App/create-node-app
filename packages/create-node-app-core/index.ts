@@ -2,10 +2,13 @@ import pc from "picocolors";
 import envinfo from "envinfo";
 import semver from "semver";
 import { execFileSync } from "child_process";
+import corePackageJson from "./package.json" with { type: "json" };
 import type { TemplateOrExtension } from "./loaders.js";
 export type { TemplateOrExtension } from "./loaders.js";
 import { createApp } from "./installer.js";
 import { resolveExecutable } from "./executable.js";
+
+const CNA_CORE_VERSION = (corePackageJson as { version: string }).version;
 export {
   getPackagePath,
   getTemplateDirPath,
@@ -43,10 +46,18 @@ export const checkNodeVersion = (
   }
 };
 
+const CNA_USER_AGENT = `create-node-app-core/${CNA_CORE_VERSION} (https://github.com/Create-Node-App/create-node-app)`;
+
+export { CNA_USER_AGENT };
+
 export const checkForLatestVersion = async (packageName: string) => {
   try {
     const response = await fetch(
       `https://registry.npmjs.org/-/package/${packageName}/dist-tags`,
+      {
+        signal: AbortSignal.timeout(10_000),
+        headers: { "User-Agent": CNA_USER_AGENT },
+      },
     );
     if (!response.ok) {
       throw new Error("Registry request failed");
