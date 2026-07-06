@@ -16,6 +16,14 @@ if (process.env.CNA_SKIP_GIT === "1" || process.env.SKIP_SMOKE === "1") {
   process.exit(0);
 }
 
+// Smoke test requires POSIX shell semantics for the bash-based CLI helpers.
+// The cross-platform-scaffold job already covers Windows; skip here to keep
+// the unit-test job deterministic.
+if (process.platform === "win32") {
+  console.log("[smoke] Skipping smoke test on Windows (covered by cross-platform-scaffold job)");
+  process.exit(0);
+}
+
 try {
   if (!existsSync(join(packageRoot, "dist", "index.cjs"))) {
     execSync("npm run build", { cwd: packageRoot, stdio: "inherit" });

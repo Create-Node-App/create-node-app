@@ -21,9 +21,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-      - name: TODO to Issue
-        uses: gr2m/todo-to-issue@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          close-issues: false
-          identifiers: "TODO|FIXME|HACK"
+      - name: Find TODO/FIXME/HACK comments
+        id: scan
+        run: |
+          set -euo pipefail
+          # Scan all source files in tracked code. Skip generated/vendor files
+          # and this workflow file (which contains the literal patterns).
+          hits=$(grep -RInE 'TODO|FIXME|HACK' \
+            --include='*.ts' --include='*.tsx' --include='*.js' --include='*.mjs' \
+            --include='*.cjs' --include='*.mts' --include='*.cts' \
+            --include='*.sh' \
+            --exclude-dir=node_modules \
+            --exclude-dir=dist \
+            --exclude-dir=coverage \
+            --exclude-dir=.git \
+            --exclude-dir=.github \
+            . || true)
+          if [ -z "$hits" ]; then
+            echo "No TODO/FIXME/HACK comments found."
+            echo "hits=0" >> "$GITHUB_OUTPUT"
+          else
+            count=$(printf '%s\n' "$hits" | wc -l)
+            echo "Found $count TODO/FIXME/HACK comment(s):"
+            printf '%s\n' "$hits"
+            echo "hits=$count" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Fail if TODO/FIXME/HACK are present
+        if: steps.scan.outputs.hits != '0'
+        run: |
+          echo "::error::Found TODO/FIXME/HACK comments. Resolve or move to tracked issues before merging to main."
+          exit 1

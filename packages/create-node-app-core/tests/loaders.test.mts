@@ -14,7 +14,7 @@ const safeRm = (d: string) => {
   }
 };
 
-test("loadFiles preserves file permissions on copied files", async () => {
+test("loadFiles preserves file permissions on copied files", { skip: process.platform === "win32" }, async () => {
   const tmpDir = mkdtempSync(path.join(tmpdir(), "cna-loaders-perm-"));
   const destDir = path.join(tmpDir, "output");
   mkdirSync(destDir, { recursive: true });

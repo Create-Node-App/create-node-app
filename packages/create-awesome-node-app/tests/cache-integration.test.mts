@@ -7,7 +7,6 @@ import { execFileSync } from "child_process";
 import {
   checkOutdated,
   cleanCache,
-  getCacheRoot,
   listCacheEntries,
   runDoctor,
   verifyCache,
@@ -66,22 +65,10 @@ const cleanup = (dir: string): void => {
   }
 };
 
-const withTempDir = <T>(
-  fn: (dir: string) => T,
-): T => {
-  const dir = makeTempDir();
-  try {
-    return fn(dir);
-  } finally {
-    cleanup(dir);
-  }
-};
-
 async function withTempCnaCacheDir<T>(
   fn: (cacheRoot: string) => Promise<T>,
 ): Promise<T> {
   const dir = makeTempDir();
-  const old = process.env.CNA_CACHE_DIR;
   process.env.CNA_CACHE_DIR = dir;
   try {
     return await fn(dir);
