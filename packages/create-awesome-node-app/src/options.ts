@@ -204,11 +204,6 @@ const processInteractiveOptions = async (
         : 0,
     },
     {
-      type: null,
-      name: "__removed_aiTool",
-      message: "(AI tool selection removed)",
-    },
-    {
       type: "select",
       name: "category",
       message: "What type of app do you want to create?",

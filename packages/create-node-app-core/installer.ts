@@ -518,28 +518,10 @@ export const createApp = async ({
     }
   }
 
-  if (useYarn) {
-    let yarnUsesDefaultRegistry = true;
-    try {
-      yarnUsesDefaultRegistry =
-        execFileSync(resolveExecutable("yarnpkg"), [
-          "config",
-          "get",
-          "registry",
-        ])
-          .toString()
-          .trim() === "https://registry.yarnpkg.com";
-    } catch {
-      // ignore
-    }
-    if (false && yarnUsesDefaultRegistry) {
-      fs.cpSync(
-        require.resolve("./yarn.lock.cached"),
-        path.join(root, "yarn.lock"),
-        { force: true },
-      );
-    }
-  }
+  // Note: yarn registry detection used to live here. The cached
+  // `yarn.lock.cached` file was never shipped and the
+  // `yarnUsesDefaultRegistry` check was guarded by `if (false)`,
+  // so the block was effectively dead. Removed in #189.
 
   return run({
     root,

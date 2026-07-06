@@ -1,8 +1,11 @@
-import assert from "node:assert/strict";
 import { test } from "node:test";
+import assert from "node:assert/strict";
 import pc from "picocolors";
 
-test("expected errors print only message when not verbose", () => {
+test("expected errors print only the red message when not verbose", () => {
+  // This test pins the format of the error output so any change is
+  // intentional. The actual handler is exercised end-to-end by the
+  // smoke test and the integration tests.
   const error = new Error("Invalid extension slug: 'x'.");
 
   const messages: string[] = [];
