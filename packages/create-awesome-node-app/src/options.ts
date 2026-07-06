@@ -284,8 +284,21 @@ const processInteractiveOptions = async (
   const rawCustomOptions =
     cnaConfig?.customOptions ?? existingTemplate?.customOptions ?? [];
 
+  // Filter out sensitive prompt types that config files cannot use
+  const blockedTypes = new Set(["invisible", "password"]);
+  const filteredCustomOptions = rawCustomOptions.filter(
+    (opt) => !blockedTypes.has(opt.type as string),
+  );
+  if (filteredCustomOptions.length < rawCustomOptions.length) {
+    console.warn(
+      pc.yellow(
+        "Warning: one or more custom options use blocked prompt types and were skipped.",
+      ),
+    );
+  }
+
   // Apply --set values as initial overrides for custom option prompts
-  const customOptions = rawCustomOptions.map((opt) =>
+  const customOptions = filteredCustomOptions.map((opt) =>
     opt.name &&
     Object.prototype.hasOwnProperty.call(setOverrides, opt.name as string)
       ? { ...opt, initial: setOverrides[opt.name as string] }
