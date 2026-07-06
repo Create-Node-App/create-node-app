@@ -170,7 +170,7 @@ const runCommandInProjectDir = async (
   }
 };
 
-function extractNameAndVersion(dependencyString: string) {
+export function extractNameAndVersion(dependencyString: string) {
   // extract the name and version from the dependency string separated by @
   // e.g. @types/react@^16
   // => name: @types/react
