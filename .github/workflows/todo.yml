@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "31 1,12 * * *" # periodic sync of TODO comments
+    - cron: "31 1,12 * * *"
   workflow_dispatch:
 
 permissions:
@@ -22,5 +22,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: TODO to Issue
-        uses: alstr/todo-to-issue-action@v5
-        id: todo
+        uses: gr2m/todo-to-issue@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          close-issues: false
+          identifiers: "TODO|FIXME|HACK"
