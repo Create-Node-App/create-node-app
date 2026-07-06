@@ -14,6 +14,11 @@ import {
   type WriteMetaOptions,
 } from "../src/cache.js";
 
+const SKIP_ON_WINDOWS = process.platform === "win32";
+const skip = SKIP_ON_WINDOWS
+  ? { skip: "covered by cross-platform-scaffold job on windows" }
+  : undefined;
+
 const makeTempDir = (): string => {
   return fs.mkdtempSync(path.join(os.tmpdir(), "cna-cache-integration-"));
 };
@@ -79,14 +84,14 @@ async function withTempCnaCacheDir<T>(
 }
 
 describe("checkOutdated", () => {
-  test("returns empty array when no cached entries", async () => {
+  test("returns empty array when no cached entries", skip, async () => {
     await withTempCnaCacheDir(async () => {
       const results = await checkOutdated();
       assert.deepEqual(results, []);
     });
   });
 
-  test("reports behind=true when local SHA differs from remote", async () => {
+  test("reports behind=true when local SHA differs from remote", skip, async () => {
     await withTempCnaCacheDir(async (root) => {
       const remoteDir = makeTempDir();
       try {
@@ -127,7 +132,7 @@ describe("checkOutdated", () => {
     });
   });
 
-  test("reports behind=false when local SHA matches remote", async () => {
+  test("reports behind=false when local SHA matches remote", skip, async () => {
     await withTempCnaCacheDir(async (root) => {
       const remoteDir = makeTempDir();
       try {
@@ -188,7 +193,7 @@ describe("writeMetaSidecar", () => {
 });
 
 describe("runDoctor", () => {
-  test("git check passes when git is available", async () => {
+  test("git check passes when git is available", skip, async () => {
     const results = await runDoctor();
     const gitCheck = results.find((r) => r.check === "git");
     assert.ok(gitCheck, "git check should be present");
@@ -196,7 +201,7 @@ describe("runDoctor", () => {
     assert.ok(gitCheck?.detail?.startsWith("git version"));
   });
 
-  test("cache-dir check passes in a temp dir", async () => {
+  test("cache-dir check passes in a temp dir", skip, async () => {
     await withTempCnaCacheDir(async () => {
       const results = await runDoctor();
       const cacheCheck = results.find((r) => r.check === "cache-dir");
@@ -205,7 +210,7 @@ describe("runDoctor", () => {
     });
   });
 
-  test("cache-integrity reports ok for empty cache", async () => {
+  test("cache-integrity reports ok for empty cache", skip, async () => {
     await withTempCnaCacheDir(async () => {
       const results = await runDoctor();
       const integrity = results.find((r) => r.check === "cache-integrity");
