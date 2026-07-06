@@ -23,6 +23,7 @@ DISABLE_LINTERS:
   - REPOSITORY_GRYPE
   - REPOSITORY_OSV_SCANNER # Handled by scheduled workflow in .github/workflows/osv-scanner.yml
   - REPOSITORY_TRIVY
+  - SPELL_CSPELL # cspell flags many technical terms and usernames; not blocking
   - SPELL_LYCHEE
   - TYPESCRIPT_STANDARD # eslint is the configured linter (eslint.config.cjs)
   - YAML_V8R # v8r flags GitHub issue template assignees accepted by GitHub
