@@ -23,6 +23,7 @@ import type { TemplateOrExtension } from "./loaders.js";
 import { loadFiles } from "./loaders.js";
 import { resolveExecutable } from "./executable.js";
 import { assertDirectoryIsEmpty } from "./config.js";
+import { ScaffoldAbortedError } from "./errors.js";
 
 const install = async (
   root: string,
@@ -165,6 +166,7 @@ const runCommandInProjectDir = async (
     console.log();
     console.log(pc.red(errorMessage));
     console.log();
+    process.exitCode = 1;
   }
 };
 
@@ -340,6 +342,7 @@ const run = async ({
       ),
     );
     console.log();
+    process.exitCode = 1;
   }
 
   if (installDependencies && isOnline) {
@@ -448,6 +451,15 @@ export const createApp = async ({
   if (!force) {
     assertDirectoryIsEmpty(root);
   }
+
+  const onSignal = (signal: string) => {
+    const error = new ScaffoldAbortedError(root);
+    console.error(pc.red(error.message));
+    error.cleanup();
+    process.exit(128 + (signal === "SIGINT" ? 2 : 15));
+  };
+  process.once("SIGINT", () => onSignal("SIGINT"));
+  process.once("SIGTERM", () => onSignal("SIGTERM"));
 
   console.log(`Creating a new Node app in ${pc.green(root)}.`);
   console.log();
