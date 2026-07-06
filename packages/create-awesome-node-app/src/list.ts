@@ -56,9 +56,11 @@ export const listAddons = async ({
     templateType = await getTemplateTypeFromSlug(templateSlug);
   }
 
-  const types = templateType ? [templateType, "all"] : ["all"];
+  const types: string[] = templateType
+    ? [templateType, "all"]
+    : []; // empty array = show all
   const extensionsGroupedByCategory =
-    await getExtensionsGroupedByCategory(types);
+    await getExtensionsGroupedByCategory(types as any);
 
   console.log(pc.bold(pc.blue("\nAvailable Addons:")));
 

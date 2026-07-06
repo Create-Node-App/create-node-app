@@ -219,6 +219,22 @@ export const getExtensionsGroupedByCategory = async (
 
   const safeType = Array.isArray(selectedType) ? selectedType : [selectedType];
 
+  // When called with no type filter, return all extensions
+  if (safeType.length === 0) {
+    const templateData = await getTemplateData();
+    return templateData.extensions.reduce(
+      (acc, extension) => {
+        const category = extension.category;
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(extension);
+        return acc;
+      },
+      {} as Record<string, ExtensionData[]>,
+    );
+  }
+
   const templateData = await getTemplateData();
 
   const extensions = templateData.extensions.filter((extension) => {

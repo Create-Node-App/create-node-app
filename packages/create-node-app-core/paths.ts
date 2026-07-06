@@ -115,7 +115,12 @@ const solveRepositoryPath = async ({
   const targetWithSubdir = Buffer.from(`${url}#${branch}#${subdir}`).toString(
     "base64",
   );
-  const target = path.join(os.homedir(), ".cna", targetWithSubdir);
+  // When a cacheDir override is provided, scope the working dir under it
+  // (mirrors the behavior of the cache itself). Otherwise default to ~/.cna.
+  const workingRoot = cacheDir
+    ? path.join(cacheDir, "working")
+    : path.join(os.homedir(), ".cna");
+  const target = path.join(workingRoot, targetWithSubdir);
 
   // Test helper: allow skipping actual git clone to prevent network / credential prompts
   if (process.env.CNA_SKIP_GIT === "1") {
