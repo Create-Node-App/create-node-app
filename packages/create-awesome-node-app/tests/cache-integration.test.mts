@@ -14,11 +14,6 @@ import {
   type WriteMetaOptions,
 } from "../src/cache.js";
 
-const SKIP_ON_WINDOWS = process.platform === "win32";
-const skip = SKIP_ON_WINDOWS
-  ? { skip: "covered by cross-platform-scaffold job on windows" }
-  : undefined;
-
 const makeTempDir = (): string => {
   return fs.mkdtempSync(path.join(os.tmpdir(), "cna-cache-integration-"));
 };
@@ -84,14 +79,14 @@ async function withTempCnaCacheDir<T>(
 }
 
 describe("checkOutdated", () => {
-  test("returns empty array when no cached entries", skip, async () => {
+  test("returns empty array when no cached entries", async () => {
     await withTempCnaCacheDir(async () => {
       const results = await checkOutdated();
       assert.deepEqual(results, []);
     });
   });
 
-  test("reports behind=true when local SHA differs from remote", skip, async () => {
+  test("reports behind=true when local SHA differs from remote", async () => {
     await withTempCnaCacheDir(async (root) => {
       const remoteDir = makeTempDir();
       try {
@@ -132,7 +127,7 @@ describe("checkOutdated", () => {
     });
   });
 
-  test("reports behind=false when local SHA matches remote", skip, async () => {
+  test("reports behind=false when local SHA matches remote", async () => {
     await withTempCnaCacheDir(async (root) => {
       const remoteDir = makeTempDir();
       try {
@@ -165,7 +160,7 @@ describe("checkOutdated", () => {
   });
 });
 
-describe("writeMetaSidecar", skip, () => {
+describe("writeMetaSidecar", () => {
   test("writes and can be read back via listCacheEntries", async () => {
     await withTempCnaCacheDir(async (root) => {
       const entryId = "meta-test";
@@ -193,7 +188,7 @@ describe("writeMetaSidecar", skip, () => {
 });
 
 describe("runDoctor", () => {
-  test("git check passes when git is available", skip, async () => {
+  test("git check passes when git is available", async () => {
     const results = await runDoctor();
     const gitCheck = results.find((r) => r.check === "git");
     assert.ok(gitCheck, "git check should be present");
@@ -201,7 +196,7 @@ describe("runDoctor", () => {
     assert.ok(gitCheck?.detail?.startsWith("git version"));
   });
 
-  test("cache-dir check passes in a temp dir", skip, async () => {
+  test("cache-dir check passes in a temp dir", async () => {
     await withTempCnaCacheDir(async () => {
       const results = await runDoctor();
       const cacheCheck = results.find((r) => r.check === "cache-dir");
@@ -210,7 +205,7 @@ describe("runDoctor", () => {
     });
   });
 
-  test("cache-integrity reports ok for empty cache", skip, async () => {
+  test("cache-integrity reports ok for empty cache", async () => {
     await withTempCnaCacheDir(async () => {
       const results = await runDoctor();
       const integrity = results.find((r) => r.check === "cache-integrity");
@@ -220,7 +215,7 @@ describe("runDoctor", () => {
   });
 });
 
-describe("verifyCache", skip, () => {
+describe("verifyCache", () => {
   test("returns empty for unknown id", async () => {
     await withTempCnaCacheDir(async () => {
       const results = await verifyCache("nonexistent");
@@ -229,7 +224,7 @@ describe("verifyCache", skip, () => {
   });
 });
 
-describe("cleanCache", skip, () => {
+describe("cleanCache", () => {
   test("cleaning all entries removes everything", async () => {
     await withTempCnaCacheDir(async (root) => {
       const a = path.join(root, "a");
