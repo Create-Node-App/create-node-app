@@ -238,9 +238,12 @@ const main = async () => {
   );
 };
 
-main().catch((err) => {
-  const verbose = Boolean(program.opts()?.verbose);
-
+/**
+ * Print an error to stderr and exit with code 1. Exposed for tests so
+ * they can invoke the real handler instead of asserting on a manual
+ * `console.error` reproduction.
+ */
+export const handleMainError = (err: unknown, verbose: boolean): never => {
   if (
     typeof err === "object" &&
     err !== null &&
@@ -261,4 +264,8 @@ main().catch((err) => {
     console.error(err);
   }
   process.exit(1);
+};
+
+main().catch((err) => {
+  handleMainError(err, Boolean(program.opts()?.verbose));
 });

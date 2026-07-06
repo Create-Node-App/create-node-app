@@ -74,10 +74,12 @@ Template and extension data is maintained in [`Create-Node-App/cna-templates`](h
 
 ## Local Development
 
+Requires **Node.js 22** (the version pinned in `.node-version`; use `fnm use` to switch automatically):
+
 ```bash
 git clone https://github.com/Create-Node-App/create-node-app.git
 cd create-node-app
-fnm use
+fnm use    # reads .node-version
 npm install
 npm run build
 ```

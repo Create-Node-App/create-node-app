@@ -1,5 +1,7 @@
 // Removed unused eslint-disable (global-require) after migration to flat config
 import { existsSync } from "fs";
+import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
 import merge from "lodash.merge";
 import type { TemplateOrExtension } from "./loaders.js";
 import { getPackagePath } from "./paths.js";
@@ -27,13 +29,31 @@ const getInstallableSetup = ({
   };
 };
 
-// Helper function to require a module if it exists, or throw an error
-const requireIfExists = (path: string) => {
-  if (existsSync(path)) {
-    return require(path);
-  }
+// Use createRequire to allow dynamic require() in this ESM module.
+// createRequire uses the local module URL so the require graph stays
+// scoped to this file.
+const localRequire = createRequire(import.meta.url);
 
-  throw new Error(`File ${path} does not exist`);
+/**
+ * Load a module from disk if it exists. Throws if missing.
+ *
+ * For `.json` files we use dynamic `import()` with the `with { type: "json" }`
+ * assertion (Node 22+). For `.js`/`.cjs` files we use `createRequire`. This
+ * avoids the legacy `require()` pattern that only works because of tsup's
+ * `--shims` build flag.
+ */
+const importIfExists = async (filePath: string): Promise<unknown> => {
+  if (!existsSync(filePath)) {
+    throw new Error(`File ${filePath} does not exist`);
+  }
+  if (filePath.endsWith(".json")) {
+    const mod = (await import(pathToFileURL(filePath).href, {
+      with: { type: "json" },
+    })) as { default?: unknown };
+    return mod.default ?? mod;
+  }
+  // Fallback to createRequire for JS/CJS template modules.
+  return localRequire(filePath);
 };
 
 // Options for loading packages
@@ -75,14 +95,14 @@ export const loadPackages = async ({
     templatesOrExtensions.map(async ({ url: templateOrExtension }) => {
       try {
         // Try to load and merge template package
-        const template = requireIfExists(
+        const template = (await importIfExists(
           await getPackagePath(
             templateOrExtension,
             "template.json",
             false,
             pathOpts,
           ),
-        );
+        )) as { package?: unknown };
         return template.package || {}; // Use an empty object if template.json is not found
       } catch {
         return {}; // Ignore if template.json is not found
@@ -107,14 +127,14 @@ export const loadPackages = async ({
       async ({ url: templateOrExtension, ignorePackage }) => {
         try {
           // Try to load and merge package.json
-          const templateOrExtensionPackageJson = requireIfExists(
+          const templateOrExtensionPackageJson = (await importIfExists(
             await getPackagePath(
               templateOrExtension,
               "package.json",
               globalIgnorePackage || ignorePackage,
               pathOpts,
             ),
-          );
+          )) as Record<string, unknown>;
           return templateOrExtensionPackageJson; // Use an empty object if package.json is not found
         } catch {
           return {}; // Ignore if package.json is not found
@@ -128,9 +148,12 @@ export const loadPackages = async ({
     templatesOrExtensions.map(async ({ url: templateOrExtension }) => {
       try {
         // Try to resolve package updates using package module
-        const resolveTemplateOrExtensionPackage = requireIfExists(
+        const resolveTemplateOrExtensionPackage = (await importIfExists(
           await getPackagePath(templateOrExtension, "package", false, pathOpts),
-        );
+        )) as (
+          setup: Record<string, unknown>,
+          config: Record<string, unknown>,
+        ) => Record<string, unknown>;
         return resolveTemplateOrExtensionPackage(mergedSetup, config); // Use an empty object if resolution fails
       } catch {
         return {}; // Ignore if the resolution function fails
