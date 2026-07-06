@@ -20,7 +20,6 @@ DISABLE_LINTERS:
   - JAVASCRIPT_ES # Root ESLint project service does not include standalone JS config entrypoints
   - JSON_V8R # v8r flags valid tsconfig variants against generic JSON schemas
   - REPOSITORY_CHECKOV
-  - REPOSITORY_GITLEAKS
   - REPOSITORY_GRYPE
   - REPOSITORY_OSV_SCANNER # Handled by scheduled workflow in .github/workflows/osv-scanner.yml
   - REPOSITORY_TRIVY

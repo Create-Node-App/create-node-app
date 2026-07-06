@@ -8,7 +8,7 @@
 
 - TypeScript
 - Node.js 22+
-- pnpm 10+
+- npm 10+
 - Turborepo (monorepo)
 
 ## Key Commands
