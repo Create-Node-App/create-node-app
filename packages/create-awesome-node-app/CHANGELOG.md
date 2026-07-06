@@ -1,5 +1,17 @@
 # create-awesome-node-app
 
+## 0.11.2
+
+### Patch Changes
+
+- 17ec4a7: Fix two bugs found during end-to-end testing:
+
+  - **`--list-addons` returned empty list** — `getExtensionsGroupedByCategory` was filtering by `["all"]`, but the registry catalogs extensions by their actual types (`react`, `nextjs`, etc.), so the filter never matched. Now passing an empty type array means "show all extensions".
+  - **`--cache-dir` did not scope the working dir** — the working copy at `~/.cna/<base64>` was hardcoded and ignored the user-provided `cacheDir`. Now the working dir is colocated under the `cacheDir` when one is set, otherwise falls back to `~/.cna/`.
+
+- Updated dependencies [17ec4a7]
+  - @create-node-app/core@0.7.3
+
 ## 0.11.1
 
 ### Patch Changes
