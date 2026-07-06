@@ -437,7 +437,7 @@ Yes. Supported templates can generate `AGENTS.md`, helping assistants understand
 
 - 🚀 More framework templates and vertical starters.
 - 🧪 Additional testing packs for contracts, performance, and load testing.
-- 📌 Template version pinning and diff-based upgrade paths.
+- 📌 [Template version pinning](https://github.com/Create-Node-App/create-node-app/issues/186) and diff-based upgrade paths.
 - 📊 Rich template analytics and usage insights.
 
 Track progress in [Issues](https://github.com/Create-Node-App/create-node-app/issues) and [Discussions](https://github.com/Create-Node-App/create-node-app/discussions).
