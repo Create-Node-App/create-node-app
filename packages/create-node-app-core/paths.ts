@@ -115,10 +115,12 @@ const solveRepositoryPath = async ({
   const targetWithSubdir = Buffer.from(`${url}#${branch}#${subdir}`).toString(
     "base64",
   );
-  // When a cacheDir override is provided, scope the working dir under it
-  // (mirrors the behavior of the cache itself). Otherwise default to ~/.cna.
-  const workingRoot = cacheDir
-    ? path.join(cacheDir, "working")
+  // When a cacheDir override is provided (or CNA_CACHE_DIR is set), scope
+  // the working dir under it (mirrors the behavior of the cache itself).
+  // Otherwise default to ~/.cna.
+  const effectiveCacheDir = cacheDir || process.env.CNA_CACHE_DIR;
+  const workingRoot = effectiveCacheDir
+    ? path.join(effectiveCacheDir, "working")
     : path.join(os.homedir(), ".cna");
   const target = path.join(workingRoot, targetWithSubdir);
 
