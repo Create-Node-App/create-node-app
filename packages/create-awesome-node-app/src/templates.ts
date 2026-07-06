@@ -1,8 +1,28 @@
-import axios from "axios";
 import type { PromptType } from "prompts";
+import { readFile } from "fs/promises";
+import { existsSync } from "fs";
+import path from "path";
+import os from "os";
 
 const TEMPLATE_DATA_FILE_URL =
   "https://raw.githubusercontent.com/Create-Node-App/cna-templates/main/templates.json";
+
+export const CNA_USER_AGENT = `create-awesome-node-app/0.9.9 (https://github.com/Create-Node-App/create-node-app)`;
+export const CNA_FETCH_TIMEOUT_MS = 10_000;
+export const CACHE_TTL_MS = 3600000; // 1 hour
+
+export const getCatalogCacheDir = (): string => {
+  const override = process.env.CNA_CACHE_DIR;
+  const base =
+    override && override.length > 0
+      ? override
+      : path.join(os.homedir(), ".cache", "cna");
+  return path.join(base, "catalog");
+};
+
+export const getCatalogCacheFilePath = (): string => {
+  return path.join(getCatalogCacheDir(), "templates.json");
+};
 
 export type TemplateOrExtensionData = {
   name: string;
@@ -42,36 +62,97 @@ export type Templates = {
   categories: CategoryData[];
 };
 
-const CACHE_TTL_MS = 3600000; // Cache data for 1 hour
-
 const templateDataCache = {
   data: null as Templates | null,
   timestamp: 0,
 };
 
-const fetchTemplateData = async () => {
+const readCachedCatalogFromDisk = async (): Promise<Templates | null> => {
+  const filePath = getCatalogCacheFilePath();
+  if (!existsSync(filePath)) return null;
   try {
-    const response = await axios.get<Templates>(TEMPLATE_DATA_FILE_URL);
-    return response.data;
+    const raw = await readFile(filePath, "utf8");
+    return JSON.parse(raw) as Templates;
   } catch {
-    // Handle network error, e.g., log it or show a user-friendly message.
-    throw new Error("Failed to fetch template data");
+    return null;
   }
 };
 
-const getTemplateData = async () => {
-  const currentTime = Date.now();
+const writeCatalogToDisk = async (data: Templates): Promise<void> => {
+  const dir = getCatalogCacheDir();
+  const filePath = getCatalogCacheFilePath();
+  try {
+    const { mkdir } = await import("fs/promises");
+    await mkdir(dir, { recursive: true });
+    const { writeFile } = await import("fs/promises");
+    await writeFile(filePath, JSON.stringify(data), "utf8");
+  } catch {
+    // Best-effort; disk cache is an optimization.
+  }
+};
 
-  if (
-    templateDataCache.data === null ||
-    currentTime - templateDataCache.timestamp > CACHE_TTL_MS
-  ) {
-    // Data is not in cache or has expired, fetch and cache it.
-    templateDataCache.data = await fetchTemplateData();
-    templateDataCache.timestamp = currentTime;
+const fetchTemplateData = async (): Promise<Templates> => {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      CNA_FETCH_TIMEOUT_MS,
+    );
+    try {
+      const response = await fetch(TEMPLATE_DATA_FILE_URL, {
+        headers: {
+          Accept: "application/json",
+          "User-Agent": CNA_USER_AGENT,
+        },
+        signal: controller.signal,
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status} ${response.statusText}`);
+      }
+      return (await response.json()) as Templates;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  } catch (err) {
+    // Fall back to disk cache if network is unavailable.
+    const disk = await readCachedCatalogFromDisk();
+    if (disk) {
+      console.warn(
+        `[cna] Could not refresh template catalog (${err instanceof Error ? err.message : String(err)}). Using cached version.`,
+      );
+      return disk;
+    }
+    throw new Error(
+      `Failed to fetch template data: ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
+};
+
+const isCacheFresh = (): boolean => {
+  if (templateDataCache.data === null) return false;
+  if (process.env.CNA_NO_CATALOG_CACHE === "1") return false;
+  return Date.now() - templateDataCache.timestamp <= CACHE_TTL_MS;
+};
+
+export const getTemplateData = async (): Promise<Templates> => {
+  if (isCacheFresh()) {
+    return templateDataCache.data as Templates;
   }
 
-  return templateDataCache.data;
+  const data = await fetchTemplateData();
+  templateDataCache.data = data;
+  templateDataCache.timestamp = Date.now();
+  // Persist to disk so subsequent invocations can fall back when offline.
+  // Awaited so callers (and tests) can rely on the file existing after
+  // getTemplateData() resolves.
+  await writeCatalogToDisk(data);
+  return data;
+};
+
+// Test-only: reset the in-memory cache.
+export const __resetTemplateDataCacheForTests = () => {
+  templateDataCache.data = null;
+  templateDataCache.timestamp = 0;
 };
 
 export const getTemplateCategories = async (

@@ -84,4 +84,35 @@ When passing custom options that contain spaces, quote the entire `key=value` pa
 npx create-awesome-node-app my-app -t nextjs-starter --set 'projectName=My Awesome Project'
 ```
 
+## Cache location and inspection
+
+By default, CNA caches the template catalog and the template git repos
+under `~/.cache/cna`. The CLI exposes this via:
+
+```bash
+npx create-awesome-node-app cache dir    # print the cache root
+npx create-awesome-node-app cache list   # show entries with id, url, branch, last fetched, sha, size
+npx create-awesome-node-app cache verify # run git fsck on every entry
+npx create-awesome-node-app cache clean  # remove all entries
+npx create-awesome-node-app cache clean <id>   # remove one entry by id
+npx create-awesome-node-app cache clean --catalog   # also clear the catalog cache
+```
+
+If a scaffold "looks weird" and you suspect a stale cache, the first
+diagnostic step is `cache verify`. If any entry fails, `cache clean` and
+re-run.
+
+## Forcing a fresh fetch
+
+```bash
+# Force a re-fetch of templates.json on every run.
+npx create-awesome-node-app my-app -t react-vite-boilerplate --no-cache
+
+# Disable git pull on cache hit (use the local copy as-is).
+npx create-awesome-node-app my-app -t react-vite-boilerplate --offline
+
+# Pin the cache to a project-local directory (useful in CI).
+CNA_CACHE_DIR="$PWD/.cna-cache" npx create-awesome-node-app my-app -t react-vite-boilerplate
+```
+
 See also: [MIGRATION.md](./MIGRATION.md) for keeping scaffolded projects up to date.

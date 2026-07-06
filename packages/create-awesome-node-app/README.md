@@ -46,7 +46,7 @@ npx create-awesome-node-app my-app \
 ```
 
 | If you want...                | Start here                                        |
-|-------------------------------|---------------------------------------------------|
+| ----------------------------- | ------------------------------------------------- |
 | A guided local setup          | `npm create awesome-node-app@latest my-app`       |
 | A repeatable CI/platform flow | `--no-interactive` with explicit flags            |
 | Your company starter          | `--template <github-url>` or `--template file://` |
@@ -56,11 +56,11 @@ npx create-awesome-node-app my-app \
 
 ## ✨ Why CNA?
 
-| Capability                        | Value                                                                                                 |
-|-----------------------------------|-------------------------------------------------------------------------------------------------------|
-| 🧩 **Composable by design**       | Start with a template, then layer only the addons your project actually needs.                        |
+| Capability                       | Value                                                                                                 |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 🧩 **Composable by design**      | Start with a template, then layer only the addons your project actually needs.                        |
 | 🛡️ **Production-ready defaults** | TypeScript, linting, scripts, testing paths, and practical DX defaults out of the box.                |
-| 🤖 **AI-ready from day one**      | Supported templates generate `AGENTS.md` so coding agents understand the project context.             |
+| 🤖 **AI-ready from day one**     | Supported templates generate `AGENTS.md` so coding agents understand the project context.             |
 | 🏗️ **CI and platform friendly**  | Use `--no-interactive`, `--set`, `--template <url>`, and `--extend <url>` for repeatable scaffolding. |
 
 ---
@@ -80,7 +80,7 @@ You can mix catalog templates and addons with your own GitHub or `file://` sourc
 ### 🧱 Template Families
 
 | Category      | Example templates                                           |
-|---------------|-------------------------------------------------------------|
+| ------------- | ----------------------------------------------------------- |
 | Frontend      | `react-vite-boilerplate`, `astro-starter`                   |
 | Backend       | `nestjs-boilerplate`, `hono-starter`                        |
 | Full Stack    | `nextjs-starter`, `nextjs-saas-ai-starter`, `remix-starter` |
@@ -91,7 +91,7 @@ You can mix catalog templates and addons with your own GitHub or `file://` sourc
 ### 🧰 Addon Families
 
 | Category                  | Examples                                                                  |
-|---------------------------|---------------------------------------------------------------------------|
+| ------------------------- | ------------------------------------------------------------------------- |
 | UI                        | `tailwind-css`, `material-ui`, `shadcn-ui`, `nextjs-shadcn`               |
 | State and data            | `zustand`, `jotai`, `tanstack-react-query`, `apollo-client`               |
 | Backend and DB            | `drizzle-orm-postgresql`, `drizzle-orm-sqlite`, `mongoose-orm-mongodb`    |
@@ -215,7 +215,7 @@ Full catalog:
 Supported templates can generate an `AGENTS.md` file so coding assistants understand project context before editing:
 
 | Context                | Why it matters                                              |
-|------------------------|-------------------------------------------------------------|
+| ---------------------- | ----------------------------------------------------------- |
 | Project purpose        | Agents understand what the app is for before changing code. |
 | Directory layout       | Suggestions align with the real structure.                  |
 | Scripts and validation | Agents know how to lint, test, build, and verify changes.   |
@@ -230,7 +230,7 @@ Learn more: **[AGENTS.md guide](https://create-awesome-node-app.vercel.app/docs/
 Run the CLI without flags and CNA guides you through:
 
 | Step              | What you choose                                                            |
-|-------------------|----------------------------------------------------------------------------|
+| ----------------- | -------------------------------------------------------------------------- |
 | Project name      | Confirm or set the target directory                                        |
 | Package manager   | npm, yarn, pnpm, or Bun                                                    |
 | Category          | Frontend, Backend, Full Stack, Monorepo, Web Extension, UAT, or custom URL |
@@ -261,7 +261,7 @@ Usage: create-awesome-node-app [project-directory] [options]
 ```
 
 | Flag                         | Description                                           |
-|------------------------------|-------------------------------------------------------|
+| ---------------------------- | ----------------------------------------------------- |
 | `--interactive`              | Force interactive wizard (default outside CI)         |
 | `--no-interactive`           | Disable wizard and use flags only                     |
 | `-t, --template <slug\|url>` | Template slug from catalog or remote/local URL        |
@@ -275,10 +275,89 @@ Usage: create-awesome-node-app [project-directory] [options]
 | `--use-bun`                  | Use Bun instead of npm, yarn, or pnpm                 |
 | `--list-templates`           | Print all templates grouped by category               |
 | `--list-addons`              | Print addons, optionally filtered by `--template`     |
+| `--offline`                  | Use the local cache only; do not refresh templates    |
+| `--no-cache`                 | Disable the catalog cache; force a refresh each run   |
+| `--cache-dir <path>`         | Override the cache root (default: `~/.cache/cna`)     |
+| `--refresh <mode>`           | When to refresh: `always` \| `stale` \| `manual`      |
 | `-v, --verbose`              | Output resolved generation config as JSON             |
 | `-i, --info`                 | Print Node, npm, and OS diagnostics                   |
 | `-V, --version`              | Print CLI version                                     |
 | `-h, --help`                 | Show help                                             |
+
+### 🗃️ `cna cache` subcommand
+
+```text
+Usage: create-awesome-node-app cache [options] [command]
+
+Commands:
+  dir                   Print the cache root directory
+  list                  List cached templates and extensions
+  clean [id]            Remove one or all entries; --catalog also clears the catalog cache
+  verify [id]           Run `git fsck` on one or all entries
+```
+
+Inspect and manage the on-disk cache:
+
+```bash
+# Where is my cache?
+npx create-awesome-node-app cache dir
+# /home/<you>/.cache/cna
+
+# What's in it?
+npx create-awesome-node-app cache list
+# ID  URL                                BRANCH  LAST FETCHED  SHA       SIZE
+# ...<base64-id>  https://github.com/...  main    3h ago       abc1234   9.3 MB
+
+# Verify integrity
+npx create-awesome-node-app cache verify
+
+# Clear everything (and the catalog cache)
+npx create-awesome-node-app cache clean --catalog
+
+# Clear a single entry by its base64 ID
+npx create-awesome-node-app cache clean <id>
+```
+
+---
+
+## 📦 Cache & Updates
+
+CNA caches both the **template catalog** (`templates.json` from
+`raw.githubusercontent.com`) and the **template git repos** themselves. The
+cache lives at `~/.cache/cna` by default; override with `--cache-dir
+<path>` or `CNA_CACHE_DIR`.
+
+| Path                            | Contents                                   |
+| ------------------------------- | ------------------------------------------ |
+| `~/.cache/cna/catalog/`         | Cached `templates.json` (one file)         |
+| `~/.cache/cna/<base64-of-url>/` | Shallow clone of one template or extension |
+
+### Refresh modes (set with `--refresh <mode>` or `CNA_REFRESH=<mode>`)
+
+- **`stale`** (default): pull only when the cache is older than
+  `CNA_REFRESH_AFTER_HOURS` (default `24`). No network on a warm cache.
+- **`always`**: pull on every run (the pre-Phase-2 behavior).
+- **`manual`**: never pull unless `--refresh` is passed.
+
+Each cache entry has a `.cna-meta.json` sidecar with `lastFetchedAt`,
+`lastCommitSha`, `lastRefreshReason`, `branch`, and `url`.
+
+### CI and offline usage
+
+```bash
+# Fully offline CI: use the local cache only, no network.
+npx create-awesome-node-app my-app -t react-vite-boilerplate --offline
+
+# Pin the cache to a project-local directory (useful in monorepos and CI).
+CNA_CACHE_DIR="$PWD/.cna-cache" npx create-awesome-node-app my-app -t react-vite-boilerplate
+```
+
+### Storage optimization
+
+On a cache hit, the working copy is built with `cp -c` (reflink) when the
+filesystem supports it, then `cp -l` (hardlink) on Linux, then a recursive
+copy as a last resort. A warm scaffold is O(1) on the working directory
+when reflinks are available.
 
 ---
 

@@ -326,6 +326,10 @@ export type LoadFilesOptions = {
   srcDir?: string;
   runCommand: string;
   installCommand: string;
+  offline?: boolean;
+  cacheDir?: string;
+  refresh?: import("./git.js").RefreshMode;
+  refreshAfterHours?: number;
 } & {
   [key: string]: unknown;
 };
@@ -342,12 +346,21 @@ export const loadFiles = async ({
   srcDir = DEFAULT_SRC_PATH,
   runCommand,
   installCommand,
+  offline,
+  cacheDir,
+  refresh,
+  refreshAfterHours,
   ...customOptions
 }: LoadFilesOptions) => {
   try {
     const operations = [];
     for await (const { url: templateOrExtensionUrl } of templatesOrExtensions) {
-      const templateDir = await getTemplateDirPath(templateOrExtensionUrl);
+      const templateDir = await getTemplateDirPath(templateOrExtensionUrl, {
+        ...(offline !== undefined ? { offline } : {}),
+        ...(cacheDir !== undefined ? { cacheDir } : {}),
+        ...(refresh !== undefined ? { refresh } : {}),
+        ...(refreshAfterHours !== undefined ? { refreshAfterHours } : {}),
+      });
       if (verbose) {
         try {
           const stat = fs.existsSync(templateDir)

@@ -72,13 +72,24 @@ type SolveRepositoryPathOptions = {
   url: string;
   branch?: string;
   subdir?: string;
+  offline?: boolean;
+  cacheDir?: string;
+  refresh?: import("./git.js").RefreshMode;
+  refreshAfterHours?: number;
 };
 
 const solveRepositoryPath = async ({
   url,
   branch,
   subdir,
+  offline,
+  cacheDir,
+  refresh,
+  refreshAfterHours,
 }: SolveRepositoryPathOptions) => {
+  // targetId includes branch but not subdir, so multiple addons that share a
+  // base template (e.g. react-tailwindcss and react-shadcn) deduplicate the
+  // git cache directory.
   const targetId = Buffer.from(`${url}#${branch}`).toString("base64");
   const targetWithSubdir = Buffer.from(`${url}#${branch}#${subdir}`).toString(
     "base64",
@@ -95,6 +106,10 @@ const solveRepositoryPath = async ({
     branch: branch || "",
     target,
     targetId,
+    ...(offline !== undefined ? { offline } : {}),
+    ...(cacheDir !== undefined ? { cacheDir } : {}),
+    ...(refresh !== undefined ? { refresh } : {}),
+    ...(refreshAfterHours !== undefined ? { refreshAfterHours } : {}),
   });
 
   return { dir: target, subdir };
@@ -109,6 +124,12 @@ type SolvedTemplatePath = {
 
 const solveTemplateOrExtensionPath = async (
   templateOrExtension: string,
+  opts?: {
+    offline?: boolean;
+    cacheDir?: string;
+    refresh?: import("./git.js").RefreshMode;
+    refreshAfterHours?: number;
+  },
 ): Promise<SolvedTemplatePath> => {
   let parsed: ReturnType<typeof solveValuesFromTemplateOrExtensionUrl>;
   try {
@@ -134,7 +155,17 @@ const solveTemplateOrExtensionPath = async (
     return { dir: pathname, subdir, ignorePackage };
   }
 
-  const gitData = await solveRepositoryPath({ url, branch, subdir });
+  const gitData = await solveRepositoryPath({
+    url,
+    branch,
+    subdir,
+    ...(opts?.offline !== undefined ? { offline: opts.offline } : {}),
+    ...(opts?.cacheDir !== undefined ? { cacheDir: opts.cacheDir } : {}),
+    ...(opts?.refresh !== undefined ? { refresh: opts.refresh } : {}),
+    ...(opts?.refreshAfterHours !== undefined
+      ? { refreshAfterHours: opts.refreshAfterHours }
+      : {}),
+  });
   return { dir: gitData.dir, subdir: gitData.subdir, ignorePackage };
 };
 
@@ -142,12 +173,18 @@ export const getPackagePath = async (
   templateOrExtension: string,
   name = "package",
   ignorePackage = false,
+  opts?: {
+    offline?: boolean;
+    cacheDir?: string;
+    refresh?: import("./git.js").RefreshMode;
+    refreshAfterHours?: number;
+  },
 ) => {
   const {
     dir,
     subdir,
     ignorePackage: templateOrExtensionIgnorePackage,
-  } = await solveTemplateOrExtensionPath(templateOrExtension);
+  } = await solveTemplateOrExtensionPath(templateOrExtension, opts);
 
   if (
     name === "package.json" &&
@@ -165,6 +202,13 @@ export const getPackagePath = async (
   return path.resolve(dir, name);
 };
 
+export type GetTemplatePathOptions = {
+  offline?: boolean;
+  cacheDir?: string;
+  refresh?: import("./git.js").RefreshMode;
+  refreshAfterHours?: number;
+};
+
 /**
  * Returns the base directory for a template URL — i.e. the directory that
  * CONTAINS the optional `template/` subdirectory. This is where cna.config.json
@@ -172,10 +216,12 @@ export const getPackagePath = async (
  */
 export const getTemplateBaseDirPath = async (
   templateOrExtensionUrl: string,
+  opts?: GetTemplatePathOptions,
 ): Promise<string> => {
   try {
     const { dir, subdir = "" } = await solveTemplateOrExtensionPath(
       templateOrExtensionUrl,
+      opts,
     );
     return path.resolve(dir, subdir);
   } catch {
@@ -183,9 +229,13 @@ export const getTemplateBaseDirPath = async (
   }
 };
 
-export const getTemplateDirPath = async (templateOrExtensionUrl: string) => {
+export const getTemplateDirPath = async (
+  templateOrExtensionUrl: string,
+  opts?: GetTemplatePathOptions,
+) => {
   const { dir, subdir = "" } = await solveTemplateOrExtensionPath(
     templateOrExtensionUrl,
+    opts,
   );
   let templateDirPath = path.resolve(dir, subdir);
 

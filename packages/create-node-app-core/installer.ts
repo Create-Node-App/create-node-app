@@ -131,6 +131,10 @@ export type RunOptions = {
   installDependencies?: boolean;
   runCommand: string;
   installCommand: string;
+  offline?: boolean;
+  cacheDir?: string;
+  refresh?: import("./git.js").RefreshMode;
+  refreshAfterHours?: number;
 } & {
   [key: string]: unknown;
 };
@@ -202,6 +206,10 @@ const run = async ({
   installDependencies = true,
   runCommand = "",
   installCommand = "",
+  offline,
+  cacheDir,
+  refresh,
+  refreshAfterHours,
   ...customOptions
 }: RunOptions) => {
   const isOnline = useYarn ? await checkIfOnline(useYarn) : true;
@@ -231,6 +239,10 @@ const run = async ({
     useBun,
     runCommand,
     installCommand,
+    ...(offline !== undefined ? { offline } : {}),
+    ...(cacheDir !== undefined ? { cacheDir } : {}),
+    ...(refresh !== undefined ? { refresh } : {}),
+    ...(refreshAfterHours !== undefined ? { refreshAfterHours } : {}),
     ...customOptions,
   });
 
@@ -405,6 +417,10 @@ export type CreateAppOptions = {
   templatesOrExtensions?: TemplateOrExtension[];
   installDependencies?: boolean;
   ignorePackage?: boolean;
+  offline?: boolean;
+  cacheDir?: string;
+  refresh?: import("./git.js").RefreshMode;
+  refreshAfterHours?: number;
 } & {
   [key: string]: unknown;
 };
@@ -416,6 +432,10 @@ export const createApp = async ({
   templatesOrExtensions = [],
   installDependencies = true,
   ignorePackage = false,
+  offline,
+  cacheDir,
+  refresh,
+  refreshAfterHours,
   ...customOptions
 }: CreateAppOptions) => {
   const root = path.resolve(name);
@@ -458,6 +478,10 @@ export const createApp = async ({
     useBun,
     runCommand,
     ignorePackage,
+    ...(offline !== undefined ? { offline } : {}),
+    ...(cacheDir !== undefined ? { cacheDir } : {}),
+    ...(refresh !== undefined ? { refresh } : {}),
+    ...(refreshAfterHours !== undefined ? { refreshAfterHours } : {}),
   });
 
   fs.writeFileSync(
@@ -531,6 +555,10 @@ export const createApp = async ({
     installDependencies,
     runCommand,
     installCommand,
+    ...(offline !== undefined ? { offline } : {}),
+    ...(cacheDir !== undefined ? { cacheDir } : {}),
+    ...(refresh !== undefined ? { refresh } : {}),
+    ...(refreshAfterHours !== undefined ? { refreshAfterHours } : {}),
     ...customOptions,
   });
 };
