@@ -23,10 +23,19 @@ const moduleDir =
  * Query params:
  *   - ignorePackage=true  -> ignore package.json from template
  *   - subdir=<relativePath> (only for file://) -> pick subdirectory
+ *   - ref=<sha>           -> pin to a specific commit SHA (overrides branch)
  */
 const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: string) => {
   const url = new URL(templateOrExtension);
   const ignorePackage = url.searchParams.get("ignorePackage") === "true";
+  const refParam = url.searchParams.get("ref") || "";
+  const strictRepro = process.env.CNA_STRICT_REPRO === "1";
+
+  if (refParam && strictRepro && !/^[0-9a-f]{40}$/i.test(refParam)) {
+    throw new Error(
+      `Invalid ref parameter '${refParam}' with CNA_STRICT_REPRO=1: expected a full 40-character commit SHA.`,
+    );
+  }
 
   if (url.protocol === "file:") {
     // Handle platform specific absolute paths
@@ -38,7 +47,7 @@ const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: string) => {
     const subdirParam = url.searchParams.get("subdir") || "";
     return {
       url: templateOrExtension, // not used for git cloning when file://
-      branch: "",
+      branch: refParam, // use ref even for file:// (carried but unused)
       subdir: subdirParam,
       protocol: url.protocol,
       host: "", // host is unused for file
@@ -56,6 +65,10 @@ const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: string) => {
   if (parts[2] === "tree") {
     branch = parts[3] || "";
     subdir = parts.slice(4).join("/");
+  }
+  // ref query param overrides the branch from the URL path
+  if (refParam) {
+    branch = refParam;
   }
   return {
     url: `${origin}/${org}/${repo}`,

@@ -113,6 +113,10 @@ const main = async () => {
       "debug: keep partially-scaffolded files when a copy operation fails (default: clean up)",
     )
     .option(
+      "--strict-version",
+      "exit with error code if the CLI version is not the latest (also via CNA_STRICT_VERSION=1)",
+    )
+    .option(
       "--offline",
       "use the local cache only; do not refresh templates from the network",
     )
@@ -167,13 +171,17 @@ const main = async () => {
 
   const latestVersion = await checkForLatestVersion("create-awesome-node-app");
   if (latestVersion && semver.lt(packageJson.version, latestVersion)) {
-    console.log();
-    console.warn(
-      pc.yellow(
-        `You are running \`create-awesome-node-app\` ${packageJson.version}, which is behind the latest release (${latestVersion}).\n\n` +
-          "We recommend always using the latest version of create-awesome-node-app if possible.\n",
-      ),
-    );
+    const strict =
+      opts.strictVersion || process.env.CNA_STRICT_VERSION === "1";
+    const message = `You are running \`create-awesome-node-app\` ${packageJson.version}, which is behind the latest release (${latestVersion}).\n\n` +
+      "We recommend always using the latest version of create-awesome-node-app if possible.\n";
+    if (strict) {
+      console.error(pc.red(message));
+      process.exit(1);
+    } else {
+      console.log();
+      console.warn(pc.yellow(message));
+    }
   }
 
   // Handle list templates flag
@@ -225,9 +233,10 @@ const main = async () => {
   // `noCache` is consumed above (translates to env + refresh=always);
   // `cacheDir` similarly. Strip both from the rest spread so they don't
   // leak into the EJS context via the catch-all object.
-  const { cacheDir: _cacheDirFlag, ...scaffoldOpts } = restOpts;
+  const { cacheDir: _cacheDirFlag, strictVersion: _strictVersionFlag, ...scaffoldOpts } = restOpts;
   void noCache;
   void _cacheDirFlag;
+  void _strictVersionFlag;
 
   return createNodeApp(
     projectName,
