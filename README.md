@@ -18,6 +18,8 @@
 [![Downloads][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ulises-jeremias?style=flat&logo=github)](https://github.com/sponsors/ulises-jeremias)
+[![Node version](https://img.shields.io/badge/node-22%20LTS-339933?style=flat&logo=nodedotjs&logoColor=white)](.node-version)
+[![npm version](https://img.shields.io/badge/npm-10-CC3534?style=flat&logo=npm&logoColor=white)](.node-version)
 
 [Package README](./packages/create-awesome-node-app/README.md) · [Official Site](https://create-awesome-node-app.vercel.app) · [Templates](https://create-awesome-node-app.vercel.app/templates) · [Extensions](https://create-awesome-node-app.vercel.app/extensions) · [Contributing](./CONTRIBUTING.md) · [Troubleshooting](./docs/TROUBLESHOOTING.md)
 
