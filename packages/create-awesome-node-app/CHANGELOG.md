@@ -1,5 +1,137 @@
 # create-awesome-node-app
 
+## 0.10.0
+
+### Minor Changes
+
+- 3d3bc3f: Cache controls and smart refresh (sub-issue #180 of epic #179)
+
+  **New CLI flags** for the main scaffold command:
+
+  - `--offline` — use the local cache only; do not refresh templates from the network
+  - `--no-cache` — disable the on-disk catalog cache and force a refresh on every run
+  - `--cache-dir <path>` — override the cache root (defaults to `~/.cache/cna`; also honors `CNA_CACHE_DIR`)
+  - `--refresh <mode>` — when to refresh the cached template: `always` | `stale` | `manual` (default: `stale`, controlled by `CNA_REFRESH` and `CNA_REFRESH_AFTER_HOURS`)
+
+  **New `cna cache` subcommand**:
+
+  - `cna cache dir` — print the cache root directory
+  - `cna cache list` — list cached templates/extensions (id, url, branch, last fetched, last commit SHA, size)
+  - `cna cache clean [id]` — remove one or all entries; pass `--catalog` to also clear the on-disk template catalog cache
+  - `cna cache verify [id]` — run `git fsck` on one or all entries, exit non-zero if any entry is corrupt
+
+  **Cache layout improvements**:
+
+  - Per-entry `.cna-meta.json` sidecar with `lastFetchedAt`, `lastCommitSha`, `lastRefreshReason`, `branch`, and `url`
+  - Default refresh mode changed from `always` (unconditional `git pull`) to `stale` (pull only if cache is older than `CNA_REFRESH_AFTER_HOURS`, default 24)
+  - Working-copy prep now uses `cp -c` (reflink) / `cp -l` (hardlink) with a recursive copy fallback, so warm scaffolds are O(1) on the working dir
+  - The template catalog is now persisted to disk and used as a fallback when the network is unavailable
+
+  **Network and dependency hygiene**:
+
+  - Dropped the `axios` dependency; the template catalog now uses the global `fetch` with a 10 s timeout and a `User-Agent: create-awesome-node-app/<version>` header
+
+  See #179 for the parent epic.
+
+### Patch Changes
+
+- 52d31f6: Cleanup (closes #189)
+
+  - **Dead code removed**: `installer.ts` no longer carries the
+    `if (false && yarnUsesDefaultRegistry) { ... require.resolve("./yarn.lock.cached") ... }`
+    block that referenced a file that was never shipped.
+  - **Unused dep removed**: dropped `propagate` from
+    `create-awesome-node-app/package.json`. It was declared in
+    `dependencies` but never imported.
+  - **Stale placeholder removed**: the `{ type: null, name: "__removed_aiTool" }`
+    entry in the interactive prompts has been deleted. The
+    `aiTool`-stripping branch in the non-interactive path is kept for
+    backward compatibility.
+  - **ESM-native loading in core**: `package.ts` now uses
+    `createRequire` (from `node:module`) and dynamic `import(url, { with: { type: "json" } })`
+    for JSON, replacing the `require()` shim that only worked because
+    of `tsup --shims`. No behavior change.
+  - **Testable error handler**: extracted the main `catch` block from
+    `index.ts` into a named export `handleMainError(err, verbose)` so
+    the dispatcher can be unit-tested in isolation.
+  - **Pre-commit hook widened**: root `.lintstagedrc.json` now runs
+    `eslint --fix` on `*.{js,ts,jsx,tsx}` (the per-package configs
+    already did).
+  - **Docs**: the root `README.md` "Local Development" section now
+    documents the Node 22 requirement pinned in `.node-version`.
+
+- e068db9: Concurrency safety improvements (closes #185)
+
+  - **C4 — `try/finally` around cwd change**: `createApp` in
+    `installer.ts` now restores the original working directory after `run()`
+    completes or throws. Added `return await` to ensure the `finally` block
+    fires after the async pipeline settles.
+  - **C3 — `Promise.all` → `Promise.allSettled`**: `loadFiles` in
+    `loaders.ts` now collects all copy failures instead of failing fast on
+    the first one. If any operation rejects, a single error listing all
+    failures is thrown.
+
+- 8ac5338: Config drift alignment (closes #183)
+
+  - **AGENTS.md**: corrected from `pnpm 10+` to `npm 10+` — the repo uses
+    `npm` workspaces with `packageManager: "npm@10.9.2"`.
+  - **Dev container**: `VARIANT` bumped from `18` to `22` so contributors
+    get a Node 22 shell by default.
+  - **Engines**: `engines.npm` tightened from `>=7.0.0` (irrelevant — npm 7
+    is below the bundled npm 10 in Node 22) to `>=10.9.2`, matching
+    `packageManager`.
+  - **MegaLinter**: re-enabled `REPOSITORY_GITLEAKS` (disabled without
+    explanation alongside `CHECKOV`, `GRYPE`, `TRIVY` which are heavy
+    scanners; Gitleaks is lightweight secret detection).
+  - **README**: added Node 22 LTS and npm 10 badges in the badge row.
+
+- bab045f: Observability, signal handling, and silent-failure exit codes (closes #181)
+
+  - **`CnaError` class hierarchy**: new `errors.ts` with `CnaError` (base),
+    `ConfigParseError`, `ManifestLoadError`, `PackageManagerFallback`, and
+    `ScaffoldAbortedError`. Each carries a machine-readable `code` and
+    human-readable `suggestions[]`. Exported from `@create-node-app/core`.
+  - **`SIGINT`/`SIGTERM` handler**: `createApp` in `installer.ts` now
+    registers a one-shot signal handler that cleans up the partial scaffold
+    directory and exits `128+signal_code` before any scaffolding work begins.
+  - **`git init` failure**: sets `process.exitCode = 1` instead of
+    continuing silently.
+  - **`format`/`lint:fix` failure**: `runCommandInProjectDir` sets
+    `process.exitCode = 1` on failure instead of silently swallowing.
+  - **Malformed `cna.config.json`**: `loadTemplateCnaConfig` now throws
+    `ConfigParseError` instead of returning `null`. Callers in `options.ts`
+    catch it and print a yellow warning so the user sees the parse error
+    without the CLI crashing.
+
+- a62cda6: Reproducibility improvements (closes #186)
+
+  - **V2 — `--strict-version` flag**: new CLI flag (also `CNA_STRICT_VERSION=1`)
+    that causes the version-outdated warning to exit with code 1 instead of
+    just printing a warning.
+  - **V4 — Roadmap link**: the "template version pinning" roadmap item in
+    `create-awesome-node-app/README.md` now links to this issue.
+  - **V1 — `?ref=<sha>` URL param**: templates/extensions can now be pinned
+    to a specific commit by appending `?ref=<full-sha>` to the URL. The
+    SHA overrides the branch from the URL path. When `CNA_STRICT_REPRO=1`
+    is set, the ref must be a full 40-character hex SHA or the CLI exits
+    with an error.
+
+- f012ccd: Security hardening (closes #182)
+
+  - **F5 — Fetch timeout and user-agent**: dist-tags fetch in `core/index.ts` now uses `AbortSignal.timeout(10_000)` and a descriptive `User-Agent` header. `CNA_USER_AGENT` and `CNA_CORE_VERSION` are exported from `@create-node-app/core`.
+  - **F2 — Prompt type restriction**: custom options in `cna.config.json` with `type: "invisible"` or `type: "password"` are skipped with a console warning, preventing config-file-driven prompt harvesting.
+  - **F1 — Security policy**: new `SECURITY.md` covering the template RCE threat model, hash-pinned URL best practices, network call inventory, and vulnerability reporting.
+
+- Updated dependencies [3d3bc3f]
+- Updated dependencies [52d31f6]
+- Updated dependencies [e068db9]
+- Updated dependencies [8ac5338]
+- Updated dependencies [bab045f]
+- Updated dependencies [a62cda6]
+- Updated dependencies [f012ccd]
+- Updated dependencies [bc66d86]
+  - @create-node-app/core@0.7.0
+
 ## 0.9.9
 
 ### Patch Changes
