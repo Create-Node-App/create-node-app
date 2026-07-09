@@ -7,7 +7,7 @@ Canonical visual identity for Create Awesome Node App across GitHub, npm, the we
 **Cozy nest / warm workbench** — craft-forward developer tooling that feels warm, polished, and trustworthy.
 
 | Token    | Value                 | Use                              |
-| -------- | --------------------- | -------------------------------- |
+|----------|-----------------------|----------------------------------|
 | Amber    | `#f59e0b` / `#d97706` | Primary accent, CTAs, highlights |
 | Teal     | `#0d9488` / `#14b8a6` | Secondary accent, success, links |
 | Dark bg  | `#0f172a`             | Default surfaces                 |
