@@ -1,24 +1,24 @@
 <svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Create Node App Monorepo</title>
-  <desc id="desc">Clean hero banner for the Create Node App repository with separated text and contribution workflow panels.</desc>
+  <desc id="desc">Cozy nest hero banner for the Create Node App repository with contribution workflow panels.</desc>
   <defs>
     <linearGradient id="repo-bg" x1="0" y1="0" x2="1280" y2="640" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#07111F"/>
-      <stop offset="0.55" stop-color="#101827"/>
-      <stop offset="1" stop-color="#06283A"/>
+      <stop stop-color="#0f172a"/>
+      <stop offset="0.55" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#134e4a"/>
     </linearGradient>
     <linearGradient id="repo-edge" x1="96" y1="84" x2="1184" y2="558" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0EA5E9"/>
-      <stop offset="0.5" stop-color="#22C55E"/>
-      <stop offset="1" stop-color="#F59E0B"/>
+      <stop stop-color="#f59e0b"/>
+      <stop offset="0.55" stop-color="#d97706"/>
+      <stop offset="1" stop-color="#0d9488"/>
     </linearGradient>
     <radialGradient id="repo-glow-a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(268 190) rotate(42) scale(450 270)">
-      <stop stop-color="#0EA5E9" stop-opacity="0.4"/>
-      <stop offset="1" stop-color="#0EA5E9" stop-opacity="0"/>
+      <stop stop-color="#f59e0b" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#f59e0b" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="repo-glow-b" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(990 410) rotate(138) scale(480 300)">
-      <stop stop-color="#22C55E" stop-opacity="0.38"/>
-      <stop offset="1" stop-color="#22C55E" stop-opacity="0"/>
+      <stop stop-color="#0d9488" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#0d9488" stop-opacity="0"/>
     </radialGradient>
     <pattern id="repo-grid" width="42" height="42" patternUnits="userSpaceOnUse">
       <path d="M42 0H0V42" stroke="#94A3B8" stroke-opacity="0.07"/>
@@ -34,21 +34,21 @@
   <rect width="1280" height="640" rx="34" fill="url(#repo-glow-b)"/>
 
   <g filter="url(#repo-shadow)">
-    <rect x="96" y="84" width="1088" height="476" rx="32" fill="#06111F" stroke="url(#repo-edge)" stroke-opacity="0.72"/>
-    <rect x="96" y="84" width="1088" height="72" rx="32" fill="#0F172A" fill-opacity="0.92"/>
+    <rect x="96" y="84" width="1088" height="476" rx="32" fill="#0f172a" stroke="url(#repo-edge)" stroke-opacity="0.72"/>
+    <rect x="96" y="84" width="1088" height="72" rx="32" fill="#1e293b" fill-opacity="0.92"/>
     <circle cx="144" cy="120" r="8" fill="#EF4444"/>
     <circle cx="174" cy="120" r="8" fill="#F59E0B"/>
-    <circle cx="204" cy="120" r="8" fill="#22C55E"/>
+    <circle cx="204" cy="120" r="8" fill="#0d9488"/>
     <text x="640" y="127" text-anchor="middle" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="18" font-weight="700">create-node-app monorepo</text>
   </g>
 
   <g filter="url(#repo-shadow)">
-    <rect x="146" y="198" width="522" height="284" rx="28" fill="#020617" fill-opacity="0.88" stroke="#1E293B"/>
+    <rect x="146" y="198" width="522" height="284" rx="28" fill="#020617" fill-opacity="0.88" stroke="#334155"/>
   </g>
 
   <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif">
-    <rect x="184" y="234" width="154" height="38" rx="19" fill="#0EA5E9" fill-opacity="0.18" stroke="#67E8F9" stroke-opacity="0.62"/>
-    <text x="261" y="258" text-anchor="middle" fill="#CFFAFE" font-size="15" font-weight="800" letter-spacing="0.8">OPEN SOURCE</text>
+    <rect x="184" y="234" width="154" height="38" rx="19" fill="#f59e0b" fill-opacity="0.16" stroke="#fcd34d" stroke-opacity="0.62"/>
+    <text x="261" y="258" text-anchor="middle" fill="#FEF3C7" font-size="15" font-weight="800" letter-spacing="0.8">OPEN SOURCE</text>
 
     <text x="184" y="324" fill="#F8FAFC" font-size="44" font-weight="900" letter-spacing="-1.2">Understand the repo.</text>
     <text x="184" y="376" fill="#E2E8F0" font-size="44" font-weight="900" letter-spacing="-1.2">Contribute faster.</text>
@@ -56,30 +56,30 @@
   </g>
 
   <g font-family="JetBrains Mono, SFMono-Regular, Consolas, monospace">
-    <rect x="184" y="450" width="382" height="42" rx="13" fill="#0B1226" stroke="#22D3EE" stroke-opacity="0.58"/>
-    <text x="206" y="477" fill="#67E8F9" font-size="16" font-weight="700">npm install &amp;&amp; npm run build</text>
+    <rect x="184" y="450" width="382" height="42" rx="13" fill="#0B1226" stroke="#0d9488" stroke-opacity="0.7"/>
+    <text x="206" y="477" fill="#5eead4" font-size="16" font-weight="700">npm install &amp;&amp; npm run build</text>
   </g>
 
   <g filter="url(#repo-shadow)">
-    <rect x="738" y="196" width="384" height="292" rx="28" fill="#020617" fill-opacity="0.78" stroke="#1E293B"/>
+    <rect x="738" y="196" width="384" height="292" rx="28" fill="#020617" fill-opacity="0.78" stroke="#334155"/>
   </g>
 
   <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-weight="800">
-    <rect x="792" y="244" width="276" height="42" rx="21" fill="#0EA5E9" fill-opacity="0.17" stroke="#67E8F9" stroke-opacity="0.66"/>
-    <text x="930" y="271" text-anchor="middle" fill="#CFFAFE" font-size="15">CLI PACKAGE</text>
+    <rect x="792" y="244" width="276" height="42" rx="21" fill="#f59e0b" fill-opacity="0.16" stroke="#fcd34d" stroke-opacity="0.66"/>
+    <text x="930" y="271" text-anchor="middle" fill="#FEF3C7" font-size="15">CLI PACKAGE</text>
     <path d="M930 294V312" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
 
-    <rect x="792" y="320" width="276" height="42" rx="21" fill="#22C55E" fill-opacity="0.17" stroke="#86EFAC" stroke-opacity="0.66"/>
-    <text x="930" y="347" text-anchor="middle" fill="#DCFCE7" font-size="15">CORE ENGINE</text>
+    <rect x="792" y="320" width="276" height="42" rx="21" fill="#0d9488" fill-opacity="0.18" stroke="#5eead4" stroke-opacity="0.66"/>
+    <text x="930" y="347" text-anchor="middle" fill="#ccfbf1" font-size="15">CORE ENGINE</text>
     <path d="M930 370V388" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
 
-    <rect x="792" y="396" width="276" height="42" rx="21" fill="#F59E0B" fill-opacity="0.16" stroke="#FCD34D" stroke-opacity="0.66"/>
+    <rect x="792" y="396" width="276" height="42" rx="21" fill="#d97706" fill-opacity="0.16" stroke="#fbbf24" stroke-opacity="0.66"/>
     <text x="930" y="423" text-anchor="middle" fill="#FEF3C7" font-size="15">CI + DOCS + RELEASES</text>
   </g>
 
   <g opacity="0.85">
-    <circle cx="1102" cy="214" r="5" fill="#22D3EE"/>
-    <circle cx="1126" cy="468" r="5" fill="#4ADE80"/>
-    <circle cx="704" cy="178" r="4" fill="#FCD34D"/>
+    <circle cx="1102" cy="214" r="5" fill="#f59e0b"/>
+    <circle cx="1126" cy="468" r="5" fill="#0d9488"/>
+    <circle cx="704" cy="178" r="4" fill="#fcd34d"/>
   </g>
 </svg>
