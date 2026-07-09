@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
-    "@typescript-eslint/eslint-plugin": "^8.62.1",
+    "@typescript-eslint/eslint-plugin": "^8.63.0",
     "@typescript-eslint/parser": "^8.63.0",
     "c8": "^11.0.0",
     "husky": "^9.1.7",
