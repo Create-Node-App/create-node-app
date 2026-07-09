@@ -19,7 +19,7 @@
     "eslint-config-react-hooks": "^1.0.0"
   },
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "publishConfig": {
     "access": "public",
