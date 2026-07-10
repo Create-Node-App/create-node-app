@@ -10,6 +10,20 @@ Please note we have a [Code of Conduct](./.github/CODE_OF_CONDUCT.md) — follow
 
 ---
 
+## Brand and voice
+
+CNA uses a **cozy nest** identity across GitHub, npm, the website, and generated starters:
+
+- **Palette:** amber `#f59e0b` / `#d97706` + teal `#0d9488` / `#14b8a6` on warm dark surfaces (`#0f172a`)
+- **Tagline:** `One command. Any stack.`
+- **Story:** choose template → add addons → ship
+- **Template design source of truth:** [`cna-templates/docs/DEFAULT_LANDING_DESIGN.md`](https://github.com/Create-Node-App/cna-templates/blob/main/docs/DEFAULT_LANDING_DESIGN.md) and [`shared/assets/`](https://github.com/Create-Node-App/cna-templates/tree/main/shared/assets)
+- **Repo heroes:** `assets/repo-hero.svg` (contributors) and `packages/create-awesome-node-app/assets/hero.svg` (npm)
+
+Prefer warm, craft-forward copy over neon/cyberpunk or generic purple SaaS framing.
+
+---
+
 ## 🐛 Reporting Bugs
 
 Use the [GitHub issue tracker](https://github.com/Create-Node-App/create-node-app/issues) to report bugs.

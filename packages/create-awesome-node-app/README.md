@@ -6,9 +6,9 @@
 
 # Create Awesome Node App
 
-**🚀 Generate production-ready apps by composing templates, addons, and AI-ready conventions.**
+**One command. Any stack.** Generate production-ready apps by composing templates, addons, and AI-ready conventions.
 
-From blank folder to working Node/Web project with modern tooling, clean defaults, and team-friendly automation.
+From blank folder to a working Node/Web project with modern tooling, cozy defaults, and team-friendly automation.
 
 [![npm][npmversion]][npmurl]
 [![Downloads][npmdownloads]][npmurl]
@@ -509,7 +509,7 @@ MIT © [Create Node App Contributors](https://github.com/Create-Node-App/create-
 
 **[create-awesome-node-app.vercel.app](https://create-awesome-node-app.vercel.app)**
 
-_Built for developers who value speed, composability, color, and AI-ready workflows._
+_Built for developers who value speed, composability, craft, and AI-ready workflows._
 
 </div>
 

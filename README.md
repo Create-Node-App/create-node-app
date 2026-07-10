@@ -6,7 +6,9 @@
 
 # Create Awesome Node App
 
-**The open-source monorepo behind `create-awesome-node-app`: a composable scaffolding CLI for production-ready Node, Web, Full-Stack, Monorepo, and AI-ready projects.**
+**The open-source monorepo behind `create-awesome-node-app`: compose templates and addons into production-ready Node, Web, Full-Stack, Monorepo, and AI-ready projects.**
+
+One command. Any stack.
 
 [![Awesome](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite#get-started)
 [![Tests][testsbadge]][testsurl]
@@ -67,7 +69,7 @@ This is a Node 22+ monorepo managed with npm workspaces and [Turborepo](https://
 | [`packages/eslint-config-react`](./packages/eslint-config-react)         | React ESLint config extending the TypeScript preset.                                                                                   |
 | [`packages/eslint-config-next`](./packages/eslint-config-next)           | Next.js ESLint config extending the TypeScript preset.                                                                                 |
 | [`packages/tsconfig`](./packages/tsconfig)                               | Shared TypeScript base configurations.                                                                                                 |
-| [`docs/`](./docs)                                                        | Troubleshooting and migration notes.                                                                                                   |
+| [`docs/`](./docs)                                                        | Brand guidance, troubleshooting, and migration notes.                                                                                  |
 | [`.github/workflows`](./.github/workflows)                               | CI for tests, lint, typecheck, shellcheck, markdown, and release automation.                                                           |
 
 Template and extension data is maintained in [`Create-Node-App/cna-templates`](https://github.com/Create-Node-App/cna-templates). This repo consumes that catalog remotely.
