@@ -20,8 +20,8 @@ One command. Any stack.
 [![Downloads][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ulises-jeremias?style=flat&logo=github)](https://github.com/sponsors/ulises-jeremias)
-[![Node version](https://img.shields.io/badge/node-22%20LTS-339933?style=flat&logo=nodedotjs&logoColor=white)](.node-version)
-[![npm version](https://img.shields.io/badge/npm-10-CC3534?style=flat&logo=npm&logoColor=white)](.node-version)
+[![Node version](https://img.shields.io/badge/node-24%20LTS-339933?style=flat&logo=nodedotjs&logoColor=white)](.node-version)
+[![npm version](https://img.shields.io/badge/npm-11-CC3534?style=flat&logo=npm&logoColor=white)](.node-version)
 
 [Package README](./packages/create-awesome-node-app/README.md) · [Official Site](https://create-awesome-node-app.vercel.app) · [Templates](https://create-awesome-node-app.vercel.app/templates) · [Extensions](https://create-awesome-node-app.vercel.app/extensions) · [Contributing](./CONTRIBUTING.md) · [Troubleshooting](./docs/TROUBLESHOOTING.md)
 
@@ -58,10 +58,10 @@ More examples live in the [CLI package README](./packages/create-awesome-node-ap
 
 ## Repository Map
 
-This is a Node 22+ monorepo managed with npm workspaces and [Turborepo](https://turbo.build/).
+This is a Node 24+ monorepo managed with npm workspaces and [Turborepo](https://turbo.build/).
 
 | Path                                                                     | Purpose                                                                                                                                |
-|--------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
 | [`packages/create-awesome-node-app`](./packages/create-awesome-node-app) | Main CLI package, Commander entrypoint, interactive wizard, catalog listing, and package metadata.                                     |
 | [`packages/create-node-app-core`](./packages/create-node-app-core)       | Scaffolding engine: resolves templates/extensions, copies files, applies template options, installs dependencies, and initializes git. |
 | [`packages/eslint-config-base`](./packages/eslint-config-base)           | Shared base ESLint flat config.                                                                                                        |
@@ -78,7 +78,7 @@ Template and extension data is maintained in [`Create-Node-App/cna-templates`](h
 
 ## Local Development
 
-Requires **Node.js 22** (the version pinned in `.node-version`; use `fnm use` to switch automatically):
+Requires **Node.js 24.17.0** (the version pinned in `.node-version`; use `fnm use` to switch automatically):
 
 ```bash
 git clone https://github.com/Create-Node-App/create-node-app.git
@@ -177,7 +177,7 @@ npx create-awesome-node-app local-app \
 ## Quality Checks
 
 | Command                 | What it validates                                          |
-|-------------------------|------------------------------------------------------------|
+| ----------------------- | ---------------------------------------------------------- |
 | `npm run build`         | Builds all packages through Turborepo.                     |
 | `npm run test`          | Runs package test tasks.                                   |
 | `npm run test:all`      | Runs all Node native test files under `packages/**/tests`. |
@@ -251,7 +251,7 @@ npx create-awesome-node-app --template react-vite-boilerplate --list-addons
 Common template slugs:
 
 | Slug                              | Description                                                                                           |
-|-----------------------------------|-------------------------------------------------------------------------------------------------------|
+| --------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `react-vite-boilerplate`          | React + Vite + TypeScript starter.                                                                    |
 | `nextjs-starter`                  | Production-ready Next.js starter.                                                                     |
 | `nextjs-saas-ai-starter`          | Multi-tenant SaaS starter with AI, Auth.js, Drizzle, PostgreSQL, Tailwind, shadcn/ui, RBAC, and i18n. |
@@ -266,7 +266,7 @@ Common template slugs:
 Common addon slugs:
 
 | Category       | Examples                                                                         |
-|----------------|----------------------------------------------------------------------------------|
+| -------------- | -------------------------------------------------------------------------------- |
 | UI             | `tailwind-css`, `material-ui`, `shadcn-ui`, `nextjs-shadcn`                      |
 | State and data | `zustand`, `jotai`, `tanstack-react-query`, `apollo-client`                      |
 | Backend and DB | `drizzle-orm-postgresql`, `drizzle-orm-sqlite`, `mongoose-orm-mongodb`           |
