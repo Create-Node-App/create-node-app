@@ -18,6 +18,7 @@ From blank folder to a working Node/Web project with modern tooling, cozy defaul
 [![AUR][aurbadge]][aururl]
 [![Homebrew][homebrewbadge]][homebrewurl]
 [![Docker][dockerbadge]][dockerurl]
+[![Smoke tests][smokebadge]][smokeurl]
 
 [![Tests][testsbadge]][testsurl]
 [![Lint][lintbadge]][linturl]
@@ -569,3 +570,5 @@ _Built for developers who value speed, composability, craft, and AI-ready workfl
 [homebrewbadge]: https://img.shields.io/badge/homebrew-Create--Node--App%2Ftap-orange?style=flat-square&logo=homebrew
 [dockerurl]: https://hub.docker.com/r/ulisesjeremias/create-awesome-node-app
 [dockerbadge]: https://img.shields.io/docker/v/ulisesjeremias/create-awesome-node-app?style=flat-square&label=Docker&logo=docker&color=2496ED
+[smokebadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/smoke-distribution.yml/badge.svg?event=schedule
+[smokeurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/smoke-distribution.yml

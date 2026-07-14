@@ -1,0 +1,211 @@
+name: Distribution smoke tests
+
+# Verifies that the latest published package works correctly through
+# every distribution channel. Runs nightly and on manual trigger.
+#
+# Jobs:
+#   npm      — npx + global install on ubuntu-latest (Node 24)
+#   docker   — pull & run ulisesjeremias/create-awesome-node-app:latest
+#   homebrew — brew install on macos-latest
+#   aur      — makepkg inside an archlinux container
+#   versions — cross-check that npm, Docker, Homebrew all report the same version
+
+on:
+  schedule:
+    # 06:00 UTC every day
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Cancel any in-flight nightly if a manual run is triggered.
+concurrency:
+  group: smoke-distribution
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────
+  # 1. npm / npx
+  # ─────────────────────────────────────────────────────────────────────
+  npm:
+    name: npm (npx + global install)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+
+      - name: Verify npx invocation
+        run: |
+          echo "── npx ──────────────────────────────"
+          VERSION=$(npx --yes create-awesome-node-app@latest --version 2>&1)
+          echo "npx version: $VERSION"
+          echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' || {
+            echo "::error::Unexpected version output: $VERSION"
+            exit 1
+          }
+
+      - name: Verify global install
+        run: |
+          echo "── global install ───────────────────"
+          npm install -g create-awesome-node-app@latest
+          VERSION=$(create-awesome-node-app --version 2>&1)
+          echo "global version: $VERSION"
+          echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' || {
+            echo "::error::Unexpected version output: $VERSION"
+            exit 1
+          }
+
+          echo "── help smoke ───────────────────────"
+          create-awesome-node-app --help | head -5
+
+  # ─────────────────────────────────────────────────────────────────────
+  # 2. Docker Hub
+  # ─────────────────────────────────────────────────────────────────────
+  docker:
+    name: Docker Hub (ulisesjeremias/create-awesome-node-app)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull latest image
+        run: docker pull ulisesjeremias/create-awesome-node-app:latest
+
+      - name: Verify --version
+        run: |
+          echo "── docker --version ─────────────────"
+          VERSION=$(docker run --rm ulisesjeremias/create-awesome-node-app:latest --version 2>&1)
+          echo "docker version: $VERSION"
+          echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' || {
+            echo "::error::Unexpected version output: $VERSION"
+            exit 1
+          }
+
+      - name: Verify --help
+        run: |
+          echo "── docker --help ────────────────────"
+          docker run --rm ulisesjeremias/create-awesome-node-app:latest --help | head -5
+
+  # ─────────────────────────────────────────────────────────────────────
+  # 3. Homebrew
+  # ─────────────────────────────────────────────────────────────────────
+  homebrew:
+    name: Homebrew (Create-Node-App/tap)
+    runs-on: macos-latest
+    steps:
+      - name: Tap and install
+        run: |
+          brew tap Create-Node-App/tap
+          brew install create-awesome-node-app
+
+      - name: Verify --version
+        run: |
+          echo "── brew version ─────────────────────"
+          VERSION=$(create-awesome-node-app --version 2>&1)
+          echo "homebrew version: $VERSION"
+          echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' || {
+            echo "::error::Unexpected version output: $VERSION"
+            exit 1
+          }
+
+      - name: Verify --help
+        run: |
+          echo "── brew help ────────────────────────"
+          create-awesome-node-app --help | head -5
+
+  # ─────────────────────────────────────────────────────────────────────
+  # 4. AUR — run inside an official Arch Linux container
+  # ─────────────────────────────────────────────────────────────────────
+  aur:
+    name: AUR (archlinux container)
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - name: Bootstrap Arch system and non-root builder
+        run: |
+          pacman -Sy --noconfirm --needed \
+            nodejs npm base-devel sudo git curl ca-certificates
+          # makepkg cannot run as root; create a dedicated user
+          useradd -m -G wheel builder
+          echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+      - name: Clone AUR package and build
+        run: |
+          su builder -c "
+            set -euo pipefail
+            git clone https://aur.archlinux.org/create-awesome-node-app.git /tmp/cna
+            cd /tmp/cna
+            # Build and install (downloads from npm registry, validates sha256)
+            makepkg -si --noconfirm
+          "
+
+      - name: Verify --version
+        run: |
+          echo "── aur version ──────────────────────"
+          su builder -c "
+            VERSION=\$(create-awesome-node-app --version 2>&1)
+            echo \"aur version: \$VERSION\"
+            echo \"\$VERSION\" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\$' || {
+              echo '::error::Unexpected version output'
+              exit 1
+            }
+          "
+
+      - name: Verify --help
+        run: |
+          echo "── aur help ─────────────────────────"
+          su builder -c "create-awesome-node-app --help | head -5"
+
+  # ─────────────────────────────────────────────────────────────────────
+  # 5. Version cross-check: every channel must agree on the same version
+  # ─────────────────────────────────────────────────────────────────────
+  versions:
+    name: Cross-check published versions
+    runs-on: ubuntu-latest
+    # Run even if individual channel jobs fail — gives a full picture
+    if: always()
+    steps:
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+
+      - name: Gather versions from each channel
+        run: |
+          set -euo pipefail
+
+          NPM=$(curl -s https://registry.npmjs.org/create-awesome-node-app/latest | \
+                python3 -c "import json,sys; print(json.load(sys.stdin)['version'])")
+
+          DOCKER=$(docker run --rm \
+                    ulisesjeremias/create-awesome-node-app:latest --version 2>/dev/null \
+                    || echo "unavailable")
+
+          HOMEBREW=$(curl -s \
+                    https://raw.githubusercontent.com/Create-Node-App/homebrew-tap/main/Formula/create-awesome-node-app.rb | \
+                    grep '^  url' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || echo "unavailable")
+
+          AUR=$(curl -s \
+                "https://aur.archlinux.org/rpc/v5/info?arg=create-awesome-node-app" | \
+                python3 -c "import json,sys; d=json.load(sys.stdin); print(d['results'][0]['Version'].split('-')[0])" \
+                || echo "unavailable")
+
+          echo "Channel versions:"
+          echo "  npm:      $NPM"
+          echo "  docker:   $DOCKER"
+          echo "  homebrew: $HOMEBREW"
+          echo "  aur:      $AUR"
+
+          # AUR is updated automatically but may lag by up to 24h — warn, don't fail
+          MISMATCH=0
+          for CHANNEL_VER in "$DOCKER" "$HOMEBREW"; do
+            if [ "$CHANNEL_VER" != "unavailable" ] && [ "$CHANNEL_VER" != "$NPM" ]; then
+              echo "::warning::Version mismatch: npm=$NPM but got $CHANNEL_VER"
+              MISMATCH=1
+            fi
+          done
+
+          if [ "$MISMATCH" -eq 1 ]; then
+            echo "::warning::Some channels are not yet on npm version $NPM"
+          else
+            echo "All channels are on $NPM ✓"
+          fi

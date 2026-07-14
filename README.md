@@ -23,6 +23,7 @@ One command. Any stack.
 [![AUR][aurbadge]][aururl]
 [![Homebrew][homebrewbadge]][homebrewurl]
 [![Docker][dockerbadge]][dockerurl]
+[![Smoke tests][smokebadge]][smokeurl]
 [![Node version](https://img.shields.io/badge/node-24%20LTS-339933?style=flat&logo=nodedotjs&logoColor=white)](.node-version)
 [![npm version](https://img.shields.io/badge/npm-11-CC3534?style=flat&logo=npm&logoColor=white)](.node-version)
 
@@ -343,3 +344,5 @@ _Build starters quickly. Understand the repo quickly. Contribute confidently._
 [homebrewbadge]: https://img.shields.io/badge/homebrew-Create--Node--App%2Ftap-orange?style=flat-square&logo=homebrew
 [dockerurl]: https://hub.docker.com/r/ulisesjeremias/create-awesome-node-app
 [dockerbadge]: https://img.shields.io/docker/v/ulisesjeremias/create-awesome-node-app?style=flat-square&label=Docker&logo=docker&color=2496ED
+[smokebadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/smoke-distribution.yml/badge.svg?event=schedule
+[smokeurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/smoke-distribution.yml
