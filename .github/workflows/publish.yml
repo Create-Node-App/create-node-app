@@ -48,6 +48,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          # Full history + existing tags so `changeset tag` can skip
+          # versions that are already tagged remotely.
+          fetch-depth: 0
+          fetch-tags: true
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
@@ -66,10 +71,16 @@ jobs:
       - name: Publish packages
         run: npm run publish-packages
 
-      # `changeset publish` creates lightweight tags per published
-      # package (e.g. create-awesome-node-app@0.12.0). We use --tags
-      # (not --follow-tags) because lightweight tags require it.
-      # Pushing them triggers the tag-based Docker, AUR, and Homebrew
-      # workflows.
+      # Our Changesets config has "commit": false, which also disables
+      # automatic tagging. Explicitly run `changeset tag` to create
+      # local git tags matching every version present in the workspace
+      # (e.g. create-awesome-node-app@0.12.0). It is a no-op for
+      # versions already tagged in the fetched history.
+      - name: Create git tags for published versions
+        run: npx changeset tag
+
+      # Push all local tags so the tag-based Docker, AUR, and Homebrew
+      # workflows trigger. Lightweight tags require --tags (not
+      # --follow-tags).
       - name: Push git tags
         run: git push origin --tags
