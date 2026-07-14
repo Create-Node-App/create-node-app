@@ -38,8 +38,11 @@ jobs:
         working-directory: tools/danger
       - name: Danger
         # GitHub's PR files/commits endpoints occasionally return
-        # "Premature close" from the CI runner. Retry up to 3 times
-        # so a single transient network hiccup doesn't fail the PR.
+        # "Premature close" from the CI runner (node-fetch v2 gzip
+        # handling bug on Node 24+). Retry up to 3 times and treat
+        # persistent failures as advisory — Danger only posts style
+        # comments on PR body/title/size, not blocking checks.
+        continue-on-error: true
         working-directory: tools/danger
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
