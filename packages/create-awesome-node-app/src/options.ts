@@ -14,41 +14,84 @@ import {
 
 const CUSTOM_TEMPLATE_SENTINEL = "__custom_template__";
 
-type SearchableChoice = prompts.Choice & {
-  _search: string;
-  _isSeparator?: boolean;
+type SearchableChoice = prompts.Choice & { _search: string };
+
+/**
+ * Derive a short (≤12 char) label from a full category name.
+ *   "Frontend Applications"   → "Frontend"
+ *   "Full Stack Applications" → "Full Stack"
+ *   "User Acceptance Testing" → "UAT"
+ *   "Monorepo Boilerplate"    → "Monorepo"
+ */
+const shortCategoryLabel = (categoryName: string): string => {
+  const stop = new Set(["Applications", "Application", "Boilerplate"]);
+  const words = categoryName.split(" ").filter((w) => !stop.has(w));
+  if (words.length >= 3)
+    return words.map((w) => w[0]?.toUpperCase() ?? "").join("");
+  return words.slice(0, 2).join(" ");
 };
 
-/** Non-selectable category heading inserted between groups of templates. */
-const makeSeparatorItem = (categoryName: string): SearchableChoice => ({
-  title: pc.dim(
-    `${"─".repeat(2)} ${categoryName} ${"─".repeat(Math.max(0, 36 - categoryName.length))}`,
-  ),
-  value: CUSTOM_TEMPLATE_SENTINEL + "__sep__",
-  disabled: true,
-  _search: "",
-  _isSeparator: true,
-});
+// Assign a distinct colour to each category slug on first use.
+const CATEGORY_PALETTE: Array<(s: string) => string> = [
+  pc.yellow,
+  pc.green,
+  pc.cyan,
+  pc.magenta,
+  pc.blue,
+  (s: string) => pc.bold(pc.green(s)),
+  (s: string) => pc.bold(pc.cyan(s)),
+];
+const _catColorCache = new Map<string, (s: string) => string>();
+let _catColorIdx = 0;
+const categoryColor = (slug: string): ((s: string) => string) => {
+  if (!_catColorCache.has(slug)) {
+    _catColorCache.set(
+      slug,
+      (CATEGORY_PALETTE[_catColorIdx++ % CATEGORY_PALETTE.length] ??
+        CATEGORY_PALETTE[0]) as (s: string) => string,
+    );
+  }
+  return _catColorCache.get(slug)!;
+};
 
-/** Selectable template or extension choice with a pre-computed search token bag. */
+/**
+ * Build a selectable choice with an optional coloured category badge
+ * and a pre-computed _search token bag so filtering works on category,
+ * name, description, and keywords.
+ */
 const makeSearchableChoice = (opts: {
   name: string;
   value: string;
   description?: string | undefined;
   labels?: string[] | undefined;
+  categorySlug?: string | undefined;
   categoryName?: string | undefined;
 }): SearchableChoice => {
-  // Show at most 3 labels as a quick-scan suffix
   const labelSuffix =
     opts.labels && opts.labels.length > 0
       ? pc.dim(" · " + opts.labels.slice(0, 3).join(", "))
       : "";
+
+  // Fixed-width 10-char badge so template names align vertically.
+  const badge = opts.categorySlug
+    ? categoryColor(opts.categorySlug)(
+        shortCategoryLabel(opts.categoryName ?? opts.categorySlug)
+          .padEnd(10)
+          .slice(0, 10),
+      )
+    : "";
+
+  const title = badge
+    ? badge + "  " + pc.bold(opts.name) + labelSuffix
+    : pc.bold(opts.name) + labelSuffix;
+
   return {
-    title: pc.bold(opts.name) + labelSuffix,
+    title,
     value: opts.value,
     description: opts.description,
     _search: [
       opts.categoryName,
+      opts.categorySlug,
       opts.name,
       opts.description ?? "",
       ...(opts.labels ?? []),
@@ -56,26 +99,19 @@ const makeSearchableChoice = (opts: {
       .filter(Boolean)
       .join(" ")
       .toLowerCase(),
-    _isSeparator: false,
   };
 };
 
-/**
- * suggest() callback for autocomplete/autocompleteMultiselect.
- *
- * When the user is typing, separator items are excluded so search
- * results are clean. When the input is empty all items including
- * separators are shown (category grouping is visible).
- */
+/** Filter by the _search token bag; works with both autocomplete types. */
 const suggestBySearchTokens = (
   input: string,
-  choices: (prompts.Choice & { _search?: string; _isSeparator?: boolean })[],
+  choices: (prompts.Choice & { _search?: string })[],
 ): Promise<prompts.Choice[]> => {
   const needle = input.trim().toLowerCase();
   if (!needle) return Promise.resolve(choices);
   return Promise.resolve(
-    choices.filter(
-      (c) => !c._isSeparator && (c._search ?? "").includes(needle),
+    choices.filter((c) =>
+      (c._search ?? c.title.toLowerCase()).includes(needle),
     ),
   );
 };
@@ -241,44 +277,34 @@ const processInteractiveOptions = async (
   // catalog at once and filter by typing.
   const allTemplates = await getAllTemplatesWithCategory();
 
-  // Build choices with visual category separators so the list is grouped
-  // when browsing. Separators are suppressed when the user types a query.
-  const templateChoices: SearchableChoice[] = [];
-  let lastCategoryName = "";
-  for (const { template, categoryName } of allTemplates) {
-    if (categoryName !== lastCategoryName) {
-      templateChoices.push(makeSeparatorItem(categoryName));
-      lastCategoryName = categoryName;
-    }
-    templateChoices.push(
+  // Build one flat list — each item has a coloured fixed-width category
+  // badge so the list is scannable without separator items.
+  // (prompts autocomplete treats disabled items as selectable, so we
+  // never use separator/divider items here.)
+  const templateChoices: SearchableChoice[] = allTemplates.map(
+    ({ template, categorySlug, categoryName }) =>
       makeSearchableChoice({
         name: template.name,
         value: template.url,
         description: template.description,
         labels: template.labels,
+        categorySlug,
         categoryName,
       }),
-    );
-  }
+  );
+
+  // "Use my own URL" entry at the bottom — no badge (custom)
   templateChoices.push({
-    title: pc.dim("── Custom") + pc.dim(" ─────────────────────────────────"),
-    value: CUSTOM_TEMPLATE_SENTINEL + "__sep__",
-    disabled: true,
-    _search: "",
-    _isSeparator: true,
-  });
-  templateChoices.push({
-    title: `${pc.italic("  Use my own template URL")}`,
+    title: "          " + "  " + pc.italic("Use my own template URL"),
     value: CUSTOM_TEMPLATE_SENTINEL,
     description: "Point at any GitHub repo or file:// path",
     _search: "custom own template url github file",
-    _isSeparator: false,
   });
 
   // Pre-select the current template (if provided via --template).
   const preselectedTemplateIdx = options.template
     ? templateChoices.findIndex((c) => c.value === options.template)
-    : 1; // skip the first separator, land on first real template
+    : 0;
 
   const baseInput = await prompts([
     {
