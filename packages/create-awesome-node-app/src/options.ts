@@ -14,54 +14,68 @@ import {
 
 const CUSTOM_TEMPLATE_SENTINEL = "__custom_template__";
 
-/**
- * Build a searchable choice list where each entry is prefixed with its
- * category so users can visually scan by category *and* filter by
- * typing (matches on category, template name, description, and
- * keywords).
- */
-const makeCategorizedChoice = (opts: {
-  categoryName: string;
+type SearchableChoice = prompts.Choice & {
+  _search: string;
+  _isSeparator?: boolean;
+};
+
+/** Non-selectable category heading inserted between groups of templates. */
+const makeSeparatorItem = (categoryName: string): SearchableChoice => ({
+  title: pc.dim(
+    `${"─".repeat(2)} ${categoryName} ${"─".repeat(Math.max(0, 36 - categoryName.length))}`,
+  ),
+  value: CUSTOM_TEMPLATE_SENTINEL + "__sep__",
+  disabled: true,
+  _search: "",
+  _isSeparator: true,
+});
+
+/** Selectable template or extension choice with a pre-computed search token bag. */
+const makeSearchableChoice = (opts: {
   name: string;
   value: string;
   description?: string | undefined;
   labels?: string[] | undefined;
-}) => {
-  const prefix = pc.dim(`[${opts.categoryName}]`);
-  const label = pc.bold(opts.name);
-  const searchTokens = [
-    opts.categoryName,
-    opts.name,
-    opts.description ?? "",
-    ...(opts.labels ?? []),
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
+  categoryName?: string | undefined;
+}): SearchableChoice => {
+  // Show at most 3 labels as a quick-scan suffix
+  const labelSuffix =
+    opts.labels && opts.labels.length > 0
+      ? pc.dim(" · " + opts.labels.slice(0, 3).join(", "))
+      : "";
   return {
-    title: `${prefix} ${label}`,
+    title: pc.bold(opts.name) + labelSuffix,
     value: opts.value,
     description: opts.description,
-    // Attach lowercased searchable text for the suggest() filter.
-    // prompts ignores unknown keys so this is safe.
-    _search: searchTokens,
-  } as prompts.Choice & { _search: string };
+    _search: [
+      opts.categoryName,
+      opts.name,
+      opts.description ?? "",
+      ...(opts.labels ?? []),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase(),
+    _isSeparator: false,
+  };
 };
 
 /**
- * Filter callback for autocomplete/autocompleteMultiselect that
- * matches against the pre-computed _search token bag instead of
- * only the visible title (which contains ANSI escape codes).
+ * suggest() callback for autocomplete/autocompleteMultiselect.
+ *
+ * When the user is typing, separator items are excluded so search
+ * results are clean. When the input is empty all items including
+ * separators are shown (category grouping is visible).
  */
 const suggestBySearchTokens = (
   input: string,
-  choices: (prompts.Choice & { _search?: string })[],
+  choices: (prompts.Choice & { _search?: string; _isSeparator?: boolean })[],
 ): Promise<prompts.Choice[]> => {
   const needle = input.trim().toLowerCase();
   if (!needle) return Promise.resolve(choices);
   return Promise.resolve(
-    choices.filter((c) =>
-      (c._search ?? c.title.toLowerCase()).includes(needle),
+    choices.filter(
+      (c) => !c._isSeparator && (c._search ?? "").includes(needle),
     ),
   );
 };
@@ -227,31 +241,44 @@ const processInteractiveOptions = async (
   // catalog at once and filter by typing.
   const allTemplates = await getAllTemplatesWithCategory();
 
-  // Build choices: templates first (grouped visually by category prefix
-  // in the title), then a footer entry for "use my own template URL".
-  const templateChoices = [
-    ...allTemplates.map(({ template, categoryName }) =>
-      makeCategorizedChoice({
-        categoryName,
+  // Build choices with visual category separators so the list is grouped
+  // when browsing. Separators are suppressed when the user types a query.
+  const templateChoices: SearchableChoice[] = [];
+  let lastCategoryName = "";
+  for (const { template, categoryName } of allTemplates) {
+    if (categoryName !== lastCategoryName) {
+      templateChoices.push(makeSeparatorItem(categoryName));
+      lastCategoryName = categoryName;
+    }
+    templateChoices.push(
+      makeSearchableChoice({
         name: template.name,
         value: template.url,
         description: template.description,
         labels: template.labels,
+        categoryName,
       }),
-    ),
-    {
-      title: `${pc.dim("[Custom]")} ${pc.italic("Use my own template URL")}`,
-      value: CUSTOM_TEMPLATE_SENTINEL,
-      description: "Point at any GitHub repo or file:// path",
-      _search: "custom own template url github file",
-    } as prompts.Choice & { _search: string },
-  ];
+    );
+  }
+  templateChoices.push({
+    title: pc.dim("── Custom") + pc.dim(" ─────────────────────────────────"),
+    value: CUSTOM_TEMPLATE_SENTINEL + "__sep__",
+    disabled: true,
+    _search: "",
+    _isSeparator: true,
+  });
+  templateChoices.push({
+    title: `${pc.italic("  Use my own template URL")}`,
+    value: CUSTOM_TEMPLATE_SENTINEL,
+    description: "Point at any GitHub repo or file:// path",
+    _search: "custom own template url github file",
+    _isSeparator: false,
+  });
 
-  // Pre-select the current template (if provided via --template) so users
-  // who partially specified via CLI can just hit Enter.
+  // Pre-select the current template (if provided via --template).
   const preselectedTemplateIdx = options.template
     ? templateChoices.findIndex((c) => c.value === options.template)
-    : 0;
+    : 1; // skip the first separator, land on first real template
 
   const baseInput = await prompts([
     {
@@ -275,12 +302,17 @@ const processInteractiveOptions = async (
     {
       type: "autocomplete",
       name: "template",
-      message: "Pick a template (type to filter across all categories)",
+      message:
+        "Pick a template " +
+        pc.dim("(↑↓ to browse, type to search, Enter to pick)"),
       choices: templateChoices,
-      initial: preselectedTemplateIdx >= 0 ? preselectedTemplateIdx : 0,
+      initial: preselectedTemplateIdx >= 0 ? preselectedTemplateIdx : 1,
       suggest: suggestBySearchTokens,
-      // Show category counts as an initial hint.
-      hint: `${allTemplates.length} templates available — type any framework, category, or keyword`,
+      // Show only 9 choices at a time so the list never scrolls off screen.
+      limit: 9,
+      hint: pc.dim(
+        `${allTemplates.length} templates · type any framework, category, or keyword`,
+      ),
     },
   ]);
 
@@ -380,41 +412,87 @@ const processInteractiveOptions = async (
   appConfig.templatesOrExtensions = [];
   appConfig.extend = Array.isArray(options.extend) ? options.extend : [];
 
-  // Flat, searchable list of every compatible extension across every
-  // category. Users can filter by typing (framework, purpose, keyword)
-  // and select multiple with Space, then submit with Enter.
+  // Extensions: two-step UX.
+  //
+  // Step 1 — Pick which CATEGORIES you need (short list, one checkbox per
+  //           category). Users who want no extensions skip immediately.
+  // Step 2 — For each selected category show a focused multiselect of its
+  //           extensions (5-15 items instead of 51 in one giant list).
   const allExtensions = await getAllExtensionsWithCategory([
     existingTemplate?.type || "custom",
     "all",
   ]);
 
   if (allExtensions.length > 0) {
-    const extensionChoices = allExtensions.map(({ extension, categoryName }) =>
-      makeCategorizedChoice({
-        categoryName,
-        name: extension.name,
-        value: extension.url,
-        description: extension.description,
-        labels: extension.labels,
+    // Group extensions by category slug, preserving catalog order.
+    const categoryMap = new Map<
+      string,
+      { name: string; items: (typeof allExtensions)[0][] }
+    >();
+    for (const ext of allExtensions) {
+      const entry = categoryMap.get(ext.categorySlug);
+      if (entry) {
+        entry.items.push(ext);
+      } else {
+        categoryMap.set(ext.categorySlug, {
+          name: ext.categoryName,
+          items: [ext],
+        });
+      }
+    }
+
+    const categoryChoices = [...categoryMap.entries()].map(
+      ([slug, { name, items }]) => ({
+        title: pc.bold(name),
+        value: slug,
+        description: `${items.length} extension${items.length > 1 ? "s" : ""}`,
       }),
     );
 
-    const { selected } = await prompts({
-      type: "autocompleteMultiselect",
-      name: "selected",
+    const { selectedCategories } = await prompts({
+      type: "multiselect",
+      name: "selectedCategories",
       message:
-        "Pick extensions (Space to toggle, type to filter, Enter to confirm)",
-      choices: extensionChoices,
-      suggest: suggestBySearchTokens,
-      hint: `${allExtensions.length} extensions available — leave empty to skip`,
+        "Which kinds of extensions do you need? " +
+        pc.dim("(Space = toggle, Enter = done, none = skip all)"),
+      choices: categoryChoices,
       instructions: false,
-      // Prevent user from being forced to select at least one.
       min: 0,
     });
 
-    if (Array.isArray(selected)) {
-      appConfig.templatesOrExtensions = selected;
+    const selectedExtUrls: string[] = [];
+
+    for (const catSlug of (selectedCategories ?? []) as string[]) {
+      const cat = categoryMap.get(catSlug);
+      if (!cat) continue;
+
+      const extChoices = cat.items.map(({ extension }) =>
+        makeSearchableChoice({
+          name: extension.name,
+          value: extension.url,
+          description: extension.description,
+          labels: extension.labels,
+        }),
+      );
+
+      const { picked } = await prompts({
+        type: "multiselect",
+        name: "picked",
+        message:
+          pc.bold(cat.name) +
+          " " +
+          pc.dim("(Space = toggle, Enter = done, none = skip)"),
+        choices: extChoices,
+        instructions: false,
+        min: 0,
+      });
+
+      if (Array.isArray(picked)) {
+        selectedExtUrls.push(...(picked as string[]));
+      }
     }
+
+    appConfig.templatesOrExtensions = selectedExtUrls;
   }
 
   if (appConfig.extend.length === 0) {
