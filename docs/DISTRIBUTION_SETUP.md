@@ -4,7 +4,7 @@
 (`create-awesome-node-app@X.Y.Z`):
 
 | Channel      | Workflow                               | Secret(s) needed                        |
-| ------------ | -------------------------------------- | --------------------------------------- |
+|--------------|----------------------------------------|-----------------------------------------|
 | **npm**      | `publish.yml`                          | (OIDC trusted publishing — no secret)   |
 | **Docker**   | `publish-docker.yml`                   | `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` |
 | **AUR**      | `publish-aur.yml`                      | `AUR_SSH_PRIVATE_KEY`, `AUR_REPO_TOKEN` |
