@@ -68,10 +68,12 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ulisesjeremias/create-awesome-node-app
-          # `latest` is guarded so a manual workflow_dispatch rebuild
-          # of an older version can't overwrite the newest published tag.
+          # `latest` is pushed on tag pushes AND on explicit workflow_dispatch
+          # runs (which always execute against main, so they represent the
+          # current release). A tag push runs the workflow pinned to the
+          # tagged commit, so `push` events here are always the newest version.
           tags: |
-            type=raw,value=latest,enable=${{ github.event_name == 'push' }}
+            type=raw,value=latest
             type=raw,value=${{ steps.version.outputs.version }}
             type=raw,value=${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
             type=raw,value=v${{ steps.version.outputs.major }}
