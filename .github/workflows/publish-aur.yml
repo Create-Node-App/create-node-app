@@ -77,6 +77,9 @@ jobs:
           commit_message: "Update to version ${{ steps.version.outputs.version }}"
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           allow_empty_commits: "false"
+          # dsa is no longer supported in modern OpenSSH; omit it to
+          # avoid "Unknown key type" errors during keyscan.
+          ssh_keyscan_types: "rsa,ecdsa,ed25519"
 
       - name: Sync updated PKGBUILD to GitHub mirror
         # Keep the aur-package GitHub mirror in sync with what's live
