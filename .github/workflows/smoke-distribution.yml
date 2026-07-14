@@ -95,6 +95,9 @@ jobs:
       - name: Tap and install
         run: |
           brew tap Create-Node-App/tap
+          # macOS 15+ requires untrusted third-party taps to be explicitly
+          # trusted before formulas from them can be installed.
+          brew trust create-node-app/tap || true
           brew install create-awesome-node-app
 
       - name: Verify --version
