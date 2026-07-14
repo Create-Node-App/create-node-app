@@ -32,7 +32,14 @@
     "project-generator",
     "boilerplate",
     "ai-ready",
-    "agents-md"
+    "agents-md",
+    "typescript-first",
+    "production-ready",
+    "rapid-prototyping",
+    "project-scaffolding",
+    "remix",
+    "astro",
+    "hono"
   ],
   "authors": [
     {

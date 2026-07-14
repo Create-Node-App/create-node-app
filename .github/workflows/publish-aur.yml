@@ -1,0 +1,47 @@
+name: Publish to AUR
+
+on:
+  workflow_run:
+    workflows: ["Release"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  aur:
+    name: Update AUR package
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get published version
+        id: version
+        run: |
+          VERSION=$(curl -s https://registry.npmjs.org/create-awesome-node-app/latest | jq -r '.version')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout aur-package repo
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4
+        with:
+          repository: Create-Node-App/aur-package
+          token: ${{ secrets.AUR_REPO_TOKEN }}
+          path: aur-package
+
+      - name: Update PKGBUILD version
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          cd aur-package
+          sed -i "s/^pkgver=.*/pkgver=${NEW_VERSION}/" PKGBUILD
+          sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
+
+      - name: Publish to AUR
+        uses: ulises-jeremias/github-actions-aur-publish@v2
+        with:
+          pkgname: create-awesome-node-app
+          pkgver: ${{ steps.version.outputs.version }}
+          commit_username: "Create Node App Bot"
+          commit_email: "ulisescf.24@gmail.com"
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          updpkgsums: true
+          allow_empty_commits: false
