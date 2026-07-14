@@ -4,7 +4,7 @@
 (`create-awesome-node-app@X.Y.Z`):
 
 | Channel      | Workflow                               | Secret(s) needed                        |
-|--------------|----------------------------------------|-----------------------------------------|
+| ------------ | -------------------------------------- | --------------------------------------- |
 | **npm**      | `publish.yml`                          | (OIDC trusted publishing — no secret)   |
 | **Docker**   | `publish-docker.yml`                   | `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` |
 | **AUR**      | `publish-aur.yml`                      | `AUR_SSH_PRIVATE_KEY`, `AUR_REPO_TOKEN` |
@@ -21,9 +21,9 @@ secrets** on
 
 ## 1. Docker Hub (`DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`)
 
-**Prereqs**: A Docker Hub account with push access to the
-[`create-awesome-node-app`](https://hub.docker.com/u/create-awesome-node-app)
-organization.
+**Prereqs**: A Docker Hub account (`ulisesjeremias`) with push access to the
+[`ulisesjeremias/create-awesome-node-app`](https://hub.docker.com/r/ulisesjeremias/create-awesome-node-app)
+repository.
 
 **Steps:**
 
@@ -150,7 +150,7 @@ Each run should end with a green check. Then run the end-to-end verification:
 
 ```bash
 # Docker
-docker run --rm create-awesome-node-app/cli:0.12.0 --version
+docker run --rm ulisesjeremias/create-awesome-node-app:0.12.0 --version
 # → 0.12.0
 
 # AUR (from an Arch Linux machine)
