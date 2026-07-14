@@ -2,6 +2,8 @@
 
 <div align="center">
 
+<img src="./assets/logo.svg" alt="Create Node App logo" width="96" height="96" />
+
 <img src="./assets/repo-hero.svg" alt="Create Node App monorepo hero banner" width="100%" />
 
 # Create Awesome Node App
