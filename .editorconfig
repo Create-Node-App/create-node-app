@@ -11,5 +11,9 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 [*.md]
+# Markdown allows 3-space nested list indentation (aligns content after
+# "1. " prefix) which conflicts with indent_size = 2. Unset to let
+# Prettier and markdownlint govern markdown indentation instead.
+indent_size = unset
 insert_final_newline = true
 trim_trailing_whitespace = false
