@@ -1,0 +1,97 @@
+name: Publish Docker image
+
+# Triggers on Changesets-created tags for the CLI package. Each tag
+# push here means an actual publish to npm happened (see publish.yml
+# — `git push --follow-tags`). Version comes directly from the tag ref,
+# eliminating the need to poll the npm registry.
+on:
+  push:
+    tags:
+      - "create-awesome-node-app@*"
+  # Manual trigger to rebuild an image for an existing version.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Package version (e.g. 0.12.0)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  docker:
+    name: Build and push Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Resolve version
+        id: version
+        env:
+          TAG_REF: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          if [ -n "$INPUT_VERSION" ]; then
+            VERSION="$INPUT_VERSION"
+          else
+            # Tag format: create-awesome-node-app@X.Y.Z
+            VERSION="${TAG_REF#create-awesome-node-app@}"
+          fi
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+          MINOR=$(echo "$VERSION" | cut -d. -f2)
+          {
+            echo "version=$VERSION"
+            echo "major=$MAJOR"
+            echo "minor=$MINOR"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        # Required so buildx can cross-build linux/arm64 on the x86_64
+        # ubuntu-latest runner.
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+        with:
+          platforms: linux/arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: create-awesome-node-app/cli
+          # `latest` is guarded so a manual workflow_dispatch rebuild
+          # of an older version can't overwrite the newest published tag.
+          tags: |
+            type=raw,value=latest,enable=${{ github.event_name == 'push' }}
+            type=raw,value=${{ steps.version.outputs.version }}
+            type=raw,value=${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
+            type=raw,value=v${{ steps.version.outputs.major }}
+          labels: |
+            org.opencontainers.image.title=create-awesome-node-app
+            org.opencontainers.image.description=Composable scaffolding CLI — one command, any Node.js stack
+            org.opencontainers.image.url=https://create-awesome-node-app.vercel.app
+            org.opencontainers.image.source=https://github.com/Create-Node-App/create-node-app
+            org.opencontainers.image.licenses=MIT
+            org.opencontainers.image.version=${{ steps.version.outputs.version }}
+
+      - name: Build and push
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ steps.version.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

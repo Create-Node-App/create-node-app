@@ -29,10 +29,33 @@ From blank folder to a working Node/Web project with modern tooling, cozy defaul
 
 ---
 
-## ⚡ Start In 30 Seconds
+## ⚡ Install
+
+**npm (recommended):**
 
 ```bash
 npm create awesome-node-app@latest my-app
+```
+
+**Homebrew (macOS / Linux):**
+
+```bash
+brew tap Create-Node-App/tap
+brew install create-awesome-node-app
+```
+
+**AUR (Arch Linux):**
+
+```bash
+yay -S create-awesome-node-app   # or: paru -S create-awesome-node-app
+```
+
+**Docker:**
+
+```bash
+docker run --rm -it -v "${PWD}:/app" -w /app \
+  create-awesome-node-app/cli:latest my-app \
+  --template react-vite-boilerplate
 ```
 
 Interactive by default outside CI. For automation, run headless with flags:

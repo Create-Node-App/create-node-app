@@ -1,0 +1,91 @@
+name: Publish to AUR
+
+# Triggers on Changesets-created tags for the CLI package.
+# Publishes the updated PKGBUILD to aur.archlinux.org and keeps the
+# Create-Node-App/aur-package GitHub mirror in sync.
+on:
+  push:
+    tags:
+      - "create-awesome-node-app@*"
+  # Manual trigger to re-publish an existing version.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Package version (e.g. 0.12.0)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  aur:
+    name: Update AUR package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve version
+        id: version
+        env:
+          TAG_REF: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          if [ -n "$INPUT_VERSION" ]; then
+            VERSION="$INPUT_VERSION"
+          else
+            VERSION="${TAG_REF#create-awesome-node-app@}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout aur-package mirror repo
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: Create-Node-App/aur-package
+          token: ${{ secrets.AUR_REPO_TOKEN }}
+          path: aur-package
+
+      - name: Update PKGBUILD (version + sha256)
+        working-directory: aur-package
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # Reset pkgver and pkgrel
+          sed -i "s/^pkgver=.*/pkgver=${NEW_VERSION}/" PKGBUILD
+          sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
+
+          # Fetch new npm tarball and compute sha256. -f makes curl exit
+          # non-zero on 4xx/5xx so we never silently hash an error page
+          # (e.g. tarball not yet propagated through npm's CDN).
+          URL="https://registry.npmjs.org/create-awesome-node-app/-/create-awesome-node-app-${NEW_VERSION}.tgz"
+          SHA=$(curl -sfL "$URL" | sha256sum | cut -d' ' -f1)
+          if [ -z "$SHA" ] || [ "$SHA" = "d41d8cd98f00b204e9800998ecf8427e" ]; then
+            echo "::error::Failed to download or hash tarball at $URL" >&2
+            exit 1
+          fi
+          sed -i "s/^sha256sums=.*/sha256sums=('${SHA}')/" PKGBUILD
+
+          echo "----- Updated PKGBUILD -----"
+          cat PKGBUILD
+
+      - name: Publish to AUR
+        # Pushes to aur.archlinux.org via SSH. The action reads the
+        # updated PKGBUILD, regenerates .SRCINFO, and pushes.
+        uses: ulises-jeremias/github-actions-aur-publish@217e4e2abbbee9ecc942bdc0681302e233656d9f # v1
+        with:
+          pkgname: create-awesome-node-app
+          pkgbuild: aur-package/PKGBUILD
+          commit_username: "Create Node App Bot"
+          commit_email: "ulisescf.24@gmail.com"
+          commit_message: "Update to version ${{ steps.version.outputs.version }}"
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          allow_empty_commits: "false"
+
+      - name: Sync updated PKGBUILD to GitHub mirror
+        # Keep the aur-package GitHub mirror in sync with what's live
+        # on AUR. Only PKGBUILD needs to be committed here — .SRCINFO
+        # is regenerated automatically by AUR from PKGBUILD.
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
+        with:
+          repository: aur-package
+          commit_message: "chore: sync PKGBUILD for v${{ steps.version.outputs.version }}"
+          commit_user_name: "Create Node App Bot"
+          commit_user_email: "ulisescf.24@gmail.com"
+          file_pattern: "PKGBUILD"
