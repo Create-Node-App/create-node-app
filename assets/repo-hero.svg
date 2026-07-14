@@ -68,7 +68,7 @@
       <line x1="27" y1="10" x2="23" y2="14" stroke="#0d9488" stroke-opacity="0.55" stroke-width="1.5" stroke-linecap="round"/>
       <line x1="18" y1="25" x2="18" y2="26" stroke="#0d9488" stroke-opacity="0.55" stroke-width="1.5" stroke-linecap="round"/>
     </g>
-    <text x="652" y="127" text-anchor="start" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="17" font-weight="700">create-node-app</text>
+    <text x="652" y="127" text-anchor="start" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="17" font-weight="700">create-awesome-node-app</text>
   </g>
 
   <!-- Left panel -->
