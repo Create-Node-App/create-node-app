@@ -67,7 +67,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
-          images: create-awesome-node-app/cli
+          images: ulisesjeremias/create-awesome-node-app
           # `latest` is guarded so a manual workflow_dispatch rebuild
           # of an older version can't overwrite the newest published tag.
           tags: |

@@ -22,6 +22,9 @@ One command. Any stack.
 [![Downloads][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ulises-jeremias?style=flat&logo=github)](https://github.com/sponsors/ulises-jeremias)
+[![AUR][aurbadge]][aururl]
+[![Homebrew][homebrewbadge]][homebrewurl]
+[![Docker][dockerbadge]][dockerurl]
 [![Node version](https://img.shields.io/badge/node-24%20LTS-339933?style=flat&logo=nodedotjs&logoColor=white)](.node-version)
 [![npm version](https://img.shields.io/badge/npm-11-CC3534?style=flat&logo=npm&logoColor=white)](.node-version)
 
@@ -336,3 +339,9 @@ _Build starters quickly. Understand the repo quickly. Contribute confidently._
 [markdownlinturl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/markdownlint.yml
 [npmurl]: https://www.npmjs.com/package/create-awesome-node-app
 [licenseurl]: https://github.com/Create-Node-App/create-node-app/blob/main/LICENSE
+[aururl]: https://aur.archlinux.org/packages/create-awesome-node-app
+[aurbadge]: https://img.shields.io/aur/version/create-awesome-node-app?style=flat-square&label=AUR&logo=archlinux
+[homebrewurl]: https://github.com/Create-Node-App/homebrew-tap
+[homebrewbadge]: https://img.shields.io/badge/homebrew-Create--Node--App%2Ftap-orange?style=flat-square&logo=homebrew
+[dockerurl]: https://hub.docker.com/r/ulisesjeremias/create-awesome-node-app
+[dockerbadge]: https://img.shields.io/docker/v/ulisesjeremias/create-awesome-node-app?style=flat-square&label=Docker&logo=docker&color=2496ED
