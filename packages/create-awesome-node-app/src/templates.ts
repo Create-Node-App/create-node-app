@@ -264,3 +264,98 @@ export const getExtensionsGroupedByCategory = async (
 
   return extensionsGroupedByCategory;
 };
+
+export type TemplateWithCategory = {
+  template: TemplateData;
+  categorySlug: string;
+  categoryName: string;
+  categoryOrder: number;
+};
+
+export type ExtensionWithCategory = {
+  extension: TemplateOrExtensionData;
+  categorySlug: string;
+  categoryName: string;
+  categoryOrder: number;
+};
+
+/**
+ * Return all templates in a flat array, tagged with their category
+ * metadata and sorted by category order (as defined in the catalog's
+ * `categories` list) then by template order within each category.
+ *
+ * Used by interactive mode to surface every template in a single
+ * searchable prompt while preserving visual category grouping.
+ */
+export const getAllTemplatesWithCategory = async (): Promise<
+  TemplateWithCategory[]
+> => {
+  const templateData = await getTemplateData();
+
+  const categoryOrder = new Map<string, number>();
+  (templateData.categories ?? []).forEach((category, index) => {
+    categoryOrder.set(category.slug, index);
+  });
+
+  const categoryName = new Map<string, string>();
+  (templateData.categories ?? []).forEach((category) => {
+    categoryName.set(category.slug, category.name);
+  });
+
+  const items: TemplateWithCategory[] = templateData.templates.map(
+    (template) => ({
+      template,
+      categorySlug: template.category,
+      categoryName: categoryName.get(template.category) ?? template.category,
+      categoryOrder: categoryOrder.get(template.category) ?? Infinity,
+    }),
+  );
+
+  return items.sort((a, b) => {
+    if (a.categoryOrder !== b.categoryOrder) {
+      return a.categoryOrder - b.categoryOrder;
+    }
+    return a.template.name.localeCompare(b.template.name);
+  });
+};
+
+/**
+ * Return all extensions compatible with the given template type(s),
+ * flattened and tagged with their category metadata, sorted by
+ * category order then alphabetically within each category.
+ *
+ * Used by interactive mode to present a single searchable multiselect
+ * across every applicable extension instead of a per-category loop.
+ */
+export const getAllExtensionsWithCategory = async (
+  type: ExtensionType,
+): Promise<ExtensionWithCategory[]> => {
+  const grouped = await getExtensionsGroupedByCategory(type);
+  const templateData = await getTemplateData();
+
+  const categoryOrder = new Map<string, number>();
+  (templateData.categories ?? []).forEach((category, index) => {
+    categoryOrder.set(category.slug, index);
+  });
+
+  const items: ExtensionWithCategory[] = [];
+  for (const [categorySlug, extensions] of Object.entries(grouped)) {
+    const categoryData = await getCategoryData(categorySlug);
+    const categoryName = categoryData?.name || categorySlug;
+    for (const extension of extensions) {
+      items.push({
+        extension,
+        categorySlug,
+        categoryName,
+        categoryOrder: categoryOrder.get(categorySlug) ?? Infinity,
+      });
+    }
+  }
+
+  return items.sort((a, b) => {
+    if (a.categoryOrder !== b.categoryOrder) {
+      return a.categoryOrder - b.categoryOrder;
+    }
+    return a.extension.name.localeCompare(b.extension.name);
+  });
+};

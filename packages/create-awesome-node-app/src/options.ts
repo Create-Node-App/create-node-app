@@ -8,8 +8,63 @@ import {
   getTemplateCategories,
   getTemplatesForCategory,
   getExtensionsGroupedByCategory,
-  getCategoryData,
+  getAllTemplatesWithCategory,
+  getAllExtensionsWithCategory,
 } from "./templates.js";
+
+const CUSTOM_TEMPLATE_SENTINEL = "__custom_template__";
+
+/**
+ * Build a searchable choice list where each entry is prefixed with its
+ * category so users can visually scan by category *and* filter by
+ * typing (matches on category, template name, description, and
+ * keywords).
+ */
+const makeCategorizedChoice = (opts: {
+  categoryName: string;
+  name: string;
+  value: string;
+  description?: string | undefined;
+  labels?: string[] | undefined;
+}) => {
+  const prefix = pc.dim(`[${opts.categoryName}]`);
+  const label = pc.bold(opts.name);
+  const searchTokens = [
+    opts.categoryName,
+    opts.name,
+    opts.description ?? "",
+    ...(opts.labels ?? []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  return {
+    title: `${prefix} ${label}`,
+    value: opts.value,
+    description: opts.description,
+    // Attach lowercased searchable text for the suggest() filter.
+    // prompts ignores unknown keys so this is safe.
+    _search: searchTokens,
+  } as prompts.Choice & { _search: string };
+};
+
+/**
+ * Filter callback for autocomplete/autocompleteMultiselect that
+ * matches against the pre-computed _search token bag instead of
+ * only the visible title (which contains ANSI escape codes).
+ */
+const suggestBySearchTokens = (
+  input: string,
+  choices: (prompts.Choice & { _search?: string })[],
+): Promise<prompts.Choice[]> => {
+  const needle = input.trim().toLowerCase();
+  if (!needle) return Promise.resolve(choices);
+  return Promise.resolve(
+    choices.filter((c) =>
+      (c._search ?? c.title.toLowerCase()).includes(needle),
+    ),
+  );
+};
 
 const PACKAGE_MANAGERS = ["npm", "yarn", "pnpm", "bun"];
 
@@ -166,32 +221,37 @@ const processInteractiveOptions = async (
   // Pre-fill interactive prompts with CLI-provided values (replaces yargs argv override)
   prompts.override({ ...options, ...setOverrides });
 
-  const categories = await getTemplateCategories();
+  // Fetch every template across every category so we can offer a single
+  // searchable prompt instead of a two-step category → template flow.
+  // This dramatically improves discovery — users can browse the full
+  // catalog at once and filter by typing.
+  const allTemplates = await getAllTemplatesWithCategory();
 
-  // Get category data for each category
-  const categoryDataPromises = categories.map(async (categorySlug) => {
-    const categoryData = await getCategoryData(categorySlug);
-    return {
-      slug: categorySlug,
-      name: categoryData?.name || categorySlug,
-      description: categoryData?.description || "",
-    };
-  });
-
-  const categoryDataList = await Promise.all(categoryDataPromises);
-
-  const categoriesOptions = [
-    ...categoryDataList.map((category) => ({
-      title: category.name,
-      value: category.slug,
-      description: category.description,
-    })),
+  // Build choices: templates first (grouped visually by category prefix
+  // in the title), then a footer entry for "use my own template URL".
+  const templateChoices = [
+    ...allTemplates.map(({ template, categoryName }) =>
+      makeCategorizedChoice({
+        categoryName,
+        name: template.name,
+        value: template.url,
+        description: template.description,
+        labels: template.labels,
+      }),
+    ),
     {
-      title: "None of the above",
-      value: "custom",
-      description: "I have my own template",
-    },
+      title: `${pc.dim("[Custom]")} ${pc.italic("Use my own template URL")}`,
+      value: CUSTOM_TEMPLATE_SENTINEL,
+      description: "Point at any GitHub repo or file:// path",
+      _search: "custom own template url github file",
+    } as prompts.Choice & { _search: string },
   ];
+
+  // Pre-select the current template (if provided via --template) so users
+  // who partially specified via CLI can just hit Enter.
+  const preselectedTemplateIdx = options.template
+    ? templateChoices.findIndex((c) => c.value === options.template)
+    : 0;
 
   const baseInput = await prompts([
     {
@@ -213,56 +273,49 @@ const processInteractiveOptions = async (
         : 0,
     },
     {
-      type: "select",
-      name: "category",
-      message: "What type of app do you want to create?",
-      choices: categoriesOptions,
-      initial: 0,
+      type: "autocomplete",
+      name: "template",
+      message: "Pick a template (type to filter across all categories)",
+      choices: templateChoices,
+      initial: preselectedTemplateIdx >= 0 ? preselectedTemplateIdx : 0,
+      suggest: suggestBySearchTokens,
+      // Show category counts as an initial hint.
+      hint: `${allTemplates.length} templates available — type any framework, category, or keyword`,
     },
   ]);
 
-  const templates = await getTemplatesForCategory(baseInput.category);
+  // If the user picked the custom sentinel, prompt for the URL now.
+  let templateUrl: string = baseInput.template;
+  if (templateUrl === CUSTOM_TEMPLATE_SENTINEL) {
+    const { customTemplate } = await prompts([
+      {
+        type: "text",
+        name: "customTemplate",
+        message:
+          "Enter the URL of your template (e.g. https://github.com/user/repo/tree/main/subdir)",
+        initial: options.template,
+        validate: (value: string) =>
+          value ? true : "Template URL is required",
+      },
+    ]);
+    templateUrl = customTemplate;
+  }
 
-  const templateOptions = templates.map((template) => ({
-    title: template.name,
-    value: template.url,
-    description:
-      template.description + " Keywords: " + template.labels?.join(", "),
-  }));
+  const existingTemplate = allTemplates
+    .map((t) => t.template)
+    .find((template) => template.url === templateUrl);
 
-  const templateInput = await prompts(
-    baseInput.category === "custom"
-      ? [
-          {
-            type: "text",
-            name: "template",
-            message:
-              "Enter the URL of your template. e.g: https://github.com/username/repository/tree/main/subdir",
-            initial: options.template,
-            validate: (value) => {
-              if (!value) {
-                return "Template URL is required";
-              }
-              return true;
-            },
-          },
-        ]
-      : [
-          {
-            type: "select",
-            name: "template",
-            message: "Select a template",
-            choices: templateOptions,
-            initial: 0,
-          },
-        ],
-  );
+  const templateTemplateOrExtension = templateUrl;
 
-  const existingTemplate = templates.find(
-    (template) => template.url === templateInput.template,
-  );
-
-  const templateTemplateOrExtension = templateInput.template;
+  // Preserve the category-derived shape the rest of the flow expects.
+  // `baseInput` was declared with strict prompt-name typing, so we widen
+  // it here to attach the derived `category` field.
+  const baseInputWithCategory = baseInput as typeof baseInput & {
+    category: string;
+    template: string;
+  };
+  baseInputWithCategory.template = templateUrl;
+  baseInputWithCategory.category = existingTemplate?.category ?? "custom";
 
   // Load cna.config.json from the selected template — takes priority over registry
   // customOptions. Falls back to registry if not found (backward compat).
@@ -327,36 +380,41 @@ const processInteractiveOptions = async (
   appConfig.templatesOrExtensions = [];
   appConfig.extend = Array.isArray(options.extend) ? options.extend : [];
 
-  const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
+  // Flat, searchable list of every compatible extension across every
+  // category. Users can filter by typing (framework, purpose, keyword)
+  // and select multiple with Space, then submit with Enter.
+  const allExtensions = await getAllExtensionsWithCategory([
     existingTemplate?.type || "custom",
     "all",
   ]);
 
-  for (const [categorySlug, extensions] of Object.entries(
-    extensionsGroupedByCategory,
-  )) {
-    const categoryData = await getCategoryData(categorySlug);
-    const categoryName = categoryData?.name || categorySlug;
-    const categoryDescription = categoryData?.description || "";
+  if (allExtensions.length > 0) {
+    const extensionChoices = allExtensions.map(({ extension, categoryName }) =>
+      makeCategorizedChoice({
+        categoryName,
+        name: extension.name,
+        value: extension.url,
+        description: extension.description,
+        labels: extension.labels,
+      }),
+    );
 
     const { selected } = await prompts({
-      type: "multiselect",
+      type: "autocompleteMultiselect",
       name: "selected",
-      message: `Select extensions for ${categoryName}${
-        categoryDescription ? `: ${categoryDescription}` : ""
-      }`,
-      choices: extensions.map((extension) => ({
-        title: extension.name,
-        value: extension.url,
-        description:
-          extension.description + " Keywords: " + extension.labels?.join(", "),
-      })),
-      initial: 0,
+      message:
+        "Pick extensions (Space to toggle, type to filter, Enter to confirm)",
+      choices: extensionChoices,
+      suggest: suggestBySearchTokens,
+      hint: `${allExtensions.length} extensions available — leave empty to skip`,
+      instructions: false,
+      // Prevent user from being forced to select at least one.
+      min: 0,
     });
 
-    appConfig.templatesOrExtensions = appConfig.templatesOrExtensions
-      ? [...appConfig.templatesOrExtensions, ...selected]
-      : [];
+    if (Array.isArray(selected)) {
+      appConfig.templatesOrExtensions = selected;
+    }
   }
 
   if (appConfig.extend.length === 0) {
@@ -393,17 +451,29 @@ const processInteractiveOptions = async (
     aiTool: "none", // Default value
     ...options,
     ...baseInput,
-    ...templateInput,
     ...appConfig,
   };
 
-  const templatesOrExtensions: TemplateOrExtension[] = [
-    templateTemplateOrExtension,
-    ...(nextAppOptions.templatesOrExtensions || []),
-    ...(nextAppOptions.extend || []),
-  ]
+  const templatesOrExtensions: TemplateOrExtension[] = (
+    [
+      templateTemplateOrExtension,
+      ...(nextAppOptions.templatesOrExtensions || []),
+      ...(nextAppOptions.extend || []),
+    ] as unknown[]
+  )
     .filter(Boolean)
-    .map((templateOrExtension) => ({ url: templateOrExtension }));
+    .map((templateOrExtension) => {
+      // Support both plain URL strings and already-shaped
+      // { url: string } objects (e.g. from options.extend).
+      if (
+        typeof templateOrExtension === "object" &&
+        templateOrExtension !== null &&
+        "url" in templateOrExtension
+      ) {
+        return templateOrExtension as TemplateOrExtension;
+      }
+      return { url: templateOrExtension as string };
+    });
 
   const nextOptions = { ...nextAppOptions, templatesOrExtensions };
 

@@ -2,7 +2,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import nock from 'nock';
 
-import { getTemplateCategories, getTemplatesForCategory, getExtensionsGroupedByCategory } from '../src/templates.js';
+import {
+  getTemplateCategories,
+  getTemplatesForCategory,
+  getExtensionsGroupedByCategory,
+  getAllTemplatesWithCategory,
+  getAllExtensionsWithCategory,
+} from '../src/templates.js';
 
 const mockData = {
   templates: [
@@ -48,4 +54,29 @@ test('getExtensionsGroupedByCategory filters by type', async () => {
   const grouped = await getExtensionsGroupedByCategory(['react', 'all']);
   assert.ok(grouped.testing, 'testing category present');
   assert.ok(grouped.quality, 'quality category present');
+});
+
+test('getAllTemplatesWithCategory returns all templates sorted by catalog category order', async () => {
+  const items = await getAllTemplatesWithCategory();
+  assert.equal(items.length, 2);
+  // Catalog order in the mock is frontend, backend — so frontend comes first.
+  assert.equal(items[0]!.categorySlug, 'frontend');
+  assert.equal(items[0]!.categoryName, 'Frontend');
+  assert.equal(items[0]!.template.slug, 'react-vite-boilerplate');
+  assert.equal(items[1]!.categorySlug, 'backend');
+  assert.equal(items[1]!.categoryName, 'Backend');
+});
+
+test('getAllExtensionsWithCategory returns flat, category-tagged extensions for the given type', async () => {
+  const items = await getAllExtensionsWithCategory(['react', 'all']);
+  assert.ok(items.length >= 2, 'expected at least 2 extensions');
+  // Each item should carry its category metadata.
+  const eslint = items.find((i) => i.extension.slug === 'eslint');
+  const jest = items.find((i) => i.extension.slug === 'jest');
+  assert.ok(eslint, 'eslint extension present');
+  assert.ok(jest, 'jest extension present');
+  assert.equal(eslint!.categoryName, 'Quality');
+  assert.equal(jest!.categoryName, 'Testing');
+  // Sorted by catalog order (quality before testing in the mock).
+  assert.ok(items.indexOf(eslint!) < items.indexOf(jest!));
 });
