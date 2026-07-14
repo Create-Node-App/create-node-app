@@ -1,0 +1,48 @@
+name: Notify Homebrew tap
+
+# Triggers on Changesets-created tags for the CLI package. Sends a
+# repository_dispatch event to Create-Node-App/homebrew-tap so its
+# update-formula workflow can bump the formula and push it.
+on:
+  push:
+    tags:
+      - "create-awesome-node-app@*"
+  # Manual trigger to re-notify for a specific version.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Package version (e.g. 0.12.0)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    name: Dispatch to homebrew-tap
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve version
+        id: version
+        env:
+          TAG_REF: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          if [ -n "$INPUT_VERSION" ]; then
+            VERSION="$INPUT_VERSION"
+          else
+            VERSION="${TAG_REF#create-awesome-node-app@}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch repository event
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/Create-Node-App/homebrew-tap/dispatches \
+            -f "event_type=new-release" \
+            -f "client_payload[version]=$VERSION"
