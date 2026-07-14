@@ -53,10 +53,10 @@
     ]
   },
   "engines": {
-    "npm": ">=10.9.2",
-    "node": ">=22.0.0"
+    "npm": ">=11.13.0",
+    "node": ">=24.17.0"
   },
-  "packageManager": "npm@10.9.2",
+  "packageManager": "npm@11.13.0",
   "overrides": {
     "@babel/runtime": "7.26.10",
     "esbuild": "^0.28.1",

@@ -7,8 +7,8 @@
 ## Tech Stack
 
 - TypeScript
-- Node.js 22+
-- npm 10+
+- Node.js 24.17.0+
+- npm 11+
 - Turborepo (monorepo)
 
 ## Key Commands

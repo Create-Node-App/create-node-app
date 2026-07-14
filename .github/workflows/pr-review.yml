@@ -37,7 +37,25 @@ jobs:
         run: npm ci
         working-directory: tools/danger
       - name: Danger
-        run: npx danger ci
+        # GitHub's PR files/commits endpoints occasionally return
+        # "Premature close" from the CI runner (node-fetch v2 gzip
+        # handling bug on Node 24+). Retry up to 3 times and treat
+        # persistent failures as advisory — Danger only posts style
+        # comments on PR body/title/size, not blocking checks.
+        continue-on-error: true
         working-directory: tools/danger
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          attempt=1
+          max=3
+          until npx danger ci; do
+            code=$?
+            if [ $attempt -ge $max ]; then
+              echo "::error::Danger failed after ${max} attempts (exit ${code})."
+              exit $code
+            fi
+            echo "::warning::Danger attempt ${attempt} failed with exit ${code}; retrying..."
+            attempt=$((attempt + 1))
+            sleep 5
+          done
