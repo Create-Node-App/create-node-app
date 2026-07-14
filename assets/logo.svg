@@ -1,0 +1,82 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Create Node App logo">
+  <title>Create Node App</title>
+  <defs>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a"/>
+      <stop offset="0.6" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#134e4a"/>
+    </linearGradient>
+    <linearGradient id="node-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="55%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+    <radialGradient id="glow-a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(160 160) scale(200)">
+      <stop stop-color="#f59e0b" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-b" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(240 250) scale(200)">
+      <stop stop-color="#0d9488" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#0d9488" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="node-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="edge-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="400" rx="80" fill="url(#bg-grad)"/>
+  <rect width="400" height="400" rx="80" fill="url(#glow-a)"/>
+  <rect width="400" height="400" rx="80" fill="url(#glow-b)"/>
+
+  <!-- Subtle dot-grid pattern (brand node-graph motif) -->
+  <g opacity="0.08">
+    <circle cx="80" cy="80" r="2" fill="#f59e0b"/>
+    <circle cx="160" cy="80" r="2" fill="#f59e0b"/>
+    <circle cx="240" cy="80" r="2" fill="#f59e0b"/>
+    <circle cx="320" cy="80" r="2" fill="#f59e0b"/>
+    <circle cx="80" cy="160" r="2" fill="#f59e0b"/>
+    <circle cx="320" cy="160" r="2" fill="#f59e0b"/>
+    <circle cx="80" cy="320" r="2" fill="#f59e0b"/>
+    <circle cx="160" cy="320" r="2" fill="#f59e0b"/>
+    <circle cx="240" cy="320" r="2" fill="#f59e0b"/>
+    <circle cx="320" cy="320" r="2" fill="#f59e0b"/>
+    <circle cx="80" cy="240" r="2" fill="#f59e0b"/>
+    <circle cx="320" cy="240" r="2" fill="#f59e0b"/>
+  </g>
+
+  <!-- Node-graph logomark (centered, large) -->
+  <!-- Edges first (behind nodes) -->
+  <g filter="url(#edge-glow)">
+    <!-- Top-left to center -->
+    <line x1="142" y1="168" x2="182" y2="196" stroke="#f59e0b" stroke-opacity="0.5" stroke-width="4" stroke-linecap="round"/>
+    <!-- Top-right to center -->
+    <line x1="258" y1="168" x2="218" y2="196" stroke="#0d9488" stroke-opacity="0.5" stroke-width="4" stroke-linecap="round"/>
+    <!-- Center to bottom -->
+    <line x1="200" y1="224" x2="200" y2="264" stroke="#0d9488" stroke-opacity="0.45" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Nodes -->
+  <g filter="url(#node-glow)">
+    <!-- Top-left node (amber) -->
+    <circle cx="130" cy="150" r="26" fill="#f59e0b" fill-opacity="0.15"/>
+    <circle cx="130" cy="150" r="18" fill="#f59e0b" fill-opacity="0.9"/>
+
+    <!-- Top-right node (teal) -->
+    <circle cx="270" cy="150" r="26" fill="#0d9488" fill-opacity="0.15"/>
+    <circle cx="270" cy="150" r="18" fill="#0d9488" fill-opacity="0.9"/>
+
+    <!-- Center node (gradient — the main node) -->
+    <circle cx="200" cy="210" r="38" fill="url(#node-grad)" fill-opacity="0.15"/>
+    <circle cx="200" cy="210" r="28" fill="url(#node-grad)"/>
+
+    <!-- Bottom node (teal, smaller) -->
+    <circle cx="200" cy="284" r="20" fill="#0d9488" fill-opacity="0.12"/>
+    <circle cx="200" cy="284" r="14" fill="#0d9488" fill-opacity="0.75"/>
+  </g>
+</svg>
