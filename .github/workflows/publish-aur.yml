@@ -51,9 +51,15 @@ jobs:
           sed -i "s/^pkgver=.*/pkgver=${NEW_VERSION}/" PKGBUILD
           sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
 
-          # Fetch new npm tarball and compute sha256
+          # Fetch new npm tarball and compute sha256. -f makes curl exit
+          # non-zero on 4xx/5xx so we never silently hash an error page
+          # (e.g. tarball not yet propagated through npm's CDN).
           URL="https://registry.npmjs.org/create-awesome-node-app/-/create-awesome-node-app-${NEW_VERSION}.tgz"
-          SHA=$(curl -sL "$URL" | sha256sum | cut -d' ' -f1)
+          SHA=$(curl -sfL "$URL" | sha256sum | cut -d' ' -f1)
+          if [ -z "$SHA" ] || [ "$SHA" = "d41d8cd98f00b204e9800998ecf8427e" ]; then
+            echo "::error::Failed to download or hash tarball at $URL" >&2
+            exit 1
+          fi
           sed -i "s/^sha256sums=.*/sha256sums=('${SHA}')/" PKGBUILD
 
           echo "----- Updated PKGBUILD -----"
