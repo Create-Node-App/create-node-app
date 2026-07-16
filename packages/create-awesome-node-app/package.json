@@ -94,7 +94,7 @@
     "@types/node": "^26.1.1",
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.5.8",
-    "eslint": "^10.6.0",
+    "eslint": "^10.7.0",
     "nock": "^14.0.15",
     "tsup": "^8.5.1",
     "tsx": "^4.22.4"
