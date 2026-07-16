@@ -346,3 +346,11 @@ _Build starters quickly. Understand the repo quickly. Contribute confidently._
 [dockerbadge]: https://img.shields.io/docker/v/ulisesjeremias/create-awesome-node-app?style=flat-square&label=Docker&logo=docker&color=2496ED
 [smokebadge]: https://github.com/Create-Node-App/create-node-app/actions/workflows/smoke-distribution.yml/badge.svg?event=schedule
 [smokeurl]: https://github.com/Create-Node-App/create-node-app/actions/workflows/smoke-distribution.yml
+
+## 👥 Contributors
+
+<a href="https://github.com/Create-Node-App/create-node-app/contributors">
+  <img src="https://contrib.rocks/image?repo=Create-Node-App/create-node-app"/>
+</a>
+
+Made with [contributors-img](https://contrib.rocks).
