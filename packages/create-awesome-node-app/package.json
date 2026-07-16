@@ -1,6 +1,6 @@
 {
   "name": "create-awesome-node-app",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "type": "module",
   "description": "Composable scaffolding CLI for production-ready Node, Web, Full-Stack, Monorepo, and AI-ready projects.",
   "license": "MIT",

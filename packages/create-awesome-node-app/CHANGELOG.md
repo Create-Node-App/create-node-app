@@ -1,5 +1,15 @@
 # create-awesome-node-app
 
+## 0.13.1
+
+### Patch Changes
+
+- c65b4a2: Fix interactive template autocomplete submitting category separator rows.
+
+  `prompts@2.x` autocomplete ignores `disabled: true`, so Enter on a divider
+  could select an invalid template. Separators are removed; each choice now
+  shows a fixed-width coloured category badge for scanability.
+
 ## 0.13.0
 
 ### Minor Changes
