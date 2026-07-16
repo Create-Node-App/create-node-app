@@ -15,9 +15,9 @@
     "test:src": "echo 'no tests'"
   },
   "dependencies": {
-    "eslint": "^10.6.0",
+    "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-config-turbo": "^2.10.4"
+    "eslint-config-turbo": "^2.10.5"
   },
   "publishConfig": {
     "access": "public",
