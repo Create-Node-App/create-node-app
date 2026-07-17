@@ -47,15 +47,34 @@ jobs:
         env:
           NEW_VERSION: ${{ steps.version.outputs.version }}
         run: |
+          set -euo pipefail
+          retry() {
+            local attempts="$1"
+            local delay="$2"
+            shift 2
+            for attempt in $(seq 1 "$attempts"); do
+              if "$@"; then
+                return 0
+              fi
+              if [ "$attempt" = "$attempts" ]; then
+                return 1
+              fi
+              echo "::warning::Attempt $attempt/$attempts failed: $*; retrying in ${delay}s" >&2
+              sleep "$delay"
+            done
+          }
+
           # Reset pkgver and pkgrel
           sed -i "s/^pkgver=.*/pkgver=${NEW_VERSION}/" PKGBUILD
           sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
 
-          # Fetch new npm tarball and compute sha256. -f makes curl exit
-          # non-zero on 4xx/5xx so we never silently hash an error page
-          # (e.g. tarball not yet propagated through npm's CDN).
+          # Fetch new npm tarball and compute sha256. Tags fire after npm
+          # publish, but the CDN can still lag — poll before hashing.
           URL="https://registry.npmjs.org/create-awesome-node-app/-/create-awesome-node-app-${NEW_VERSION}.tgz"
-          SHA=$(curl -sfL "$URL" | sha256sum | cut -d' ' -f1)
+          TMP="$(mktemp)"
+          retry 24 15 curl -sfL "$URL" -o "$TMP"
+          SHA=$(sha256sum "$TMP" | cut -d' ' -f1)
+          rm -f "$TMP"
           if [ -z "$SHA" ] || [ "$SHA" = "d41d8cd98f00b204e9800998ecf8427e" ]; then
             echo "::error::Failed to download or hash tarball at $URL" >&2
             exit 1

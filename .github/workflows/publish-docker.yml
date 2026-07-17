@@ -47,6 +47,26 @@ jobs:
             echo "minor=$MINOR"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Wait for npm package
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          PACKAGE: create-awesome-node-app
+        run: |
+          set -euo pipefail
+          attempts=24
+          delay=15
+          for attempt in $(seq 1 "$attempts"); do
+            if curl -sfL "https://registry.npmjs.org/${PACKAGE}/${VERSION}" \
+              | jq -e --arg v "$VERSION" '.version == $v' >/dev/null; then
+              echo "npm has ${PACKAGE}@${VERSION}"
+              exit 0
+            fi
+            echo "::warning::npm not ready for ${PACKAGE}@${VERSION} (attempt ${attempt}/${attempts}); retrying in ${delay}s"
+            sleep "$delay"
+          done
+          echo "::error::Timed out waiting for ${PACKAGE}@${VERSION} on npm"
+          exit 1
+
       - name: Set up QEMU
         # Required so buildx can cross-build linux/arm64 on the x86_64
         # ubuntu-latest runner.
