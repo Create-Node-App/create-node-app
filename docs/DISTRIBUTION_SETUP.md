@@ -4,7 +4,7 @@
 (`create-awesome-node-app@X.Y.Z`):
 
 | Channel      | Workflow                               | Secret(s) needed                        |
-|--------------|----------------------------------------|-----------------------------------------|
+| ------------ | -------------------------------------- | --------------------------------------- |
 | **npm**      | `publish.yml`                          | (OIDC trusted publishing — no secret)   |
 | **Docker**   | `publish-docker.yml`                   | `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` |
 | **AUR**      | `publish-aur.yml`                      | `AUR_SSH_PRIVATE_KEY`, `AUR_REPO_TOKEN` |
@@ -173,5 +173,6 @@ Every subsequent release only requires:
 
 1. Merging the auto-generated **Version Packages** PR from Changesets.
 2. Nothing else — `publish.yml` publishes to npm, tags the release, and
-   the three tag-based workflows fan out to Docker Hub, AUR, and Homebrew
-   in parallel.
+   the three tag-based workflows fan out to Docker Hub, AUR, and Homebrew.
+   Each channel waits/retries on the npm registry so CDN lag after publish
+   does not fail the first attempt.
