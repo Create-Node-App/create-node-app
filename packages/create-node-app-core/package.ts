@@ -1,7 +1,6 @@
 // Removed unused eslint-disable (global-require) after migration to flat config
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { createRequire } from "node:module";
-import { pathToFileURL } from "node:url";
 import merge from "lodash.merge";
 import type { TemplateOrExtension } from "./loaders.js";
 import { getPackagePath } from "./paths.js";
@@ -37,20 +36,22 @@ const localRequire = createRequire(import.meta.url);
 /**
  * Load a module from disk if it exists. Throws if missing.
  *
- * For `.json` files we use dynamic `import()` with the `with { type: "json" }`
- * assertion (Node 22+). For `.js`/`.cjs` files we use `createRequire`. This
- * avoids the legacy `require()` pattern that only works because of tsup's
- * `--shims` build flag.
+ * For `.json` files we read the file and `JSON.parse` it. We deliberately avoid
+ * a dynamic `import()` with an import attribute (`with { type: "json" }`):
+ * although valid at the source level, tsup/esbuild strips the attribute when
+ * bundling, producing a bare `import("...json")` in the published `dist`. On
+ * Node >= 20.10 that throws `ERR_IMPORT_ATTRIBUTE_MISSING`, which the callers
+ * swallow — silently dropping every dependency declared in a template's or
+ * extension's `package.json`. Reading + parsing is bundler- and Node-agnostic.
+ *
+ * For `.js`/`.cjs` files (e.g. `package/index.js`) we use `createRequire`.
  */
 const importIfExists = async (filePath: string): Promise<unknown> => {
   if (!existsSync(filePath)) {
     throw new Error(`File ${filePath} does not exist`);
   }
   if (filePath.endsWith(".json")) {
-    const mod = (await import(pathToFileURL(filePath).href, {
-      with: { type: "json" },
-    })) as { default?: unknown };
-    return mod.default ?? mod;
+    return JSON.parse(readFileSync(filePath, "utf8"));
   }
   // Fallback to createRequire for JS/CJS template modules.
   return localRequire(filePath);
