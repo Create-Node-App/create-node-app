@@ -1,9 +1,5 @@
 import pc from "picocolors";
 
-export const colorsEnabled = (): boolean => !process.env.NO_COLOR;
-
-export const CNA_BRAND_PREFIX = "◆";
-
 const CATEGORY_STYLES: Array<(s: string) => string> = [
   pc.yellow,
   pc.green,
@@ -14,7 +10,7 @@ const CATEGORY_STYLES: Array<(s: string) => string> = [
   (s: string) => pc.bold(pc.cyan(s)),
 ];
 
-export const categoryStyle = (slug: string): ((s: string) => string) => {
+const categoryStyle = (slug: string): ((s: string) => string) => {
   const idx =
     slug.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
     CATEGORY_STYLES.length;
@@ -23,7 +19,7 @@ export const categoryStyle = (slug: string): ((s: string) => string) => {
 
 const STOP_WORDS = new Set(["Applications", "Application", "Boilerplate"]);
 
-export const shortCategoryLabel = (categoryName: string): string => {
+const shortCategoryLabel = (categoryName: string): string => {
   const words = categoryName.split(" ").filter((w) => !STOP_WORDS.has(w));
   if (words.length >= 3)
     return words.map((w) => w[0]?.toUpperCase() ?? "").join("");
@@ -51,7 +47,7 @@ export const makeSearchableChoice = (opts: {
       : "";
 
   const badge = opts.categorySlug
-    ? (colorsEnabled() ? categoryStyle(opts.categorySlug) : (s: string) => s)(
+    ? categoryStyle(opts.categorySlug)(
         shortCategoryLabel(opts.categoryName ?? opts.categorySlug)
           .padEnd(10)
           .slice(0, 10),
