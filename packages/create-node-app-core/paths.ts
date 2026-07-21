@@ -25,7 +25,9 @@ const moduleDir =
  *   - subdir=<relativePath> (only for file://) -> pick subdirectory
  *   - ref=<sha>           -> pin to a specific commit SHA (overrides branch)
  */
-export const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: string) => {
+export const solveValuesFromTemplateOrExtensionUrl = (
+  templateOrExtension: string,
+) => {
   const url = new URL(templateOrExtension);
   const ignorePackage = url.searchParams.get("ignorePackage") === "true";
   const refParam = url.searchParams.get("ref") || "";
@@ -44,10 +46,10 @@ export const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: strin
       // file:///C:/path => C:/path
       if (/^\/[A-Za-z]:[\\/]/.test(pathname)) {
         pathname = pathname.slice(1);
-      // file:///C:path => C:path (drive-relative, no separator after colon)
+        // file:///C:path => C:path (drive-relative, no separator after colon)
       } else if (/^\/[A-Za-z]:[^\\/]/.test(pathname)) {
         pathname = pathname.slice(1);
-      // file:////server/share => \\server\share (UNC path)
+        // file:////server/share => \\server\share (UNC path)
       } else if (pathname.startsWith("//")) {
         pathname = "\\\\" + pathname.slice(2).replace(/\//g, "\\");
       }
@@ -73,6 +75,15 @@ export const solveValuesFromTemplateOrExtensionUrl = (templateOrExtension: strin
   if (parts[2] === "tree") {
     branch = parts[3] || "";
     subdir = parts.slice(4).join("/");
+  }
+  // Allow subdir via query param for HTTPS URLs (same as file://)
+  const querySubdir = url.searchParams.get("subdir") || "";
+  if (querySubdir && !subdir) {
+    subdir = querySubdir;
+  }
+  // Default branch to main when not specified
+  if (!branch) {
+    branch = "main";
   }
   // ref query param overrides the branch from the URL path
   if (refParam) {
