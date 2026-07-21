@@ -36,6 +36,7 @@ const main = async () => {
   let cacheSubcommand: string | undefined;
   let cacheSubcommandArg: string | undefined;
   let cacheCatalogFlag = false;
+  let cacheJsonFlag = false;
 
   const cacheCommand = program
     .command("cache")
@@ -51,8 +52,10 @@ const main = async () => {
   cacheCommand
     .command("list")
     .description("List cached templates and extensions")
-    .action(() => {
+    .option("--json", "Output as JSON")
+    .action((options: { json?: boolean }) => {
       cacheSubcommand = "list";
+      cacheJsonFlag = Boolean(options.json);
     });
 
   cacheCommand
@@ -61,40 +64,55 @@ const main = async () => {
       "Remove one or all cached entries (pass --catalog to also clear the template catalog cache)",
     )
     .option("--catalog", "Also clear the on-disk template catalog cache")
-    .action((id: string | undefined, options: { catalog?: boolean }) => {
-      cacheSubcommand = "clean";
-      cacheSubcommandArg = id;
-      cacheCatalogFlag = Boolean(options.catalog);
-    });
+    .option("--json", "Output as JSON")
+    .action(
+      (
+        id: string | undefined,
+        options: { catalog?: boolean; json?: boolean },
+      ) => {
+        cacheSubcommand = "clean";
+        cacheSubcommandArg = id;
+        cacheCatalogFlag = Boolean(options.catalog);
+        cacheJsonFlag = Boolean(options.json);
+      },
+    );
 
   cacheCommand
     .command("verify [id]")
     .description("Run git fsck on one or all cached entries")
-    .action((id: string | undefined) => {
+    .option("--json", "Output as JSON")
+    .action((id: string | undefined, options: { json?: boolean }) => {
       cacheSubcommand = "verify";
       cacheSubcommandArg = id;
+      cacheJsonFlag = Boolean(options.json);
     });
 
   cacheCommand
     .command("outdated")
     .description("List cached entries that are behind their remote tip")
-    .action(() => {
+    .option("--json", "Output as JSON")
+    .action((options: { json?: boolean }) => {
       cacheSubcommand = "outdated";
+      cacheJsonFlag = Boolean(options.json);
     });
 
   cacheCommand
     .command("update [id]")
     .description("Refresh one or all cached entries from their remote")
-    .action((id: string | undefined) => {
+    .option("--json", "Output as JSON")
+    .action((id: string | undefined, options: { json?: boolean }) => {
       cacheSubcommand = "update";
       cacheSubcommandArg = id;
+      cacheJsonFlag = Boolean(options.json);
     });
 
   cacheCommand
     .command("doctor")
     .description("Diagnose cache health: git, network, permissions")
-    .action(() => {
+    .option("--json", "Output as JSON")
+    .action((options: { json?: boolean }) => {
       cacheSubcommand = "doctor";
+      cacheJsonFlag = Boolean(options.json);
     });
 
   program
@@ -191,18 +209,21 @@ const main = async () => {
         cacheDir();
         return;
       case "list":
-        await cacheList();
+        await cacheList(cacheJsonFlag);
         return;
       case "clean":
-        await cacheClean(cacheSubcommandArg, { catalog: cacheCatalogFlag });
+        await cacheClean(cacheSubcommandArg, {
+          catalog: cacheCatalogFlag,
+          json: cacheJsonFlag,
+        });
         return;
       case "verify": {
-        const code = await cacheVerify(cacheSubcommandArg);
+        const code = await cacheVerify(cacheSubcommandArg, cacheJsonFlag);
         if (code !== 0) process.exit(code);
         return;
       }
       case "outdated":
-        await cacheOutdated();
+        await cacheOutdated(cacheJsonFlag);
         return;
       case "update": {
         const code = await cacheUpdate(cacheSubcommandArg);
@@ -210,7 +231,7 @@ const main = async () => {
         return;
       }
       case "doctor": {
-        const code = await cacheDoctor();
+        const code = await cacheDoctor(cacheJsonFlag);
         if (code !== 0) process.exit(code);
         return;
       }

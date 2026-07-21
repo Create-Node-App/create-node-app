@@ -1,4 +1,5 @@
 import pc from "picocolors";
+import prompts from "prompts";
 import {
   checkOutdated,
   cleanCache,
@@ -43,8 +44,12 @@ export const cacheDir = (): void => {
   console.log(getCacheRoot());
 };
 
-export const cacheList = async (): Promise<void> => {
+export const cacheList = async (json?: boolean): Promise<void> => {
   const entries = await listCacheEntries();
+  if (json) {
+    console.log(JSON.stringify(entries, null, 2));
+    return;
+  }
   if (entries.length === 0) {
     console.log(pc.dim("No cached templates or extensions."));
     console.log(
@@ -82,20 +87,32 @@ export const cacheList = async (): Promise<void> => {
 
 export const cacheClean = async (
   id?: string,
-  options: { catalog?: boolean } = {},
+  options: { catalog?: boolean; json?: boolean } = {},
 ): Promise<void> => {
   if (options.catalog) {
     const file = getCatalogCacheFilePath();
     if (existsSync(file)) {
       rmSync(file);
+      if (options.json) {
+        console.log(JSON.stringify({ removed: [file] }));
+        return;
+      }
       console.log(pc.green(`✓ Removed catalog cache: ${file}`));
     } else {
+      if (options.json) {
+        console.log(JSON.stringify({ removed: [] }));
+        return;
+      }
       console.log(pc.dim("No catalog cache to remove."));
     }
     return;
   }
   if (id) {
     const result = await cleanCache(id);
+    if (options.json) {
+      console.log(JSON.stringify(result));
+      return;
+    }
     if (result.notFound.length > 0) {
       console.log(pc.yellow(`No cache entry found for id: ${id}`));
       return;
@@ -105,7 +122,23 @@ export const cacheClean = async (
     }
     return;
   }
+  if (!options.json) {
+    const { confirmed } = await prompts({
+      type: "confirm",
+      name: "confirmed",
+      message: "Remove ALL cached templates and extensions?",
+      initial: false,
+    });
+    if (!confirmed) {
+      console.log(pc.dim("Clean cancelled."));
+      return;
+    }
+  }
   const result = await cleanCache();
+  if (options.json) {
+    console.log(JSON.stringify(result));
+    return;
+  }
   if (result.removed.length === 0) {
     console.log(pc.dim("Nothing to remove."));
   } else {
@@ -115,8 +148,15 @@ export const cacheClean = async (
   }
 };
 
-export const cacheVerify = async (id?: string): Promise<number> => {
+export const cacheVerify = async (
+  id?: string,
+  json?: boolean,
+): Promise<number> => {
   const results = await verifyCache(id);
+  if (json) {
+    console.log(JSON.stringify(results, null, 2));
+    return results.some((r) => !r.fsckOk) ? 1 : 0;
+  }
   if (results.length === 0) {
     console.log(pc.dim("No cached entries."));
     return 0;
@@ -156,8 +196,12 @@ const renderOutdatedRow = (r: RemoteTipResult, idWidth: number): void => {
   );
 };
 
-export const cacheOutdated = async (): Promise<void> => {
+export const cacheOutdated = async (json?: boolean): Promise<void> => {
   const results = await checkOutdated();
+  if (json) {
+    console.log(JSON.stringify(results, null, 2));
+    return;
+  }
   if (results.length === 0) {
     console.log(pc.dim("No cached entries to check."));
     return;
@@ -169,7 +213,9 @@ export const cacheOutdated = async (): Promise<void> => {
   const behind = results.filter((r) => r.behind).length;
   if (behind > 0) {
     console.log(
-      pc.yellow(`\n${behind} entr${behind === 1 ? "y is" : "ies are"} behind remote. Run 'cna cache update [id]' to refresh.`),
+      pc.yellow(
+        `\n${behind} entr${behind === 1 ? "y is" : "ies are"} behind remote. Run 'cna cache update [id]' to refresh.`,
+      ),
     );
   }
 };
@@ -178,7 +224,9 @@ export const cacheUpdate = async (id?: string): Promise<number> => {
   const entries = await listCacheEntries();
   const target = id ? entries.filter((e) => e.id === id) : entries;
   if (target.length === 0) {
-    console.log(pc.dim(`No cached entr${id ? `y matching '${id}'` : "ies"} found.`));
+    console.log(
+      pc.dim(`No cached entr${id ? `y matching '${id}'` : "ies"} found.`),
+    );
     return 0;
   }
   let ok = true;
@@ -219,8 +267,12 @@ export const cacheUpdate = async (id?: string): Promise<number> => {
   return ok ? 0 : 1;
 };
 
-export const cacheDoctor = async (): Promise<number> => {
+export const cacheDoctor = async (json?: boolean): Promise<number> => {
   const results = await runDoctor();
+  if (json) {
+    console.log(JSON.stringify(results, null, 2));
+    return results.some((r) => !r.ok) ? 1 : 0;
+  }
   let allOk = true;
   for (const r of results) {
     const icon = r.ok ? pc.green("✓") : pc.red("✗");
