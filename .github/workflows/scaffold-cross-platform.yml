@@ -86,6 +86,7 @@ jobs:
       - name: Scaffold with one extension
         env:
           TARGET: ${{ runner.temp }}/cna-react-tailwind
+        shell: bash
         run: |
           set -euo pipefail
           npx --yes create-awesome-node-app@latest \
@@ -99,10 +100,11 @@ jobs:
       - name: Verify extension files and config
         env:
           TARGET: ${{ runner.temp }}/cna-react-tailwind
+        shell: bash
         run: |
           set -euo pipefail
           missing=0
-          for f in "$TARGET/tailwind.config.ts" "$TARGET/postcss.config.js"; do
+          for f in "$TARGET/tailwind.config.js" "$TARGET/postcss.config.js"; do
             if [ ! -f "$f" ]; then
               echo "::error::Missing extension file: $f"
               missing=1
