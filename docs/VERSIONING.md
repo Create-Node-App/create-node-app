@@ -16,7 +16,7 @@ npx changeset
 Follow the prompts to select the packages and bump type (major/minor/patch).
 This creates a file like `.changeset/rare-trees-lie.md`.
 
-Changesets accumulate on `main`. When a release is ready, the
+On every push to `main`, the
 [Changesets GitHub Action](https://github.com/changesets/action) opens or
 updates a **Version Packages** PR that:
 
@@ -55,7 +55,8 @@ Merging the Version Packages PR triggers the `publish` job in
 3. Pushes tags to GitHub — triggers downstream workflows:
    - **Docker**: `publish-docker.yml` builds and pushes Docker image
    - **AUR**: `publish-aur.yml` updates the Arch User Repository package
-   - **Homebrew**: `notify-homebrew.yml` opens a PR to the Homebrew tap
+   - **Homebrew**: `notify-homebrew.yml` dispatches a `new-release` event to the
+     `Create-Node-App/homebrew-tap` repo, which opens a version bump PR
 
 ### 4. Verify the release
 
@@ -69,14 +70,20 @@ npx --yes create-awesome-node-app@latest my-test --no-install --no-interactive
 The `smoke-distribution.yml` workflow (scheduled nightly) also verifies npm,
 Docker, Homebrew, and AUR channels.
 
+> [!NOTE]
+> The publish workflow uses a concurrency group (`release-${{ github.ref }}`).
+> Only one release per branch runs at a time — subsequent pushes cancel any
+> in-flight run.
+
 ## Hotfix releases
 
 For urgent fixes that cannot wait for the normal release cycle:
 
 1. Create a PR with the fix and a changeset marked as `patch`
 2. Merge to `main`
-3. The Changesets Action creates/updates a Version Packages PR
-4. Merge the Version Packages PR — publish proceeds automatically
+3. The Version Packages PR (already open from step 1's changeset landing)
+   is updated with the new changeset — merge it, and publish proceeds
+   automatically
 
 To skip the changeset wait time, manually trigger the `publish` workflow from
 the GitHub Actions UI, or run locally:
