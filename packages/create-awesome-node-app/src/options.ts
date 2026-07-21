@@ -1,9 +1,5 @@
 import type { CnaOptions, TemplateOrExtension } from "@create-node-app/core";
-import {
-  loadTemplateCnaConfig,
-  ConfigParseError,
-  IncompatibleExtensionsError,
-} from "@create-node-app/core";
+import { loadTemplateCnaConfig, ConfigParseError } from "@create-node-app/core";
 import pc from "picocolors";
 import { isCI } from "ci-info";
 import prompts from "prompts";
@@ -229,59 +225,74 @@ const processNonInteractiveOptions = async (
   // Apply --set overrides — highest priority, wins over everything above
   Object.assign(options, setOverrides);
 
-  if (options.addons && Array.isArray(options.addons)) {
+  const addonList = Array.isArray(options.addons) ? options.addons : [];
+  const extendList = Array.isArray(options.extend) ? options.extend : [];
+
+  if (addonList.length > 0 || extendList.length > 0) {
     const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
       matchedTemplate?.type || "custom",
       "all",
     ]);
 
     // Validate incompatible extensions before resolving URLs.
-    // Collect slugs from the addons list (both slug and URL forms).
+    // Collect slugs from addons (slug or URL) and extend (URL) entries.
     const extData = await getExtensionsBySlug();
-    const addonSlugs: string[] = [];
-    for (const addon of options.addons) {
-      if (!isValidUrl(addon)) {
-        addonSlugs.push(addon);
-      } else {
-        // Try to match URL to a slug
-        for (const [slug, ext] of extData) {
-          if (ext.url === addon) {
-            addonSlugs.push(slug);
-            break;
+    const allSlugs: string[] = [];
+
+    const resolveSlugs = (entries: string[]): void => {
+      for (const entry of entries) {
+        if (!entry) continue;
+        if (!isValidUrl(entry)) {
+          allSlugs.push(entry);
+        } else {
+          for (const [slug, ext] of extData) {
+            if (ext.url === entry) {
+              allSlugs.push(slug);
+              break;
+            }
           }
         }
       }
-    }
-    validateIncompatibleExtensions(addonSlugs, extData);
+    };
 
-    const extensions = options.addons
-      .map((addon) => {
-        if (!isValidUrl(addon)) {
-          for (const extensions of Object.values(extensionsGroupedByCategory)) {
-            const matchedExtension = extensions.find(
-              (extension) => extension.slug === addon,
-            );
-            if (matchedExtension) {
-              return matchedExtension.url;
+    resolveSlugs(addonList);
+    resolveSlugs(extendList);
+
+    validateIncompatibleExtensions(allSlugs, extData);
+
+    // Resolve addon entries to URLs
+    if (addonList.length > 0) {
+      const extensions = addonList
+        .map((addon) => {
+          if (!isValidUrl(addon)) {
+            for (const extensions of Object.values(
+              extensionsGroupedByCategory,
+            )) {
+              const matchedExtension = extensions.find(
+                (extension) => extension.slug === addon,
+              );
+              if (matchedExtension) {
+                return matchedExtension.url;
+              }
             }
+            throw new Error(
+              `Invalid extension slug: '${addon}'. Please provide a valid extension slug.`,
+            );
           }
-          throw new Error(
-            `Invalid extension slug: '${addon}'. Please provide a valid extension slug.`,
-          );
-        }
-        return addon;
-      })
-      .map((addon) => ({ url: applyPinRef(addon, pinRef) }));
+          return addon;
+        })
+        .map((addon) => ({ url: applyPinRef(addon, pinRef) }));
 
-    templatesOrExtensions.push(...extensions);
-  }
+      templatesOrExtensions.push(...extensions);
+    }
 
-  // Add any additional extensions from the extend option
-  if (options.extend && Array.isArray(options.extend)) {
-    const additionalExtensions = options.extend
-      .filter(Boolean)
-      .map((extension) => ({ url: applyPinRef(extension, pinRef) }));
-    templatesOrExtensions.push(...additionalExtensions);
+    // Add any additional extensions from the extend option
+    if (extendList.length > 0) {
+      const additionalExtensions = extendList
+        .filter(Boolean)
+        .map((extension) => ({ url: applyPinRef(extension, pinRef) }));
+      templatesOrExtensions.push(...additionalExtensions);
+    }
   }
 
   // Set default for aiTool if not provided
