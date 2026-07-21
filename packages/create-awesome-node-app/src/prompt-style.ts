@@ -29,7 +29,7 @@ const shortCategoryLabel = (categoryName: string): string => {
 export interface SearchableChoice {
   title: string;
   value: string;
-  description?: string;
+  description: string;
   _search: string;
 }
 
@@ -61,7 +61,7 @@ export const makeSearchableChoice = (opts: {
   return {
     title,
     value: opts.value,
-    description: opts.description,
+    description: opts.description ?? "",
     _search: [
       opts.categoryName,
       opts.categorySlug,

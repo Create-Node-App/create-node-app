@@ -21,13 +21,15 @@ const CUSTOM_TEMPLATE_SENTINEL = "__custom_template__";
 /** Filter by the _search token bag; works with both autocomplete types. */
 const suggestBySearchTokens = (
   input: string,
-  choices: SearchableChoice[],
-): Promise<SearchableChoice[]> => {
+  choices: prompts.Choice[],
+): Promise<prompts.Choice[]> => {
   const needle = input.trim().toLowerCase();
   if (!needle) return Promise.resolve(choices);
   return Promise.resolve(
     choices.filter((c) =>
-      (c._search ?? c.title.toLowerCase()).includes(needle),
+      ((c as SearchableChoice)._search ?? c.title.toLowerCase()).includes(
+        needle,
+      ),
     ),
   );
 };
