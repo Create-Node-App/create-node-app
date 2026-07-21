@@ -14,102 +14,15 @@ import {
   validateIncompatibleExtensions,
   findIncompatiblePairs,
 } from "./templates.js";
+import { makeSearchableChoice, type SearchableChoice } from "./prompt-style.js";
 
 const CUSTOM_TEMPLATE_SENTINEL = "__custom_template__";
-
-type SearchableChoice = prompts.Choice & { _search: string };
-
-/**
- * Derive a short (≤12 char) label from a full category name.
- *   "Frontend Applications"   → "Frontend"
- *   "Full Stack Applications" → "Full Stack"
- *   "User Acceptance Testing" → "UAT"
- *   "Monorepo Boilerplate"    → "Monorepo"
- */
-const shortCategoryLabel = (categoryName: string): string => {
-  const stop = new Set(["Applications", "Application", "Boilerplate"]);
-  const words = categoryName.split(" ").filter((w) => !stop.has(w));
-  if (words.length >= 3)
-    return words.map((w) => w[0]?.toUpperCase() ?? "").join("");
-  return words.slice(0, 2).join(" ");
-};
-
-// Assign a distinct colour to each category slug on first use.
-const CATEGORY_PALETTE: Array<(s: string) => string> = [
-  pc.yellow,
-  pc.green,
-  pc.cyan,
-  pc.magenta,
-  pc.blue,
-  (s: string) => pc.bold(pc.green(s)),
-  (s: string) => pc.bold(pc.cyan(s)),
-];
-const _catColorCache = new Map<string, (s: string) => string>();
-let _catColorIdx = 0;
-const categoryColor = (slug: string): ((s: string) => string) => {
-  if (!_catColorCache.has(slug)) {
-    _catColorCache.set(
-      slug,
-      (CATEGORY_PALETTE[_catColorIdx++ % CATEGORY_PALETTE.length] ??
-        CATEGORY_PALETTE[0]) as (s: string) => string,
-    );
-  }
-  return _catColorCache.get(slug)!;
-};
-
-/**
- * Build a selectable choice with an optional coloured category badge
- * and a pre-computed _search token bag so filtering works on category,
- * name, description, and keywords.
- */
-const makeSearchableChoice = (opts: {
-  name: string;
-  value: string;
-  description?: string | undefined;
-  labels?: string[] | undefined;
-  categorySlug?: string | undefined;
-  categoryName?: string | undefined;
-}): SearchableChoice => {
-  const labelSuffix =
-    opts.labels && opts.labels.length > 0
-      ? pc.dim(" · " + opts.labels.slice(0, 3).join(", "))
-      : "";
-
-  // Fixed-width 10-char badge so template names align vertically.
-  const badge = opts.categorySlug
-    ? categoryColor(opts.categorySlug)(
-        shortCategoryLabel(opts.categoryName ?? opts.categorySlug)
-          .padEnd(10)
-          .slice(0, 10),
-      )
-    : "";
-
-  const title = badge
-    ? badge + "  " + pc.bold(opts.name) + labelSuffix
-    : pc.bold(opts.name) + labelSuffix;
-
-  return {
-    title,
-    value: opts.value,
-    description: opts.description,
-    _search: [
-      opts.categoryName,
-      opts.categorySlug,
-      opts.name,
-      opts.description ?? "",
-      ...(opts.labels ?? []),
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase(),
-  };
-};
 
 /** Filter by the _search token bag; works with both autocomplete types. */
 const suggestBySearchTokens = (
   input: string,
-  choices: (prompts.Choice & { _search?: string })[],
-): Promise<prompts.Choice[]> => {
+  choices: SearchableChoice[],
+): Promise<SearchableChoice[]> => {
   const needle = input.trim().toLowerCase();
   if (!needle) return Promise.resolve(choices);
   return Promise.resolve(
