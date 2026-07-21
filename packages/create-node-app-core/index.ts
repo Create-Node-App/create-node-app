@@ -28,7 +28,12 @@ export {
   NonEmptyTargetDirectoryError,
   NON_EMPTY_DIR_ERROR_CODE,
 } from "./config.js";
-export { CnaError, ConfigParseError, ScaffoldAbortedError } from "./errors.js";
+export {
+  CnaError,
+  ConfigParseError,
+  IncompatibleExtensionsError,
+  ScaffoldAbortedError,
+} from "./errors.js";
 
 export const checkNodeVersion = (
   requiredVersion: string,

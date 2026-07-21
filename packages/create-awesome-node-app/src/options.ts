@@ -1,5 +1,9 @@
 import type { CnaOptions, TemplateOrExtension } from "@create-node-app/core";
-import { loadTemplateCnaConfig, ConfigParseError } from "@create-node-app/core";
+import {
+  loadTemplateCnaConfig,
+  ConfigParseError,
+  IncompatibleExtensionsError,
+} from "@create-node-app/core";
 import pc from "picocolors";
 import { isCI } from "ci-info";
 import prompts from "prompts";
@@ -10,6 +14,9 @@ import {
   getExtensionsGroupedByCategory,
   getAllTemplatesWithCategory,
   getAllExtensionsWithCategory,
+  getExtensionsBySlug,
+  validateIncompatibleExtensions,
+  findIncompatiblePairs,
 } from "./templates.js";
 
 const CUSTOM_TEMPLATE_SENTINEL = "__custom_template__";
@@ -227,6 +234,25 @@ const processNonInteractiveOptions = async (
       matchedTemplate?.type || "custom",
       "all",
     ]);
+
+    // Validate incompatible extensions before resolving URLs.
+    // Collect slugs from the addons list (both slug and URL forms).
+    const extData = await getExtensionsBySlug();
+    const addonSlugs: string[] = [];
+    for (const addon of options.addons) {
+      if (!isValidUrl(addon)) {
+        addonSlugs.push(addon);
+      } else {
+        // Try to match URL to a slug
+        for (const [slug, ext] of extData) {
+          if (ext.url === addon) {
+            addonSlugs.push(slug);
+            break;
+          }
+        }
+      }
+    }
+    validateIncompatibleExtensions(addonSlugs, extData);
 
     const extensions = options.addons
       .map((addon) => {
@@ -538,9 +564,35 @@ const processInteractiveOptions = async (
     }
 
     appConfig.templatesOrExtensions = selectedExtUrls;
+
+    // Validate extension compatibility before the "extend" prompt.
+    // Build a URL→slug map and a slug→extension map from the full extension
+    // list so we can detect incompatible pairs among the selected URLs.
+    const extData = await getExtensionsBySlug();
+    const urlToSlug = new Map<string, string>();
+    for (const [slug, ext] of extData) {
+      urlToSlug.set(ext.url, slug);
+    }
+    const selectedSlugs = selectedExtUrls
+      .map((url) => urlToSlug.get(url))
+      .filter(Boolean) as string[];
+    const incompatiblePairs = findIncompatiblePairs(selectedSlugs, extData);
+    if (incompatiblePairs.length > 0) {
+      const lines = incompatiblePairs.map(
+        ([a, b]) =>
+          `  ${pc.red("✗")} ${a} ${pc.dim("is incompatible with")} ${b}`,
+      );
+      console.warn(
+        pc.yellow("\n⚠ Incompatible extensions detected:\n") +
+          lines.join("\n") +
+          pc.yellow(
+            "\n\n  The conflicting extensions will still be added. Remove or replace one.\n",
+          ),
+      );
+    }
   }
 
-  if (appConfig.extend.length === 0) {
+  if (!appConfig.extend || appConfig.extend.length === 0) {
     const askForExtend = await prompts([
       {
         type: "confirm",

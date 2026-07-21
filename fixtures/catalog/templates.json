@@ -29,6 +29,16 @@
       "category": "example-tooling",
       "labels": ["example", "test"],
       "type": "example"
+    },
+    {
+      "name": "Incompatible Addon",
+      "slug": "incompatible-addon",
+      "description": "An extension that is incompatible with example-addon",
+      "url": "file:///fixtures/extensions/incompatible-addon",
+      "category": "example-tooling",
+      "labels": ["example", "test", "conflict"],
+      "type": "example",
+      "incompatibleWith": ["example-addon"]
     }
   ],
   "categories": [
