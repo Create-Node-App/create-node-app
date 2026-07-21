@@ -18,6 +18,7 @@ module.exports = [
       'packages/**/dist/**',
       '**/*.d.ts',
       'tools/danger/**',
+      'fixtures/**',
     ],
   },
   {

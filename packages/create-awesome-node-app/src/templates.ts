@@ -3,6 +3,7 @@ import { readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import os from "os";
+import { fileURLToPath } from "url";
 
 const TEMPLATE_DATA_FILE_URL =
   "https://raw.githubusercontent.com/Create-Node-App/cna-templates/main/templates.json";
@@ -10,6 +11,90 @@ const TEMPLATE_DATA_FILE_URL =
 export const CNA_USER_AGENT = `create-awesome-node-app/0.9.9 (https://github.com/Create-Node-App/create-node-app)`;
 export const CNA_FETCH_TIMEOUT_MS = 10_000;
 export const CACHE_TTL_MS = 3600000; // 1 hour
+
+/**
+ * Resolve the fixtures root directory.
+ *
+ * Priority: CNA_FIXTURE_DIR env var → auto-detect from source location.
+ *
+ * Auto-detection walks up from the current module to `fixtures/` at the
+ * repo root. In CJS builds (where import.meta.url is unavailable) it falls
+ * back to checking process.cwd(), which works when the CLI is run from the
+ * repo root during development. For production use, set CNA_FIXTURE_DIR.
+ */
+const resolveFixtureRoot = (): string | null => {
+  const env = process.env.CNA_FIXTURE_DIR;
+  if (env && env.length > 0) {
+    return path.resolve(env);
+  }
+  // ESM: resolve relative to the source file path
+  try {
+    const sourceFile = fileURLToPath(import.meta.url);
+    const fromSource = path.resolve(sourceFile, "../../../../fixtures");
+    if (existsSync(fromSource)) {
+      return path.resolve(sourceFile, "../../../../fixtures");
+    }
+  } catch {
+    // CJS: import.meta.url is unavailable; fall through to cwd check
+  }
+  // CJS / fallback: check whether process.cwd() has a fixtures/ tree
+  const fromCwd = path.resolve(
+    process.cwd(),
+    "fixtures",
+    "catalog",
+    "templates.json",
+  );
+  if (existsSync(fromCwd)) {
+    return process.cwd();
+  }
+  return null;
+};
+
+let _fixtureRoot: string | null = null;
+const getFixtureRoot = (): string | null => {
+  if (_fixtureRoot === null) {
+    _fixtureRoot = resolveFixtureRoot();
+  }
+  return _fixtureRoot;
+};
+
+/**
+ * Override the fixture root (test helper).
+ */
+export const __setFixtureRootForTests = (root: string | null): void => {
+  _fixtureRoot = root;
+};
+
+const FORCE_FIXTURE = (): boolean => process.env.CNA_CATALOG_FIXTURE === "1";
+
+/**
+ * When in fixture mode, resolve a `file:///fixtures/…` URL to an absolute
+ * `file://` URL pointing at the on-disk fixture directory.
+ */
+const resolveFixtureUrl = (url: string): string => {
+  if (!url.startsWith("file:///fixtures/")) return url;
+  const root = getFixtureRoot();
+  if (!root) return url;
+  const relative = url.replace("file:///fixtures/", "");
+  const absolute = path.resolve(root, "fixtures", relative);
+  return `file://${absolute}`;
+};
+
+/**
+ * Resolve all fixture URLs in a loaded Templates object so downstream
+ * code (downloadRepository, etc.) receives real file:// paths.
+ */
+const resolveFixtureUrls = (data: Templates): Templates => ({
+  ...data,
+  templates: data.templates.map((t) => ({
+    ...t,
+    url: resolveFixtureUrl(t.url),
+  })),
+  extensions: data.extensions.map((e) => ({
+    ...e,
+    url: resolveFixtureUrl(e.url),
+  })),
+});
 
 export const getCatalogCacheDir = (): string => {
   const override = process.env.CNA_CACHE_DIR;
@@ -135,6 +220,35 @@ const isCacheFresh = (): boolean => {
 };
 
 export const getTemplateData = async (): Promise<Templates> => {
+  // Fixture mode: bypass network, load from local fixtures/ directory.
+  // This enables offline testing and development without network access.
+  if (FORCE_FIXTURE()) {
+    const root = getFixtureRoot();
+    if (!root) {
+      throw new Error(
+        "Fixture mode is enabled (CNA_CATALOG_FIXTURE=1) but the fixture root could not be resolved. " +
+          "Set CNA_FIXTURE_DIR to the repo root or run from a development checkout.",
+      );
+    }
+    const catalogPath = path.join(
+      root,
+      "fixtures",
+      "catalog",
+      "templates.json",
+    );
+    if (!existsSync(catalogPath)) {
+      throw new Error(
+        `Fixture catalog not found at ${catalogPath}. ` +
+          "Ensure CNA_FIXTURE_DIR points to the repo root containing fixtures/catalog/templates.json.",
+      );
+    }
+    const raw = await readFile(catalogPath, "utf8");
+    const data = resolveFixtureUrls(JSON.parse(raw) as Templates);
+    templateDataCache.data = data;
+    templateDataCache.timestamp = Date.now();
+    return data;
+  }
+
   if (isCacheFresh()) {
     return templateDataCache.data as Templates;
   }

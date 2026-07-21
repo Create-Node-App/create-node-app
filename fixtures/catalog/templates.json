@@ -1,0 +1,50 @@
+{
+  "$schema": "./templates.schema.json",
+  "templates": [
+    {
+      "name": "Example Starter",
+      "slug": "example-starter",
+      "description": "A minimal Node.js project template for testing the CLI",
+      "url": "file:///fixtures/templates/example-starter",
+      "category": "example-framework",
+      "labels": ["node", "test", "example"],
+      "type": "example"
+    },
+    {
+      "name": "Vite Starter",
+      "slug": "vite-starter",
+      "description": "A Vite-powered frontend template for testing",
+      "url": "file:///fixtures/templates/vite-starter",
+      "category": "example-framework",
+      "labels": ["vite", "frontend", "test"],
+      "type": "example"
+    }
+  ],
+  "extensions": [
+    {
+      "name": "Example Addon",
+      "slug": "example-addon",
+      "description": "A minimal extension for testing addon behavior",
+      "url": "file:///fixtures/extensions/example-addon",
+      "category": "example-tooling",
+      "labels": ["example", "test"],
+      "type": "example"
+    }
+  ],
+  "categories": [
+    {
+      "slug": "example-framework",
+      "name": "Example Framework",
+      "description": "Example framework templates for CLI development and testing",
+      "details": "These templates are bundled with the CLI source to enable offline testing.",
+      "labels": ["example"]
+    },
+    {
+      "slug": "example-tooling",
+      "name": "Example Tooling",
+      "description": "Example tooling extensions for CLI development and testing",
+      "details": "These extensions are bundled with the CLI source to enable offline testing.",
+      "labels": ["example"]
+    }
+  ]
+}

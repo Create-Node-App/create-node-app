@@ -1,0 +1,2 @@
+const greeting = "<%= projectName %>";
+console.log(`Hello from ${greeting}!`);
