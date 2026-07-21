@@ -94,13 +94,13 @@ export const cacheClean = async (
     if (existsSync(file)) {
       rmSync(file);
       if (options.json) {
-        console.log(JSON.stringify({ removed: [file] }));
+        console.log(JSON.stringify({ removed: [file] }, null, 2));
         return;
       }
       console.log(pc.green(`✓ Removed catalog cache: ${file}`));
     } else {
       if (options.json) {
-        console.log(JSON.stringify({ removed: [] }));
+        console.log(JSON.stringify({ removed: [] }, null, 2));
         return;
       }
       console.log(pc.dim("No catalog cache to remove."));
@@ -110,7 +110,7 @@ export const cacheClean = async (
   if (id) {
     const result = await cleanCache(id);
     if (options.json) {
-      console.log(JSON.stringify(result));
+      console.log(JSON.stringify(result, null, 2));
       return;
     }
     if (result.notFound.length > 0) {
@@ -123,20 +123,28 @@ export const cacheClean = async (
     return;
   }
   if (!options.json) {
-    const { confirmed } = await prompts({
+    if (!process.stdin.isTTY) {
+      console.log(
+        pc.yellow(
+          "Non-interactive shell — use --json to skip the prompt, or specify an id to target a specific entry.",
+        ),
+      );
+      return;
+    }
+    const answer = await prompts({
       type: "confirm",
       name: "confirmed",
       message: "Remove ALL cached templates and extensions?",
       initial: false,
     });
-    if (!confirmed) {
+    if (!answer || !answer.confirmed) {
       console.log(pc.dim("Clean cancelled."));
       return;
     }
   }
   const result = await cleanCache();
   if (options.json) {
-    console.log(JSON.stringify(result));
+    console.log(JSON.stringify(result, null, 2));
     return;
   }
   if (result.removed.length === 0) {

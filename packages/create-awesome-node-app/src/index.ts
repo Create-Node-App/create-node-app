@@ -99,11 +99,9 @@ const main = async () => {
   cacheCommand
     .command("update [id]")
     .description("Refresh one or all cached entries from their remote")
-    .option("--json", "Output as JSON")
-    .action((id: string | undefined, options: { json?: boolean }) => {
+    .action((id: string | undefined) => {
       cacheSubcommand = "update";
       cacheSubcommandArg = id;
-      cacheJsonFlag = Boolean(options.json);
     });
 
   cacheCommand
