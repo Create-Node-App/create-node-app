@@ -1,0 +1,115 @@
+name: Cross-platform scaffold smoke
+
+# Smoke-test scaffolding on all three major OS families using the latest
+# published npm package. Catches path-separator issues, native-module
+# problems, and Node version regressions before they reach users.
+#
+# Jobs:
+#   scaffold — npx create-awesome-node-app on ubuntu / macos / windows
+#   addon-smoke — same but with a combination of template + extension
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # 06:00 UTC every Monday
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scaffold-cross-platform-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Full registry URLs (no version pin — tests the latest published CLI)
+  CNA_TEMPLATE: https://github.com/Create-Node-App/cna-templates?subdir=templates/react-vite-starter
+  CNA_ADDON_TAILWIND: https://github.com/Create-Node-App/cna-templates?subdir=extensions/react-tailwindcss
+
+jobs:
+  scaffold:
+    name: ${{ matrix.os }} / react-vite-starter
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Scaffold React Vite starter
+        env:
+          TARGET: ${{ runner.temp }}/cna-react-vite
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes create-awesome-node-app@latest \
+            --template "$CNA_TEMPLATE" \
+            --no-interactive \
+            --no-install \
+            --force \
+            "$TARGET"
+
+      - name: Verify scaffolded project
+        env:
+          TARGET: ${{ runner.temp }}/cna-react-vite
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for f in "$TARGET/package.json" "$TARGET/index.html" "$TARGET/vite.config.ts"; do
+            if [ ! -f "$f" ]; then
+              echo "::error::Missing expected file: $f"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::Scaffold smoke test failed on ${{ matrix.os }}"
+            exit 1
+          fi
+          echo "Verified scaffold at $TARGET"
+
+  addon-smoke:
+    name: ubuntu-latest / react-vite-starter + tailwindcss
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Scaffold with one extension
+        env:
+          TARGET: ${{ runner.temp }}/cna-react-tailwind
+        run: |
+          set -euo pipefail
+          npx --yes create-awesome-node-app@latest \
+            --template "$CNA_TEMPLATE" \
+            --addons "$CNA_ADDON_TAILWIND" \
+            --no-interactive \
+            --no-install \
+            --force \
+            "$TARGET"
+
+      - name: Verify extension files and config
+        env:
+          TARGET: ${{ runner.temp }}/cna-react-tailwind
+        run: |
+          set -euo pipefail
+          missing=0
+          for f in "$TARGET/tailwind.config.ts" "$TARGET/postcss.config.js"; do
+            if [ ! -f "$f" ]; then
+              echo "::error::Missing extension file: $f"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::Addon smoke test failed"
+            exit 1
+          fi
+          echo "Verified extension files at $TARGET"
