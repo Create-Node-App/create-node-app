@@ -155,6 +155,10 @@ const main = async () => {
       "disable the on-disk cache and always re-download templates (sets CNA_NO_CATALOG_CACHE=1 and forces refresh=always)",
     )
     .option(
+      "--fixture [dir]",
+      "load the template catalog from the local fixtures/ directory instead of the network (default: auto-detect from source location; also CNA_FIXTURE_DIR)",
+    )
+    .option(
       "--cache-dir <path>",
       "override the cache root (defaults to ~/.cache/cna; also CNA_CACHE_DIR)",
     )
@@ -231,6 +235,16 @@ const main = async () => {
     }
   }
 
+  // Translate --fixture into env vars for the template catalog loader.
+  // Must run BEFORE --list-templates / --list-addons so fixture mode is
+  // active when getTemplateData() is first called.
+  if (opts.fixture || process.env.CNA_CATALOG_FIXTURE === "1") {
+    process.env.CNA_CATALOG_FIXTURE = "1";
+    if (typeof opts.fixture === "string" && opts.fixture.length > 0) {
+      process.env.CNA_FIXTURE_DIR = opts.fixture;
+    }
+  }
+
   // Handle list templates flag
   if (opts.listTemplates) {
     await listTemplates();
@@ -257,7 +271,8 @@ const main = async () => {
   }
 
   // Extract package manager options directly from opts
-  const { useYarn, usePnpm, useBun, set, noCache, pin, ...restOpts } = opts;
+  const { useYarn, usePnpm, useBun, set, noCache, fixture, pin, ...restOpts } =
+    opts;
   const packageManager = useYarn
     ? "yarn"
     : usePnpm
@@ -298,6 +313,7 @@ const main = async () => {
     ...scaffoldOpts
   } = restOpts;
   void noCache;
+  void fixture;
   void _cacheDirFlag;
   void _strictVersionFlag;
 

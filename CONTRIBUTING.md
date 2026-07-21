@@ -106,4 +106,86 @@ npm run build -- --filter create-awesome-node-app
 
 ---
 
+---
+
+## 🧪 Testing with Fixtures
+
+The repository includes a `fixtures/` directory with a minimal catalog, templates, and extensions for offline testing without network access.
+
+### Fixture catalog
+
+```sh
+# Load template/extensions catalog from fixtures instead of GitHub
+CNA_CATALOG_FIXTURE=1 ./packages/create-awesome-node-app/index.js --list-templates
+CNA_CATALOG_FIXTURE=1 ./packages/create-awesome-node-app/index.js --list-addons
+```
+
+Or use the `--fixture` flag:
+
+```sh
+# Auto-detect fixture root (works in development checkout)
+./packages/create-awesome-node-app/index.js --fixture --list-templates
+
+# Explicit fixture root (useful when running from a different working directory)
+./packages/create-awesome-node-app/index.js --fixture /path/to/repo --list-templates
+```
+
+### Fixture structure
+
+```
+fixtures/
+  catalog/
+    templates.json         # Minimal catalog (2 templates, 1 extension, 2 categories)
+  templates/
+    example-starter/
+      cna.config.json      # Custom options config
+      template.json        # Dependencies/scripts metadata
+      template/            # Scaffoldable files (Lodash EJS)
+        README.md
+        package.json
+        [src]/index.ts.template
+  extensions/
+    example-addon/
+      package.json         # Extension dependencies
+      template/            # Additive scaffold files
+        jest.config.js
+        .gitignore.if-pnpm # Package-manager-conditional file
+```
+
+### Writing tests with fixtures
+
+Tests can use the fixture environment variables to avoid HTTP mocking:
+
+```typescript
+import { __resetTemplateDataCacheForTests } from "../templates.js";
+
+// In test setup:
+process.env.CNA_CATALOG_FIXTURE = "1";
+process.env.CNA_FIXTURE_DIR = path.resolve(__dirname, "../../../..");
+__resetTemplateDataCacheForTests();
+
+// After test:
+delete process.env.CNA_CATALOG_FIXTURE;
+delete process.env.CNA_FIXTURE_DIR;
+__resetTemplateDataCacheForTests();
+```
+
+For scaffolding tests that need real git repos, see the existing test pattern in
+`packages/create-node-app-core/tests/git.test.mts` which creates local bare git
+repositories via the `file://` protocol using `makeLocalBareGitRepo()`.
+
+---
+
+### Fixture API (source)
+
+| Export / Helper                      | Location       | Purpose                                                                          |
+| ------------------------------------ | -------------- | -------------------------------------------------------------------------------- |
+| `CNA_CATALOG_FIXTURE=1`              | env var        | Enables fixture mode in `getTemplateData()`                                      |
+| `CNA_FIXTURE_DIR=<path>`             | env var        | Override fixture root (default: auto-detect from `templates.ts`)                 |
+| `--fixture [dir]`                    | CLI flag       | Shorthand for setting `CNA_CATALOG_FIXTURE=1` (and optionally `CNA_FIXTURE_DIR`) |
+| `__setFixtureRootForTests(root)`     | `templates.ts` | Override fixture root programmatically in tests                                  |
+| `__resetTemplateDataCacheForTests()` | `templates.ts` | Clear the in-memory catalog cache                                                |
+
+---
+
 Again, **thank you** for helping make Create Awesome Node App better! 🚀

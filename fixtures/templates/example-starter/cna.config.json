@@ -1,0 +1,21 @@
+{
+  "customOptions": [
+    {
+      "name": "srcDir",
+      "type": "select",
+      "message": "Source directory layout",
+      "initial": "src",
+      "choices": [
+        { "title": "src/", "value": "src" },
+        { "title": "lib/", "value": "lib" },
+        { "title": "Flat (no subdirectory)", "value": "." }
+      ]
+    },
+    {
+      "name": "authorName",
+      "type": "text",
+      "message": "Author name",
+      "initial": "Anonymous"
+    }
+  ]
+}

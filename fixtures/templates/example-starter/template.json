@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "build": "tsc"
+  }
+}
