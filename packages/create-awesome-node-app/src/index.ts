@@ -218,9 +218,9 @@ const main = async () => {
 
   const latestVersion = await checkForLatestVersion("create-awesome-node-app");
   if (latestVersion && semver.lt(packageJson.version, latestVersion)) {
-    const strict =
-      opts.strictVersion || process.env.CNA_STRICT_VERSION === "1";
-    const message = `You are running \`create-awesome-node-app\` ${packageJson.version}, which is behind the latest release (${latestVersion}).\n\n` +
+    const strict = opts.strictVersion || process.env.CNA_STRICT_VERSION === "1";
+    const message =
+      `You are running \`create-awesome-node-app\` ${packageJson.version}, which is behind the latest release (${latestVersion}).\n\n` +
       "We recommend always using the latest version of create-awesome-node-app if possible.\n";
     if (strict) {
       console.error(pc.red(message));
@@ -271,27 +271,41 @@ const main = async () => {
 
   const pinRef = pin as string | undefined;
 
-  const templatesOrExtensions: TemplateOrExtension[] = [restOpts.template]
+  // Initial templatesOrExtensions includes template + extend + addons so all
+  // URLs get the --pin ref applied. The full resolution happens later in the
+  // options transform (processNonInteractiveOptions rebuilds the array from
+  // the raw option values below), so this is only a best-effort pass.
+  const templExtOrAddon = [restOpts.template]
     .concat(Array.isArray(restOpts.extend) ? restOpts.extend : [])
-    .filter(Boolean)
-    .reduce((acc, templateOrExtension) => {
-      if (!templateOrExtension) return acc;
-      let url = templateOrExtension;
-      // Apply --pin <ref> to URLs that don't already have a ?ref= parameter.
+    .concat(Array.isArray(restOpts.addons) ? restOpts.addons : [])
+    .filter(Boolean);
+  const templatesOrExtensions: TemplateOrExtension[] = templExtOrAddon.map(
+    (url) => {
       if (pinRef && !url.includes("?ref=") && !url.startsWith("file://")) {
         const separator = url.includes("?") ? "&" : "?";
         url = `${url}${separator}ref=${encodeURIComponent(pinRef)}`;
       }
-      return acc.concat({ url });
-    }, [] as TemplateOrExtension[]);
+      return { url };
+    },
+  );
 
   // `noCache` is consumed above (translates to env + refresh=always);
   // `cacheDir` similarly. Strip both from the rest spread so they don't
   // leak into the EJS context via the catch-all object.
-  const { cacheDir: _cacheDirFlag, strictVersion: _strictVersionFlag, pin: _pinFlag, ...scaffoldOpts } = restOpts;
+  const {
+    cacheDir: _cacheDirFlag,
+    strictVersion: _strictVersionFlag,
+    ...scaffoldOpts
+  } = restOpts;
   void noCache;
   void _cacheDirFlag;
   void _strictVersionFlag;
+
+  // Carry --pin through so processNonInteractiveOptions can also apply it
+  // when rebuilding templatesOrExtensions from slugs / catalog URLs.
+  if (pinRef) {
+    (scaffoldOpts as Record<string, unknown>).pin = pinRef;
+  }
 
   return createNodeApp(
     projectName,

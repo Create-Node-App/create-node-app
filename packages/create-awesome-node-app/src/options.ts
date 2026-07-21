@@ -128,6 +128,17 @@ const isValidUrl = (url: string): boolean => {
 };
 
 /**
+ * Apply --pin <ref> to a URL (skip file:// and URLs with existing ?ref=).
+ */
+const applyPinRef = (url: string, pinRef?: string): string => {
+  if (pinRef && !url.includes("?ref=") && !url.startsWith("file://")) {
+    const separator = url.includes("?") ? "&" : "?";
+    url = `${url}${separator}ref=${encodeURIComponent(pinRef)}`;
+  }
+  return url;
+};
+
+/**
  * Process template and addons in non-interactive mode
  */
 const processNonInteractiveOptions = async (
@@ -143,6 +154,12 @@ const processNonInteractiveOptions = async (
   const templatesOrExtensions: TemplateOrExtension[] = [];
   let resolvedTemplateUrl: string | undefined;
 
+  // --pin is passed through from index.ts as a string
+  const pinRef =
+    typeof (options as Record<string, unknown>).pin === "string"
+      ? ((options as Record<string, unknown>).pin as string)
+      : undefined;
+
   // Handle cases where templates/extensions are not valid URLs
   if (options.template && !isValidUrl(options.template)) {
     const allTemplates = (
@@ -155,8 +172,10 @@ const processNonInteractiveOptions = async (
     );
     if (matchedTemplate) {
       // Add the template to templatesOrExtensions
-      templatesOrExtensions.push({ url: matchedTemplate.url });
-      resolvedTemplateUrl = matchedTemplate.url;
+      templatesOrExtensions.push({
+        url: applyPinRef(matchedTemplate.url, pinRef),
+      });
+      resolvedTemplateUrl = applyPinRef(matchedTemplate.url, pinRef);
 
       // Apply registry customOptions initial values (lowest priority — may be
       // overridden by cna.config.json or --set below)
@@ -174,8 +193,8 @@ const processNonInteractiveOptions = async (
     }
   } else if (options.template) {
     // If it's a valid URL, add it directly to templatesOrExtensions
-    templatesOrExtensions.push({ url: options.template });
-    resolvedTemplateUrl = options.template;
+    templatesOrExtensions.push({ url: applyPinRef(options.template, pinRef) });
+    resolvedTemplateUrl = applyPinRef(options.template, pinRef);
   }
 
   // Load cna.config.json from the resolved template directory.
@@ -226,7 +245,7 @@ const processNonInteractiveOptions = async (
         }
         return addon;
       })
-      .map((addon) => ({ url: addon }));
+      .map((addon) => ({ url: applyPinRef(addon, pinRef) }));
 
     templatesOrExtensions.push(...extensions);
   }
@@ -235,7 +254,7 @@ const processNonInteractiveOptions = async (
   if (options.extend && Array.isArray(options.extend)) {
     const additionalExtensions = options.extend
       .filter(Boolean)
-      .map((extension) => ({ url: extension }));
+      .map((extension) => ({ url: applyPinRef(extension, pinRef) }));
     templatesOrExtensions.push(...additionalExtensions);
   }
 
