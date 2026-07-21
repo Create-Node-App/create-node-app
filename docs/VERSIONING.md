@@ -102,7 +102,7 @@ git push origin --tags
 ## Changeset conventions
 
 | Bump    | When                                                      |
-| ------- | --------------------------------------------------------- |
+|---------|-----------------------------------------------------------|
 | `major` | Breaking API change, CLI flag removal, Node version bump  |
 | `minor` | New feature, new template/extension field, new subcommand |
 | `patch` | Bug fix, dependency bump, documentation, refactor         |
