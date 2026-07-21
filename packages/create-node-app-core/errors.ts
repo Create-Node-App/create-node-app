@@ -49,7 +49,12 @@ export class ManifestLoadError extends CnaError {
     super(
       "CNA_MANIFEST_LOAD",
       `Failed to load ${manifestType} for template ${templateUrl}: ${cause.message}`,
-      { cause, suggestions: ["Ensure the template URL is valid and the manifest file exists."] },
+      {
+        cause,
+        suggestions: [
+          "Ensure the template URL is valid and the manifest file exists.",
+        ],
+      },
     );
     this.name = "ManifestLoadError";
   }
@@ -65,9 +70,39 @@ export class PackageManagerFallback extends CnaError {
     super(
       "CNA_PM_FALLBACK",
       `${requestedManager} is not fully supported (${reason}). Falling back to ${fallbackManager}.`,
-      { suggestions: [`Install a newer version of ${requestedManager} to use it directly.`] },
+      {
+        suggestions: [
+          `Install a newer version of ${requestedManager} to use it directly.`,
+        ],
+      },
     );
     this.name = "PackageManagerFallback";
+  }
+}
+
+/**
+ * Two or more extensions are mutually incompatible.
+ */
+export class IncompatibleExtensionsError extends CnaError {
+  readonly pairs: Array<[string, string]>;
+
+  constructor(
+    pairs: Array<[string, string]>,
+    options?: { suggestions?: string[] },
+  ) {
+    const lines = pairs.map(([a, b]) => `  · ${a} is incompatible with ${b}`);
+    super(
+      "CNA_INCOMPATIBLE_EXTENSIONS",
+      `Incompatible extensions selected:\n${lines.join("\n")}`,
+      {
+        suggestions: options?.suggestions ?? [
+          "Remove or replace one of the conflicting extensions.",
+          "Run with --remove-conflicts to auto-resolve by keeping the first extension.",
+        ],
+      },
+    );
+    this.name = "IncompatibleExtensionsError";
+    this.pairs = pairs;
   }
 }
 

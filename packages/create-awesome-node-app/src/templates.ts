@@ -4,6 +4,7 @@ import { existsSync } from "fs";
 import path from "path";
 import os from "os";
 import { fileURLToPath } from "url";
+import { IncompatibleExtensionsError } from "@create-node-app/core";
 
 const TEMPLATE_DATA_FILE_URL =
   "https://raw.githubusercontent.com/Create-Node-App/cna-templates/main/templates.json";
@@ -116,6 +117,12 @@ export type TemplateOrExtensionData = {
   url: string;
   category: string;
   labels?: string[];
+  /**
+   * Slugs of other extensions that this extension is incompatible with.
+   * When two incompatible extensions are selected together, the CLI will
+   * warn the user and suggest removal.
+   */
+  incompatibleWith?: string[];
 };
 
 export type TemplateData = TemplateOrExtensionData & {
@@ -391,6 +398,68 @@ export type ExtensionWithCategory = {
   categorySlug: string;
   categoryName: string;
   categoryOrder: number;
+};
+
+/**
+ * Find all incompatible pairs among the selected extension slugs.
+ *
+ * Returns an array of `[slugA, slugB]` tuples where A declares B (or B
+ * declares A) as incompatible. Each pair appears once, ordered by slug.
+ */
+export const findIncompatiblePairs = (
+  selectedSlugs: string[],
+  extensionsBySlug: Map<string, TemplateOrExtensionData>,
+): Array<[string, string]> => {
+  const pairs: Array<[string, string]> = [];
+  const slugSet = new Set(selectedSlugs);
+
+  for (const slug of selectedSlugs) {
+    const ext = extensionsBySlug.get(slug);
+    if (!ext?.incompatibleWith?.length) continue;
+
+    for (const incompatibleSlug of ext.incompatibleWith) {
+      if (slugSet.has(incompatibleSlug)) {
+        // Normalize ordering so each pair appears once (A < B alphabetically)
+        const pair: [string, string] =
+          slug < incompatibleSlug
+            ? [slug, incompatibleSlug]
+            : [incompatibleSlug, slug];
+        if (!pairs.some(([a, b]) => a === pair[0] && b === pair[1])) {
+          pairs.push(pair);
+        }
+      }
+    }
+  }
+
+  return pairs;
+};
+
+/**
+ * Validate that none of the selected extensions are mutually incompatible.
+ * Throws IncompatibleExtensionsError if any conflict is found.
+ */
+export const validateIncompatibleExtensions = (
+  selectedSlugs: string[],
+  extensionsBySlug: Map<string, TemplateOrExtensionData>,
+): void => {
+  const pairs = findIncompatiblePairs(selectedSlugs, extensionsBySlug);
+  if (pairs.length > 0) {
+    throw new IncompatibleExtensionsError(pairs);
+  }
+};
+
+/**
+ * Build a slug→ExtensionData lookup map from the fully-loaded template data.
+ */
+export const getExtensionsBySlug = async (): Promise<
+  Map<string, TemplateOrExtensionData>
+> => {
+  const data = await getTemplateData();
+  const map = new Map<string, TemplateOrExtensionData>();
+  for (const ext of data.extensions) {
+    map.set(ext.slug, ext);
+  }
+  return map;
 };
 
 /**

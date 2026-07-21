@@ -10,6 +10,9 @@ import {
   getExtensionsGroupedByCategory,
   getAllTemplatesWithCategory,
   getAllExtensionsWithCategory,
+  getExtensionsBySlug,
+  validateIncompatibleExtensions,
+  findIncompatiblePairs,
 } from "./templates.js";
 
 const CUSTOM_TEMPLATE_SENTINEL = "__custom_template__";
@@ -222,40 +225,74 @@ const processNonInteractiveOptions = async (
   // Apply --set overrides — highest priority, wins over everything above
   Object.assign(options, setOverrides);
 
-  if (options.addons && Array.isArray(options.addons)) {
+  const addonList = Array.isArray(options.addons) ? options.addons : [];
+  const extendList = Array.isArray(options.extend) ? options.extend : [];
+
+  if (addonList.length > 0 || extendList.length > 0) {
     const extensionsGroupedByCategory = await getExtensionsGroupedByCategory([
       matchedTemplate?.type || "custom",
       "all",
     ]);
 
-    const extensions = options.addons
-      .map((addon) => {
-        if (!isValidUrl(addon)) {
-          for (const extensions of Object.values(extensionsGroupedByCategory)) {
-            const matchedExtension = extensions.find(
-              (extension) => extension.slug === addon,
-            );
-            if (matchedExtension) {
-              return matchedExtension.url;
+    // Validate incompatible extensions before resolving URLs.
+    // Collect slugs from addons (slug or URL) and extend (URL) entries.
+    const extData = await getExtensionsBySlug();
+    const allSlugs: string[] = [];
+
+    const resolveSlugs = (entries: string[]): void => {
+      for (const entry of entries) {
+        if (!entry) continue;
+        if (!isValidUrl(entry)) {
+          allSlugs.push(entry);
+        } else {
+          for (const [slug, ext] of extData) {
+            if (ext.url === entry) {
+              allSlugs.push(slug);
+              break;
             }
           }
-          throw new Error(
-            `Invalid extension slug: '${addon}'. Please provide a valid extension slug.`,
-          );
         }
-        return addon;
-      })
-      .map((addon) => ({ url: applyPinRef(addon, pinRef) }));
+      }
+    };
 
-    templatesOrExtensions.push(...extensions);
-  }
+    resolveSlugs(addonList);
+    resolveSlugs(extendList);
 
-  // Add any additional extensions from the extend option
-  if (options.extend && Array.isArray(options.extend)) {
-    const additionalExtensions = options.extend
-      .filter(Boolean)
-      .map((extension) => ({ url: applyPinRef(extension, pinRef) }));
-    templatesOrExtensions.push(...additionalExtensions);
+    validateIncompatibleExtensions(allSlugs, extData);
+
+    // Resolve addon entries to URLs
+    if (addonList.length > 0) {
+      const extensions = addonList
+        .map((addon) => {
+          if (!isValidUrl(addon)) {
+            for (const extensions of Object.values(
+              extensionsGroupedByCategory,
+            )) {
+              const matchedExtension = extensions.find(
+                (extension) => extension.slug === addon,
+              );
+              if (matchedExtension) {
+                return matchedExtension.url;
+              }
+            }
+            throw new Error(
+              `Invalid extension slug: '${addon}'. Please provide a valid extension slug.`,
+            );
+          }
+          return addon;
+        })
+        .map((addon) => ({ url: applyPinRef(addon, pinRef) }));
+
+      templatesOrExtensions.push(...extensions);
+    }
+
+    // Add any additional extensions from the extend option
+    if (extendList.length > 0) {
+      const additionalExtensions = extendList
+        .filter(Boolean)
+        .map((extension) => ({ url: applyPinRef(extension, pinRef) }));
+      templatesOrExtensions.push(...additionalExtensions);
+    }
   }
 
   // Set default for aiTool if not provided
@@ -538,9 +575,35 @@ const processInteractiveOptions = async (
     }
 
     appConfig.templatesOrExtensions = selectedExtUrls;
+
+    // Validate extension compatibility before the "extend" prompt.
+    // Build a URL→slug map and a slug→extension map from the full extension
+    // list so we can detect incompatible pairs among the selected URLs.
+    const extData = await getExtensionsBySlug();
+    const urlToSlug = new Map<string, string>();
+    for (const [slug, ext] of extData) {
+      urlToSlug.set(ext.url, slug);
+    }
+    const selectedSlugs = selectedExtUrls
+      .map((url) => urlToSlug.get(url))
+      .filter(Boolean) as string[];
+    const incompatiblePairs = findIncompatiblePairs(selectedSlugs, extData);
+    if (incompatiblePairs.length > 0) {
+      const lines = incompatiblePairs.map(
+        ([a, b]) =>
+          `  ${pc.red("✗")} ${a} ${pc.dim("is incompatible with")} ${b}`,
+      );
+      console.warn(
+        pc.yellow("\n⚠ Incompatible extensions detected:\n") +
+          lines.join("\n") +
+          pc.yellow(
+            "\n\n  The conflicting extensions will still be added. Remove or replace one.\n",
+          ),
+      );
+    }
   }
 
-  if (appConfig.extend.length === 0) {
+  if (!appConfig.extend || appConfig.extend.length === 0) {
     const askForExtend = await prompts([
       {
         type: "confirm",

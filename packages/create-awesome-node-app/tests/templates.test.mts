@@ -27,6 +27,17 @@ const mockData = {
   ]
 };
 
+const incompatibleExtensionsFixture: Array<{
+  name: string; slug: string; description: string; url: string;
+  category: string; labels: string[]; type: string; incompatibleWith?: string[];
+}> = [
+  { name: 'Tailwind', slug: 'tailwind', description: 'Tailwind CSS', url: 'https://example.com/tailwind', category: 'styling', labels: [], type: 'all', incompatibleWith: ['vanilla-css'] },
+  { name: 'Vanilla CSS', slug: 'vanilla-css', description: 'Plain CSS', url: 'https://example.com/vanilla', category: 'styling', labels: [], type: 'all', incompatibleWith: ['tailwind'] },
+  { name: 'shadcn/ui', slug: 'shadcn', description: 'shadcn/ui components', url: 'https://example.com/shadcn', category: 'ui', labels: [], type: 'all', incompatibleWith: ['material-ui'] },
+  { name: 'Material UI', slug: 'material-ui', description: 'MUI components', url: 'https://example.com/mui', category: 'ui', labels: [], type: 'all', incompatibleWith: ['shadcn'] },
+  { name: 'Bootstrap', slug: 'bootstrap', description: 'Bootstrap', url: 'https://example.com/bootstrap', category: 'styling', labels: [], type: 'all' },
+];
+
 const templatesHost = 'https://raw.githubusercontent.com';
 
 nock(templatesHost)
@@ -65,6 +76,33 @@ test('getAllTemplatesWithCategory returns all templates sorted by catalog catego
   assert.equal(items[0]!.template.slug, 'react-vite-boilerplate');
   assert.equal(items[1]!.categorySlug, 'backend');
   assert.equal(items[1]!.categoryName, 'Backend');
+});
+
+test('findIncompatiblePairs detects declared incompatibility', async () => {
+  const { findIncompatiblePairs } = await import('../src/templates.js');
+  const map = new Map(incompatibleExtensionsFixture.map((e) => [e.slug, e]));
+
+  const pairs1 = findIncompatiblePairs(['tailwind', 'bootstrap'], map);
+  assert.equal(pairs1.length, 0, 'no conflict between tailwind and bootstrap');
+
+  const pairs2 = findIncompatiblePairs(['tailwind', 'vanilla-css'], map);
+  assert.equal(pairs2.length, 1, 'tailwind ↔ vanilla-css is one pair');
+  assert.equal(pairs2[0]![0], 'tailwind');
+  assert.equal(pairs2[0]![1], 'vanilla-css');
+
+  const pairs3 = findIncompatiblePairs(
+    ['tailwind', 'vanilla-css', 'shadcn', 'material-ui'],
+    map,
+  );
+  assert.equal(pairs3.length, 2, 'two incompatible pairs detected');
+  // Pairs are found in selection order; normalized A < B within each pair
+  assert.equal(pairs3[0]![0], 'tailwind');
+  assert.equal(pairs3[0]![1], 'vanilla-css');
+  assert.equal(pairs3[1]![0], 'material-ui');
+  assert.equal(pairs3[1]![1], 'shadcn');
+
+  const pairs4 = findIncompatiblePairs([], map);
+  assert.equal(pairs4.length, 0, 'empty selection = no conflicts');
 });
 
 test('getAllExtensionsWithCategory returns flat, category-tagged extensions for the given type', async () => {
