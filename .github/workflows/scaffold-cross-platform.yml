@@ -1,11 +1,11 @@
 name: Cross-platform scaffold smoke
 
-# Smoke-test scaffolding on all three major OS families using the latest
-# published npm package. Catches path-separator issues, native-module
-# problems, and Node version regressions before they reach users.
+# Smoke-test scaffolding on all three major OS families using the locally
+# built CLI. Catches path-separator issues, native-module problems, and
+# Node version regressions before they reach users.
 #
 # Jobs:
-#   scaffold — npx create-awesome-node-app on ubuntu / macos / windows
+#   scaffold — build & scaffold on ubuntu / macos / windows
 #   addon-smoke — same but with a combination of template + extension
 
 on:
@@ -26,9 +26,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Full registry URLs (no version pin — tests the latest published CLI)
   CNA_TEMPLATE: https://github.com/Create-Node-App/cna-templates?subdir=templates/react-vite-starter
   CNA_ADDON_TAILWIND: https://github.com/Create-Node-App/cna-templates?subdir=extensions/react-tailwindcss
+  # CLI entry after build
+  CNA_CLI: packages/create-awesome-node-app/index.js
 
 jobs:
   scaffold:
@@ -39,9 +40,16 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
+
+      - name: Install & Build
+        shell: bash
+        run: |
+          npm ci
+          npx turbo build --filter create-awesome-node-app
 
       - name: Scaffold React Vite starter
         env:
@@ -49,7 +57,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npx --yes create-awesome-node-app@latest \
+          node $CNA_CLI \
             --template "$CNA_TEMPLATE" \
             --no-interactive \
             --no-install \
@@ -79,9 +87,16 @@ jobs:
     name: ubuntu-latest / react-vite-starter + tailwindcss
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
+
+      - name: Install & Build
+        shell: bash
+        run: |
+          npm ci
+          npx turbo build --filter create-awesome-node-app
 
       - name: Scaffold with one extension
         env:
@@ -89,7 +104,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npx --yes create-awesome-node-app@latest \
+          node $CNA_CLI \
             --template "$CNA_TEMPLATE" \
             --addons "$CNA_ADDON_TAILWIND" \
             --no-interactive \
