@@ -65,7 +65,7 @@ More examples live in the [CLI package README](./packages/create-awesome-node-ap
 This is a Node 24+ monorepo managed with npm workspaces and [Turborepo](https://turbo.build/).
 
 | Path                                                                     | Purpose                                                                                                                                |
-| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
 | [`packages/create-awesome-node-app`](./packages/create-awesome-node-app) | Main CLI package, Commander entrypoint, interactive wizard, catalog listing, and package metadata.                                     |
 | [`packages/create-node-app-core`](./packages/create-node-app-core)       | Scaffolding engine: resolves templates/extensions, copies files, applies template options, installs dependencies, and initializes git. |
 | [`packages/eslint-config-base`](./packages/eslint-config-base)           | Shared base ESLint flat config.                                                                                                        |
@@ -181,7 +181,7 @@ npx create-awesome-node-app local-app \
 ## Quality Checks
 
 | Command                 | What it validates                                          |
-| ----------------------- | ---------------------------------------------------------- |
+|-------------------------|------------------------------------------------------------|
 | `npm run build`         | Builds all packages through Turborepo.                     |
 | `npm run test`          | Runs package test tasks.                                   |
 | `npm run test:all`      | Runs all Node native test files under `packages/**/tests`. |
@@ -255,7 +255,7 @@ npx create-awesome-node-app --template react-vite-boilerplate --list-addons
 Common template slugs:
 
 | Slug                              | Description                                                                                           |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------- |
+|-----------------------------------|-------------------------------------------------------------------------------------------------------|
 | `react-vite-boilerplate`          | React + Vite + TypeScript starter.                                                                    |
 | `nextjs-starter`                  | Production-ready Next.js starter.                                                                     |
 | `nextjs-saas-ai-starter`          | Multi-tenant SaaS starter with AI, Auth.js, Drizzle, PostgreSQL, Tailwind, shadcn/ui, RBAC, and i18n. |
@@ -270,7 +270,7 @@ Common template slugs:
 Common addon slugs:
 
 | Category       | Examples                                                                         |
-| -------------- | -------------------------------------------------------------------------------- |
+|----------------|----------------------------------------------------------------------------------|
 | UI             | `tailwind-css`, `material-ui`, `shadcn-ui`, `nextjs-shadcn`                      |
 | State and data | `zustand`, `jotai`, `tanstack-react-query`, `apollo-client`                      |
 | Backend and DB | `drizzle-orm-postgresql`, `drizzle-orm-sqlite`, `mongoose-orm-mongodb`           |
