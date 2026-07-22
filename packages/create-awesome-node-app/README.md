@@ -27,6 +27,7 @@ From blank folder to a working Node/Web project with modern tooling, cozy defaul
 [![Shellcheck][shellcheckbadge]][shellcheckurl]
 [![Commit Activity][commitactivitybadge]][commitactivityurl]
 [![Bundle Size][bundlesizebadge]][bundlesizeurl]
+[![Discord](https://img.shields.io/discord/1527933660764831825?label=Discord&logo=discord&logoColor=white)](https://discord.gg/dwFTsR7fK2)
 
 **[Official Site](https://create-awesome-node-app.vercel.app)** · [Templates](https://create-awesome-node-app.vercel.app/templates) · [Extensions](https://create-awesome-node-app.vercel.app/extensions) · [Docs](https://create-awesome-node-app.vercel.app/docs) · [GitHub](https://github.com/Create-Node-App/create-node-app) · [npm](https://www.npmjs.com/package/create-awesome-node-app)
 

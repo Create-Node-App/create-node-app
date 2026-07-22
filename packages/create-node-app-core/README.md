@@ -8,6 +8,7 @@ Import the scaffolding pipeline — composable, headless, and CI-ready.</p>
 [![npm][npmversion]][npmurl]
 [![Downloads][npmdownloads]][npmurl]
 [![License: MIT][licensebadge]][licenseurl]
+[![Discord](https://img.shields.io/discord/1527933660764831825?label=Discord&logo=discord&logoColor=white)](https://discord.gg/dwFTsR7fK2)
 
 </div>
 
