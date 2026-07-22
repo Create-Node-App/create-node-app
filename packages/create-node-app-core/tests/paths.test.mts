@@ -168,3 +168,44 @@ test('github style URL with only org segment handled without throwing', async ()
   const dir = await getTemplateDirPath(url);
   assert.ok(dir.includes('.cna'));
 });
+
+test('SSH git@ URL parses to scp-style clone URL with defaults', async () => {
+  const { solveValuesFromTemplateOrExtensionUrl } = await import('../paths.js');
+  const result = solveValuesFromTemplateOrExtensionUrl(
+    'git@github.com:my-org/my-template.git',
+  );
+  assert.equal(result.url, 'git@github.com:my-org/my-template.git');
+  assert.equal(result.protocol, 'ssh:');
+  assert.equal(result.host, 'github.com');
+  assert.equal(result.pathname, '/my-org/my-template.git');
+  assert.equal(result.branch, 'main');
+  assert.equal(result.subdir, '');
+  assert.equal(result.ignorePackage, false);
+});
+
+test('SSH git@ URL supports subdir and ref query params', async () => {
+  const { solveValuesFromTemplateOrExtensionUrl } = await import('../paths.js');
+  const result = solveValuesFromTemplateOrExtensionUrl(
+    'git@github.com:my-org/my-template.git?subdir=templates/foo&ref=develop&ignorePackage=true',
+  );
+  assert.equal(result.url, 'git@github.com:my-org/my-template.git');
+  assert.equal(result.subdir, 'templates/foo');
+  assert.equal(result.branch, 'develop');
+  assert.equal(result.ignorePackage, true);
+});
+
+test('SSH git@ URL respects CNA_STRICT_REPRO for ref', async () => {
+  const { solveValuesFromTemplateOrExtensionUrl } = await import('../paths.js');
+  process.env.CNA_STRICT_REPRO = '1';
+  try {
+    assert.throws(
+      () =>
+        solveValuesFromTemplateOrExtensionUrl(
+          'git@github.com:org/repo.git?ref=not-a-sha',
+        ),
+      /CNA_STRICT_REPRO/,
+    );
+  } finally {
+    delete process.env.CNA_STRICT_REPRO;
+  }
+});

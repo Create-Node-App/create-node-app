@@ -13,10 +13,12 @@ const moduleDir =
     : path.dirname(fileURLToPath(import.meta.url));
 
 /**
- * Parse a template / extension URL (supports GitHub style and file:// URLs).
+ * Parse a template / extension URL (supports GitHub style, SSH, and file:// URLs).
  * For GitHub style URLs we accept:
  *   https://github.com/<org>/<repo>
  *   https://github.com/<org>/<repo>/tree/<branch>/<subdir?>?ignorePackage=true
+ *   git@github.com:<org>/<repo>.git
+ *   git@github.com:<org>/<repo>.git?subdir=templates/foo&ref=<sha>
  * For local file templates:
  *   file:///absolute/path/to/template
  *   file:///absolute/path/to/repo?subdir=templates/react-vite-starter
@@ -28,6 +30,12 @@ const moduleDir =
 export const solveValuesFromTemplateOrExtensionUrl = (
   templateOrExtension: string,
 ) => {
+  // SCP-style SSH URLs are not valid WHATWG URLs (`git@host:path`).
+  // Normalize / parse them before `new URL()`.
+  if (templateOrExtension.startsWith("git@")) {
+    return solveSshGitUrl(templateOrExtension);
+  }
+
   const url = new URL(templateOrExtension);
   const ignorePackage = url.searchParams.get("ignorePackage") === "true";
   const refParam = url.searchParams.get("ref") || "";
@@ -96,6 +104,46 @@ export const solveValuesFromTemplateOrExtensionUrl = (
     protocol: url.protocol,
     host: url.host,
     pathname: url.pathname,
+    ignorePackage,
+  };
+};
+
+/**
+ * Parse SCP-style SSH git URLs (`git@host:path`).
+ * Query strings after the path are supported (`?subdir=` / `?ref=`).
+ */
+const solveSshGitUrl = (spec: string) => {
+  const qIndex = spec.indexOf("?");
+  const base = qIndex >= 0 ? spec.slice(0, qIndex) : spec;
+  const query = qIndex >= 0 ? spec.slice(qIndex + 1) : "";
+  const match = /^git@([^:]+):(.+)$/.exec(base);
+  if (!match) {
+    throw new Error(`Invalid SSH git URL: ${spec}`);
+  }
+  const host = match[1]!;
+  const repoPath = match[2]!;
+  const params = new URLSearchParams(query);
+  const ignorePackage = params.get("ignorePackage") === "true";
+  const refParam = params.get("ref") || "";
+  const strictRepro = process.env.CNA_STRICT_REPRO === "1";
+
+  if (refParam && strictRepro && !/^[0-9a-f]{40}$/i.test(refParam)) {
+    throw new Error(
+      `Invalid ref parameter '${refParam}' with CNA_STRICT_REPRO=1: expected a full 40-character commit SHA.`,
+    );
+  }
+
+  let branch = refParam || "main";
+  const subdir = params.get("subdir") || "";
+
+  return {
+    // Keep SCP form — `git clone` accepts it for private repos over SSH.
+    url: base,
+    branch,
+    subdir,
+    protocol: "ssh:",
+    host,
+    pathname: `/${repoPath}`,
     ignorePackage,
   };
 };
