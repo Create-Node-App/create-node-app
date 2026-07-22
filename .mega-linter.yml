@@ -38,6 +38,6 @@ ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
 
 SHOW_ELAPSED_TIME: true
 # Danger tooling is linted via its own package; exclude from root ESLint project checks.
-FILTER_REGEX_EXCLUDE: (tools/danger/|fixtures/)
+FILTER_REGEX_EXCLUDE: (tools/danger/|fixtures/|packages/.*/completions/)
 # Uncomment if you want MegaLinter to detect errors but not block CI to pass
 # DISABLE_ERRORS: true
