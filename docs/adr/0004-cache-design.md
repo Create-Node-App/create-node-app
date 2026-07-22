@@ -1,8 +1,18 @@
 # ADR 0004: Cache design (freshness, staleness, keys)
 
+## Context
+
+Scaffolding repeatedly clones the same template repos. Without a cache, every run is slow and network-heavy; with a naive always-pull cache, behavior is surprising.
+
 ## Decision
 
 Cache cloned template/extension repos on disk under a configurable root (`~/.cache/cna` by default, overridable via `--cache-dir` / `CNA_CACHE_DIR`), with **stale-by-default** refresh semantics.
+
+## Alternatives considered
+
+- **No cache (always clone)**: simplest correctness, unacceptable UX for iterative scaffolds.
+- **Always refresh**: keeps content fresh but defeats most of the performance benefit.
+- **Content-addressed npm-style store**: more complex than needed for git checkouts keyed by URL+ref.
 
 ## Rationale
 
@@ -12,14 +22,14 @@ Cache cloned template/extension repos on disk under a configurable root (`~/.cac
 
 ## Key behaviors
 
-| Concern             | Behavior                                                                             |
-|---------------------|--------------------------------------------------------------------------------------|
-| Cache root          | `CNA_CACHE_DIR` or `--cache-dir`; working copy colocated under the same root         |
-| Entry identity      | Derived from normalized URL + branch/ref (base64-encoded path segment)               |
-| Refresh mode        | `always` \| `stale` (default) \| `manual` via `--refresh` or `CNA_REFRESH`           |
-| Staleness threshold | `CNA_REFRESH_AFTER_HOURS` (default 24 h); stale entries trigger `git fetch` + merge  |
-| Catalog cache       | Separate TTL for `templates.json` (in-memory/disk catalog, distinct from git clones) |
-| Offline             | `--offline` uses cache only; `--no-cache` bypasses on-disk cache entirely            |
+| Concern | Behavior |
+| --- | --- |
+| Cache root | `CNA_CACHE_DIR` or `--cache-dir`; working copy colocated under the same root |
+| Entry identity | Derived from normalized URL + branch/ref (base64-encoded path segment) |
+| Refresh mode | `always` \| `stale` (default) \| `manual` via `--refresh` or `CNA_REFRESH` |
+| Staleness threshold | `CNA_REFRESH_AFTER_HOURS` (default 24 h); stale entries trigger `git fetch` + merge |
+| Catalog cache | Separate TTL for `templates.json` (distinct from git clones) |
+| Offline | `--offline` uses cache only; `--no-cache` bypasses on-disk cache entirely |
 
 ## Consequences
 

@@ -1,8 +1,18 @@
 # ADR 0001: Monorepo with npm workspaces + Turborepo
 
+## Context
+
+create-node-app ships a user-facing CLI, a reusable core library, and shared ESLint/TS configs that must stay version-aligned during development while publishing independently.
+
 ## Decision
 
 Organize the repository as an npm workspaces monorepo (`packages/*`) orchestrated by Turborepo.
+
+## Alternatives considered
+
+- **Single package repo**: simpler layout, but couples CLI and core release cadence and blocks sharing configs cleanly.
+- **pnpm / Yarn workspaces**: viable; npm workspaces were chosen to match the ecosystem default for consumers and CI (`npm ci`).
+- **No Turborepo**: plain npm scripts work at small scale; Turborepo was chosen for cached `build` / `lint` / `test` graphs as packages grow.
 
 ## Rationale
 
