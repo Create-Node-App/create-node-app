@@ -17,10 +17,20 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: publish-aur
+  cancel-in-progress: false
+
+env:
+  AUR_PACKAGE: create-awesome-node-app
+  AUR_RPC_URL: https://aur.archlinux.org/rpc/v5/info?arg=create-awesome-node-app
+  NPM_PACKAGE: create-awesome-node-app
+
 jobs:
   aur:
     name: Update AUR package
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Resolve version
         id: version
@@ -28,10 +38,15 @@ jobs:
           TAG_REF: ${{ github.ref_name }}
           INPUT_VERSION: ${{ github.event.inputs.version }}
         run: |
-          if [ -n "$INPUT_VERSION" ]; then
+          set -euo pipefail
+          if [ -n "${INPUT_VERSION:-}" ]; then
             VERSION="$INPUT_VERSION"
           else
             VERSION="${TAG_REF#create-awesome-node-app@}"
+          fi
+          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([a-zA-Z0-9.-]+)?$'; then
+            echo "::error::Invalid AUR package version: $VERSION"
+            exit 1
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
@@ -70,7 +85,7 @@ jobs:
 
           # Fetch new npm tarball and compute sha256. Tags fire after npm
           # publish, but the CDN can still lag — poll before hashing.
-          URL="https://registry.npmjs.org/create-awesome-node-app/-/create-awesome-node-app-${NEW_VERSION}.tgz"
+          URL="https://registry.npmjs.org/${NPM_PACKAGE}/-/${NPM_PACKAGE}-${NEW_VERSION}.tgz"
           TMP="$(mktemp)"
           retry 24 15 curl -sfL "$URL" -o "$TMP"
           SHA=$(sha256sum "$TMP" | cut -d' ' -f1)
@@ -83,6 +98,43 @@ jobs:
 
           echo "----- Updated PKGBUILD -----"
           cat PKGBUILD
+
+      - name: Preflight AUR availability
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          retry() {
+            local attempts="$1"
+            local delay="$2"
+            shift 2
+            for attempt in $(seq 1 "$attempts"); do
+              if "$@"; then
+                return 0
+              fi
+              if [ "$attempt" = "$attempts" ]; then
+                return 1
+              fi
+              echo "::warning::Attempt $attempt/$attempts failed: $*; retrying in ${delay}s" >&2
+              sleep "$delay"
+            done
+          }
+
+          test -n "$AUR_SSH_PRIVATE_KEY" || {
+            echo "::error::AUR_SSH_PRIVATE_KEY is empty or unavailable"
+            exit 1
+          }
+
+          retry 5 15 curl -fsSL "$AUR_RPC_URL" >/tmp/aur-rpc.json
+          node - <<'PY'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('/tmp/aur-rpc.json', 'utf8'));
+          console.log(`AUR RPC resultcount=${data.resultcount}`);
+          PY
+
+          mkdir -p ~/.ssh
+          retry 5 10 ssh-keyscan -T 30 -t rsa,ecdsa,ed25519 aur.archlinux.org >> ~/.ssh/known_hosts
+          retry 5 15 git ls-remote "https://aur.archlinux.org/${AUR_PACKAGE}.git" >/dev/null
 
       - name: Publish to AUR
         # Pushes to aur.archlinux.org via SSH. The action reads the
@@ -99,6 +151,48 @@ jobs:
           # dsa is no longer supported in modern OpenSSH; omit it to
           # avoid "Unknown key type" errors during keyscan.
           ssh_keyscan_types: "rsa,ecdsa,ed25519"
+
+      - name: Verify AUR RPC after publish
+        env:
+          EXPECTED_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          retry() {
+            local attempts="$1"
+            local delay="$2"
+            shift 2
+            for attempt in $(seq 1 "$attempts"); do
+              if "$@"; then
+                return 0
+              fi
+              if [ "$attempt" = "$attempts" ]; then
+                return 1
+              fi
+              echo "::warning::Attempt $attempt/$attempts failed: $*; retrying in ${delay}s" >&2
+              sleep "$delay"
+            done
+          }
+
+          retry 6 20 curl -fsSL "$AUR_RPC_URL" >/tmp/aur-rpc.json
+          AUR_VERSION=$(
+            node - <<'PY'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('/tmp/aur-rpc.json', 'utf8'));
+          const results = data.results || [];
+          console.log(results[0] ? results[0].Version.split('-', 1)[0] : '');
+          PY
+          )
+          echo "AUR version: $AUR_VERSION"
+          echo "Expected version: $EXPECTED_VERSION"
+          if [ "$AUR_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "::warning::AUR RPC has not reflected ${EXPECTED_VERSION} yet (current: ${AUR_VERSION:-missing})"
+          fi
+          {
+            echo "## AUR publish verification"
+            echo
+            echo "- Expected version: \`$EXPECTED_VERSION\`"
+            echo "- AUR RPC version: \`${AUR_VERSION:-missing}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Sync updated PKGBUILD to GitHub mirror
         # Keep the aur-package GitHub mirror in sync with what's live
