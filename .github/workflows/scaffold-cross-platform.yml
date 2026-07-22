@@ -57,7 +57,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node $CNA_CLI \
+          node "$CNA_CLI" \
             --template "$CNA_TEMPLATE" \
             --no-interactive \
             --no-install \
@@ -104,7 +104,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node $CNA_CLI \
+          node "$CNA_CLI" \
             --template "$CNA_TEMPLATE" \
             --addons "$CNA_ADDON_TAILWIND" \
             --no-interactive \
