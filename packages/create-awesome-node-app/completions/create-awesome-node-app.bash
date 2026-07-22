@@ -1,6 +1,7 @@
-# bash completion for create-awesome-node-app
+# shellcheck shell=bash disable=SC2207,SC2034
+# bash completion for create-awesome-node-app (sourced, not executed)
 _create_awesome_node_app() {
-  local cur prev opts
+  local cur prev
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
