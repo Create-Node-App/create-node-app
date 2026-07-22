@@ -350,7 +350,7 @@ _Build starters quickly. Understand the repo quickly. Contribute confidently._
 ## 👥 Contributors
 
 <a href="https://github.com/Create-Node-App/create-node-app/contributors">
-  <img src="https://contrib.rocks/image?repo=Create-Node-App/create-node-app"/>
+  <img src="https://contrib.rocks/image?repo=Create-Node-App/create-node-app" alt="Contributors"/>
 </a>
 
 Made with [contributors-img](https://contrib.rocks).

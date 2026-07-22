@@ -132,7 +132,7 @@ Or use the `--fixture` flag:
 
 ### Fixture structure
 
-```
+```text
 fixtures/
   catalog/
     templates.json         # Minimal catalog (2 templates, 1 extension, 2 categories)
