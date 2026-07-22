@@ -1,5 +1,72 @@
 # create-awesome-node-app
 
+## 0.14.0
+
+### Minor Changes
+
+- de09423: feat: extension incompatibility validation (#255)
+
+  Adds the ability for extensions to declare themselves incompatible with
+  other extensions, preventing users from selecting conflicting combos.
+
+  - New `incompatibleWith?: string[]` field on `TemplateOrExtensionData`
+  - New `findIncompatiblePairs()` / `validateIncompatibleExtensions()`
+    functions in `templates.ts`
+  - New `IncompatibleExtensionsError` with `CNA_INCOMPATIBLE_EXTENSIONS`
+    error code in `@create-node-app/core`
+  - **Interactive mode**: warns with styled output when incompatible
+    extensions are selected together
+  - **Non-interactive mode**: fails fast with a clear error listing
+    conflicting pairs
+  - Fixture catalog updated with an incompatible extension pair for
+    testing (`incompatible-addon` ↔ `example-addon`)
+  - Tests added for `findIncompatiblePairs()`
+
+- abe19f1: feat: test fixture infrastructure for offline catalog loading
+
+  Adds a `fixtures/` directory with a minimal catalog, templates, and
+  extensions for local testing without network access.
+
+  - `fixtures/catalog/templates.json` — minimal catalog (2 templates, 1 extension, 2 categories)
+  - `fixtures/templates/example-starter/` — template with `cna.config.json`, `template.json`, and scaffoldable files
+  - `fixtures/extensions/example-addon/` — extension with additive template files
+
+  The fixture mode is activated via:
+
+  - `CNA_CATALOG_FIXTURE=1` env var
+  - `--fixture [dir]` CLI flag (accepts optional fixture root path)
+
+  When active, `getTemplateData()` loads from the local fixture catalog
+  instead of fetching from GitHub, enabling fully offline development
+  and testing.
+
+- ac95527: feat: branded interactive prompts with styled choices (#256)
+
+  Extracts prompt styling into a dedicated `prompt-style.ts` module and
+  makes category colors deterministic (hash-based) instead of sequential.
+
+  - New `prompt-style.ts` module with:
+    - `categoryStyle(slug)` — deterministic color via slug hash
+    - `makeSearchableChoice()` — styled choice builder with NO_COLOR support
+    - `shortCategoryLabel()` — compact category badge
+    - `colorsEnabled()` — checks `NO_COLOR` env var
+  - Category colors are now stable across CLI runs (same slug = same color)
+  - Respects `NO_COLOR` env var in choice badge rendering
+  - Removes unused `IncompatibleExtensionsError` import from `options.ts`
+
+### Patch Changes
+
+- 5f4b7b5: feat: cache CLI polish — JSON output and clean confirmation (#257)
+
+  Adds `--json` flag to `cache list`, `clean`, `verify`, `outdated`,
+  `doctor`, and `update` subcommands for machine-readable output.
+  Adds confirmation prompt to `cache clean` (full clean) to prevent
+  accidental data loss.
+
+- 9aad634: docs: add VERSIONING.md documenting the release process (#260)
+- Updated dependencies [de09423]
+  - @create-node-app/core@0.8.0
+
 ## 0.13.2
 
 ### Patch Changes
