@@ -22,6 +22,7 @@ import {
   cacheUpdate,
   cacheDoctor,
 } from "./cache-cli.js";
+import { printCompletionScript, resolveCompletionShell } from "./completion.js";
 // Re-export template helpers for testing / programmatic use
 export {
   getTemplateCategories,
@@ -175,6 +176,10 @@ const main = async () => {
       "load the template catalog from the local fixtures/ directory instead of the network (default: auto-detect from source location; also CNA_FIXTURE_DIR)",
     )
     .option(
+      "--add-completion [shell]",
+      "print a shell completion script (bash|zsh|fish|powershell; default: detect from $SHELL)",
+    )
+    .option(
       "--cache-dir <path>",
       "override the cache root (defaults to ~/.cache/cna; also CNA_CACHE_DIR)",
     )
@@ -199,6 +204,20 @@ const main = async () => {
     });
 
   program.parse(process.argv);
+
+  const opts = program.opts();
+
+  // Shell completion: print script and exit before any network / cache work.
+  if (opts.addCompletion !== undefined) {
+    try {
+      const shell = resolveCompletionShell(opts.addCompletion);
+      printCompletionScript(shell);
+    } catch (err) {
+      console.error(pc.red(err instanceof Error ? err.message : String(err)));
+      process.exit(2);
+    }
+    return;
+  }
 
   // Handle cache subcommands before the regular flow.
   if (cacheSubcommand) {
@@ -236,7 +255,6 @@ const main = async () => {
     }
   }
 
-  const opts = program.opts();
   checkNodeVersion(packageJson.engines.node, packageJson.name);
 
   const latestVersion = await checkForLatestVersion("create-awesome-node-app");

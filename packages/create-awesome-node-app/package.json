@@ -62,6 +62,7 @@
     "index.js",
     "dist/**",
     "assets/**",
+    "completions/**",
     "README.md"
   ],
   "bin": {
