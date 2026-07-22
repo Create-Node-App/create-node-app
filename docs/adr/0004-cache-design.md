@@ -22,14 +22,14 @@ Cache cloned template/extension repos on disk under a configurable root (`~/.cac
 
 ## Key behaviors
 
-| Concern | Behavior |
-| --- | --- |
-| Cache root | `CNA_CACHE_DIR` or `--cache-dir`; working copy colocated under the same root |
-| Entry identity | Derived from normalized URL + branch/ref (base64-encoded path segment) |
-| Refresh mode | `always` \| `stale` (default) \| `manual` via `--refresh` or `CNA_REFRESH` |
+| Concern             | Behavior                                                                            |
+|---------------------|-------------------------------------------------------------------------------------|
+| Cache root          | `CNA_CACHE_DIR` or `--cache-dir`; working copy colocated under the same root        |
+| Entry identity      | Derived from normalized URL + branch/ref (base64-encoded path segment)              |
+| Refresh mode        | `always` \| `stale` (default) \| `manual` via `--refresh` or `CNA_REFRESH`          |
 | Staleness threshold | `CNA_REFRESH_AFTER_HOURS` (default 24 h); stale entries trigger `git fetch` + merge |
-| Catalog cache | Separate TTL for `templates.json` (distinct from git clones) |
-| Offline | `--offline` uses cache only; `--no-cache` bypasses on-disk cache entirely |
+| Catalog cache       | Separate TTL for `templates.json` (distinct from git clones)                        |
+| Offline             | `--offline` uses cache only; `--no-cache` bypasses on-disk cache entirely           |
 
 ## Consequences
 
