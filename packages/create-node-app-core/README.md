@@ -70,7 +70,7 @@ All exports from `@create-node-app/core`:
 ### Functions
 
 | Signature                                                    | Description                                                                                                                                 |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | `createNodeApp(programName, options, transformOptions)`      | Main scaffolding orchestrator. Resolves the template, copies files, merges configs, installs deps, and initializes git.                     |
 | `checkNodeVersion(requiredVersion, packageName)`             | Compares `process.version` against a semver range. Exits with code 1 if too old.                                                            |
 | `checkForLatestVersion(packageName)`                         | Fetches the latest version from the npm registry. Falls back to `npm view`. Returns `null` if both fail.                                    |
@@ -84,7 +84,7 @@ All exports from `@create-node-app/core`:
 ### Types
 
 | Type                  | Shape                                                                                                 |
-| --------------------- | ----------------------------------------------------------------------------------------------------- |
+|-----------------------|-------------------------------------------------------------------------------------------------------|
 | `CnaOptions`          | `{ projectName, info?, verbose?, packageManager?, install?, template?, templatesOrExtensions?, ... }` |
 | `CnaOptionsTransform` | `(options: CnaOptions) => Promise<CnaOptions>`                                                        |
 | `CnaConfig`           | `{ customOptions?: CnaCustomOption[] }`                                                               |
@@ -129,7 +129,7 @@ The core engine supports Windows, but some behaviors differ from Linux/macOS:
 The package is organized into these modules:
 
 | Module         | Responsibility                                                                                |
-| -------------- | --------------------------------------------------------------------------------------------- |
+|----------------|-----------------------------------------------------------------------------------------------|
 | `index.ts`     | Barrel export and main `createNodeApp` orchestration                                          |
 | `installer.ts` | Project directory creation, dep installation, git init, post-install scripts                  |
 | `loaders.ts`   | File discovery, classification (`.template`, `.append`, conditional prefixes), and processing |
