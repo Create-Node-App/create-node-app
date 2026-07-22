@@ -132,7 +132,7 @@ Or use the `--fixture` flag:
 
 ### Fixture structure
 
-```
+```text
 fixtures/
   catalog/
     templates.json         # Minimal catalog (2 templates, 1 extension, 2 categories)
@@ -179,7 +179,7 @@ repositories via the `file://` protocol using `makeLocalBareGitRepo()`.
 ### Fixture API (source)
 
 | Export / Helper                      | Location       | Purpose                                                                          |
-| ------------------------------------ | -------------- | -------------------------------------------------------------------------------- |
+|--------------------------------------|----------------|----------------------------------------------------------------------------------|
 | `CNA_CATALOG_FIXTURE=1`              | env var        | Enables fixture mode in `getTemplateData()`                                      |
 | `CNA_FIXTURE_DIR=<path>`             | env var        | Override fixture root (default: auto-detect from `templates.ts`)                 |
 | `--fixture [dir]`                    | CLI flag       | Shorthand for setting `CNA_CATALOG_FIXTURE=1` (and optionally `CNA_FIXTURE_DIR`) |
