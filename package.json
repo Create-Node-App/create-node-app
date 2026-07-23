@@ -21,17 +21,17 @@
     "type-check": "turbo run type-check"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.0",
+    "@changesets/cli": "^2.31.1",
     "@typescript-eslint/eslint-plugin": "^8.64.0",
-    "@typescript-eslint/parser": "^8.63.0",
-    "c8": "^11.0.0",
+    "@typescript-eslint/parser": "^8.65.0",
+    "c8": "^12.0.0",
     "husky": "^9.1.7",
     "is-ci": "^4.1.0",
-    "lint-staged": "^17.0.8",
-    "prettier": "^3.9.4",
+    "lint-staged": "^17.1.1",
+    "prettier": "^3.9.6",
     "tsup": "^8.5.1",
-    "tsx": "^4.23.0",
-    "turbo": "^2.10.4"
+    "tsx": "^4.23.1",
+    "turbo": "^2.10.6"
   },
   "c8": {
     "reporter": [
