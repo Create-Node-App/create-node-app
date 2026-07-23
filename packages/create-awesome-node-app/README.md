@@ -27,7 +27,7 @@ From blank folder to a working Node/Web project with modern tooling, cozy defaul
 [![Shellcheck][shellcheckbadge]][shellcheckurl]
 [![Commit Activity][commitactivitybadge]][commitactivityurl]
 [![Bundle Size][bundlesizebadge]][bundlesizeurl]
-[![Discord](https://img.shields.io/discord/1527933660764831825?label=Discord&logo=discord&logoColor=white)](https://discord.gg/dwFTsR7fK2)
+[![Discord](https://img.shields.io/discord/1527933660764831825?label=Discord&logo=discord&logoColor=white)](https://discord.gg/bR5VyATgka)
 
 **[Official Site](https://create-awesome-node-app.vercel.app)** · [Templates](https://create-awesome-node-app.vercel.app/templates) · [Extensions](https://create-awesome-node-app.vercel.app/extensions) · [Docs](https://create-awesome-node-app.vercel.app/docs) · [GitHub](https://github.com/Create-Node-App/create-node-app) · [npm](https://www.npmjs.com/package/create-awesome-node-app)
 
@@ -75,7 +75,7 @@ npx create-awesome-node-app my-app \
 ```
 
 | If you want...                | Start here                                        |
-|-------------------------------|---------------------------------------------------|
+| ----------------------------- | ------------------------------------------------- |
 | A guided local setup          | `npm create awesome-node-app@latest my-app`       |
 | A repeatable CI/platform flow | `--no-interactive` with explicit flags            |
 | Your company starter          | `--template <github-url>` or `--template file://` |
@@ -85,11 +85,11 @@ npx create-awesome-node-app my-app \
 
 ## ✨ Why CNA?
 
-| Capability                        | Value                                                                                                 |
-|-----------------------------------|-------------------------------------------------------------------------------------------------------|
-| 🧩 **Composable by design**       | Start with a template, then layer only the addons your project actually needs.                        |
+| Capability                       | Value                                                                                                 |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 🧩 **Composable by design**      | Start with a template, then layer only the addons your project actually needs.                        |
 | 🛡️ **Production-ready defaults** | TypeScript, linting, scripts, testing paths, and practical DX defaults out of the box.                |
-| 🤖 **AI-ready from day one**      | Supported templates generate `AGENTS.md` so coding agents understand the project context.             |
+| 🤖 **AI-ready from day one**     | Supported templates generate `AGENTS.md` so coding agents understand the project context.             |
 | 🏗️ **CI and platform friendly**  | Use `--no-interactive`, `--set`, `--template <url>`, and `--extend <url>` for repeatable scaffolding. |
 
 ---
@@ -109,7 +109,7 @@ You can mix catalog templates and addons with your own GitHub or `file://` sourc
 ### 🧱 Template Families
 
 | Category      | Example templates                                           |
-|---------------|-------------------------------------------------------------|
+| ------------- | ----------------------------------------------------------- |
 | Frontend      | `react-vite-boilerplate`, `astro-starter`                   |
 | Backend       | `nestjs-boilerplate`, `hono-starter`                        |
 | Full Stack    | `nextjs-starter`, `nextjs-saas-ai-starter`, `remix-starter` |
@@ -120,7 +120,7 @@ You can mix catalog templates and addons with your own GitHub or `file://` sourc
 ### 🧰 Addon Families
 
 | Category                  | Examples                                                                  |
-|---------------------------|---------------------------------------------------------------------------|
+| ------------------------- | ------------------------------------------------------------------------- |
 | UI                        | `tailwind-css`, `material-ui`, `shadcn-ui`, `nextjs-shadcn`               |
 | State and data            | `zustand`, `jotai`, `tanstack-react-query`, `apollo-client`               |
 | Backend and DB            | `drizzle-orm-postgresql`, `drizzle-orm-sqlite`, `mongoose-orm-mongodb`    |
@@ -244,7 +244,7 @@ Full catalog:
 Supported templates can generate an `AGENTS.md` file so coding assistants understand project context before editing:
 
 | Context                | Why it matters                                              |
-|------------------------|-------------------------------------------------------------|
+| ---------------------- | ----------------------------------------------------------- |
 | Project purpose        | Agents understand what the app is for before changing code. |
 | Directory layout       | Suggestions align with the real structure.                  |
 | Scripts and validation | Agents know how to lint, test, build, and verify changes.   |
@@ -259,7 +259,7 @@ Learn more: **[AGENTS.md guide](https://create-awesome-node-app.vercel.app/docs/
 Run the CLI without flags and CNA guides you through:
 
 | Step              | What you choose                                                            |
-|-------------------|----------------------------------------------------------------------------|
+| ----------------- | -------------------------------------------------------------------------- |
 | Project name      | Confirm or set the target directory                                        |
 | Package manager   | npm, yarn, pnpm, or Bun                                                    |
 | Category          | Frontend, Backend, Full Stack, Monorepo, Web Extension, UAT, or custom URL |
@@ -290,7 +290,7 @@ Usage: create-awesome-node-app [project-directory] [options]
 ```
 
 | Flag                         | Description                                           |
-|------------------------------|-------------------------------------------------------|
+| ---------------------------- | ----------------------------------------------------- |
 | `--interactive`              | Force interactive wizard (default outside CI)         |
 | `--no-interactive`           | Disable wizard and use flags only                     |
 | `-t, --template <slug\|url>` | Template slug from catalog or remote/local URL        |
@@ -370,7 +370,7 @@ cache lives at `~/.cache/cna` by default; override with `--cache-dir
 <path>` or `CNA_CACHE_DIR`.
 
 | Path                            | Contents                                   |
-|---------------------------------|--------------------------------------------|
+| ------------------------------- | ------------------------------------------ |
 | `~/.cache/cna/catalog/`         | Cached `templates.json` (one file)         |
 | `~/.cache/cna/<base64-of-url>/` | Shallow clone of one template or extension |
 
