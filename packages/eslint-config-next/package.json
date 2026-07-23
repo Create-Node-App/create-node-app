@@ -16,7 +16,7 @@
   "dependencies": {
     "eslint": "^10.7.0",
     "@create-node-app/eslint-config-ts": "*",
-    "eslint-config-next": "^16.2.10"
+    "eslint-config-next": "^16.2.11"
   },
   "publishConfig": {
     "access": "public",
