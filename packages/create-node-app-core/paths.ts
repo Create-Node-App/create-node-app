@@ -264,9 +264,9 @@ const solveTemplateOrExtensionPath = async (
  * itself has set `ignorePackage` to `true`.
  *
  * @param templateOrExtension Template or extension URL
- * @param name? File name to resolve inside the template directory (default: `"package"`)
- * @param ignorePackage? If `true`, throws then resolving `package.json` (default: `false`)
- * @param opts Cache and network options (see {@link GetTemplatePathOptions})
+ * @param [name] File name to resolve inside the template directory (default: `"package"`)
+ * @param [ignorePackage] If `true`, throws when resolving `package.json` (default: `false`)
+ * @param [opts] Cache and network options (see {@link GetTemplatePathOptions})
  * @returns Absolute path to the requested file
  */
 export const getPackagePath = async (
@@ -330,7 +330,7 @@ export const getTemplateBaseDirPath = async (
 };
 
 /**
- * Resolve the absolute path to the template files directory for a given
+ * Resolves the absolute path to the template files directory for a given
  * template or extension URL.
  *
  * If a `template/` subdirectory exists inside the resolved path, that

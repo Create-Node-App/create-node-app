@@ -37,7 +37,7 @@ export {
 
 /**
  * Checks that the current Node.js version satisfies the required semver range.
- * Print an error message and exits with code 1 if the check fails.
+ * Print an error message and exits if the check fails.
  * @param requiredVersion Semver range the current Node.js version must satisfy (e.g. `">=22.0.0"`).
  * @param packageName Name of the package or tool to display in the error message.
  */

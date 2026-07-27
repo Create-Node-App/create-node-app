@@ -3,7 +3,6 @@ import path from "path";
 import { getTemplateBaseDirPath } from "./paths.js";
 import { ConfigParseError } from "./errors.js";
 
-/** Configuration for custom CLI options in a CNA template. */
 export type CnaCustomOption = {
   name: string;
   type: string;
@@ -12,7 +11,6 @@ export type CnaCustomOption = {
   [key: string]: unknown;
 };
 
-/** Shape of the configuration parsed from a template's `cna.config.json` */
 export type CnaConfig = {
   customOptions?: CnaCustomOption[];
 };
@@ -33,7 +31,7 @@ export class NonEmptyTargetDirectoryError extends Error {
 
 /**
  * Asserts that the target directory is empty before scaffolding.
- * @param dirPath - Absolute path to the target directory.
+ * @param dirPath Absolute path to the target directory.
  * @throws {NonEmptyTargetDirectoryError} if the directory contains any entries other than `.DS_Store` or `Thumbs.db`.
  */
 export const assertDirectoryIsEmpty = (dirPath: string) => {
