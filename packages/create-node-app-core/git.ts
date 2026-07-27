@@ -98,6 +98,14 @@ export type CacheMeta = {
   url?: string | undefined;
 };
 
+/**
+ * Reads the `.cna-meta.json` sidecar file from the given cache directory.
+ * Returns `null` if the file does not exist, cannot be parsed, or is missing
+ * the required `lastFetchedAt` field.
+ *
+ * @param cacheDir Absolute path to the cache directory containing `.cna-meta.json`
+ * @returns The parsed {@link CacheMeta} object, or `null` on failure
+ */
 export const readCacheMeta = (cacheDir: string): CacheMeta | null => {
   try {
     const raw = fs.readFileSync(metaSidecarPath(cacheDir), "utf8");
@@ -109,6 +117,14 @@ export const readCacheMeta = (cacheDir: string): CacheMeta | null => {
   }
 };
 
+/**
+ * Writes a {@link CacheMeta} object to `.cna-meta.json` inside the given cache directory.
+ * Creates the directory if it does not exist. Silently ignores write errors
+ * (failures are logged via the `cna:git:meta` debug channel).
+ *
+ * @param cacheDir Absolute path to the cache directory
+ * @param meta Metadata to persist
+ */
 export const writeCacheMeta = (cacheDir: string, meta: CacheMeta): void => {
   try {
     fs.mkdirSync(cacheDir, { recursive: true });
@@ -229,6 +245,9 @@ const copyTree = async (
 };
 
 /**
+ * Clones or refreshes a git repository into a local cache directory,
+ * then copies its contents to the target path.
+ *
  * @param opts options
  * @param opts.url The git repository url.
  * @param opts.targetId The target id. Default is `Buffer.from(`${gitUrl}@${branch}`).toString("base64")`
