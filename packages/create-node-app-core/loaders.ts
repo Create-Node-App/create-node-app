@@ -162,6 +162,11 @@ const batchedAppendFiles = async (
   await Promise.all(batchedPromises);
 };
 
+/**
+ * File loader that copies a file from the template directory to the project root as-is.
+ * Strips package-manager-specific suffixes (`.if-npm`, `.if-yarn`, etc.) and
+ * resolves `[src]/` path tokens to the configured source directory.
+ */
 const copyLoader: FileLoader =
   ({ root, templateDir, verbose, srcDir }) =>
   async ({ path }) => {
@@ -186,6 +191,11 @@ const copyLoader: FileLoader =
     await batchedCopyFiles(operations);
   };
 
+/**
+ * File loader that appends a template file's content to the destination file.
+ * Strips `.append` and package-manager-specific suffixes before resolving the destination path.
+ * Creates the destination file if it does not exist.
+ */
 const appendLoader: FileLoader =
   ({ root, templateDir, verbose, srcDir }) =>
   async ({ path }) => {
@@ -211,6 +221,12 @@ const appendLoader: FileLoader =
     await batchedAppendFiles(operations);
   };
 
+/**
+ * File loader that processes a file as a Lodash template before writing it to the project root.
+ * Interpolates variables such as `projectName`, `srcDir`, `runCommand`, `installCommand`,
+ * and any additional custom options.
+ * When `mode` includes `"append"`, the rendered content is appended rather than overwritten.
+ */
 const templateLoader: FileLoader =
   ({
     root,
@@ -260,6 +276,15 @@ const templateLoader: FileLoader =
     await batchedWriteFiles(operations);
   };
 
+/**
+ * Dispatches a single template file to the appropriate loader based on its file extension.
+ *
+ * Dispatch rules (checked against the file path):
+ * - `.template`                    → `templateLoader` (render + overwrite)
+ * - `.append`                      → `appendLoader`   (copy + append)
+ * - `.append.template` / `.template.append` → `templateLoader` (render + append)
+ * - anything else                  → `copyLoader`     (plain copy)
+ */
 const fileLoader: FileLoader =
   ({
     root,
@@ -334,6 +359,28 @@ export type LoadFilesOptions = {
   [key: string]: unknown;
 };
 
+/**
+ * Iterates over all provided templates/extensions, discovers their files,
+ * and applies the appropriate file loader to each entry in parallel.
+ * Throws if any file operation fails.
+ *
+ * @param options - See {@link LoadFilesOptions}
+ * @param options.root - Absolute path to the target project directory
+ * @param [options.templatesOrExtensions] - List of template/extension URLs to apply
+ * @param options.appName - App name used for template interpolation
+ * @param options.originalDirectory - CWD at the time the CLI was invoked
+ * @param options.verbose - Enable debug-level logging
+ * @param [options.useYarn] - Whether Yarn is the active package manager
+ * @param [options.usePnpm] - Whether pnpm is the active package manager
+ * @param [options.useBun] - Whether Bun is the active package manager
+ * @param [options.srcDir] - Source directory token replacement (default: `"src/"`)
+ * @param options.runCommand - Script run command passed to templates
+ * @param options.installCommand - Install command passed to templates
+ * @param [options.offline] - Resolve template directories in offline mode
+ * @param [options.cacheDir] - Custom cache directory for cloned templates
+ * @param [options.refresh] - Git cache refresh mode
+ * @param [options.refreshAfterHours] - Cache refresh interval in hours
+ */
 export const loadFiles = async ({
   root,
   templatesOrExtensions = [],
@@ -400,7 +447,9 @@ export const loadFiles = async ({
               ? [/\.if-yarn\./, /\.if-pnpm\./]
               : [/\.if-yarn\./, /\.if-pnpm\./, /\.if-bun\./];
         const shouldSkip = (p: string) =>
-          [...skipGlobs, ...skipManager].some((rgx) => rgx.test(p.toLowerCase()));
+          [...skipGlobs, ...skipManager].some((rgx) =>
+            rgx.test(p.toLowerCase()),
+          );
 
         for await (const entry of readdirp(templateDir, {
           type: "files",
@@ -455,7 +504,10 @@ export const loadFiles = async ({
     );
     if (rejected.length > 0) {
       const errorMessages = rejected
-        .map((r, i) => `  ${i + 1}. ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`)
+        .map(
+          (r, i) =>
+            `  ${i + 1}. ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`,
+        )
         .join("\n");
       throw new Error(
         `Failed to copy ${rejected.length} of ${results.length} file(s):\n${errorMessages}`,
