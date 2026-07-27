@@ -194,6 +194,29 @@ export function extractNameAndVersion(dependencyString: string) {
   }
 }
 
+/**
+ * Executes the full app creation pipeline - scaffolding, dependency
+ * installation, and git initialization - inside the target project directory.
+ *
+ * @param options Run options (see {@link RunOptions})
+ * @param options.root Absolute path to the app directory
+ * @param options.appName App name (basename of the directory)
+ * @param options.originalDirectory CWD at the time `createApp` was called
+ * @param [options.verbose] Enable verbose output from the package manager (default: `false`)
+ * @param [options.useYarn] Use Yarn as the package manager (default: `false`)
+ * @param [options.usePnpm] Use pnpm as the package manager (default: `false`)
+ * @param [options.useBun] Use Bun as the package manager (default: `false`)
+ * @param [options.templatesOrExtensions] Templates or extensions to apply
+ * @param [options.dependencies] Production dependencies to install
+ * @param [options.devDependencies] Development dependencies to install
+ * @param [options.installDependencies] Whether to install dependencies automatically (default: `true`)
+ * @param options.runCommand Script run command (e.g. `"npm run"`, `"yarn"`)
+ * @param options.installCommand Dependency install command (e.g. `"npm install"`)
+ * @param [options.offline] Run in offline mode
+ * @param [options.cacheDir] Path to the cache directory
+ * @param [options.refresh]  Git cache refresh mode
+ * @param [options.refreshAfterHours] Cache refresh interval in hours
+ */
 const run = async ({
   root,
   appName,
@@ -428,6 +451,27 @@ export type CreateAppOptions = {
   [key: string]: unknown;
 };
 
+/**
+ * Entry point for creating a new Node.js app.
+ *
+ * Creates a directory with the given name, resolves the package manager,
+ * then delegates to `run()` to copy template files, install dependencies,
+ * and initialize a git repository.
+ *
+ * @param options - App creation options (see {@link CreateAppOptions})
+ * @param options.name Name of the app (used as the directory name)
+ * @param [options.verbose] Enable verbose output from the package manager (default: `false`)
+ * @param [options.force] Proceed even if the target directory is not empty (default: `false`)
+ * @param [options.packageManager] Package manager to use
+ * @param [options.templatesOrExtensions] Template or extensions to apply
+ * @param [options.installDependencies] Whether to install dependencies automatically (default: `true`)
+ * @param [options.ignorePackage] Skip package.json merge logic (default: `false`)
+ * @param [options.offline] Run in offline mode
+ * @param [options.cacheDir] Path to the cache directory
+ * @param [options.refresh] Git cache refresh mode
+ * @param [options.refreshAfterHours] Cache refresh interval in hours
+ * @returns The return value of `run()` (`undefined` on success)
+ */
 export const createApp = async ({
   name,
   verbose = false,
@@ -504,7 +548,9 @@ export const createApp = async ({
   const originalDirectory = process.cwd();
   // Prepend \\?\ to bypass MAX_PATH (260 char) limit on Windows
   const chdirTarget =
-    process.platform === "win32" && root.length > 200 && !root.startsWith("\\\\?\\")
+    process.platform === "win32" &&
+    root.length > 200 &&
+    !root.startsWith("\\\\?\\")
       ? "\\\\?\\" + root
       : root;
   process.chdir(chdirTarget);

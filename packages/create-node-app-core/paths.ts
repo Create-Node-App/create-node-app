@@ -256,6 +256,19 @@ const solveTemplateOrExtensionPath = async (
   return { dir: gitData.dir, subdir: gitData.subdir, ignorePackage };
 };
 
+/**
+ * Resolves the absolute path to a named file (e.g. `package.json`) inside
+ * a template or extension directory.
+ *
+ * Throws if `name` is `"package.json"` and either the caller or the template
+ * itself has set `ignorePackage` to `true`.
+ *
+ * @param templateOrExtension Template or extension URL
+ * @param [name] File name to resolve inside the template directory (default: `"package"`)
+ * @param [ignorePackage] If `true`, throws when resolving `package.json` (default: `false`)
+ * @param [opts] Cache and network options (see {@link GetTemplatePathOptions})
+ * @returns Absolute path to the requested file
+ */
 export const getPackagePath = async (
   templateOrExtension: string,
   name = "package",
@@ -316,6 +329,17 @@ export const getTemplateBaseDirPath = async (
   }
 };
 
+/**
+ * Resolves the absolute path to the template files directory for a given
+ * template or extension URL.
+ *
+ * If a `template/` subdirectory exists inside the resolved path, that
+ * subdirectory is returned. Otherwise the resolved path itself is returned.
+ *
+ * @param templateOrExtensionUrl Template or extension URL to resolve
+ * @param opts? Cache and network options (see {@link GetTemplatePathOptions})
+ * @returns Absolute path to the directory containing the template files
+ */
 export const getTemplateDirPath = async (
   templateOrExtensionUrl: string,
   opts?: GetTemplatePathOptions,

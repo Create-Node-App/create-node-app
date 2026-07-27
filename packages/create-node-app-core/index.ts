@@ -35,6 +35,12 @@ export {
   ScaffoldAbortedError,
 } from "./errors.js";
 
+/**
+ * Checks that the current Node.js version satisfies the required semver range.
+ * Print an error message and exits if the check fails.
+ * @param requiredVersion Semver range the current Node.js version must satisfy (e.g. `">=22.0.0"`).
+ * @param packageName Name of the package or tool to display in the error message.
+ */
 export const checkNodeVersion = (
   requiredVersion: string,
   packageName: string,
@@ -55,6 +61,13 @@ const CNA_USER_AGENT = `create-node-app-core/${CNA_CORE_VERSION} (https://github
 
 export { CNA_USER_AGENT };
 
+/**
+ * Fetches the latest published version of a package from the npm registry.
+ * Falls back to `npm view <packageName> version` if the registry request fails.
+ * Returns `null` if both attempts fail.
+ * @param packageName The npm package name to look up (e.g. `"create-awesome-node-app"`).
+ * @returns The latest version string, or `null` if it could not be determined.
+ */
 export const checkForLatestVersion = async (packageName: string) => {
   try {
     const response = await fetch(
@@ -124,6 +137,14 @@ export type CnaOptions = {
 
 export type CnaOptionsTransform = (options: CnaOptions) => Promise<CnaOptions>;
 
+/**
+ * Entry point for scaffolding a new Node.js app.
+ * Validates that a project name was provided, applies option transforms
+ * and delegates to {@link createApp} to perform the actual scaffolding.
+ * @param programName  The CLI program name shown in usage/error messages.
+ * @param options Parsed CLI options passed from the program.
+ * @param transformOptions Async function to enrich or override options before scaffolding.
+ */
 export const createNodeApp = async (
   programName: string,
   options: CnaOptions,

@@ -17,6 +17,7 @@ export type CnaConfig = {
 
 export const NON_EMPTY_DIR_ERROR_CODE = "CNA_NON_EMPTY_TARGET_DIR";
 
+/** Error thrown when the scaffolding target directory is not empty. */
 export class NonEmptyTargetDirectoryError extends Error {
   readonly code = NON_EMPTY_DIR_ERROR_CODE;
 
@@ -28,6 +29,11 @@ export class NonEmptyTargetDirectoryError extends Error {
   }
 }
 
+/**
+ * Asserts that the target directory is empty before scaffolding.
+ * @param dirPath Absolute path to the target directory.
+ * @throws {NonEmptyTargetDirectoryError} if the directory contains any entries other than `.DS_Store` or `Thumbs.db`.
+ */
 export const assertDirectoryIsEmpty = (dirPath: string) => {
   if (!fs.existsSync(dirPath)) {
     return;
