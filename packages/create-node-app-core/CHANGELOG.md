@@ -1,5 +1,15 @@
 # @create-node-app/core
 
+## 0.9.0
+
+### Minor Changes
+
+- 733da7f: feat(core): support SSH git@ template URLs (#277)
+
+  Adds `git@host:org/repo` URL parsing to `paths.ts` so template and
+  extension URLs can be specified with the SSH scheme alongside existing
+  HTTPS URLs.
+
 ## 0.8.0
 
 ### Minor Changes

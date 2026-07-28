@@ -1,5 +1,25 @@
 # create-awesome-node-app
 
+## 0.15.0
+
+### Minor Changes
+
+- 733da7f: feat(cli): add --add-completion for shell completions (#278)
+
+  Adds an `--add-completion` flag that writes shell completion scripts for
+  bash, zsh, fish, and PowerShell to the appropriate config locations.
+
+- 733da7f: feat(cli): style prompts with declarative formatted tokens (#279)
+
+  Extracts prompt styling into a dedicated `prompt-style.ts` module that
+  uses declarative `FormattedText` tokens, fixing literal ANSI escapes in
+  interactive select prompts.
+
+### Patch Changes
+
+- Updated dependencies [733da7f]
+  - @create-node-app/core@0.9.0
+
 ## 0.14.0
 
 ### Minor Changes
