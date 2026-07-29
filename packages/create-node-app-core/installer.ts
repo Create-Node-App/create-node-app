@@ -319,7 +319,11 @@ const run = async ({
       return deps.reduce(
         (dep, elem) => {
           const nextDep = dep;
-          if (/.+@(\^|~)?[0-9a-zA-Z-.]+$/.test(elem)) {
+          const lastAt = elem.lastIndexOf("@");
+          if (
+            lastAt > 0 &&
+            /^[\^~]?[0-9a-zA-Z.-]+$/.test(elem.slice(lastAt + 1))
+          ) {
             const { name, version } = extractNameAndVersion(elem);
             nextDep[name] = version;
           } else {
