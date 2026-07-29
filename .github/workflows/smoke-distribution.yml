@@ -91,9 +91,18 @@ jobs:
   homebrew:
     name: Homebrew (Create-Node-App/tap)
     runs-on: macos-latest
+    env:
+      # Homebrew's npm wrapper applies --min-release-age=1d by default to guard
+      # against supply-chain attacks. In CI we deliberately test freshly-published
+      # packages, so we set the age to 0 to bypass that restriction.
+      HOMEBREW_NPM_MIN_RELEASE_AGE: "0"
     steps:
       - name: Tap and install
         run: |
+          # aws/tap is pre-installed on GitHub-hosted macOS runners but is not
+          # trusted in Homebrew 4.x (macOS 15+). Untap it so the "untrusted tap"
+          # warning does not pollute output — we don't need it for this install.
+          brew untap aws/tap || true
           brew tap Create-Node-App/tap
           # macOS 15+ requires untrusted third-party taps to be explicitly
           # trusted before formulas from them can be installed.
