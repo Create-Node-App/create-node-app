@@ -14,9 +14,9 @@
     "test": "echo 'no tests'"
   },
   "dependencies": {
-    "eslint": "^10.7.0",
+    "eslint": "^10.8.0",
     "@create-node-app/eslint-config-ts": "*",
-    "eslint-config-next": "^16.2.11"
+    "eslint-config-next": "^16.2.12"
   },
   "publishConfig": {
     "access": "public",
