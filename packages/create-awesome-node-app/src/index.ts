@@ -124,6 +124,7 @@ const main = async () => {
       "--no-install",
       "Generate package.json without installing dependencies",
     )
+    .option("--skip-install", "alias for --no-install")
     .option(
       "-t, --template <template>",
       "specify a template for the created project",
@@ -203,7 +204,13 @@ const main = async () => {
       projectName = providedProjectName || projectName;
     });
 
-  program.parse(process.argv);
+  // Rewrite --skip-install to --no-install before Commander parses argv,
+  // since Commander has no built-in alias support for negatable options.
+  program.parse(
+    process.argv.map((arg) =>
+      arg === "--skip-install" ? "--no-install" : arg,
+    ),
+  );
 
   const opts = program.opts();
 
