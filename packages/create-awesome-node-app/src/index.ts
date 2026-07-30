@@ -10,6 +10,7 @@ import {
 } from "@create-node-app/core";
 import { getCnaOptions } from "./options.js";
 import { parseSetOverrides } from "./set-overrides.js";
+import { rewriteOptionAliases } from "./argv-aliases.js";
 // NodeNext JSON import with import attributes
 import packageJson from "../package.json" with { type: "json" };
 import { listTemplates, listAddons } from "./list.js";
@@ -204,13 +205,11 @@ const main = async () => {
       projectName = providedProjectName || projectName;
     });
 
-  // Rewrite --skip-install to --no-install before Commander parses argv,
-  // since Commander has no built-in alias support for negatable options.
-  program.parse(
-    process.argv.map((arg) =>
-      arg === "--skip-install" ? "--no-install" : arg,
-    ),
-  );
+  // Rewrite option aliases before Commander parses argv. Commander has no
+  // built-in alias support for negatable options, so we normalize
+  // --skip-install to --no-install ourselves. The helper respects the `--`
+  // end-of-options boundary (see tests/argv-aliases.test.mts).
+  program.parse(rewriteOptionAliases(process.argv));
 
   const opts = program.opts();
 
