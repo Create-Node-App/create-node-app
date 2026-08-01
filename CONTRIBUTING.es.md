@@ -62,7 +62,7 @@ Los pull requests son la mejor forma de proponer cambios. Antes de abrir uno:
 
 1. **Hacé fork** del repositorio y creá una rama a partir de `main`
 2. **Hacé tus cambios** — enfocate en el fix o la funcionalidad puntual; evitá reformatear código no relacionado
-3. **Asegurate de que los tests pasen** — corré `npm test` desde la raíz
+3. **Asegurate de que los tests pasen y el formato sea correcto** — corré `npm test` y `npm run format` desde la raíz
 4. **Escribí mensajes de commit claros** — seguí la convención de [Conventional Commits](https://www.conventionalcommits.org/) si es posible
 5. **Abrí un Pull Request** — completá la plantilla y enlazá el issue relacionado
 6. **Mantenete presente** — respondé a los comentarios de revisión y a los fallos de CI
@@ -157,11 +157,15 @@ fixtures/
 Los tests pueden usar las variables de entorno de fixtures para evitar mockear HTTP:
 
 ```typescript
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { __resetTemplateDataCacheForTests } from "../templates.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // En la configuración del test:
 process.env.CNA_CATALOG_FIXTURE = "1";
-process.env.CNA_FIXTURE_DIR = path.resolve(__dirname, "../../../..");
+process.env.CNA_FIXTURE_DIR = resolve(__dirname, "../../../..");
 __resetTemplateDataCacheForTests();
 
 // Después del test:
