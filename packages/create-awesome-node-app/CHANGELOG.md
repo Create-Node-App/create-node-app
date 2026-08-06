@@ -1,5 +1,16 @@
 # create-awesome-node-app
 
+## 0.16.1
+
+### Patch Changes
+
+- ecce86a: fix(core): resolve package.json inside template/ when base package.json is absent
+
+  Support restructured templates where package.json lives only at templates/<name>/template/package.json (co-located with scaffold). getPackagePath now prefers template/package.json when it exists, allowing cna-templates to keep package.json only inside template/ without breaking file:// CI.
+
+- Updated dependencies [ecce86a]
+  - @create-node-app/core@0.9.1
+
 ## 0.16.0
 
 ### Minor Changes
