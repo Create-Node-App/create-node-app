@@ -139,7 +139,7 @@ jobs:
       - name: Publish to AUR
         # Pushes to aur.archlinux.org via SSH. The action reads the
         # updated PKGBUILD, regenerates .SRCINFO, and pushes.
-        uses: ulises-jeremias/github-actions-aur-publish@217e4e2abbbee9ecc942bdc0681302e233656d9f # v1
+        uses: ulises-jeremias/github-actions-aur-publish@507f0dba7755bdc2ad351232405bd7e4cd4a4a67 # v1
         with:
           pkgname: create-awesome-node-app
           pkgbuild: aur-package/PKGBUILD
