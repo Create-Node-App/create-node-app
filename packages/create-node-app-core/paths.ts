@@ -295,10 +295,36 @@ export const getPackagePath = async (
     );
   }
 
+  // Support restructured templates: templates/<name>/{README.md,template/}
+  // where package.json lives inside template/ (user requested co-location).
+  // getTemplateDirPath already prefers template/ for scaffolding, but
+  // getPackagePath was still resolving to the base dir. Prefer
+  // template/package.json when it exists.
   if (subdir) {
-    return path.resolve(dir, subdir, name);
+    const baseCandidate = path.resolve(dir, subdir, name);
+    const templateCandidate = path.resolve(dir, subdir, "template", name);
+    try {
+      if (fs.existsSync(templateCandidate)) {
+        // If base also exists, prefer template/ for package.json (co-location).
+        // For other files (e.g. cna.config.json at base), keep base.
+        if (name === "package.json" || !fs.existsSync(baseCandidate)) {
+          return templateCandidate;
+        }
+      }
+    } catch {}
+    return baseCandidate;
   }
 
+  // No subdir: check for template/ at dir root (rare, but symmetric)
+  try {
+    const templateCandidate = path.resolve(dir, "template", name);
+    if (fs.existsSync(templateCandidate)) {
+      const baseCandidate = path.resolve(dir, name);
+      if (name === "package.json" || !fs.existsSync(baseCandidate)) {
+        return templateCandidate;
+      }
+    }
+  } catch {}
   return path.resolve(dir, name);
 };
 
