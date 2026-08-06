@@ -16,7 +16,7 @@
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "eslint": "^10.8.0",
-    "eslint-config-turbo": "^2.10.7",
+    "eslint-config-turbo": "^2.10.8",
     "@create-node-app/eslint-config": "*"
   },
   "devDependencies": {
