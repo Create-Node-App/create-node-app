@@ -12,6 +12,7 @@ RUN npm install -g "create-awesome-node-app@${VERSION}"
 # node:22-alpine ships an unprivileged `node` user by default. Run as
 # that user so the scaffolded project files (mounted in via -v $PWD:/app)
 # don't end up owned by root on the host.
+# hadolint ignore=DL3066
 USER node
 WORKDIR /home/node
 
