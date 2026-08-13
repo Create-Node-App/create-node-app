@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@create-node-app/eslint-config-ts": "*",
-    "eslint": "^10.8.0",
+    "eslint": "^10.8.1",
     "eslint-config-react-hooks": "^1.0.0"
   },
   "devDependencies": {
