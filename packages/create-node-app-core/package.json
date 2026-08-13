@@ -44,7 +44,7 @@
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^26.1.2",
     "@types/semver": "^7.8.0",
-    "eslint": "^10.8.0",
+    "eslint": "^10.8.1",
     "tsconfig": "*",
     "tsup": "^8.5.1",
     "tsx": "^4.23.5",
@@ -58,7 +58,7 @@
     "lodash": "^4.6.2",
     "lodash.merge": "^4.6.2",
     "picocolors": "^1.0.0",
-    "readdirp": "^5.0.0",
+    "readdirp": "^5.1.1",
     "semver": "^7.8.5",
     "simple-git": "^3.36.0"
   }
