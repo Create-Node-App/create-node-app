@@ -31,7 +31,7 @@ jobs:
         run: npm ci
       - name: Create Release Pull Request
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -69,23 +69,7 @@ jobs:
         run: npm ci
 
       - name: Publish packages
-        run: |
-          # Handle both direct pushes (no changesets → no-op) and
-          # Release PR merges (version bumps already committed).
-          # See #313: `changeset version` exits 1 when no changesets.
-          has_changesets=false
-          for f in .changeset/*.md; do
-            if [ -e "$f" ] && [ "${f##*/}" != "README.md" ]; then
-              has_changesets=true
-              break
-            fi
-          done
-          if $has_changesets; then
-            npm run publish-packages
-          else
-            echo "No unreleased changesets found, checking for new versions to publish"
-            npx changeset publish || echo "No new versions to publish, skipping"
-          fi
+        run: npm run publish-packages
 
       # Our Changesets config has "commit": false, which also disables
       # automatic tagging. Explicitly run `changeset tag` to create
