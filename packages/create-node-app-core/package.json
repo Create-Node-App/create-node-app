@@ -42,12 +42,12 @@
     "@types/envinfo": "^7.8.4",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.merge": "^4.6.9",
-    "@types/node": "^26.3.0",
+    "@types/node": "^26.4.0",
     "@types/semver": "^7.8.0",
     "eslint": "^10.9.0",
     "tsconfig": "*",
     "tsup": "^8.5.1",
-    "tsx": "^4.23.12",
+    "tsx": "^4.23.13",
     "typescript": "^7.0.2"
   },
   "dependencies": {
