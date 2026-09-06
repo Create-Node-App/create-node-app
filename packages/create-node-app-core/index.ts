@@ -46,14 +46,17 @@ export const checkNodeVersion = (
   packageName: string,
 ) => {
   if (!semver.satisfies(process.version, requiredVersion)) {
+    const minVersion = semver.minVersion(requiredVersion);
+    const majorVersion = minVersion?.major ?? "22";
+
     console.error(
       pc.red(
         `You are running Node ${process.version}.\n` +
-          `${packageName} requires Node v${requiredVersion.slice(2)}.\n` +
+          `${packageName} requires Node ${requiredVersion}.\n` +
           `To upgrade, choose one of these methods:\n` +
-          `nvm: nvm install --lts && nvm use --lts\n` +
-          `fnm: fnm install --lts && fnm use --lts\n` +
-          `volta: volta install node@lts\n` +
+          `nvm: nvm install ${majorVersion} && nvm use ${majorVersion}\n` +
+          `fnm: fnm install ${majorVersion} && fnm use ${majorVersion}\n` +
+          `volta: volta install node@${majorVersion}\n` +
           `Manual: https://nodejs.org/en/download/`,
       ),
     );
