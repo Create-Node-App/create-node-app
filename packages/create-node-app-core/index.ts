@@ -49,8 +49,12 @@ export const checkNodeVersion = (
     console.error(
       pc.red(
         `You are running Node ${process.version}.\n` +
-          `${packageName} requires Node ${requiredVersion}.\n` +
-          "Please update your version of Node.",
+          `${packageName} requires Node v${requiredVersion.slice(2)}.\n` +
+          `To upgrade, choose one of these methods:\n` +
+          `nvm: nvm install --lts && nvm use --lts\n` +
+          `fnm: fnm install --lts && fnm use --lts\n` +
+          `volta: volta install node@lts\n` +
+          `Manual: https://nodejs.org/en/download/`,
       ),
     );
     process.exit(1);
