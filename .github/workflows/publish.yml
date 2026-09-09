@@ -89,6 +89,10 @@ jobs:
             npm run publish-packages
           else
             echo "No unreleased changesets found, checking for new versions to publish"
+            # dist/ is gitignored, so a bare `changeset publish` would ship
+            # tarballs without build output (see the empty 0.17.0). Always
+            # build first — publish stays a safe no-op when nothing is new.
+            npm run build
             npx changeset publish || echo "No new versions to publish, skipping"
           fi
 
