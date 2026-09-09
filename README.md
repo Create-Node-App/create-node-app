@@ -74,7 +74,7 @@ This is a Node 24+ monorepo managed with npm workspaces and [Turborepo](https://
 | [`packages/eslint-config-react`](./packages/eslint-config-react)         | React ESLint config extending the TypeScript preset.                                                                                   |
 | [`packages/eslint-config-next`](./packages/eslint-config-next)           | Next.js ESLint config extending the TypeScript preset.                                                                                 |
 | [`packages/tsconfig`](./packages/tsconfig)                               | Shared TypeScript base configurations.                                                                                                 |
-| [`docs/`](./docs)                                                        | Brand guidance, troubleshooting, and migration notes.                                                                                  |
+| [`docs/`](./docs)                                                        | Brand guidance, troubleshooting, migration notes, and [compatibility](./docs/COMPATIBILITY.md).                                         |
 | [`.github/workflows`](./.github/workflows)                               | CI for tests, lint, typecheck, shellcheck, markdown, and release automation.                                                           |
 
 Template and extension data is maintained in [`Create-Node-App/cna-templates`](https://github.com/Create-Node-App/cna-templates). This repo consumes that catalog remotely.
