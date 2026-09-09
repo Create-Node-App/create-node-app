@@ -66,7 +66,7 @@ More examples live in the [CLI package README](./packages/create-awesome-node-ap
 This is a Node 24+ monorepo managed with npm workspaces and [Turborepo](https://turbo.build/).
 
 | Path                                                                     | Purpose                                                                                                                                |
-| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
 | [`packages/create-awesome-node-app`](./packages/create-awesome-node-app) | Main CLI package, Commander entrypoint, interactive wizard, catalog listing, and package metadata.                                     |
 | [`packages/create-node-app-core`](./packages/create-node-app-core)       | Scaffolding engine: resolves templates/extensions, copies files, applies template options, installs dependencies, and initializes git. |
 | [`packages/eslint-config-base`](./packages/eslint-config-base)           | Shared base ESLint flat config.                                                                                                        |
@@ -74,7 +74,7 @@ This is a Node 24+ monorepo managed with npm workspaces and [Turborepo](https://
 | [`packages/eslint-config-react`](./packages/eslint-config-react)         | React ESLint config extending the TypeScript preset.                                                                                   |
 | [`packages/eslint-config-next`](./packages/eslint-config-next)           | Next.js ESLint config extending the TypeScript preset.                                                                                 |
 | [`packages/tsconfig`](./packages/tsconfig)                               | Shared TypeScript base configurations.                                                                                                 |
-| [`docs/`](./docs)                                                        | Brand guidance, troubleshooting, and migration notes.                                                                                  |
+| [`docs/`](./docs)                                                        | Brand guidance, troubleshooting, migration notes, and [compatibility](./docs/COMPATIBILITY.md).                                        |
 | [`.github/workflows`](./.github/workflows)                               | CI for tests, lint, typecheck, shellcheck, markdown, and release automation.                                                           |
 
 Template and extension data is maintained in [`Create-Node-App/cna-templates`](https://github.com/Create-Node-App/cna-templates). This repo consumes that catalog remotely.
@@ -182,7 +182,7 @@ npx create-awesome-node-app local-app \
 ## Quality Checks
 
 | Command                 | What it validates                                          |
-| ----------------------- | ---------------------------------------------------------- |
+|-------------------------|------------------------------------------------------------|
 | `npm run build`         | Builds all packages through Turborepo.                     |
 | `npm run test`          | Runs package test tasks.                                   |
 | `npm run test:all`      | Runs all Node native test files under `packages/**/tests`. |
@@ -256,7 +256,7 @@ npx create-awesome-node-app --template react-vite-boilerplate --list-addons
 Common template slugs:
 
 | Slug                              | Description                                                                                           |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------- |
+|-----------------------------------|-------------------------------------------------------------------------------------------------------|
 | `react-vite-boilerplate`          | React + Vite + TypeScript starter.                                                                    |
 | `nextjs-starter`                  | Production-ready Next.js starter.                                                                     |
 | `nextjs-saas-ai-starter`          | Multi-tenant SaaS starter with AI, Auth.js, Drizzle, PostgreSQL, Tailwind, shadcn/ui, RBAC, and i18n. |
@@ -271,7 +271,7 @@ Common template slugs:
 Common addon slugs:
 
 | Category       | Examples                                                                         |
-| -------------- | -------------------------------------------------------------------------------- |
+|----------------|----------------------------------------------------------------------------------|
 | UI             | `tailwind-css`, `material-ui`, `shadcn-ui`, `nextjs-shadcn`                      |
 | State and data | `zustand`, `jotai`, `tanstack-react-query`, `apollo-client`                      |
 | Backend and DB | `drizzle-orm-postgresql`, `drizzle-orm-sqlite`, `mongoose-orm-mongodb`           |
