@@ -1,5 +1,15 @@
 # @create-node-app/core
 
+## 0.10.0
+
+### Minor Changes
+
+- 3969825: New public helpers `loadCnaConfigFromPath()` (fail-fast external config
+  loading) and `loadFiles()` plus the `logStep()` progress printer.
+  Fixes `.if-<pm>` manager-suffix filtering for trailing suffixes (e.g.
+  `pnpm-workspace.yaml.if-pnpm` no longer leaks into other managers'
+  scaffolds).
+
 ## 0.9.1
 
 ### Patch Changes
