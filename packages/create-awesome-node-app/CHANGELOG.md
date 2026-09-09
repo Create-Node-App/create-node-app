@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.17.1
+
+### Patch Changes
+
+- cc26e42: Fix release packaging: build dist before publishing so the npm tarball contains the compiled CLI (0.17.0 shipped console-only files and crashed on startup).
+
 ## 0.17.0
 
 ### Minor Changes
