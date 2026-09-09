@@ -5,11 +5,13 @@ import os from "os";
 import path from "path";
 import { execFileSync } from "child_process";
 import {
+  checkOutdated,
   cleanCache,
   getCacheRoot,
   listCacheEntries,
   verifyCache,
   writeCatalogToCache,
+  writeMetaSidecar,
 } from "../src/cache.js";
 import { writeCacheMeta } from "@create-node-app/core";
 import { getCatalogCacheFilePath } from "../src/templates.js";
@@ -161,5 +163,120 @@ test("writeCatalogToCache and getCatalogCacheFilePath integrate", async () => {
     await writeCatalogToCache({ templates: [], extensions: [] }, file);
     const read = JSON.parse(fs.readFileSync(file, "utf8"));
     assert.deepEqual(read, { templates: [], extensions: [] });
+  });
+});
+
+test("listCacheEntries tolerates a corrupted meta sidecar", async () => {
+  await withTempCnaCacheDir(async () => {
+    const a = path.join(getCacheRoot(), "a");
+    fs.mkdirSync(a, { recursive: true });
+    fs.writeFileSync(path.join(a, ".cna-meta.json"), "{ not json");
+    fs.writeFileSync(path.join(a, "file.txt"), "x\n");
+    const entries = await listCacheEntries();
+    assert.equal(entries.length, 1);
+    assert.equal(entries[0]?.id, "a");
+    assert.equal(entries[0]?.lastFetchedAt, undefined);
+    assert.ok((entries[0]?.sizeBytes ?? 0) > 0);
+  });
+});
+
+test("listCacheEntries ignores plain files in the cache root", async () => {
+  await withTempCnaCacheDir(async (root) => {
+    fs.writeFileSync(path.join(root, "stray.txt"), "stray\n");
+    const entries = await listCacheEntries();
+    assert.deepEqual(entries, []);
+  });
+});
+
+test("verifyCache reports fsckOk=false for a non-git directory", async () => {
+  await withTempCnaCacheDir(async (root) => {
+    fs.mkdirSync(path.join(root, "plain"), { recursive: true });
+    const results = await verifyCache("plain");
+    assert.equal(results.length, 1);
+    assert.equal(results[0]?.fsckOk, false);
+  });
+});
+
+test("verifyCache with unknown id returns an empty list", async () => {
+  await withTempCnaCacheDir(async () => {
+    assert.deepEqual(await verifyCache("nope"), []);
+  });
+});
+
+test("cleanCache on a missing root reports nothing removed", async () => {
+  await withTempCnaCacheDir(async (root) => {
+    fs.rmSync(root, { recursive: true, force: true });
+    assert.deepEqual(await cleanCache(), { removed: [], notFound: [] });
+  });
+});
+
+test(
+  "listCacheEntries survives unreadable subdirectories",
+  { skip: process.platform === "win32" },
+  async () => {
+    await withTempCnaCacheDir(async (root) => {
+      const locked = path.join(root, "locked");
+      fs.mkdirSync(locked, { recursive: true });
+      fs.writeFileSync(path.join(locked, "secret.txt"), "s\n");
+      fs.chmodSync(locked, 0o000);
+      try {
+        const entries = await listCacheEntries();
+        assert.ok(
+          entries.some((e) => e.id === "locked"),
+          "entry still listed despite unreadable contents",
+        );
+      } finally {
+        fs.chmodSync(locked, 0o755);
+      }
+    });
+  },
+);
+
+test("concurrent list and catalog writes stay consistent", async () => {
+  await withTempCnaCacheDir(async () => {
+    const file = getCatalogCacheFilePath();
+    const catalogWrite = writeCatalogToCache(
+      { templates: [1], extensions: [] },
+      file,
+    );
+    const lists = await Promise.all([
+      listCacheEntries(),
+      listCacheEntries(),
+      listCacheEntries(),
+      catalogWrite.then(() => listCacheEntries()),
+    ]);
+    for (const entries of lists) {
+      assert.deepEqual(entries, []);
+    }
+    const read = JSON.parse(fs.readFileSync(file, "utf8"));
+    assert.deepEqual(read, { templates: [1], extensions: [] });
+  });
+});
+
+test("stale meta timestamps round-trip through the sidecar", async () => {
+  await withTempCnaCacheDir(async () => {
+    const a = path.join(getCacheRoot(), "a");
+    fs.mkdirSync(a, { recursive: true });
+    await writeMetaSidecar(a, {
+      lastFetchedAt: "2020-01-01T00:00:00.000Z",
+      lastCommitSha: "abc123",
+      lastRefreshReason: "stale",
+      branch: "main",
+      url: "https://example.com/repo.git",
+    });
+    const entries = await listCacheEntries();
+    assert.equal(entries[0]?.lastFetchedAt, "2020-01-01T00:00:00.000Z");
+    assert.equal(entries[0]?.lastCommitSha, "abc123");
+  });
+});
+
+test("checkOutdated reports missing remote metadata without network", async () => {
+  await withTempCnaCacheDir(async () => {
+    const a = path.join(getCacheRoot(), "a");
+    fs.mkdirSync(a, { recursive: true });
+    const results = await checkOutdated();
+    assert.equal(results.length, 1);
+    assert.equal(results[0]?.behind, false);
+    assert.ok(results[0]?.error);
   });
 });
