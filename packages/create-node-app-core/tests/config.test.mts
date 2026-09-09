@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { loadTemplateCnaConfig, NON_EMPTY_DIR_ERROR_CODE } from "../index.js";
+import { loadTemplateCnaConfig, loadCnaConfigFromPath, NON_EMPTY_DIR_ERROR_CODE } from "../index.js";
+import { ConfigParseError } from "../index.js";
 
 describe("loadTemplateCnaConfig", () => {
   it("returns null for non-existent template URL", async () => {
@@ -39,6 +40,42 @@ describe("loadTemplateCnaConfig", () => {
         `file://${tmpDir}`,
       );
       assert.equal(result, null);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("loadCnaConfigFromPath", () => {
+  it("loads customOptions initials from an explicit path", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "cna-ext-valid-"));
+    try {
+      const file = path.join(tmpDir, "team-cna.json");
+      fs.writeFileSync(
+        file,
+        JSON.stringify({ customOptions: [{ name: "srcDir", type: "text", initial: "app" }] }),
+      );
+      const result = loadCnaConfigFromPath(file);
+      assert.equal(result.customOptions?.[0]?.name, "srcDir");
+      assert.equal(result.customOptions?.[0]?.initial, "app");
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("throws an actionable error for a missing file", () => {
+    assert.throws(
+      () => loadCnaConfigFromPath("/tmp/definitely-not-here-cna/config.json"),
+      /--config.*does not exist/,
+    );
+  });
+
+  it("throws ConfigParseError for invalid JSON", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "cna-ext-bad-"));
+    try {
+      const file = path.join(tmpDir, "bad.json");
+      fs.writeFileSync(file, "{ not json");
+      assert.throws(() => loadCnaConfigFromPath(file), ConfigParseError);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }

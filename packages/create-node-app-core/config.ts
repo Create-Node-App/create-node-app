@@ -62,6 +62,27 @@ export const assertDirectoryIsEmpty = (dirPath: string) => {
  * Works for both remote GitHub URLs (uses cached clone) and local file:// URLs.
  * Returns null if the file doesn't exist or cannot be parsed.
  */
+/**
+ * Load cna.config.json from an explicit file path (`--config <path>`).
+ * Unlike {@link loadTemplateCnaConfig}, a missing or unparsable file is a
+ * hard error: the user asked for this file, so fail fast instead of
+ * silently falling back to template defaults.
+ */
+export const loadCnaConfigFromPath = (configPath: string): CnaConfig => {
+  const resolved = path.resolve(configPath);
+  if (!fs.existsSync(resolved)) {
+    throw new Error(
+      `Cannot load --config file: ${configPath} does not exist. Pass a path to a cna.config.json file.`,
+    );
+  }
+  const content = fs.readFileSync(resolved, "utf8");
+  try {
+    return JSON.parse(content) as CnaConfig;
+  } catch (err) {
+    throw new ConfigParseError(resolved, err);
+  }
+};
+
 export const loadTemplateCnaConfig = async (
   templateUrl: string,
 ): Promise<CnaConfig | null> => {

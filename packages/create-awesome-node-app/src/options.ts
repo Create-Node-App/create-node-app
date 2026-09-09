@@ -1,5 +1,9 @@
 import type { CnaOptions, TemplateOrExtension } from "@create-node-app/core";
-import { loadTemplateCnaConfig, ConfigParseError } from "@create-node-app/core";
+import {
+  loadTemplateCnaConfig,
+  loadCnaConfigFromPath,
+  ConfigParseError,
+} from "@create-node-app/core";
 import pc from "picocolors";
 import { isCI } from "ci-info";
 import prompts from "prompts";
@@ -137,6 +141,20 @@ const processNonInteractiveOptions = async (
     }
   }
 
+  // External --config file overrides template defaults (team standardization)
+  // but still loses to explicit --set flags below. Fails fast on bad paths.
+  const externalConfigPath =
+    typeof options.config === "string" ? options.config : undefined;
+  if (externalConfigPath) {
+    const externalConfig = loadCnaConfigFromPath(externalConfigPath);
+    for (const opt of externalConfig.customOptions ?? []) {
+      if (opt.name && opt.initial !== undefined) {
+        options[opt.name as string] = opt.initial;
+      }
+    }
+    delete (options as Record<string, unknown>).config;
+  }
+
   // Apply --set overrides — highest priority, wins over everything above
   Object.assign(options, setOverrides);
 
@@ -238,6 +256,11 @@ const processInteractiveOptions = async (
     setOverrides?: Record<string, string>;
   };
   options = restOptions as CnaOptions;
+  // Keep --config for the customOptions resolution below, then strip it so
+  // the file path doesn't leak into the EJS template context either.
+  const interactiveConfigPath =
+    typeof options.config === "string" ? options.config : undefined;
+  delete (options as Record<string, unknown>).config;
 
   // Pre-fill interactive prompts with CLI-provided values (replaces yargs argv override)
   prompts.override({ ...options, ...setOverrides });
@@ -363,8 +386,17 @@ const processInteractiveOptions = async (
   // Extract --set overrides to pre-fill prompts; removed from options before returning
   // (already extracted at function start, reuse the variable from above)
 
+  // External --config file takes priority over the template's own config
+  // (fails fast on bad paths, same as non-interactive mode).
+  const externalConfig = interactiveConfigPath
+    ? loadCnaConfigFromPath(interactiveConfigPath)
+    : null;
+
   const rawCustomOptions =
-    cnaConfig?.customOptions ?? existingTemplate?.customOptions ?? [];
+    externalConfig?.customOptions ??
+    cnaConfig?.customOptions ??
+    existingTemplate?.customOptions ??
+    [];
 
   // Filter out sensitive prompt types that config files cannot use
   const blockedTypes = new Set(["invisible", "password"]);

@@ -5,6 +5,8 @@ import { execFileSync } from "child_process";
 import corePackageJson from "./package.json" with { type: "json" };
 import type { TemplateOrExtension } from "./loaders.js";
 export type { TemplateOrExtension } from "./loaders.js";
+export { loadFiles } from "./loaders.js";
+export type { LoadFilesOptions } from "./loaders.js";
 import { createApp } from "./installer.js";
 import { resolveExecutable } from "./executable.js";
 
@@ -21,7 +23,7 @@ export {
   resolveCacheDir,
 } from "./git.js";
 export type { CacheMeta, RefreshMode } from "./git.js";
-export { loadTemplateCnaConfig } from "./config.js";
+export { loadTemplateCnaConfig, loadCnaConfigFromPath } from "./config.js";
 export type { CnaConfig, CnaCustomOption } from "./config.js";
 export {
   assertDirectoryIsEmpty,

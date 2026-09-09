@@ -178,6 +178,10 @@ const main = async () => {
       "load the template catalog from the local fixtures/ directory instead of the network (default: auto-detect from source location; also CNA_FIXTURE_DIR)",
     )
     .option(
+      "--config <path>",
+      "load custom template options from an external cna.config.json (overrides template defaults; --set still wins)",
+    )
+    .option(
       "--add-completion [shell]",
       "print a shell completion script (bash|zsh|fish|powershell; default: detect from $SHELL)",
     )
