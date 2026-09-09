@@ -38,7 +38,12 @@ jobs:
   publish:
     name: Publish to npm
     needs: release-pr
-    if: needs.release-pr.outputs.hasChangesets == 'false'
+    # NOTE: the changesets/action step does not reliably emit
+    # hasChangesets=false (empty/unset on version-PR merges), so testing
+    # for != 'true' instead: run publish unless open changesets exist.
+    # The job body is a safe no-op (`changeset publish` exits cleanly)
+    # when there is nothing new to release. See #314.
+    if: needs.release-pr.outputs.hasChangesets != 'true'
     runs-on: ubuntu-latest
     environment: npm-publish
     permissions:
