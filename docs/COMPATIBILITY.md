@@ -5,12 +5,12 @@ CLI versions relate to template content.
 
 ## Runtime requirements
 
-| Component        | Requirement  | Where it is declared                              |
-|------------------|--------------|---------------------------------------------------|
-| Node.js (CLI)    | `>= 22.0.0`  | `packages/create-awesome-node-app/package.json`   |
-| Node.js (repo)   | `>= 24.17.0` | Root `package.json` (development only)            |
-| npm (repo/CI)    | `>= 11.13.0` | Root `package.json` (development only)            |
-| npm (CI images)  | 11.x         | `.github/workflows/ci-*.yml` pin `npm@11`         |
+| Component       | Requirement  | Where it is declared                            |
+|-----------------|--------------|-------------------------------------------------|
+| Node.js (CLI)   | `>= 22.0.0`  | `packages/create-awesome-node-app/package.json` |
+| Node.js (repo)  | `>= 24.17.0` | Root `package.json` (development only)          |
+| npm (repo/CI)   | `>= 11.13.0` | Root `package.json` (development only)          |
+| npm (CI images) | 11.x         | `.github/workflows/ci-*.yml` pin `npm@11`       |
 
 Notes:
 
@@ -25,13 +25,13 @@ Notes:
 
 ## Distribution
 
-| Channel  | Notes                                                        |
-|----------|--------------------------------------------------------------|
-| npm      | `create-awesome-node-app` (versioned via changesets)         |
-| Homebrew | `Create-Node-App/tap`; requires Homebrew 4.x-compatible     |
-|          | formula (no `Language::Node.std_npm_args`, removed in 4.x)   |
-| AUR      | Community package, synced from npm releases                  |
-| Docker   | Published alongside releases                                 |
+| Channel  | Notes                                                      |
+|----------|------------------------------------------------------------|
+| npm      | `create-awesome-node-app` (versioned via changesets)       |
+| Homebrew | `Create-Node-App/tap`; requires Homebrew 4.x-compatible    |
+|          | formula (no `Language::Node.std_npm_args`, removed in 4.x) |
+| AUR      | Community package, synced from npm releases                |
+| Docker   | Published alongside releases                               |
 
 There are no GitHub Releases — npm is the source of truth for versions.
 
