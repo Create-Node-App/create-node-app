@@ -439,13 +439,16 @@ export const loadFiles = async ({
           /\byarn\.lock$/,
           /\bpnpm-lock\.yaml$/,
         ];
+        // Match both middle (`cfg.if-yarn.json`) and trailing
+        // (`pnpm-workspace.yaml.if-pnpm`) manager suffixes so conditional
+        // files never leak into other managers' scaffolds.
         const skipManager = usePnpm
-          ? [/\.if-npm\./, /\.if-yarn\./, /\.if-bun\./]
+          ? [/\.if-npm(\.|$)/, /\.if-yarn(\.|$)/, /\.if-bun(\.|$)/]
           : useYarn
-            ? [/\.if-npm\./, /\.if-pnpm\./, /\.if-bun\./]
+            ? [/\.if-npm(\.|$)/, /\.if-pnpm(\.|$)/, /\.if-bun(\.|$)/]
             : useBun
-              ? [/\.if-yarn\./, /\.if-pnpm\./]
-              : [/\.if-yarn\./, /\.if-pnpm\./, /\.if-bun\./];
+              ? [/\.if-yarn(\.|$)/, /\.if-pnpm(\.|$)/]
+              : [/\.if-yarn(\.|$)/, /\.if-pnpm(\.|$)/, /\.if-bun(\.|$)/];
         const shouldSkip = (p: string) =>
           [...skipGlobs, ...skipManager].some((rgx) =>
             rgx.test(p.toLowerCase()),
