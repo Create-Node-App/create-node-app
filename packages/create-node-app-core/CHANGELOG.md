@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.10.1
+
+### Patch Changes
+
+- 9ca4ac1: Republish with compiled dist output (0.10.0 shipped metadata-only files, so installs missed the entire build).
+
 ## 0.10.0
 
 ### Minor Changes
