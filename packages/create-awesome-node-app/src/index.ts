@@ -154,6 +154,10 @@ const main = async () => {
     .option("--list-templates", "list all available templates")
     .option("--list-addons", "list all available addons")
     .option(
+      "--json",
+      "output --list-templates / --list-addons as JSON (for scripting)",
+    )
+    .option(
       "--set <assignments...>",
       "set a custom template option (format: key=value; quote values with spaces: --set 'projectName=My App' or --set 'projectName=My App' --set 'author=Jane Doe')",
     )
@@ -204,6 +208,19 @@ const main = async () => {
     .action((providedProjectName: string | undefined) => {
       projectName = providedProjectName || projectName;
     });
+
+  program.addHelpText(
+    "after",
+    `
+Examples:
+  $ create-awesome-node-app my-app --template react-vite-starter
+  $ create-awesome-node-app my-app --template nextjs-starter --addons nextjs-tailwindcss nextjs-shadcn
+  $ create-awesome-node-app --list-templates
+  $ create-awesome-node-app --list-templates --json
+  $ create-awesome-node-app --list-addons --template react-vite-starter --json
+  $ create-awesome-node-app my-app --template nestjs-starter --no-interactive
+  $ create-awesome-node-app my-app --set 'projectName=My App' --set 'srcDir=src'`,
+  );
 
   // Rewrite option aliases before Commander parses argv. Commander has no
   // built-in alias support for negatable options, so we normalize
@@ -290,7 +307,7 @@ const main = async () => {
 
   // Handle list templates flag
   if (opts.listTemplates) {
-    await listTemplates();
+    await listTemplates({ json: Boolean(opts.json) });
     return;
   }
 
@@ -298,6 +315,7 @@ const main = async () => {
   if (opts.listAddons) {
     await listAddons({
       templateSlug: opts.template,
+      json: Boolean(opts.json),
     });
     return;
   }

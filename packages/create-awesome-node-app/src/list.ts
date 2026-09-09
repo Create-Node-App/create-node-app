@@ -9,10 +9,34 @@ import {
 } from "./templates.js";
 
 /**
- * List all available templates grouped by category
+ * List all available templates grouped by category.
+ * With `json: true` prints machine-readable JSON instead of colored text.
  */
-export const listTemplates = async () => {
+export const listTemplates = async ({ json = false }: { json?: boolean } = {}) => {
   const categories = await getTemplateCategories();
+
+  if (json) {
+    const groups = [];
+    for (const categorySlug of categories) {
+      const categoryData = await getCategoryData(categorySlug);
+      const templates = await getTemplatesForCategory(categorySlug);
+      groups.push({
+        slug: categorySlug,
+        name: categoryData?.name ?? categorySlug,
+        description: categoryData?.description ?? "",
+        templates: templates.map((template: TemplateData) => ({
+          name: template.name,
+          slug: template.slug,
+          description: template.description,
+          type: template.type,
+          labels: template.labels ?? [],
+          url: template.url,
+        })),
+      });
+    }
+    console.log(JSON.stringify({ templates: groups }, null, 2));
+    return;
+  }
 
   console.log(pc.bold(pc.blue("\nAvailable Templates:")));
 
@@ -47,9 +71,11 @@ export const listTemplates = async () => {
 export const listAddons = async ({
   templateSlug,
   templateType,
+  json = false,
 }: {
   templateSlug?: string;
   templateType?: string;
+  json?: boolean;
 }) => {
   // If templateSlug is provided but templateType is not, try to get the template type
   if (templateSlug && !templateType) {
@@ -61,6 +87,36 @@ export const listAddons = async ({
     : []; // empty array = show all
   const extensionsGroupedByCategory =
     await getExtensionsGroupedByCategory(types as any);
+
+  if (json) {
+    const groups = [];
+    for (const [categorySlug, extensions] of Object.entries(
+      extensionsGroupedByCategory,
+    )) {
+      const categoryData = await getCategoryData(categorySlug);
+      groups.push({
+        slug: categorySlug,
+        name: categoryData?.name ?? categorySlug,
+        description: categoryData?.description ?? "",
+        extensions: (extensions as ExtensionData[]).map((extension) => ({
+          name: extension.name,
+          slug: extension.slug,
+          description: extension.description,
+          type: extension.type,
+          labels: extension.labels ?? [],
+          url: extension.url,
+        })),
+      });
+    }
+    console.log(
+      JSON.stringify(
+        { addons: groups, ...(templateSlug ? { templateSlug } : {}) },
+        null,
+        2,
+      ),
+    );
+    return;
+  }
 
   console.log(pc.bold(pc.blue("\nAvailable Addons:")));
 
