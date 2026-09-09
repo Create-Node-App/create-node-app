@@ -1,5 +1,20 @@
 # create-awesome-node-app
 
+## 0.17.0
+
+### Minor Changes
+
+- 3969825: CLI UX round: machine-readable `--list-templates/--list-addons --json`
+  output, copy-pasteable `--help` examples, `--config <path>` for external
+  `cna.config.json` files (template defaults < `--config` < `--set`), and
+  picocolors progress steps during long scaffold phases. Also bumps
+  browserslist to 4.28.9 and qs to 6.16.0 (OSV HIGH/MEDIUM fixes).
+
+### Patch Changes
+
+- Updated dependencies [3969825]
+  - @create-node-app/core@0.10.0
+
 ## 0.16.1
 
 ### Patch Changes
