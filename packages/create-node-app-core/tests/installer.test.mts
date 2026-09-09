@@ -1,6 +1,23 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { extractNameAndVersion } from "../installer.js";
+import { extractNameAndVersion, logStep } from "../installer.js";
+
+describe("logStep", () => {
+  it("prints the step message with an ellipsis", () => {
+    const lines: string[] = [];
+    const original = console.log;
+    console.log = (...args: unknown[]) => {
+      lines.push(args.map(String).join(" "));
+    };
+    try {
+      logStep("Copying files");
+    } finally {
+      console.log = original;
+    }
+    assert.equal(lines.length, 1);
+    assert.ok(lines[0]!.includes("Copying files..."));
+  });
+});
 
 describe("extractNameAndVersion", () => {
   it("splits simple package with version", () => {

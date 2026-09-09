@@ -25,6 +25,15 @@ import { resolveExecutable } from "./executable.js";
 import { assertDirectoryIsEmpty } from "./config.js";
 import { ScaffoldAbortedError } from "./errors.js";
 
+/**
+ * Print a one-line step indicator during scaffolding so users can tell the
+ * CLI is making progress through long silent phases (resolve, copy).
+ * Uses picocolors (already a dependency) — no spinner library needed.
+ */
+export const logStep = (message: string) => {
+  console.log(pc.cyan(`${message}...`));
+};
+
 const install = async (
   root: string,
   useYarn = false,
@@ -252,6 +261,7 @@ const run = async ({
 
   console.log();
   console.log("Scaffolding project in " + root + "...");
+  logStep("Copying files");
 
   await loadFiles({
     root,
@@ -529,6 +539,8 @@ export const createApp = async ({
       : useBun
         ? "bun install"
         : "npm install";
+
+  logStep("Resolving template");
 
   const { packageJson, dependencies, devDependencies } = await loadPackages({
     templatesOrExtensions,
