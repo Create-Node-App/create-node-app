@@ -401,7 +401,10 @@ export const loadFiles = async ({
 }: LoadFilesOptions) => {
   try {
     const operations = [];
+    let templateOrExtensionIndex = 0;
     for await (const { url: templateOrExtensionUrl } of templatesOrExtensions) {
+      const isExtension = templateOrExtensionIndex > 0;
+      templateOrExtensionIndex += 1;
       const templateDir = await getTemplateDirPath(templateOrExtensionUrl, {
         ...(offline !== undefined ? { offline } : {}),
         ...(cacheDir !== undefined ? { cacheDir } : {}),
@@ -454,12 +457,35 @@ export const loadFiles = async ({
             rgx.test(p.toLowerCase()),
           );
 
+        // Bank-only docs at the extension root are never scaffolded
+        // (cna-templates#396). Every extension ships `README.md` as bank
+        // documentation while the base template owns the generated
+        // project's top-level README; without this filter both writers
+        // race on `<root>/README.md` via `Promise.allSettled`. Only the
+        // root level is filtered so intentional payloads such as
+        // `docs/README.md.append` still merge.
+        const isBankOnlyRootFile = (p: string) => {
+          if (!isExtension) return false;
+          if (p.includes("/")) return false;
+          return /^(readme\.md|license(\.md|\.txt)?|contributing(\.md)?)$/i.test(
+            p,
+          );
+        };
+
         for await (const entry of readdirp(templateDir, {
           type: "files",
           alwaysStat: false,
         })) {
           if (shouldSkip(entry.path)) continue;
           if (entry.path.startsWith("package/")) continue; // skip helper package dir
+          if (isBankOnlyRootFile(entry.path)) {
+            if (verbose) {
+              console.log(
+                pc.dim(`[cna] Skipping bank-only file: ${entry.path}`),
+              );
+            }
+            continue;
+          }
           if (verbose && debugFirst) {
             console.log(pc.dim(`[cna] First discovered file: ${entry.path}`));
             debugFirst = false;
