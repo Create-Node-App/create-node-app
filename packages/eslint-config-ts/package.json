@@ -14,8 +14,8 @@
     "test": "echo 'no tests'"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.68.0",
-    "eslint": "^10.9.1",
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "eslint": "^10.10.0",
     "eslint-config-turbo": "^2.10.12",
     "@create-node-app/eslint-config": "*"
   },
