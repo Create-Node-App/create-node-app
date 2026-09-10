@@ -70,7 +70,7 @@ jobs:
       - name: Set up QEMU
         # Required so buildx can cross-build linux/arm64 on the x86_64
         # ubuntu-latest runner.
-        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+        uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
         with:
           platforms: linux/arm64
 
