@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.10.2
+
+### Patch Changes
+
+- 29e7ccc: Skip extension bank-only root files in loadFiles to prevent README race with the base template output.
+
 ## 0.10.1
 
 ### Patch Changes
