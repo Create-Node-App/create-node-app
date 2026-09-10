@@ -464,3 +464,41 @@ test("default srcDir applies when omitted", async () => {
     safeRm(destDir);
   }
 });
+
+test("extension bank-only root files never overwrite the template README", async () => {
+  const tpl = makeFixture({ "README.md": "# Template\n" });
+  const ext = makeFixture({
+    "README.md": "# Bank docs (must not leak)\n",
+    "LICENSE.md": "bank license\n",
+    "docs/notes.md": "keep me\n",
+  });
+  const loadFiles = await loadFilesFrom();
+  const destDir = mkdtempSync(path.join(tmpdir(), "cna-loaders-out-"));
+  try {
+    await loadFiles({
+      root: destDir,
+      templatesOrExtensions: [
+        { url: pathToFileURL(tpl).toString() },
+        { url: pathToFileURL(ext).toString() },
+      ],
+      appName: "demo-app",
+      originalDirectory: destDir,
+      verbose: false,
+      runCommand: "npm run",
+      installCommand: "npm install",
+    });
+    assert.equal(
+      fs.readFileSync(path.join(destDir, "README.md"), "utf8"),
+      "# Template\n",
+    );
+    assert.equal(
+      fs.readFileSync(path.join(destDir, "docs", "notes.md"), "utf8"),
+      "keep me\n",
+    );
+    assert.ok(!fs.existsSync(path.join(destDir, "LICENSE.md")));
+  } finally {
+    safeRm(tpl);
+    safeRm(ext);
+    safeRm(destDir);
+  }
+});
