@@ -15,7 +15,7 @@
     "test:src": "echo 'no tests'"
   },
   "dependencies": {
-    "eslint": "^10.9.1",
+    "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-config-turbo": "^2.10.12"
   },
