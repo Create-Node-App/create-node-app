@@ -194,14 +194,31 @@ jobs:
             echo "- AUR RPC version: \`${AUR_VERSION:-missing}\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Regenerate .SRCINFO for mirror sync
+        # The mirror CI requires .SRCINFO to match PKGBUILD exactly
+        # (same makepkg command the mirror validates with). AUR itself
+        # regenerates it on push, but the GitHub mirror does not.
+        working-directory: aur-package
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$PWD:/work:rw" \
+            -w /work \
+            archlinux:latest \
+            bash -euo pipefail -c '
+              pacman -Sy --noconfirm --needed pacman-contrib base-devel >/dev/null 2>&1
+              useradd -m builder
+              chown -R builder:builder /work
+              runuser -u builder -- makepkg --printsrcinfo > .SRCINFO
+            '
+
       - name: Sync updated PKGBUILD to GitHub mirror
         # Keep the aur-package GitHub mirror in sync with what's live
-        # on AUR. Only PKGBUILD needs to be committed here — .SRCINFO
-        # is regenerated automatically by AUR from PKGBUILD.
+        # on AUR (.SRCINFO regenerated above so the mirror CI stays green).
         uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
         with:
           repository: aur-package
           commit_message: "chore: sync PKGBUILD for v${{ steps.version.outputs.version }}"
           commit_user_name: "Create Node App Bot"
           commit_user_email: "ulisescf.24@gmail.com"
-          file_pattern: "PKGBUILD"
+          file_pattern: "PKGBUILD .SRCINFO"
