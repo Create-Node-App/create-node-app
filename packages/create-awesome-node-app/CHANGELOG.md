@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.17.2
+
+### Patch Changes
+
+- 757608e: Dependency maintenance since 0.17.1 (production + development groups).
+
 ## 0.17.1
 
 ### Patch Changes
