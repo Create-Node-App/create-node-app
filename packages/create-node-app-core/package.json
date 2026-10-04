@@ -44,7 +44,7 @@
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^26.4.1",
     "@types/semver": "^7.8.0",
-    "eslint": "^10.10.0",
+    "eslint": "^10.11.0",
     "tsconfig": "*",
     "tsup": "^8.5.1",
     "tsx": "^4.23.13",
@@ -54,12 +54,12 @@
     "cross-spawn": "^7.0.6",
     "debug": "^4.4.3",
     "envinfo": "^7.21.0",
-    "fs-extra": "^11.4.0",
+    "fs-extra": "^11.4.1",
     "lodash": "^4.6.2",
     "lodash.merge": "^4.6.2",
     "picocolors": "^1.0.0",
     "readdirp": "^5.1.1",
     "semver": "^7.8.5",
-    "simple-git": "^3.36.0"
+    "simple-git": "^4.0.2"
   }
 }
