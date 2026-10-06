@@ -4,9 +4,6 @@ name: Publish to AUR
 # Publishes the updated PKGBUILD to aur.archlinux.org and keeps the
 # Create-Node-App/aur-package GitHub mirror in sync.
 on:
-  push:
-    tags:
-      - "create-awesome-node-app@*"
   # Manual trigger to re-publish an existing version.
   workflow_dispatch:
     inputs:

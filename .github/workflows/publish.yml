@@ -50,6 +50,7 @@ jobs:
       id-token: write # Required for OIDC trusted publishing
       contents: write # Required to push git tags for downstream workflows
       packages: write
+      actions: write # Required to dispatch post-publish distribution workflows
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
@@ -72,6 +73,17 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Check whether the CLI version is already published
+        id: cli-release
+        run: |
+          version=$(node -p "require('./packages/create-awesome-node-app/package.json').version")
+          if published=$(npm view "create-awesome-node-app@${version}" version 2>/dev/null) && [ "$published" = "$version" ]; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Publish packages
         run: |
@@ -106,8 +118,18 @@ jobs:
       - name: Create git tags for published versions
         run: npx changeset tag
 
-      # Push all local tags so the tag-based Docker, AUR, and Homebrew
-      # workflows trigger. Lightweight tags require --tags (not
-      # --follow-tags).
+      # GITHUB_TOKEN-generated tag pushes do not trigger other workflows.
+      # Dispatch the distribution jobs explicitly after a genuinely new CLI
+      # version has been published. workflow_dispatch is allowed with this token.
       - name: Push git tags
         run: git push origin --tags
+
+      - name: Dispatch distribution workflows
+        if: steps.cli-release.outputs.published == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.cli-release.outputs.version }}
+        run: |
+          gh workflow run "Publish Docker image" --ref main -f "version=$VERSION"
+          gh workflow run "Publish to AUR" --ref main -f "version=$VERSION"
+          gh workflow run "Notify Homebrew tap" --ref main -f "version=$VERSION"

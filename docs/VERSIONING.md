@@ -52,7 +52,7 @@ Merging the Version Packages PR triggers the `publish` job in
 
 1. `npm run publish-packages` — builds and publishes each package to npm
 2. `changeset tag` — creates local git tags for published versions
-3. Pushes tags to GitHub — triggers downstream workflows:
+3. Pushes tags to GitHub for version traceability. `GITHUB_TOKEN` tag pushes do not trigger downstream workflows, so `publish.yml` dispatches Docker, AUR, and Homebrew explicitly after a new CLI version publishes:
    - **Docker**: `publish-docker.yml` builds and pushes Docker image
    - **AUR**: `publish-aur.yml` updates the Arch User Repository package
    - **Homebrew**: `notify-homebrew.yml` dispatches a `new-release` event to the
