@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.10.3
+
+### Patch Changes
+
+- df92bde: Update the Git and filesystem dependencies used by the scaffolding engine.
+
 ## 0.10.2
 
 ### Patch Changes
