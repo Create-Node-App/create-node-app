@@ -212,9 +212,9 @@ jobs:
               chown -R builder:builder /tmp/build
               # makepkg requires a writable build directory; keep that
               # directory in the container instead of changing checkout ownership.
-              runuser -u builder -- bash -c "cd /tmp/build && makepkg --printsrcinfo" > /tmp/SRCINFO
-              install -m 0644 /tmp/SRCINFO /work/.SRCINFO
-            '
+              runuser -u builder -- bash -c "cd /tmp/build && makepkg --printsrcinfo"
+            ' > /tmp/SRCINFO
+          install -m 0644 /tmp/SRCINFO .SRCINFO
 
       - name: Sync updated PKGBUILD to GitHub mirror
         # Keep the aur-package GitHub mirror in sync with what's live
