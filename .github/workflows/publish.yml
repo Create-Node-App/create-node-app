@@ -91,9 +91,11 @@ jobs:
             echo "No unreleased changesets found, checking for new versions to publish"
             # dist/ is gitignored, so a bare `changeset publish` would ship
             # tarballs without build output (see the empty 0.17.0). Always
-            # build first — publish stays a safe no-op when nothing is new.
+            # build first. Changesets exits successfully when there are no
+            # unpublished packages; preserve real registry failures so this
+            # workflow cannot report a rejected release as successful.
             npm run build
-            npx changeset publish || echo "No new versions to publish, skipping"
+            npx changeset publish
           fi
 
       # Our Changesets config has "commit": false, which also disables
