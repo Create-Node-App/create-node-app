@@ -208,8 +208,12 @@ jobs:
             bash -euo pipefail -c '
               pacman -Sy --noconfirm --needed pacman-contrib base-devel >/dev/null 2>&1
               useradd -m builder
-              chown -R builder:builder /work
-              runuser -u builder -- makepkg --printsrcinfo > .SRCINFO
+              # Keep the runner checkout and its .git metadata owned by the
+              # Actions user. makepkg only needs read access to PKGBUILD; write
+              # its output to container-local storage, then install just the
+              # generated file into the mirror checkout.
+              runuser -u builder -- makepkg --printsrcinfo > /tmp/SRCINFO
+              install -m 0644 /tmp/SRCINFO /work/.SRCINFO
             '
 
       - name: Sync updated PKGBUILD to GitHub mirror
