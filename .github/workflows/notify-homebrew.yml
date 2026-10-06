@@ -4,9 +4,6 @@ name: Notify Homebrew tap
 # repository_dispatch event to Create-Node-App/homebrew-tap so its
 # update-formula workflow can bump the formula and push it.
 on:
-  push:
-    tags:
-      - "create-awesome-node-app@*"
   # Manual trigger to re-notify for a specific version.
   workflow_dispatch:
     inputs:

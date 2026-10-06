@@ -4,14 +4,16 @@
 (`create-awesome-node-app@X.Y.Z`):
 
 | Channel      | Workflow                               | Secret(s) needed                        |
-| ------------ | -------------------------------------- | --------------------------------------- |
+|--------------|----------------------------------------|-----------------------------------------|
 | **npm**      | `publish.yml`                          | (OIDC trusted publishing — no secret)   |
 | **Docker**   | `publish-docker.yml`                   | `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` |
 | **AUR**      | `publish-aur.yml`                      | `AUR_SSH_PRIVATE_KEY`, `AUR_REPO_TOKEN` |
 | **Homebrew** | `notify-homebrew.yml` → `homebrew-tap` | `HOMEBREW_TAP_TOKEN`                    |
 
-This document walks through configuring all five secrets. Once done, every
-release tag automatically publishes to every channel.
+This document walks through configuring all five secrets. Once configured, `publish.yml` explicitly dispatches Docker, AUR, and Homebrew
+workflows after npm publishes a new CLI version. This uses `workflow_dispatch`,
+which works with the repository `GITHUB_TOKEN`; tag pushes created by that token
+do not start other workflows.
 
 All secrets go in **Settings → Secrets and variables → Actions → Repository
 secrets** on
@@ -173,6 +175,6 @@ Every subsequent release only requires:
 
 1. Merging the auto-generated **Version Packages** PR from Changesets.
 2. Nothing else — `publish.yml` publishes to npm, tags the release, and
-   the three tag-based workflows fan out to Docker Hub, AUR, and Homebrew.
+   `publish.yml` explicitly dispatches Docker, AUR, and Homebrew after publishing a new CLI version.
    Each channel waits/retries on the npm registry so CDN lag after publish
    does not fail the first attempt.

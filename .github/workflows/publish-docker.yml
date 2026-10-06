@@ -5,9 +5,6 @@ name: Publish Docker image
 # — `git push --follow-tags`). Version comes directly from the tag ref,
 # eliminating the need to poll the npm registry.
 on:
-  push:
-    tags:
-      - "create-awesome-node-app@*"
   # Manual trigger to rebuild an image for an existing version.
   workflow_dispatch:
     inputs:
