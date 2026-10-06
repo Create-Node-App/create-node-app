@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.17.3
+
+### Patch Changes
+
+- fe5ae14: Require `@create-node-app/core@^0.10.4` to include the template and extension file ordering fix (#371).
+
 ## 0.17.2
 
 ### Patch Changes
