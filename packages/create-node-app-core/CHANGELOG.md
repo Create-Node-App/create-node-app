@@ -1,5 +1,11 @@
 # @create-node-app/core
 
+## 0.10.4
+
+### Patch Changes
+
+- e0c3937: Apply template files before extension files so extension appends are preserved when they target the same generated file. Fixes #367.
+
 ## 0.10.3
 
 ### Patch Changes
