@@ -361,7 +361,9 @@ export type LoadFilesOptions = {
 
 /**
  * Iterates over all provided templates/extensions, discovers their files,
- * and applies the appropriate file loader to each entry in parallel.
+ * and applies the appropriate file loader to each entry in parallel within
+ * each template or extension. Sources are applied in the order provided so
+ * extension operations can reliably update files from the base template.
  * Throws if any file operation fails.
  *
  * @param options - See {@link LoadFilesOptions}
@@ -400,9 +402,11 @@ export const loadFiles = async ({
   ...customOptions
 }: LoadFilesOptions) => {
   try {
-    const operations = [];
+    const operationGroups = [];
+    let totalOperations = 0;
     let templateOrExtensionIndex = 0;
     for await (const { url: templateOrExtensionUrl } of templatesOrExtensions) {
+      const operations = [];
       const isExtension = templateOrExtensionIndex > 0;
       templateOrExtensionIndex += 1;
       const templateDir = await getTemplateDirPath(templateOrExtensionUrl, {
@@ -507,15 +511,18 @@ export const loadFiles = async ({
           });
         }
       }
+
+      operationGroups.push(operations);
+      totalOperations += operations.length;
     }
 
     if (verbose) {
       console.log(
         pc.dim(
-          `[cna] Prepared ${operations.length} file operations from ${templatesOrExtensions.length} template(s)`,
+          `[cna] Prepared ${totalOperations} file operations from ${templatesOrExtensions.length} template(s)`,
         ),
       );
-      if (operations.length === 0) {
+      if (totalOperations === 0) {
         console.log(
           pc.yellow(
             "[cna] No files discovered. Check that the template repository was cloned and fileFilter patterns are correct.",
@@ -524,13 +531,18 @@ export const loadFiles = async ({
       }
     }
 
-    const results = await Promise.allSettled(
-      operations.map((operation) => fileLoader(operation)(operation.entry)),
-    );
-
-    const rejected = results.filter(
-      (r): r is PromiseRejectedResult => r.status === "rejected",
-    );
+    const rejected: PromiseRejectedResult[] = [];
+    for (const operations of operationGroups) {
+      const results = await Promise.allSettled(
+        operations.map((operation) => fileLoader(operation)(operation.entry)),
+      );
+      rejected.push(
+        ...results.filter(
+          (result): result is PromiseRejectedResult =>
+            result.status === "rejected",
+        ),
+      );
+    }
     if (rejected.length > 0) {
       const errorMessages = rejected
         .map(
@@ -539,7 +551,7 @@ export const loadFiles = async ({
         )
         .join("\n");
       throw new Error(
-        `Failed to copy ${rejected.length} of ${results.length} file(s):\n${errorMessages}`,
+        `Failed to copy ${rejected.length} of ${totalOperations} file(s):\n${errorMessages}`,
       );
     }
   } catch (err) {
