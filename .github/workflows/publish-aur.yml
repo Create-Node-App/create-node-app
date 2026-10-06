@@ -202,17 +202,17 @@ jobs:
         run: |
           set -euo pipefail
           docker run --rm \
-            -v "$PWD:/work:rw" \
-            -w /work \
+            -v "$PWD:/work:ro" \
             archlinux:latest \
             bash -euo pipefail -c '
               pacman -Sy --noconfirm --needed pacman-contrib base-devel >/dev/null 2>&1
               useradd -m builder
-              # Keep the runner checkout and its .git metadata owned by the
-              # Actions user. makepkg only needs read access to PKGBUILD; write
-              # its output to container-local storage, then install just the
-              # generated file into the mirror checkout.
-              runuser -u builder -- makepkg --printsrcinfo > /tmp/SRCINFO
+              mkdir /tmp/build
+              cp /work/PKGBUILD /tmp/build/PKGBUILD
+              chown -R builder:builder /tmp/build
+              # makepkg requires a writable build directory; keep that
+              # directory in the container instead of changing checkout ownership.
+              runuser -u builder -- bash -c "cd /tmp/build && makepkg --printsrcinfo" > /tmp/SRCINFO
               install -m 0644 /tmp/SRCINFO /work/.SRCINFO
             '
 
