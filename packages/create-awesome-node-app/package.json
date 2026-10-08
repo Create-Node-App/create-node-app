@@ -92,7 +92,7 @@
   },
   "devDependencies": {
     "@create-node-app/core": "^0.10.4",
-    "@types/node": "^26.6.3",
+    "@types/node": "^26.6.4",
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.8.0",
     "eslint": "^10.11.0",
