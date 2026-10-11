@@ -1,5 +1,11 @@
 # create-awesome-node-app
 
+## 0.17.4
+
+### Patch Changes
+
+- 7e3859c: Fix the release workflow so AUR, Docker, and Homebrew updates run after npm publishing.
+
 ## 0.17.3
 
 ### Patch Changes
