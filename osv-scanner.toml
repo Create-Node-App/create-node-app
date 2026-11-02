@@ -1,0 +1,12 @@
+# OSV Scanner exceptions. Each entry needs a reason and an expiry date.
+# Review them when the expiry passes, or when the upstream path changes.
+
+[[IgnoredVulns]]
+id = "GHSA-3g3m-2fjr-6pw4"
+ignoreUntil = 2027-02-01
+reason = "glob (dev, fixed in 14.0.2) is pinned by test-exclude 8.0.0 (glob ^13.0.6), which c8 requires. It is only used during test coverage, never in the published CLI. Latest test-exclude still requires glob 13, so the fix needs an upstream c8/test-exclude release or an approved override. Remove this exception once c8 resolves glob >= 14.0.2."
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+ignoreUntil = 2027-02-01
+reason = "minimatch (ReDoS, fixed in 11.0.1) is a transitive dependency of the ESLint and typescript-eslint toolchain (3.1.5 via eslint 9, 10.2.5 via typescript-estree). It only parses glob patterns from repository config, never untrusted input, and it is not part of the published CLI. Latest typescript-eslint still requires ^10.2.2. Remove this exception once typescript-eslint requires minimatch >= 11.0.1, or once an approved override is applied."
