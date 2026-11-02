@@ -7,7 +7,7 @@
 ## Tech Stack
 
 - TypeScript
-- Node.js 24.17.0+
+- Node.js 24.22.2+ (pinned in `.node-version`)
 - npm 11+
 - Turborepo (monorepo)
 
