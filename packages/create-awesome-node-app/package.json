@@ -85,10 +85,10 @@
   "dependencies": {
     "@create-node-app/core": "^0.10.4",
     "ci-info": "^4.4.0",
-    "commander": "^15.0.0",
+    "commander": "^15.1.0",
     "picocolors": "^1.1.1",
     "prompts": "^2.4.2",
-    "semver": "^7.8.5"
+    "semver": "^7.8.6"
   },
   "devDependencies": {
     "@create-node-app/core": "^0.10.4",
