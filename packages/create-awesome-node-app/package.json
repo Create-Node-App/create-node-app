@@ -84,18 +84,18 @@
   },
   "dependencies": {
     "@create-node-app/core": "^0.10.4",
-    "ci-info": "^4.4.0",
-    "commander": "^15.0.0",
+    "ci-info": "^4.5.0",
+    "commander": "^15.1.0",
     "picocolors": "^1.1.1",
     "prompts": "^2.4.2",
-    "semver": "^7.8.5"
+    "semver": "^7.8.6"
   },
   "devDependencies": {
     "@create-node-app/core": "^0.10.4",
     "@types/node": "^26.6.6",
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.8.0",
-    "eslint": "^10.14.0",
+    "eslint": "^10.15.0",
     "nock": "^15.0.6",
     "tsup": "^9.0.0",
     "tsx": "^4.23.15"
